@@ -1,0 +1,1274 @@
+fileFormatVersion: 2
+guid: eba88eb49adc69049a583de8bde70e59
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -7697680472577674847
+    second: CombatReadabilityAtlas_64_0
+  - first:
+      213: 5095341770986580214
+    second: CombatReadabilityAtlas_64_1
+  - first:
+      213: 6096892000225380502
+    second: CombatReadabilityAtlas_64_2
+  - first:
+      213: -913897227315235853
+    second: CombatReadabilityAtlas_64_3
+  - first:
+      213: -423832957600186255
+    second: CombatReadabilityAtlas_64_4
+  - first:
+      213: -5586693734498468277
+    second: CombatReadabilityAtlas_64_5
+  - first:
+      213: -3445700460057308825
+    second: CombatReadabilityAtlas_64_6
+  - first:
+      213: -6335288841460804063
+    second: CombatReadabilityAtlas_64_7
+  - first:
+      213: 2685523696780598967
+    second: CombatReadabilityAtlas_64_8
+  - first:
+      213: 4409587921372176623
+    second: CombatReadabilityAtlas_64_9
+  - first:
+      213: 8226463113042843930
+    second: CombatReadabilityAtlas_64_10
+  - first:
+      213: -9156995360589315853
+    second: CombatReadabilityAtlas_64_11
+  - first:
+      213: -4478154537565341850
+    second: CombatReadabilityAtlas_64_12
+  - first:
+      213: 1370498916598532503
+    second: CombatReadabilityAtlas_64_13
+  - first:
+      213: 4416973443964378627
+    second: CombatReadabilityAtlas_64_14
+  - first:
+      213: 8864182104890020185
+    second: CombatReadabilityAtlas_64_15
+  - first:
+      213: 336929738393388220
+    second: CombatReadabilityAtlas_64_16
+  - first:
+      213: 99245087613072059
+    second: CombatReadabilityAtlas_64_17
+  - first:
+      213: 6300393826399713495
+    second: CombatReadabilityAtlas_64_18
+  - first:
+      213: 9071441555922230482
+    second: CombatReadabilityAtlas_64_19
+  - first:
+      213: -975803881865377799
+    second: CombatReadabilityAtlas_64_20
+  - first:
+      213: 6089571371990906718
+    second: CombatReadabilityAtlas_64_21
+  - first:
+      213: -9062330831109586711
+    second: CombatReadabilityAtlas_64_22
+  - first:
+      213: 6163701363971175529
+    second: CombatReadabilityAtlas_64_23
+  - first:
+      213: -1869815883786173455
+    second: CombatReadabilityAtlas_64_24
+  - first:
+      213: 6341681650869609936
+    second: CombatReadabilityAtlas_64_25
+  - first:
+      213: -5445521039589203085
+    second: CombatReadabilityAtlas_64_26
+  - first:
+      213: -2283430779407417227
+    second: CombatReadabilityAtlas_64_27
+  - first:
+      213: 1073942437531463079
+    second: CombatReadabilityAtlas_64_28
+  - first:
+      213: 1975121499285852732
+    second: CombatReadabilityAtlas_64_29
+  - first:
+      213: -879143166584886653
+    second: CombatReadabilityAtlas_64_30
+  - first:
+      213: -6327399734871031594
+    second: CombatReadabilityAtlas_64_31
+  - first:
+      213: 3716132157573985490
+    second: CombatReadabilityAtlas_64_32
+  - first:
+      213: -5591728506499794419
+    second: CombatReadabilityAtlas_64_33
+  - first:
+      213: -8904531562826769062
+    second: CombatReadabilityAtlas_64_34
+  - first:
+      213: -697955780429975527
+    second: CombatReadabilityAtlas_64_35
+  - first:
+      213: -2841270192149294433
+    second: CombatReadabilityAtlas_64_36
+  - first:
+      213: 2903950357917367581
+    second: CombatReadabilityAtlas_64_37
+  - first:
+      213: 1260004685811434886
+    second: CombatReadabilityAtlas_64_38
+  - first:
+      213: 4564104522116576542
+    second: CombatReadabilityAtlas_64_39
+  - first:
+      213: 241381463612604494
+    second: CombatReadabilityAtlas_64_40
+  - first:
+      213: -8921169200393009402
+    second: CombatReadabilityAtlas_64_41
+  - first:
+      213: 2695452610539657774
+    second: CombatReadabilityAtlas_64_42
+  - first:
+      213: -1610598487933745615
+    second: CombatReadabilityAtlas_64_43
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 768
+        width: 164
+        height: 315
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1a1fb8de4685c2590800000000000000
+      internalID: -7697680472577674847
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_1
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 1087
+        width: 147
+        height: 143
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6f86ddc285a46b640800000000000000
+      internalID: 5095341770986580214
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_2
+      rect:
+        serializedVersion: 2
+        x: 177
+        y: 926
+        width: 441
+        height: 306
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 698ca53b8f28c9450800000000000000
+      internalID: 6096892000225380502
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_3
+      rect:
+        serializedVersion: 2
+        x: 190
+        y: 1088
+        width: 118
+        height: 152
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f339a4505f2153f0800000000000000
+      internalID: -913897227315235853
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_4
+      rect:
+        serializedVersion: 2
+        x: 476
+        y: 1086
+        width: 138
+        height: 153
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 170432eab2e3e1af0800000000000000
+      internalID: -423832957600186255
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_5
+      rect:
+        serializedVersion: 2
+        x: 619
+        y: 1078
+        width: 155
+        height: 153
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b4e7156e5a31872b0800000000000000
+      internalID: -5586693734498468277
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_6
+      rect:
+        serializedVersion: 2
+        x: 780
+        y: 931
+        width: 138
+        height: 149
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 76152eb00b96e20d0800000000000000
+      internalID: -3445700460057308825
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_7
+      rect:
+        serializedVersion: 2
+        x: 788
+        y: 1081
+        width: 127
+        height: 156
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1269b3f4d588418a0800000000000000
+      internalID: -6335288841460804063
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_8
+      rect:
+        serializedVersion: 2
+        x: 928
+        y: 1084
+        width: 149
+        height: 154
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7be508ed295e44520800000000000000
+      internalID: 2685523696780598967
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_9
+      rect:
+        serializedVersion: 2
+        x: 1077
+        y: 1078
+        width: 148
+        height: 156
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fe0ed3bf9d0023d30800000000000000
+      internalID: 4409587921372176623
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_10
+      rect:
+        serializedVersion: 2
+        x: 1078
+        y: 927
+        width: 149
+        height: 152
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a19d5ca9d944a2270800000000000000
+      internalID: 8226463113042843930
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_11
+      rect:
+        serializedVersion: 2
+        x: 622
+        y: 931
+        width: 146
+        height: 144
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f08c224c31dbe080800000000000000
+      internalID: -9156995360589315853
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_12
+      rect:
+        serializedVersion: 2
+        x: 924
+        y: 930
+        width: 140
+        height: 147
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6673d13ac266ad1c0800000000000000
+      internalID: -4478154537565341850
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_13
+      rect:
+        serializedVersion: 2
+        x: 155
+        y: 617
+        width: 310
+        height: 301
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 799c9e0e08df40310800000000000000
+      internalID: 1370498916598532503
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_14
+      rect:
+        serializedVersion: 2
+        x: 305
+        y: 768
+        width: 166
+        height: 157
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 30e94d5f1fd3c4d30800000000000000
+      internalID: 4416973443964378627
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_15
+      rect:
+        serializedVersion: 2
+        x: 478
+        y: 773
+        width: 142
+        height: 146
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9511852f8a6e30b70800000000000000
+      internalID: 8864182104890020185
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_16
+      rect:
+        serializedVersion: 2
+        x: 617
+        y: 915
+        width: 11
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cb4043bdfc30da400800000000000000
+      internalID: 336929738393388220
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_17
+      rect:
+        serializedVersion: 2
+        x: 619
+        y: 618
+        width: 156
+        height: 300
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bb231e0a1e6906100800000000000000
+      internalID: 99245087613072059
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_18
+      rect:
+        serializedVersion: 2
+        x: 784
+        y: 772
+        width: 118
+        height: 148
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7d87e9fddce7f6750800000000000000
+      internalID: 6300393826399713495
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_19
+      rect:
+        serializedVersion: 2
+        x: 928
+        y: 770
+        width: 138
+        height: 155
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2dc1675580c34ed70800000000000000
+      internalID: 9071441555922230482
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_20
+      rect:
+        serializedVersion: 2
+        x: 1074
+        y: 463
+        width: 155
+        height: 457
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9f787fa1a8f3572f0800000000000000
+      internalID: -975803881865377799
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_21
+      rect:
+        serializedVersion: 2
+        x: 14
+        y: 624
+        width: 140
+        height: 137
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e57f7ed16e0828450800000000000000
+      internalID: 6089571371990906718
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_22
+      rect:
+        serializedVersion: 2
+        x: 137
+        y: 609
+        width: 33
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e084a69f122c3280800000000000000
+      internalID: -9062330831109586711
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_23
+      rect:
+        serializedVersion: 2
+        x: 474
+        y: 608
+        width: 140
+        height: 152
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 964b71ddbbdd98550800000000000000
+      internalID: 6163701363971175529
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_24
+      rect:
+        serializedVersion: 2
+        x: 764
+        y: 9
+        width: 477
+        height: 626
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f3ca834c541d06e0800000000000000
+      internalID: -1869815883786173455
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_25
+      rect:
+        serializedVersion: 2
+        x: 769
+        y: 620
+        width: 149
+        height: 139
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0d522be9cdd220850800000000000000
+      internalID: 6341681650869609936
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_26
+      rect:
+        serializedVersion: 2
+        x: 927
+        y: 608
+        width: 137
+        height: 163
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 373ae52577f9d64b0800000000000000
+      internalID: -5445521039589203085
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_27
+      rect:
+        serializedVersion: 2
+        x: 14
+        y: 453
+        width: 301
+        height: 160
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5704a34edcf9f40e0800000000000000
+      internalID: -2283430779407417227
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_28
+      rect:
+        serializedVersion: 2
+        x: 335
+        y: 461
+        width: 114
+        height: 156
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7ada74af4f867ee00800000000000000
+      internalID: 1073942437531463079
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_29
+      rect:
+        serializedVersion: 2
+        x: 472
+        y: 461
+        width: 141
+        height: 151
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c329b29f98a096b10800000000000000
+      internalID: 1975121499285852732
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_30
+      rect:
+        serializedVersion: 2
+        x: 621
+        y: 461
+        width: 150
+        height: 140
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 38aeef8a2f7acc3f0800000000000000
+      internalID: -879143166584886653
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_31
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 301
+        width: 166
+        height: 154
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6d08c13177f8038a0800000000000000
+      internalID: -6327399734871031594
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_32
+      rect:
+        serializedVersion: 2
+        x: 172
+        y: 302
+        width: 141
+        height: 148
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2d47a96228a529330800000000000000
+      internalID: 3716132157573985490
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_33
+      rect:
+        serializedVersion: 2
+        x: 329
+        y: 308
+        width: 130
+        height: 142
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d0a77a1bc803662b0800000000000000
+      internalID: -5591728506499794419
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_34
+      rect:
+        serializedVersion: 2
+        x: 470
+        y: 9
+        width: 289
+        height: 301
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a5dd47ac8bfbc6480800000000000000
+      internalID: -8904531562826769062
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_35
+      rect:
+        serializedVersion: 2
+        x: 478
+        y: 302
+        width: 132
+        height: 156
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9107a866aec5056f0800000000000000
+      internalID: -697955780429975527
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_36
+      rect:
+        serializedVersion: 2
+        x: 641
+        y: 305
+        width: 119
+        height: 147
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f92190e50d7c198d0800000000000000
+      internalID: -2841270192149294433
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_37
+      rect:
+        serializedVersion: 2
+        x: 721
+        y: 304
+        width: 10
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d1d7809f677ec4820800000000000000
+      internalID: 2903950357917367581
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_38
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 158
+        width: 138
+        height: 140
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6854e11069f6c7110800000000000000
+      internalID: 1260004685811434886
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_39
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 158
+        width: 147
+        height: 136
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e15338691e4f65f30800000000000000
+      internalID: 4564104522116576542
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_40
+      rect:
+        serializedVersion: 2
+        x: 323
+        y: 157
+        width: 131
+        height: 136
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e404ef9892f895300800000000000000
+      internalID: 241381463612604494
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_41
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 153
+        height: 155
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6074b6de0e3a13480800000000000000
+      internalID: -8921169200393009402
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_42
+      rect:
+        serializedVersion: 2
+        x: 175
+        y: 15
+        width: 130
+        height: 130
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e2a9d104edb286520800000000000000
+      internalID: 2695452610539657774
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CombatReadabilityAtlas_64_43
+      rect:
+        serializedVersion: 2
+        x: 311
+        y: 13
+        width: 156
+        height: 134
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1368de2653106a9e0800000000000000
+      internalID: -1610598487933745615
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      CombatReadabilityAtlas_64_0: -7697680472577674847
+      CombatReadabilityAtlas_64_1: 5095341770986580214
+      CombatReadabilityAtlas_64_10: 8226463113042843930
+      CombatReadabilityAtlas_64_11: -9156995360589315853
+      CombatReadabilityAtlas_64_12: -4478154537565341850
+      CombatReadabilityAtlas_64_13: 1370498916598532503
+      CombatReadabilityAtlas_64_14: 4416973443964378627
+      CombatReadabilityAtlas_64_15: 8864182104890020185
+      CombatReadabilityAtlas_64_16: 336929738393388220
+      CombatReadabilityAtlas_64_17: 99245087613072059
+      CombatReadabilityAtlas_64_18: 6300393826399713495
+      CombatReadabilityAtlas_64_19: 9071441555922230482
+      CombatReadabilityAtlas_64_2: 6096892000225380502
+      CombatReadabilityAtlas_64_20: -975803881865377799
+      CombatReadabilityAtlas_64_21: 6089571371990906718
+      CombatReadabilityAtlas_64_22: -9062330831109586711
+      CombatReadabilityAtlas_64_23: 6163701363971175529
+      CombatReadabilityAtlas_64_24: -1869815883786173455
+      CombatReadabilityAtlas_64_25: 6341681650869609936
+      CombatReadabilityAtlas_64_26: -5445521039589203085
+      CombatReadabilityAtlas_64_27: -2283430779407417227
+      CombatReadabilityAtlas_64_28: 1073942437531463079
+      CombatReadabilityAtlas_64_29: 1975121499285852732
+      CombatReadabilityAtlas_64_3: -913897227315235853
+      CombatReadabilityAtlas_64_30: -879143166584886653
+      CombatReadabilityAtlas_64_31: -6327399734871031594
+      CombatReadabilityAtlas_64_32: 3716132157573985490
+      CombatReadabilityAtlas_64_33: -5591728506499794419
+      CombatReadabilityAtlas_64_34: -8904531562826769062
+      CombatReadabilityAtlas_64_35: -697955780429975527
+      CombatReadabilityAtlas_64_36: -2841270192149294433
+      CombatReadabilityAtlas_64_37: 2903950357917367581
+      CombatReadabilityAtlas_64_38: 1260004685811434886
+      CombatReadabilityAtlas_64_39: 4564104522116576542
+      CombatReadabilityAtlas_64_4: -423832957600186255
+      CombatReadabilityAtlas_64_40: 241381463612604494
+      CombatReadabilityAtlas_64_41: -8921169200393009402
+      CombatReadabilityAtlas_64_42: 2695452610539657774
+      CombatReadabilityAtlas_64_43: -1610598487933745615
+      CombatReadabilityAtlas_64_5: -5586693734498468277
+      CombatReadabilityAtlas_64_6: -3445700460057308825
+      CombatReadabilityAtlas_64_7: -6335288841460804063
+      CombatReadabilityAtlas_64_8: 2685523696780598967
+      CombatReadabilityAtlas_64_9: 4409587921372176623
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

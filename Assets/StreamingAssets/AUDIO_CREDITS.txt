@@ -1,0 +1,61 @@
+GILDED FATE — AUDIO CREDITS
+Library replacement: 6 September 2026
+
+MUSIC
+
+Music by Scott Buckley — released under CC-BY 4.0.
+https://www.scottbuckley.com.au
+License: https://creativecommons.org/licenses/by/4.0/
+Creator's usage guide: https://www.scottbuckley.com.au/library/using-this-music/
+
+Menu: Memories Of Stone
+https://www.scottbuckley.com.au/library/memories-of-stone/
+Map: Passage Of Time
+https://www.scottbuckley.com.au/library/passage-of-time/
+Combat: Legionnaire (2022 Remaster)
+https://www.scottbuckley.com.au/library/legionnaire-2022/
+Boss: Song Of The Forge
+https://www.scottbuckley.com.au/library/song-of-the-forge/
+Sanctuary: Amberlight
+https://www.scottbuckley.com.au/library/amberlight/
+Merchant: Echoes Of Home
+https://www.scottbuckley.com.au/library/echoes-of-home/
+Event: Moonlight
+https://www.scottbuckley.com.au/library/moonlight/
+Victory / rewards: Born Of The Sky
+https://www.scottbuckley.com.au/library/born-of-the-sky/
+
+These are third-party compositions, not original Gilded Fate music.
+Changes: converted for Unity playback, reduced loudness, gentle endpoint fades.
+Tracks play as part of the game, with contextual crossfades and ducking.
+No endorsement by the composer is implied.
+
+VIDEO / STREAMING NOTICE
+Scott Buckley requests attribution in YouTube video descriptions. Missing credits
+may result in a Content ID claim. For trailers/playthroughs, copy the music credit
+above and include the titles used. The Audio settings music slider can mute music
+independently. Do not submit these recordings to Content ID or redistribute them
+as a standalone soundtrack. Preserve these credits when distributing the game.
+
+SOUND EFFECTS
+
+Kenney — CC0 1.0 Universal
+https://creativecommons.org/publicdomain/zero/1.0/
+Impact Sounds: https://kenney.nl/assets/impact-sounds
+Casino Audio: https://kenney.nl/assets/casino-audio
+RPG Audio: https://kenney.nl/assets/rpg-audio
+Interface Sounds: https://kenney.nl/assets/interface-sounds
+
+rubberduck — 80 CC0 RPG SFX — CC0 1.0 Universal
+https://opengameart.org/content/80-cc0-rpg-sfx
+
+artisticdude — RPG Sound Pack — CC0 1.0 Universal
+https://opengameart.org/content/rpg-sound-pack
+
+Changes: trimming, conversion to stereo 44.1 kHz, short fades, conservative
+level matching and high-frequency reduction. Selected recordings are layered;
+some variations have slight timing adjustments. No Slay the Spire assets or
+unlicensed YouTube downloads are included.
+
+Developer provenance: _audio_source/licensed/sources.json contains original
+download URLs and hashes. delivery-manifest.json maps every cue to source files.

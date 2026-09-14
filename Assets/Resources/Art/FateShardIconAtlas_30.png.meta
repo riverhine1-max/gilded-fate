@@ -1,0 +1,546 @@
+fileFormatVersion: 2
+guid: 4416ab0764fc74e489623be0c1b8b216
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 3003588868175029802
+    second: FateShardIconAtlas_30_0
+  - first:
+      213: 5933899041845146287
+    second: FateShardIconAtlas_30_1
+  - first:
+      213: -4919500164949882642
+    second: FateShardIconAtlas_30_2
+  - first:
+      213: -270499243710318052
+    second: FateShardIconAtlas_30_3
+  - first:
+      213: -9005583341299645078
+    second: FateShardIconAtlas_30_4
+  - first:
+      213: -1841847081562815316
+    second: FateShardIconAtlas_30_5
+  - first:
+      213: -1254934526946057342
+    second: FateShardIconAtlas_30_6
+  - first:
+      213: 4733636632903622936
+    second: FateShardIconAtlas_30_7
+  - first:
+      213: -653013928281245984
+    second: FateShardIconAtlas_30_8
+  - first:
+      213: 5601005532245540537
+    second: FateShardIconAtlas_30_9
+  - first:
+      213: -673258339378224373
+    second: FateShardIconAtlas_30_10
+  - first:
+      213: 4862975033434021911
+    second: FateShardIconAtlas_30_11
+  - first:
+      213: -2901668663963327705
+    second: FateShardIconAtlas_30_12
+  - first:
+      213: -3134364237271674891
+    second: FateShardIconAtlas_30_13
+  - first:
+      213: -8392293085713518370
+    second: FateShardIconAtlas_30_14
+  - first:
+      213: -3472432108384309412
+    second: FateShardIconAtlas_30_15
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: FateShardIconAtlas_30_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 487
+        width: 221
+        height: 658
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a26e3e27924eea920800000000000000
+      internalID: 3003588868175029802
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FateShardIconAtlas_30_1
+      rect:
+        serializedVersion: 2
+        x: 250
+        y: 925
+        width: 180
+        height: 220
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fa2f53a4db1795250800000000000000
+      internalID: 5933899041845146287
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FateShardIconAtlas_30_2
+      rect:
+        serializedVersion: 2
+        x: 465
+        y: 924
+        width: 217
+        height: 215
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ee8cfa32aac6abbb0800000000000000
+      internalID: -4919500164949882642
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FateShardIconAtlas_30_3
+      rect:
+        serializedVersion: 2
+        x: 681
+        y: 478
+        width: 227
+        height: 667
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c1a72aafe5efe3cf0800000000000000
+      internalID: -270499243710318052
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FateShardIconAtlas_30_4
+      rect:
+        serializedVersion: 2
+        x: 919
+        y: 15
+        width: 232
+        height: 1130
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a65c8aa2aadb50380800000000000000
+      internalID: -9005583341299645078
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FateShardIconAtlas_30_5
+      rect:
+        serializedVersion: 2
+        x: 1152
+        y: 959
+        width: 11
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca4cbdc76d17076e0800000000000000
+      internalID: -1841847081562815316
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FateShardIconAtlas_30_6
+      rect:
+        serializedVersion: 2
+        x: 1162
+        y: 918
+        width: 201
+        height: 227
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 283e10952b3959ee0800000000000000
+      internalID: -1254934526946057342
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FateShardIconAtlas_30_7
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 749
+        width: 5
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8112fff007141b140800000000000000
+      internalID: 4733636632903622936
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FateShardIconAtlas_30_8
+      rect:
+        serializedVersion: 2
+        x: 236
+        y: 255
+        width: 204
+        height: 670
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e6f963ca4700f6f0800000000000000
+      internalID: -653013928281245984
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FateShardIconAtlas_30_9
+      rect:
+        serializedVersion: 2
+        x: 442
+        y: 21
+        width: 240
+        height: 904
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9be3e7e2bd4cabd40800000000000000
+      internalID: 5601005532245540537
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FateShardIconAtlas_30_10
+      rect:
+        serializedVersion: 2
+        x: 1154
+        y: 33
+        width: 209
+        height: 890
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b03aa4f7b1b18a6f0800000000000000
+      internalID: -673258339378224373
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FateShardIconAtlas_30_11
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 223
+        height: 488
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 710ad6b1702cc7340800000000000000
+      internalID: 4862975033434021911
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FateShardIconAtlas_30_12
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 483
+        width: 9
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 723659c49b33bb7d0800000000000000
+      internalID: -2901668663963327705
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FateShardIconAtlas_30_13
+      rect:
+        serializedVersion: 2
+        x: 687
+        y: 31
+        width: 225
+        height: 457
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ffcbb035508084d0800000000000000
+      internalID: -3134364237271674891
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FateShardIconAtlas_30_14
+      rect:
+        serializedVersion: 2
+        x: 923
+        y: 483
+        width: 14
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ed0341f17e5988b80800000000000000
+      internalID: -8392293085713518370
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FateShardIconAtlas_30_15
+      rect:
+        serializedVersion: 2
+        x: 248
+        y: 23
+        width: 192
+        height: 237
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c5fa71925617fcfc0800000000000000
+      internalID: -3472432108384309412
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      FateShardIconAtlas_30_0: 3003588868175029802
+      FateShardIconAtlas_30_1: 5933899041845146287
+      FateShardIconAtlas_30_10: -673258339378224373
+      FateShardIconAtlas_30_11: 4862975033434021911
+      FateShardIconAtlas_30_12: -2901668663963327705
+      FateShardIconAtlas_30_13: -3134364237271674891
+      FateShardIconAtlas_30_14: -8392293085713518370
+      FateShardIconAtlas_30_15: -3472432108384309412
+      FateShardIconAtlas_30_2: -4919500164949882642
+      FateShardIconAtlas_30_3: -270499243710318052
+      FateShardIconAtlas_30_4: -9005583341299645078
+      FateShardIconAtlas_30_5: -1841847081562815316
+      FateShardIconAtlas_30_6: -1254934526946057342
+      FateShardIconAtlas_30_7: 4733636632903622936
+      FateShardIconAtlas_30_8: -653013928281245984
+      FateShardIconAtlas_30_9: 5601005532245540537
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

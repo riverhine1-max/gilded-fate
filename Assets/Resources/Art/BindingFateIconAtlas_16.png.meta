@@ -1,0 +1,624 @@
+fileFormatVersion: 2
+guid: f05bdb2d24cebe64f857847cb8d8fd34
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 1299987380440598784
+    second: BindingFateIconAtlas_16_0
+  - first:
+      213: -1575666775800261210
+    second: BindingFateIconAtlas_16_1
+  - first:
+      213: -7957192904813606884
+    second: BindingFateIconAtlas_16_2
+  - first:
+      213: -237481030313776727
+    second: BindingFateIconAtlas_16_3
+  - first:
+      213: 9038388608121479514
+    second: BindingFateIconAtlas_16_4
+  - first:
+      213: 5505858314283386708
+    second: BindingFateIconAtlas_16_5
+  - first:
+      213: -8167868490958806509
+    second: BindingFateIconAtlas_16_6
+  - first:
+      213: 2143007300536778944
+    second: BindingFateIconAtlas_16_7
+  - first:
+      213: -6517972901674159874
+    second: BindingFateIconAtlas_16_8
+  - first:
+      213: -4206194031252869719
+    second: BindingFateIconAtlas_16_9
+  - first:
+      213: 1807737759730108885
+    second: BindingFateIconAtlas_16_10
+  - first:
+      213: 3870057758804810900
+    second: BindingFateIconAtlas_16_11
+  - first:
+      213: -6597460032801849653
+    second: BindingFateIconAtlas_16_12
+  - first:
+      213: -6787268142711353658
+    second: BindingFateIconAtlas_16_13
+  - first:
+      213: 4722816327226750280
+    second: BindingFateIconAtlas_16_14
+  - first:
+      213: -470537371145678942
+    second: BindingFateIconAtlas_16_15
+  - first:
+      213: 2841443497579152606
+    second: BindingFateIconAtlas_16_16
+  - first:
+      213: -4179709913283561374
+    second: BindingFateIconAtlas_16_17
+  - first:
+      213: -602215810547824672
+    second: BindingFateIconAtlas_16_18
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: BindingFateIconAtlas_16_0
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 931
+        width: 119
+        height: 300
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 00907a782ab7a0210800000000000000
+      internalID: 1299987380440598784
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BindingFateIconAtlas_16_1
+      rect:
+        serializedVersion: 2
+        x: 172
+        y: 931
+        width: 114
+        height: 300
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6a55a086a6b122ae0800000000000000
+      internalID: -1575666775800261210
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BindingFateIconAtlas_16_2
+      rect:
+        serializedVersion: 2
+        x: 364
+        y: 930
+        width: 223
+        height: 294
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c18835b463f529190800000000000000
+      internalID: -7957192904813606884
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BindingFateIconAtlas_16_3
+      rect:
+        serializedVersion: 2
+        x: 657
+        y: 932
+        width: 221
+        height: 288
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9a9e04bd24c44bcf0800000000000000
+      internalID: -237481030313776727
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BindingFateIconAtlas_16_4
+      rect:
+        serializedVersion: 2
+        x: 936
+        y: 929
+        width: 282
+        height: 290
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a51a4093d8ece6d70800000000000000
+      internalID: 9038388608121479514
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BindingFateIconAtlas_16_5
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 633
+        width: 247
+        height: 272
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4570e7e27fcb86c40800000000000000
+      internalID: 5505858314283386708
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BindingFateIconAtlas_16_6
+      rect:
+        serializedVersion: 2
+        x: 337
+        y: 648
+        width: 261
+        height: 244
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3126b48f1e6e5ae80800000000000000
+      internalID: -8167868490958806509
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BindingFateIconAtlas_16_7
+      rect:
+        serializedVersion: 2
+        x: 628
+        y: 627
+        width: 268
+        height: 277
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0c0409329cd7dbd10800000000000000
+      internalID: 2143007300536778944
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BindingFateIconAtlas_16_8
+      rect:
+        serializedVersion: 2
+        x: 929
+        y: 635
+        width: 276
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ef0f61cfd228b85a0800000000000000
+      internalID: -6517972901674159874
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BindingFateIconAtlas_16_9
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 365
+        width: 245
+        height: 250
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9adedce50d890a5c0800000000000000
+      internalID: -4206194031252869719
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BindingFateIconAtlas_16_10
+      rect:
+        serializedVersion: 2
+        x: 323
+        y: 361
+        width: 278
+        height: 260
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5d906c72aef561910800000000000000
+      internalID: 1807737759730108885
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BindingFateIconAtlas_16_11
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 347
+        width: 245
+        height: 267
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 49c1ec5f60535b530800000000000000
+      internalID: 3870057758804810900
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BindingFateIconAtlas_16_12
+      rect:
+        serializedVersion: 2
+        x: 955
+        y: 347
+        width: 241
+        height: 251
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bce32051e0d1174a0800000000000000
+      internalID: -6597460032801849653
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BindingFateIconAtlas_16_13
+      rect:
+        serializedVersion: 2
+        x: 1151
+        y: 590
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6ce4d5ea597cec1a0800000000000000
+      internalID: -6787268142711353658
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BindingFateIconAtlas_16_14
+      rect:
+        serializedVersion: 2
+        x: 29
+        y: 64
+        width: 263
+        height: 267
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 845f3c35d60da8140800000000000000
+      internalID: 4722816327226750280
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BindingFateIconAtlas_16_15
+      rect:
+        serializedVersion: 2
+        x: 330
+        y: 65
+        width: 265
+        height: 230
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2afc05301c05879f0800000000000000
+      internalID: -470537371145678942
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BindingFateIconAtlas_16_16
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 67
+        width: 262
+        height: 248
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ed48c827ec5de6720800000000000000
+      internalID: 2841443497579152606
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BindingFateIconAtlas_16_17
+      rect:
+        serializedVersion: 2
+        x: 961
+        y: 50
+        width: 224
+        height: 274
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 268fd8a9affaef5c0800000000000000
+      internalID: -4179709913283561374
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BindingFateIconAtlas_16_18
+      rect:
+        serializedVersion: 2
+        x: 1179
+        y: 100
+        width: 7
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e74c2639ef74a7f0800000000000000
+      internalID: -602215810547824672
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      BindingFateIconAtlas_16_0: 1299987380440598784
+      BindingFateIconAtlas_16_1: -1575666775800261210
+      BindingFateIconAtlas_16_10: 1807737759730108885
+      BindingFateIconAtlas_16_11: 3870057758804810900
+      BindingFateIconAtlas_16_12: -6597460032801849653
+      BindingFateIconAtlas_16_13: -6787268142711353658
+      BindingFateIconAtlas_16_14: 4722816327226750280
+      BindingFateIconAtlas_16_15: -470537371145678942
+      BindingFateIconAtlas_16_16: 2841443497579152606
+      BindingFateIconAtlas_16_17: -4179709913283561374
+      BindingFateIconAtlas_16_18: -602215810547824672
+      BindingFateIconAtlas_16_2: -7957192904813606884
+      BindingFateIconAtlas_16_3: -237481030313776727
+      BindingFateIconAtlas_16_4: 9038388608121479514
+      BindingFateIconAtlas_16_5: 5505858314283386708
+      BindingFateIconAtlas_16_6: -8167868490958806509
+      BindingFateIconAtlas_16_7: 2143007300536778944
+      BindingFateIconAtlas_16_8: -6517972901674159874
+      BindingFateIconAtlas_16_9: -4206194031252869719
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

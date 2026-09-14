@@ -1,0 +1,650 @@
+fileFormatVersion: 2
+guid: df316357caf049c4ebaea0cccb49587e
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -6325828629661464383
+    second: major_relics_1_0
+  - first:
+      213: -770387148913793317
+    second: major_relics_1_1
+  - first:
+      213: 6452929256307760760
+    second: major_relics_1_2
+  - first:
+      213: -5732638638851054278
+    second: major_relics_1_3
+  - first:
+      213: -5670281680260819308
+    second: major_relics_1_4
+  - first:
+      213: -1854158083625638031
+    second: major_relics_1_5
+  - first:
+      213: 5521038508961595428
+    second: major_relics_1_6
+  - first:
+      213: 2873557693463848852
+    second: major_relics_1_7
+  - first:
+      213: -6904916060958298317
+    second: major_relics_1_8
+  - first:
+      213: 7977659706690420965
+    second: major_relics_1_9
+  - first:
+      213: 4264775734098448178
+    second: major_relics_1_10
+  - first:
+      213: 5638870710424337238
+    second: major_relics_1_11
+  - first:
+      213: -7783968941487260690
+    second: major_relics_1_12
+  - first:
+      213: -6766276043071040658
+    second: major_relics_1_13
+  - first:
+      213: 5936621193415405902
+    second: major_relics_1_14
+  - first:
+      213: -3245134693924023401
+    second: major_relics_1_15
+  - first:
+      213: -5999771447763789550
+    second: major_relics_1_16
+  - first:
+      213: -7374527273459593693
+    second: major_relics_1_17
+  - first:
+      213: -6312633008774041623
+    second: major_relics_1_18
+  - first:
+      213: 1511883782964287849
+    second: major_relics_1_19
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 0
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 8192
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: major_relics_1_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 594
+        width: 291
+        height: 281
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c8480380642638a0800000000000000
+      internalID: -6325828629661464383
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: major_relics_1_1
+      rect:
+        serializedVersion: 2
+        x: 326
+        y: 602
+        width: 239
+        height: 270
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bd6a77148f80f45f0800000000000000
+      internalID: -770387148913793317
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: major_relics_1_2
+      rect:
+        serializedVersion: 2
+        x: 579
+        y: 592
+        width: 277
+        height: 282
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 87e13f238f86d8950800000000000000
+      internalID: 6452929256307760760
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: major_relics_1_3
+      rect:
+        serializedVersion: 2
+        x: 885
+        y: 844
+        width: 9
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a35aa91e7839170b0800000000000000
+      internalID: -5732638638851054278
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: major_relics_1_4
+      rect:
+        serializedVersion: 2
+        x: 893
+        y: 789
+        width: 31
+        height: 68
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 49616afaadc1f41b0800000000000000
+      internalID: -5670281680260819308
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: major_relics_1_5
+      rect:
+        serializedVersion: 2
+        x: 947
+        y: 593
+        width: 192
+        height: 285
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1772314fb05b446e0800000000000000
+      internalID: -1854158083625638031
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: major_relics_1_6
+      rect:
+        serializedVersion: 2
+        x: 1228
+        y: 594
+        width: 241
+        height: 279
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 42088eda54bae9c40800000000000000
+      internalID: 5521038508961595428
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: major_relics_1_7
+      rect:
+        serializedVersion: 2
+        x: 1494
+        y: 596
+        width: 251
+        height: 261
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 497e0885f7de0e720800000000000000
+      internalID: 2873557693463848852
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: major_relics_1_8
+      rect:
+        serializedVersion: 2
+        x: 570
+        y: 692
+        width: 10
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 33fe0b62d6fcc20a0800000000000000
+      internalID: -6904916060958298317
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: major_relics_1_9
+      rect:
+        serializedVersion: 2
+        x: 30
+        y: 301
+        width: 247
+        height: 285
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5e0ca3c5c3756be60800000000000000
+      internalID: 7977659706690420965
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: major_relics_1_10
+      rect:
+        serializedVersion: 2
+        x: 302
+        y: 300
+        width: 330
+        height: 267
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 23fc4a53fe68f2b30800000000000000
+      internalID: 4264775734098448178
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: major_relics_1_11
+      rect:
+        serializedVersion: 2
+        x: 673
+        y: 303
+        width: 199
+        height: 286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 65b723df80b414e40800000000000000
+      internalID: 5638870710424337238
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: major_relics_1_12
+      rect:
+        serializedVersion: 2
+        x: 901
+        y: 313
+        width: 259
+        height: 243
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eeb7afb2d79c9f390800000000000000
+      internalID: -7783968941487260690
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: major_relics_1_13
+      rect:
+        serializedVersion: 2
+        x: 1177
+        y: 19
+        width: 318
+        height: 566
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e63d380c9cb5912a0800000000000000
+      internalID: -6766276043071040658
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: major_relics_1_14
+      rect:
+        serializedVersion: 2
+        x: 1528
+        y: 303
+        width: 199
+        height: 280
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e41b497958d136250800000000000000
+      internalID: 5936621193415405902
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: major_relics_1_15
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 19
+        width: 285
+        height: 275
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 793dc587037f6f2d0800000000000000
+      internalID: -3245134693924023401
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: major_relics_1_16
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 13
+        width: 304
+        height: 296
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 219128a08a78cbca0800000000000000
+      internalID: -5999771447763789550
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: major_relics_1_17
+      rect:
+        serializedVersion: 2
+        x: 615
+        y: 37
+        width: 239
+        height: 245
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 32ec207448a68a990800000000000000
+      internalID: -7374527273459593693
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: major_relics_1_18
+      rect:
+        serializedVersion: 2
+        x: 879
+        y: 17
+        width: 271
+        height: 279
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ef2e9a69b50568a0800000000000000
+      internalID: -6312633008774041623
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: major_relics_1_19
+      rect:
+        serializedVersion: 2
+        x: 1508
+        y: 10
+        width: 243
+        height: 287
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 96992415a4a4bf410800000000000000
+      internalID: 1511883782964287849
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      major_relics_1_0: -6325828629661464383
+      major_relics_1_1: -770387148913793317
+      major_relics_1_10: 4264775734098448178
+      major_relics_1_11: 5638870710424337238
+      major_relics_1_12: -7783968941487260690
+      major_relics_1_13: -6766276043071040658
+      major_relics_1_14: 5936621193415405902
+      major_relics_1_15: -3245134693924023401
+      major_relics_1_16: -5999771447763789550
+      major_relics_1_17: -7374527273459593693
+      major_relics_1_18: -6312633008774041623
+      major_relics_1_19: 1511883782964287849
+      major_relics_1_2: 6452929256307760760
+      major_relics_1_3: -5732638638851054278
+      major_relics_1_4: -5670281680260819308
+      major_relics_1_5: -1854158083625638031
+      major_relics_1_6: 5521038508961595428
+      major_relics_1_7: 2873557693463848852
+      major_relics_1_8: -6904916060958298317
+      major_relics_1_9: 7977659706690420965
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
