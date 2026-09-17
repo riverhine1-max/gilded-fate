@@ -145,6 +145,7 @@ namespace GildedFate.UI
             if(capture=="audio-checks"){combatTestInput=true;PrepareCombatCheck("strike",5);}
             else if(capture=="credits")screen=ScreenMode.Credits;
             else if(ConfigureRunStartCapture(capture)){}
+            else if(ConfigureHexerVideoCapture(capture)){}
             else if(capture=="xbox-input"){ConfigureShardCapture("group-four");}
             else if(ConfigureStatusResonanceCapture(capture)){}
             else if(ConfigureScreenPassCapture(capture)){}
@@ -190,6 +191,8 @@ namespace GildedFate.UI
             var timeout=Time.realtimeSinceStartup+20f;
             while(!UnityEngine.Rendering.SplashScreen.isFinished&&Time.realtimeSinceStartup<timeout)yield return null;
             if(CommandValue("-gfCapture")=="combat-input")yield return RunCombatInteractionChecks();
+            if(CommandValue("-gfCapture")=="hexer-video-input")yield return RunHexerVideoChecks();
+            if(CommandValue("-gfCapture")=="hexer-video-attack")yield return PrepareHexerVideoCapture();
             if(CommandValue("-gfCapture")=="run-start-input")yield return RunStartTransitionChecks();
             if(CommandValue("-gfCapture")=="expansion-input")yield return RunExpansionInteractionChecks();
             if(CommandValue("-gfCapture")=="major-input")yield return RunMajorInteractionChecks();
@@ -259,6 +262,7 @@ namespace GildedFate.UI
 
         private void Update()
         {
+            UpdateHexerVideos();
             if(runStartActive){if(!runStartCaptureFrozen)AdvanceRunStart(Time.unscaledDeltaTime);return;}
             UpdatePointerNavigationMode();
             if(routeInspectionOpen){UpdateRouteInspectionInput();return;}

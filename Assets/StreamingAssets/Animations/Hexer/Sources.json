@@ -1,0 +1,561 @@
+{
+  "date": "2026-09-16",
+  "clips": [
+    {
+      "index": 1,
+      "name": "CombatIdle",
+      "filename": "01_CombatIdle.mp4",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260915_190302_189a706f-38cd-4249-9162-2f5b82463031.mp4",
+      "sha256": "ca45825b73d48b6249c2a8482029b3f18398d8fdc202f8e00c35a58f7a2022dc",
+      "bytes": 8661681,
+      "probe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_type": "video",
+            "width": 960,
+            "height": 960
+          }
+        ],
+        "format": {
+          "duration": "4.000000"
+        }
+      },
+      "runtimeFile": "01_CombatIdle.mp4",
+      "runtimeFrames": 96,
+      "runtimeBytes": 1551051,
+      "runtimeSha256": "ef0afa1a4733dfbbabb558a82cd08d00da1ad6a23818f2fc71c2293902f7187f"
+    },
+    {
+      "index": 2,
+      "name": "BasicMagicalAttack",
+      "filename": "02_BasicMagicalAttack.mp4",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260915_190601_cda5f037-d90e-41eb-a4b7-470c45b0da96.mp4",
+      "sha256": "8263f511e2b66046e50843c904d649da3d52fa499aab88cca08825f907780e40",
+      "bytes": 9140523,
+      "probe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_type": "video",
+            "width": 960,
+            "height": 960
+          }
+        ],
+        "format": {
+          "duration": "4.000000"
+        }
+      },
+      "runtimeFile": "02_BasicMagicalAttack.mp4",
+      "runtimeFrames": 96,
+      "runtimeBytes": 1589905,
+      "runtimeSha256": "deef9b328a432086f07a92852a79cee448f1284fd6f3cdd8df50b3fdf3fd6534"
+    },
+    {
+      "index": 3,
+      "name": "AlternateMagicalAttack",
+      "filename": "03_AlternateMagicalAttack.mp4",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260916_150746_3b316693-ec8e-402c-87f1-f0f9ea1abdc0.mp4",
+      "sha256": "8cb637de543c59ab6f40da4e06347de1a013c7dfd5b0bbccbcea3d2ba90b580a",
+      "bytes": 7571845,
+      "probe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_type": "video",
+            "width": 960,
+            "height": 960
+          }
+        ],
+        "format": {
+          "duration": "3.000000"
+        }
+      },
+      "runtimeFile": "03_AlternateMagicalAttack.mp4",
+      "runtimeFrames": 72,
+      "runtimeBytes": 1401367,
+      "runtimeSha256": "e10a0b00c6b2e230397a1fe4736a6ae8b527ea064fab50e9eb73bd2b1de60bf3"
+    },
+    {
+      "index": 4,
+      "name": "PowerfulSigilAttack",
+      "filename": "04_PowerfulSigilAttack.mp4",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260916_153803_cf4c43e2-8ff4-4dd6-805f-ae5826685068.mp4",
+      "sha256": "d295030790781bc81bee14d7a817006f9d5592d8f4e070d5d5b3036e40f70e01",
+      "bytes": 7523890,
+      "probe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_type": "video",
+            "width": 960,
+            "height": 960
+          }
+        ],
+        "format": {
+          "duration": "3.000000"
+        }
+      },
+      "runtimeFile": "04_PowerfulSigilAttack.mp4",
+      "runtimeFrames": 72,
+      "runtimeBytes": 1340135,
+      "runtimeSha256": "1e7b475f31038f6ae13d6da3a7fb728c1601b80a610cf94db8712eae2dffacbd"
+    },
+    {
+      "index": 5,
+      "name": "FinisherAttack",
+      "filename": "05_FinisherAttack.mp4",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260916_150746_6a6e0a9d-2b37-4a25-8f71-8bc02bce30bc.mp4",
+      "sha256": "bd4cf90bcb0cfb2d8562a5faafc7c0f5fbaac059ad2425bf7739e83871f87648",
+      "bytes": 10637529,
+      "probe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_type": "video",
+            "width": 960,
+            "height": 960
+          }
+        ],
+        "format": {
+          "duration": "4.000000"
+        }
+      },
+      "runtimeFile": "05_FinisherAttack.mp4",
+      "runtimeFrames": 96,
+      "runtimeBytes": 1956074,
+      "runtimeSha256": "4e9c888c21f859afad470363e95509a0d57962d7d30e3d4893f9333744c7f487"
+    },
+    {
+      "index": 6,
+      "name": "BasicDefensiveSkill",
+      "filename": "06_BasicDefensiveSkill.mp4",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260916_150746_f3931cc8-24e2-4fc7-9142-fcadb5297f51.mp4",
+      "sha256": "287e4601dbb4faefc1a37e4d61845e85c22af7b612839882d57b5a1a85ef4afc",
+      "bytes": 9501062,
+      "probe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_type": "video",
+            "width": 960,
+            "height": 960
+          }
+        ],
+        "format": {
+          "duration": "3.000000"
+        }
+      },
+      "runtimeFile": "06_BasicDefensiveSkill.mp4",
+      "runtimeFrames": 72,
+      "runtimeBytes": 1681239,
+      "runtimeSha256": "2610b83a05ad5cb884db82490fe707ed0ca39855373f70b2ec0c441c05ff0577"
+    },
+    {
+      "index": 7,
+      "name": "BarrierImpact",
+      "filename": "07_BarrierImpact.mp4",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260916_150746_f85d3c37-3ff5-46a1-a91a-369d628b54b3.mp4",
+      "sha256": "ed41fbffacb944e55a5dd7ae3e505217b5a7f3042067a200a258face8957717a",
+      "bytes": 8111834,
+      "probe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_type": "video",
+            "width": 960,
+            "height": 960
+          }
+        ],
+        "format": {
+          "duration": "3.000000"
+        }
+      },
+      "runtimeFile": "07_BarrierImpact.mp4",
+      "runtimeFrames": 72,
+      "runtimeBytes": 1559241,
+      "runtimeSha256": "ad7cacbfe3970668273ae6e401868d348226a968cfdd7d43d5e031eaebc3c39c"
+    },
+    {
+      "index": 8,
+      "name": "MajorDefensiveSkill",
+      "filename": "08_MajorDefensiveSkill.mp4",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260916_150746_1b4a4efa-9ca8-488c-b736-17675312c39d.mp4",
+      "sha256": "e9b57e2caa91b948176f9ee561680957973ed434b50b190bb3766e39f695343d",
+      "bytes": 9736699,
+      "probe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_type": "video",
+            "width": 960,
+            "height": 960
+          }
+        ],
+        "format": {
+          "duration": "3.000000"
+        }
+      },
+      "runtimeFile": "08_MajorDefensiveSkill.mp4",
+      "runtimeFrames": 72,
+      "runtimeBytes": 1869853,
+      "runtimeSha256": "cf4c8758b93d83621b18d50878c7bbea85f569adb7a461df46d0603ef95c94c0"
+    },
+    {
+      "index": 9,
+      "name": "LightHitReaction",
+      "filename": "09_LightHitReaction.mp4",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260916_154220_1165082a-b5c8-499c-a4ed-32de93fce8ba.mp4",
+      "sha256": "a8c617eb0aa2475bb3df2d4dbb8610d6bd44214642d8acb5ca7bd929a817f074",
+      "bytes": 8006390,
+      "probe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_type": "video",
+            "width": 960,
+            "height": 960
+          }
+        ],
+        "format": {
+          "duration": "3.000000"
+        }
+      },
+      "runtimeFile": "09_LightHitReaction.mp4",
+      "runtimeFrames": 72,
+      "runtimeBytes": 1422546,
+      "runtimeSha256": "762afe47c8dcc5f4233ed55530fed48ead2c6b3d41d7f3520d7c4c683d4b228d"
+    },
+    {
+      "index": 10,
+      "name": "HeavyHitStagger",
+      "filename": "10_HeavyHitStagger.mp4",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260916_153803_a4d3c714-71d2-4a87-81a1-73eb31ea5907.mp4",
+      "sha256": "7085760a0787e62a0e129277dc17b9d2e4107a7613b7371297313ce22e4efa11",
+      "bytes": 8360107,
+      "probe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_type": "video",
+            "width": 960,
+            "height": 960
+          }
+        ],
+        "format": {
+          "duration": "3.000000"
+        }
+      },
+      "runtimeFile": "10_HeavyHitStagger.mp4",
+      "runtimeFrames": 72,
+      "runtimeBytes": 1432904,
+      "runtimeSha256": "6fcbd73fb7c4965821f47321c016e8ba39c25c5c62cadc8f3f70b3f5a2dbba68"
+    },
+    {
+      "index": 11,
+      "name": "FirstRitual",
+      "filename": "11_FirstRitual.mp4",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260915_190302_6499dae0-ac25-4638-bef9-5a379f4b914f.mp4",
+      "sha256": "57f5cabf98fa402755944e02632fe5c040ee1b8edca50a8af204b5e54a48d857",
+      "bytes": 10120340,
+      "probe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_type": "video",
+            "width": 960,
+            "height": 960
+          }
+        ],
+        "format": {
+          "duration": "4.000000"
+        }
+      },
+      "runtimeFile": "11_FirstRitual.mp4",
+      "runtimeFrames": 96,
+      "runtimeBytes": 1924935,
+      "runtimeSha256": "f28346b0daf8cf36d6df169ea43d821019020be65a307639847179fbe2922b37"
+    },
+    {
+      "index": 12,
+      "name": "SigilSelected",
+      "filename": "12_SigilSelected.mp4",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260915_190302_cfa7c60e-b44b-4947-9c7a-9f4b6437669a.mp4",
+      "sha256": "8111f1bab20f50ffe2948f272a699e5c8affb1942c84038351098b937f0699cf",
+      "bytes": 9248657,
+      "probe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_type": "video",
+            "width": 960,
+            "height": 960
+          }
+        ],
+        "format": {
+          "duration": "4.000000"
+        }
+      },
+      "runtimeFile": "12_SigilSelected.mp4",
+      "runtimeFrames": 96,
+      "runtimeBytes": 1775013,
+      "runtimeSha256": "7135d17299e4866f5e9a3a1494fbe472692cd6d3aba6c7ea5d8a90aef6209cf0"
+    },
+    {
+      "index": 13,
+      "name": "NormalSigilTrigger",
+      "filename": "13_NormalSigilTrigger.mp4",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260916_153803_b6d777d7-516a-4b43-9c8b-4bb43de5771b.mp4",
+      "sha256": "75b54db7aca6f781d0c61c34ffd12fd6ed076df7111e1ff19beff8cd757cdf0a",
+      "bytes": 4615769,
+      "probe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_type": "video",
+            "width": 960,
+            "height": 960
+          }
+        ],
+        "format": {
+          "duration": "3.000000"
+        }
+      },
+      "runtimeFile": "13_NormalSigilTrigger.mp4",
+      "runtimeFrames": 72,
+      "runtimeBytes": 624549,
+      "runtimeSha256": "17b46a65a970f8844c79f4f4e96a1cccebc07ea85003e791ab69a8836e5aafe4"
+    },
+    {
+      "index": 14,
+      "name": "OverflowTrigger",
+      "filename": "14_OverflowTrigger.mp4",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260915_190302_35de972b-5d98-4b36-876e-9b48bbca4432.mp4",
+      "sha256": "86da7171202033a8d0515f168f13e6a1292a507cdadfd56cb06a469898200487",
+      "bytes": 7392949,
+      "probe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_type": "video",
+            "width": 960,
+            "height": 960
+          }
+        ],
+        "format": {
+          "duration": "4.000000"
+        }
+      },
+      "runtimeFile": "14_OverflowTrigger.mp4",
+      "runtimeFrames": 96,
+      "runtimeBytes": 1305369,
+      "runtimeSha256": "c553e9dc961ebbd56eeca6918bec814b04b8c0c989493f1d322abcaeae2cf585"
+    },
+    {
+      "index": 15,
+      "name": "EchoTrigger",
+      "filename": "15_EchoTrigger.mp4",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260916_154220_da926aa0-9934-4f13-9733-b95d35380b46.mp4",
+      "sha256": "b25dc704845c5ca81b0d6a4d1bdb7ec865cf46c7b804570548874d0dc916989c",
+      "bytes": 6188956,
+      "probe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_type": "video",
+            "width": 960,
+            "height": 960
+          }
+        ],
+        "format": {
+          "duration": "3.000000"
+        }
+      },
+      "runtimeFile": "15_EchoTrigger.mp4",
+      "runtimeFrames": 72,
+      "runtimeBytes": 1161279,
+      "runtimeSha256": "bd75f46646cd3c2c707bdb205e6d8dfe8339f8e0ea3b46f810d2900794fd5a5a"
+    },
+    {
+      "index": 16,
+      "name": "AspectActivation",
+      "filename": "16_AspectActivation.mp4",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260916_154535_022c7c34-8f71-4f7f-a707-34ef2cca6554.mp4",
+      "sha256": "c6d3801b7e16519d50d0843319d54b388502e0e0ca6cb992d5d05c4458df4bfc",
+      "bytes": 8256697,
+      "probe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_type": "video",
+            "width": 960,
+            "height": 960
+          }
+        ],
+        "format": {
+          "duration": "3.000000"
+        }
+      },
+      "runtimeFile": "16_AspectActivation.mp4",
+      "runtimeFrames": 72,
+      "runtimeBytes": 1560727,
+      "runtimeSha256": "95ce1dd885a708a548aee2afaf516a14be8683e5c32d76ad6b2afbaea2f88735"
+    },
+    {
+      "index": 17,
+      "name": "BuffPositiveEffect",
+      "filename": "17_BuffPositiveEffect.mp4",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260916_154536_c8d302c4-c129-4838-a724-bcf5aec4220a.mp4",
+      "sha256": "46114858a1167541de8a7b4cbe6da931e0dc3f8d41db5f85f6bb0891d7bcd618",
+      "bytes": 7140921,
+      "probe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_type": "video",
+            "width": 960,
+            "height": 960
+          }
+        ],
+        "format": {
+          "duration": "3.000000"
+        }
+      },
+      "runtimeFile": "17_BuffPositiveEffect.mp4",
+      "runtimeFrames": 72,
+      "runtimeBytes": 1292314,
+      "runtimeSha256": "2f9f2efd9a7b0739fbf9fbb71368a41ef9217fa0b07cccbc1c384aef2a756e09"
+    },
+    {
+      "index": 18,
+      "name": "DrawKnowledgeResponse",
+      "filename": "18_DrawKnowledgeResponse.mp4",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260916_154535_623ed786-dfa3-4d32-ba28-9842985ddb95.mp4",
+      "sha256": "56682ad6a2d25034ef763d23e74a16eda3460817a21a669abf1a6d8b93ab5d8b",
+      "bytes": 8176813,
+      "probe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_type": "video",
+            "width": 960,
+            "height": 960
+          }
+        ],
+        "format": {
+          "duration": "3.000000"
+        }
+      },
+      "runtimeFile": "18_DrawKnowledgeResponse.mp4",
+      "runtimeFrames": 72,
+      "runtimeBytes": 1405348,
+      "runtimeSha256": "b62a40d036d229603536d17a6be85b82440edc5d9042abb759d063e410777b3c"
+    },
+    {
+      "index": 19,
+      "name": "Dissipate",
+      "filename": "19_Dissipate.mp4",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260916_154754_b5b32213-c502-4602-b8aa-805f6cde4da9.mp4",
+      "sha256": "24135f996ef0b8d7f6c790152cdd480e26d6a430057f463f74b0d9706ecaf510",
+      "bytes": 6248984,
+      "probe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_type": "video",
+            "width": 960,
+            "height": 960
+          }
+        ],
+        "format": {
+          "duration": "3.000000"
+        }
+      },
+      "runtimeFile": "19_Dissipate.mp4",
+      "runtimeFrames": 72,
+      "runtimeBytes": 1252393,
+      "runtimeSha256": "ab09a3bfc399c9d858d47d8bfbe593a167005e2c2c9d003fe1f91e2d021ff51a"
+    },
+    {
+      "index": 20,
+      "name": "LowHealthIdle",
+      "filename": "20_LowHealthIdle.mp4",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260916_154754_5517cb6d-4441-4f05-be90-b13b03875baf.mp4",
+      "sha256": "2e7668364cf013d1bfa2afb386b5e0187f6a9c3d857e571c1ff69c7cf5c43370",
+      "bytes": 7102263,
+      "probe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_type": "video",
+            "width": 960,
+            "height": 960
+          }
+        ],
+        "format": {
+          "duration": "3.000000"
+        }
+      },
+      "runtimeFile": "20_LowHealthIdle.mp4",
+      "runtimeFrames": 72,
+      "runtimeBytes": 1308500,
+      "runtimeSha256": "47f122f1c94a7a49ad4f37c0044e6abfccacf6ddf42a77324a9b771a18035ddf"
+    },
+    {
+      "index": 21,
+      "name": "Defeat",
+      "filename": "21_Defeat.mp4",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260916_154220_f8c09d2c-ec79-4962-a974-f7cb4edb5092.mp4",
+      "sha256": "871eff1f097370ff1c16aaf04d0581096a65e2360130b05ed6db48ee892f3f15",
+      "bytes": 9052565,
+      "probe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_type": "video",
+            "width": 960,
+            "height": 960
+          }
+        ],
+        "format": {
+          "duration": "4.000000"
+        }
+      },
+      "runtimeFile": "21_Defeat.mp4",
+      "runtimeFrames": 96,
+      "runtimeBytes": 1557545,
+      "runtimeSha256": "6e306b6a47f3f690e03fc8de7c200b20f46ee6a6afbbd73f45bc918814e54442"
+    },
+    {
+      "index": 22,
+      "name": "ReviveRecovery",
+      "filename": "22_ReviveRecovery.mp4",
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260916_154754_fcb8e635-76fa-4921-8f9d-6e209cffe913.mp4",
+      "sha256": "d4dc0472397f57a8091050da5c1d0b21ec3c565bd9f3749b0b93fff585a19d05",
+      "bytes": 8631679,
+      "probe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_type": "video",
+            "width": 960,
+            "height": 960
+          }
+        ],
+        "format": {
+          "duration": "4.000000"
+        }
+      },
+      "runtimeFile": "22_ReviveRecovery.mp4",
+      "runtimeFrames": 96,
+      "runtimeBytes": 1751677,
+      "runtimeSha256": "c9f2ef9cccf3b08982fbc2c2a3962cdabf2ca78109a404afb55e4196ba5a178d"
+    }
+  ],
+  "creditsThisPass": 94.5,
+  "creditsRemaining": 0.5,
+  "unityIntegrated": false,
+  "alphaLayout": "Left half RGB, right half grayscale alpha; 512px square at 24fps",
+  "matting": "rembg u2netp + violet-effect preservation; original references retained separately",
+  "runtimeOnly": true
+}

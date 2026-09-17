@@ -14,6 +14,12 @@ This repository contains the current live Unity project snapshot, including its 
 
 The game supports mouse/keyboard and Xbox controller input. Start a new run to see the chosen character's brief transition; Continue does not replay it.
 
+## Hexer combat animation set
+
+Hexer has 22 video-based animations connected to combat actions, Sigils, card feedback, and damage reactions. The runtime videos include an alpha matte and need Git LFS just like the artwork. Missing video files or Reduce Motion use the original illustrated portrait fallback. Vanguard and Reaper presentation is unchanged.
+
+Preview every clip inside Unity through **Gilded Fate > Animation Preview > Hexer**. This panel does not change a run or save. Runtime MP4s intentionally contain RGB and alpha side-by-side; the game reconstructs the cutout. Format, mappings, and source provenance are documented in `Assets/StreamingAssets/Animations/Hexer/README.md` and `Sources.json`.
+
 ## Build a Windows playtest
 
 Open Unity's Build Profiles, select Windows, include `Assets/Scenes/SampleScene.unity`, and build into a local `Builds` folder. Keep the executable and all generated runtime files together when sharing a build.

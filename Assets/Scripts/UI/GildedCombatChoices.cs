@@ -32,7 +32,7 @@ namespace GildedFate.UI
             if(screen==ScreenMode.Combat)SaveCombatCheckpoint();
             ProfileService.Save(profile);
         }
-        private void OnDestroy(){DisposeRunStartSurface();DisposeCombat3D();}
+        private void OnDestroy(){DisposeHexerVideos();DisposeRunStartSurface();DisposeCombat3D();}
         private bool SaveCombatAndReturnToMenu()
         {
             if(!SaveCombatCheckpoint())return false;
