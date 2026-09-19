@@ -146,6 +146,8 @@ namespace GildedFate.UI
             else if(capture=="credits")screen=ScreenMode.Credits;
             else if(ConfigureRunStartCapture(capture)){}
             else if(ConfigureHexerVideoCapture(capture)){}
+            else if(ConfigureVanguardVideoCapture(capture)){}
+            else if(ConfigureReaperVideoCapture(capture)){}
             else if(capture=="xbox-input"){ConfigureShardCapture("group-four");}
             else if(ConfigureStatusResonanceCapture(capture)){}
             else if(ConfigureScreenPassCapture(capture)){}
@@ -192,6 +194,10 @@ namespace GildedFate.UI
             while(!UnityEngine.Rendering.SplashScreen.isFinished&&Time.realtimeSinceStartup<timeout)yield return null;
             if(CommandValue("-gfCapture")=="combat-input")yield return RunCombatInteractionChecks();
             if(CommandValue("-gfCapture")=="hexer-video-input")yield return RunHexerVideoChecks();
+            if(CommandValue("-gfCapture")=="vanguard-video-input")yield return RunVanguardVideoChecks();
+            if(CommandValue("-gfCapture")=="reaper-video-input")yield return RunReaperVideoChecks();
+            if(CommandValue("-gfCapture")=="reaper-video-attack")yield return PrepareReaperVideoCapture();
+            if(CommandValue("-gfCapture")=="vanguard-video-attack")yield return PrepareVanguardVideoCapture();
             if(CommandValue("-gfCapture")=="hexer-video-attack")yield return PrepareHexerVideoCapture();
             if(CommandValue("-gfCapture")=="run-start-input")yield return RunStartTransitionChecks();
             if(CommandValue("-gfCapture")=="expansion-input")yield return RunExpansionInteractionChecks();
@@ -262,7 +268,7 @@ namespace GildedFate.UI
 
         private void Update()
         {
-            UpdateHexerVideos();
+            UpdateHexerVideos();UpdateVanguardVideos();UpdateReaperVideos();
             if(runStartActive){if(!runStartCaptureFrozen)AdvanceRunStart(Time.unscaledDeltaTime);return;}
             UpdatePointerNavigationMode();
             if(routeInspectionOpen){UpdateRouteInspectionInput();return;}

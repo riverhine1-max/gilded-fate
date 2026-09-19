@@ -152,7 +152,7 @@ namespace GildedFate.UI
 
         private void ResetCombatPresentation()
         {
-            ResetHexerVideos();
+            ResetHexerVideos();ResetVanguardVideos();ResetReaperVideos();
             GameAudio.ClearCombat();
             ResetPlayerStatusPlayback();
             if(combatSequence!=null)StopCoroutine(combatSequence);
@@ -407,7 +407,7 @@ namespace GildedFate.UI
             var travel=AnimationSeconds(profile.reduceMotion?.09f:important?.32f:.23f);
             var impact=CardImpactPoint(card);
             MoveCard(card,view.position,impact,travel,view.scale,power?.85f:.91f,view.angle,0);
-            PlayHexerCard(card,travel);
+            PlayHexerCard(card,travel);PlayVanguardCard(card,travel);PlayReaperCard(card,travel);
             playerActionKind=card.effect;playerAction=1;Sfx(combat.RequiresEnemyTarget(card)?AttackSound(card):SoundCue.CardPickup,combatSound:true);
             yield return new WaitForSecondsRealtime(travel);
             while(combatPauseOpen)yield return null;
@@ -486,6 +486,7 @@ namespace GildedFate.UI
             var hitGap=Mathf.Max(.09f,AnimationSeconds(CombatHitTiming.DefaultHitGap));var hitOffsets=CombatHitTiming.PresentationOffsets(facts,hitGap);var factIndex=0;
             ScheduleRetaliateReturns(facts,hitOffsets,now);
             ScheduleHexerVideoReceipts(facts,hitOffsets,now);
+            ScheduleReaperVideoReceipts(facts,hitOffsets,now);
             foreach(var fact in facts)
             {
                 var hitTime=hitOffsets[factIndex++];
@@ -889,7 +890,7 @@ namespace GildedFate.UI
         {
             var now=Time.unscaledTime;var motion=profile.reduceMotion?0:1;
             var hero=HeroPortraitRect;var foe=EnemyPortraitRect;
-            var videoHero=DrawHexerVideo(hero);
+            var videoHero=DrawHexerVideo(hero)||DrawVanguardVideo(hero)||DrawReaperVideo(hero);
             var breathe=1+Mathf.Sin(shimmer*1.65f)*.008f*motion;
             var attack=playerActionKind==EffectKind.Damage?Mathf.Sin((1-playerAction)*Mathf.PI)*playerAction:0;
             hero.x+=attack*38*motion+Mathf.Sin(shimmer*58)*heroHit*5*motion;

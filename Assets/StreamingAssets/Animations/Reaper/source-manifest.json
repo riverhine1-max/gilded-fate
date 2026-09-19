@@ -1,0 +1,322 @@
+[
+  {
+    "index": 1,
+    "name": "CombatIdle",
+    "duration": 4.0,
+    "sourceIndex": 1,
+    "job_id": "577e6c60-0a98-4fcd-8e2f-998ddef8cb73",
+    "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260918_185322_577e6c60-0a98-4fcd-8e2f-998ddef8cb73.mp4",
+    "id": "577e6c60-0a98-4fcd-8e2f-998ddef8cb73",
+    "encodingVersion": 2,
+    "outputIndex": 1,
+    "outputName": "CombatIdle",
+    "frames": 96,
+    "packedSize": [
+      1024,
+      512
+    ],
+    "sourceSha256": "d9548b7d92255e3e20f2b8aa4d3da3ef6f38c1c6f4dd74f74de24c43484c6b87",
+    "runtimeSha256": "e013c6f22851bb9db69a4405d0ece28df209a1300974c0eb4e0caf0b27b0c9ce",
+    "runtimeBytes": 1884764
+  },
+  {
+    "index": 2,
+    "name": "BasicScytheAttack",
+    "duration": 3.0,
+    "sourceIndex": 2,
+    "job_id": "ec74bca2-c8f2-49d2-9231-7feaff8e7ae0",
+    "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260918_185544_ec74bca2-c8f2-49d2-9231-7feaff8e7ae0.mp4",
+    "id": "ec74bca2-c8f2-49d2-9231-7feaff8e7ae0",
+    "encodingVersion": 2,
+    "outputIndex": 2,
+    "outputName": "BasicScytheAttack",
+    "frames": 72,
+    "packedSize": [
+      1024,
+      512
+    ],
+    "sourceSha256": "004665c5df81addae36b564b10afc22063372a86d2e5fa6e0ce305d7c4918355",
+    "runtimeSha256": "b3107c2126417fbca12671ceef0107bedf90d881476b5da32a10520ed6502653",
+    "runtimeBytes": 1558546
+  },
+  {
+    "index": 3,
+    "name": "AlternateScytheAttack",
+    "duration": 3.0,
+    "sourceIndex": 3,
+    "job_id": "1ee57364-245a-419e-93d4-76326f09a5e6",
+    "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260918_185625_1ee57364-245a-419e-93d4-76326f09a5e6.mp4",
+    "id": "1ee57364-245a-419e-93d4-76326f09a5e6",
+    "encodingVersion": 2,
+    "outputIndex": 3,
+    "outputName": "AlternateScytheAttack",
+    "frames": 72,
+    "packedSize": [
+      1024,
+      512
+    ],
+    "sourceSha256": "fe6492be4d25692e6e93c09005b22daa843448e5bddda970f6373192df5071a8",
+    "runtimeSha256": "c6f1eb7a09e4505d7d02d65318452ecef446f65cadea913ac66fe25939c42ef8",
+    "runtimeBytes": 1763831
+  },
+  {
+    "index": 4,
+    "name": "HeavyAttack",
+    "duration": 4.0,
+    "sourceIndex": 4,
+    "job_id": "92561612-067d-4cc7-9772-874688fa2e73",
+    "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260918_185906_92561612-067d-4cc7-9772-874688fa2e73.mp4",
+    "id": "92561612-067d-4cc7-9772-874688fa2e73",
+    "encodingVersion": 2,
+    "outputIndex": 4,
+    "outputName": "HeavyAttack",
+    "frames": 96,
+    "packedSize": [
+      1024,
+      512
+    ],
+    "sourceSha256": "1dcccfc1c3bd51d3874c546d92c112771659f196ff1a90fc8cd850be9b32652a",
+    "runtimeSha256": "94d94426843ce9e6f833f5ca353cd99f394deaa1b0e1d8fdc90465cfe5f1f578",
+    "runtimeBytes": 2411356
+  },
+  {
+    "index": 5,
+    "name": "MajorFinisherAttack",
+    "duration": 4.0,
+    "sourceIndex": 5,
+    "job_id": "9cb50100-265e-40b1-a3dc-ffdfe01899a3",
+    "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260918_190032_9cb50100-265e-40b1-a3dc-ffdfe01899a3.mp4",
+    "id": "9cb50100-265e-40b1-a3dc-ffdfe01899a3",
+    "encodingVersion": 2,
+    "outputIndex": 5,
+    "outputName": "MajorFinisherAttack",
+    "frames": 96,
+    "packedSize": [
+      1024,
+      512
+    ],
+    "sourceSha256": "b0e06c8f6b4703c4f62dd13e25c0906627a2294870de8e8f6995bfc90150c3af",
+    "runtimeSha256": "68e5e92b339dd68af1108943e1bb44a266918a1e896373bf4457be2259dc1871",
+    "runtimeBytes": 2141651
+  },
+  {
+    "index": 6,
+    "name": "DefensiveAnimation",
+    "duration": 3.0,
+    "sourceIndex": 6,
+    "job_id": "2237f5c2-c030-4325-9b1d-ba66f56cef57",
+    "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260918_190140_2237f5c2-c030-4325-9b1d-ba66f56cef57.mp4",
+    "id": "2237f5c2-c030-4325-9b1d-ba66f56cef57",
+    "encodingVersion": 2,
+    "outputIndex": 6,
+    "outputName": "DefensiveAnimation",
+    "frames": 72,
+    "packedSize": [
+      1024,
+      512
+    ],
+    "sourceSha256": "0ddaddaf37debc89da2d2d41b23947d92e7d85f9b4e056346938e3f0447a1e33",
+    "runtimeSha256": "8f834289e5b2f0db86b695299239708e2d089852d1e751e8ade89b33cc58c871",
+    "runtimeBytes": 1621674
+  },
+  {
+    "index": 7,
+    "name": "SoulGeneration",
+    "duration": 3.0,
+    "sourceIndex": 7,
+    "job_id": "55bfce24-682a-400d-a1fb-f2f39ae39cf5",
+    "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260918_185248_55bfce24-682a-400d-a1fb-f2f39ae39cf5.mp4",
+    "id": "55bfce24-682a-400d-a1fb-f2f39ae39cf5",
+    "encodingVersion": 2,
+    "outputIndex": 7,
+    "outputName": "SoulGeneration",
+    "frames": 72,
+    "packedSize": [
+      1024,
+      512
+    ],
+    "sourceSha256": "0a8e523acf90b1e601481e057dfbdedcb1be57957fc1b29b2928aaa46999d7c2",
+    "runtimeSha256": "038f1707ebce80aacbd89d0f4c1ceba049220d698d725368614282c5d5cdc21d",
+    "runtimeBytes": 1126492
+  },
+  {
+    "index": 8,
+    "name": "SoulConsumption",
+    "duration": 3.0,
+    "sourceIndex": 18,
+    "job_id": "7ce87b91-3450-4fb3-93b5-f7fc5702d106",
+    "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260918_200050_7ce87b91-3450-4fb3-93b5-f7fc5702d106.mp4",
+    "id": "7ce87b91-3450-4fb3-93b5-f7fc5702d106",
+    "encodingVersion": 2,
+    "outputIndex": 8,
+    "outputName": "SoulConsumption",
+    "frames": 72,
+    "packedSize": [
+      1024,
+      512
+    ],
+    "sourceSha256": "350af40ee712ec32923b86fdd1e4a28f52cf222961f6acb3be05164b78942fc0",
+    "runtimeSha256": "282d5a565ea748dfb4e9ef0f6bfd511197c2687629d9502de6eb68d546f41d1d",
+    "runtimeBytes": 591925
+  },
+  {
+    "index": 9,
+    "name": "GraveMarkInteraction",
+    "duration": 3.0,
+    "sourceIndex": 9,
+    "job_id": "5657cd82-9cc9-4947-aa8e-e4fc6540b121",
+    "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260918_190350_5657cd82-9cc9-4947-aa8e-e4fc6540b121.mp4",
+    "id": "5657cd82-9cc9-4947-aa8e-e4fc6540b121",
+    "encodingVersion": 2,
+    "outputIndex": 9,
+    "outputName": "GraveMarkInteraction",
+    "frames": 72,
+    "packedSize": [
+      1024,
+      512
+    ],
+    "sourceSha256": "100925293db4f49e0aee7704f843692d21f967bc53a48a861a535409aefcc244",
+    "runtimeSha256": "4546c5f59ac68201433f4a6887d5605fb47bbbe257ca599ccdf80454117023dd",
+    "runtimeBytes": 1606082
+  },
+  {
+    "index": 10,
+    "name": "AspectActivation",
+    "duration": 3.0,
+    "sourceIndex": 10,
+    "job_id": "1f865276-2e4d-45af-9414-01ce0c95e0f2",
+    "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260918_190553_1f865276-2e4d-45af-9414-01ce0c95e0f2.mp4",
+    "id": "1f865276-2e4d-45af-9414-01ce0c95e0f2",
+    "encodingVersion": 2,
+    "outputIndex": 10,
+    "outputName": "AspectActivation",
+    "frames": 72,
+    "packedSize": [
+      1024,
+      512
+    ],
+    "sourceSha256": "dc1dda2fd14efb097b673b7050a8188e640090fb07ae363e6d6799cd0fb59662",
+    "runtimeSha256": "5e27e4bcc21a6350cb89f65db99b5c15f5d99c71fc95202639074b4b06562b80",
+    "runtimeBytes": 1360654
+  },
+  {
+    "index": 11,
+    "name": "Buff",
+    "duration": 3.0,
+    "sourceIndex": 11,
+    "job_id": "ac6e3b8e-f420-4f60-ac45-326cbbf424f5",
+    "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260918_190703_ac6e3b8e-f420-4f60-ac45-326cbbf424f5.mp4",
+    "id": "ac6e3b8e-f420-4f60-ac45-326cbbf424f5",
+    "encodingVersion": 2,
+    "outputIndex": 11,
+    "outputName": "Buff",
+    "frames": 72,
+    "packedSize": [
+      1024,
+      512
+    ],
+    "sourceSha256": "97a6f3a102c7c70420ca8daa116cf5953026a62b4e6710de536382570475df98",
+    "runtimeSha256": "088b333ab688d310ec6f6556021146b12ded14470835ae332aac2533658eec80",
+    "runtimeBytes": 1356939
+  },
+  {
+    "index": 12,
+    "name": "Dissipate",
+    "duration": 3.0,
+    "sourceIndex": 12,
+    "job_id": "903b8cdf-a19d-4fea-99aa-68c883de6cf9",
+    "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260918_190821_903b8cdf-a19d-4fea-99aa-68c883de6cf9.mp4",
+    "id": "903b8cdf-a19d-4fea-99aa-68c883de6cf9",
+    "encodingVersion": 2,
+    "outputIndex": 12,
+    "outputName": "Dissipate",
+    "frames": 72,
+    "packedSize": [
+      1024,
+      512
+    ],
+    "sourceSha256": "9b7683d6a9047d45f8b31d56fd7165b0272a14fb0643eb3430d44d2617d5e53e",
+    "runtimeSha256": "ea558ba04bcde4ea07a7f0cfe81a521c836015b949403dae9ec7f62ec06b6462",
+    "runtimeBytes": 1537156
+  },
+  {
+    "index": 13,
+    "name": "LightHit",
+    "duration": 3.0,
+    "sourceIndex": 13,
+    "job_id": "83e04fe5-6fda-4d05-9d23-03bc1e968239",
+    "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260918_190922_83e04fe5-6fda-4d05-9d23-03bc1e968239.mp4",
+    "id": "83e04fe5-6fda-4d05-9d23-03bc1e968239",
+    "encodingVersion": 2,
+    "outputIndex": 13,
+    "outputName": "LightHit",
+    "frames": 72,
+    "packedSize": [
+      1024,
+      512
+    ],
+    "sourceSha256": "906b8ca2d0e92d3c4124970ede8a76ac8aa106136c710bda3c82be68ce4545be",
+    "runtimeSha256": "a809e9af4b1a86bcde0523d7d3db631d207c4dce1a4973a1c0236a912ed3ace1",
+    "runtimeBytes": 1636823
+  },
+  {
+    "index": 14,
+    "name": "HeavyHit",
+    "duration": 3.0,
+    "sourceIndex": 14,
+    "job_id": "e5435c22-1cfd-49a7-8a01-8879a0d3d9f3",
+    "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260918_195729_e5435c22-1cfd-49a7-8a01-8879a0d3d9f3.mp4",
+    "id": "e5435c22-1cfd-49a7-8a01-8879a0d3d9f3",
+    "encodingVersion": 2,
+    "outputIndex": 14,
+    "outputName": "HeavyHit",
+    "frames": 72,
+    "packedSize": [
+      1024,
+      512
+    ],
+    "sourceSha256": "68b2417a7edf33552ba497595a6a4195b293b9bef36df84e8870d6195c46626a",
+    "runtimeSha256": "974348f81b98ed751bf11920fa996e2b9b0604dea546fc7f4e6f0245cd4bd59f",
+    "runtimeBytes": 2073888
+  },
+  {
+    "index": 15,
+    "name": "LowHPIdle",
+    "duration": 4.0,
+    "sourceIndex": 19,
+    "job_id": "52eaf8b5-6d3d-46d0-8011-f963cc07101a",
+    "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260918_200257_52eaf8b5-6d3d-46d0-8011-f963cc07101a.mp4",
+    "id": "52eaf8b5-6d3d-46d0-8011-f963cc07101a",
+    "encodingVersion": 2,
+    "outputIndex": 15,
+    "outputName": "LowHPIdle",
+    "frames": 96,
+    "packedSize": [
+      1024,
+      512
+    ],
+    "sourceSha256": "a6b51fb4d5b8e82b12be3fc61760975f8b6b2bb89ef96e8716b6039a4901f629",
+    "runtimeSha256": "c13ed7c781fd1645569e48496825a2755c664ea9b2f04807a470e489eaddeaf0",
+    "runtimeBytes": 709750
+  },
+  {
+    "index": 16,
+    "name": "Defeat",
+    "duration": 4.0,
+    "sourceIndex": 16,
+    "job_id": "c78fda93-1cd1-4c8b-a4c3-9e5210b694ef",
+    "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260918_195932_c78fda93-1cd1-4c8b-a4c3-9e5210b694ef.mp4",
+    "id": "c78fda93-1cd1-4c8b-a4c3-9e5210b694ef",
+    "encodingVersion": 2,
+    "outputIndex": 16,
+    "outputName": "Defeat",
+    "frames": 96,
+    "packedSize": [
+      1024,
+      512
+    ],
+    "sourceSha256": "bd1e7fad3dd1ebd672da5e7c74c5e0098bd3ef9e99ddc44962301dacc4cfa2e3",
+    "runtimeSha256": "48a32b4d2c19843255fb5425e1f02254b97d791fd78dc440abee98361d638ee0",
+    "runtimeBytes": 1793227
+  }
+]

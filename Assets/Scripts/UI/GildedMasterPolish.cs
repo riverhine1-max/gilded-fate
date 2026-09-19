@@ -59,7 +59,7 @@ namespace GildedFate.UI
             while(statusVisualBeats.Count>0&&statusVisualBeats[0].time<=now)
             {
                 var fact=statusVisualBeats[0].fact;statusVisualBeats.RemoveAt(0);
-                PlayHexerStatus(fact);
+                PlayHexerStatus(fact);PlayVanguardStatus(fact);PlayReaperStatus(fact);
                 var positive=fact.playerSide&&fact.amount>0;
                 var effect=fact.label=="BURN"?2:positive?run.hero==HeroId.Vanguard?4:run.hero==HeroId.Reaper?5:3:3;
                 if(fact.playerSide){playerVfxIndex=effect;playerVfxTime=.32f;heroBuff=1;}

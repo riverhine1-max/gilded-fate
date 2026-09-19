@@ -38,7 +38,7 @@ namespace GildedFate.UI
                 var fact=beat.fact;vitalBeats.RemoveAt(0);
                 if(beat.number!=null)beat.number.start=now;
                 PlayVitalSound(fact,beat.source);
-                PlayHexerVital(fact);
+                PlayHexerVital(fact);PlayVanguardVital(fact);PlayReaperVital(fact);
                 if(fact.hasVitals)
                 {
                     if(fact.enemyIndex>=0&&fact.enemyIndex<opponentVisuals.Count){var v=opponentVisuals[fact.enemyIndex];v.hp=fact.enemyHp;v.block=fact.enemyBlock;if(!fact.playerSide&&fact.kind==CombatEventKind.Damage)v.hit=1;}

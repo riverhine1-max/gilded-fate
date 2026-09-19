@@ -4,15 +4,15 @@ using GildedFate.UI;
 
 namespace GildedFate.Editor
 {
-    public sealed class GildedHexerAnimationPreview : EditorWindow
+    public sealed class GildedVanguardAnimationPreview : EditorWindow
     {
-        private HexerEditorVideoSurface surface;
+        private VanguardEditorVideoSurface surface;
         private int selected;
         private bool paused,loop=true,raw;
         private float speed=1;
         private Vector2 scroll;
-        [MenuItem("Gilded Fate/Animation Preview/Hexer")]
-        public static void Open()=>GetWindow<GildedHexerAnimationPreview>("Hexer Animations");
+        [MenuItem("Gilded Fate/Animation Preview/Vanguard")]
+        public static void Open()=>GetWindow<GildedVanguardAnimationPreview>("Vanguard Animations");
         private void OnEnable(){minSize=new Vector2(730,530);EditorApplication.update+=Advance;}
         private void OnDisable(){EditorApplication.update-=Advance;surface?.Dispose();surface=null;}
         private void Advance()
@@ -24,22 +24,22 @@ namespace GildedFate.Editor
         {
             // Restart must recover a failed idle decoder as well as the selected clip.
             if(surface!=null&&!string.IsNullOrEmpty(surface.Error)){surface.Dispose();surface=null;}
-            surface??=new HexerEditorVideoSurface();paused=false;
-            surface.Play(HexerVideoCatalog.Clips[selected].Name,HexerVideoCatalog.Clips[selected].Duration/speed,loop);
+            surface??=new VanguardEditorVideoSurface();paused=false;
+            surface.Play(VanguardVideoCatalog.Clips[selected].Name,VanguardVideoCatalog.Clips[selected].Duration/speed,loop);
         }
         private void OnGUI()
         {
-            EditorGUILayout.LabelField("HEXER · ANIMATION PREVIEW",EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("VANGUARD · ANIMATION PREVIEW",EditorStyles.boldLabel);
             EditorGUILayout.LabelField("Local video assets · no run or save changes",EditorStyles.miniLabel);
             using(new EditorGUILayout.HorizontalScope())
             {
                 using(new EditorGUILayout.VerticalScope(GUILayout.Width(175)))
                 {
                     scroll=EditorGUILayout.BeginScrollView(scroll);
-                    for(var i=0;i<HexerVideoCatalog.Clips.Length;i++)
+                    for(var i=0;i<VanguardVideoCatalog.Clips.Length;i++)
                     {
                         var old=GUI.backgroundColor;if(i==selected)GUI.backgroundColor=new Color(.85f,.67f,.30f);
-                        if(GUILayout.Button(ObjectNames.NicifyVariableName(HexerVideoCatalog.Clips[i].Name),GUILayout.Height(25))){selected=i;Play();}
+                        if(GUILayout.Button(ObjectNames.NicifyVariableName(VanguardVideoCatalog.Clips[i].Name),GUILayout.Height(25))){selected=i;Play();}
                         GUI.backgroundColor=old;
                     }
                     EditorGUILayout.EndScrollView();

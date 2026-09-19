@@ -1,0 +1,325 @@
+[
+  {
+    "index": 1,
+    "name": "CombatIdle",
+    "id": "f2e1d0d4-133d-4fe3-bfb9-568436ac45dc",
+    "status": "completed",
+    "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260918_202403_f2e1d0d4-133d-4fe3-bfb9-568436ac45dc.mp4",
+    "encodingVersion": 2,
+    "outputIndex": 1,
+    "outputName": "CombatIdle",
+    "frames": 96,
+    "duration": 4.0,
+    "packedSize": [
+      1024,
+      512
+    ],
+    "sourceSha256": "b1dc7896348924abd04965b0a9c74f817cd29b1e32da5d544677fb7a65de4faf",
+    "runtimeSha256": "df2222df5f6131bcbc6373a3ca7077c3cd7292bfa2379b2d12c102e9fc3eeafa",
+    "runtimeBytes": 865136
+  },
+  {
+    "index": 2,
+    "name": "BasicAttack",
+    "id": "374f34bc-69ca-4b38-8419-295ef8ea24cc",
+    "status": "completed",
+    "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260918_202420_374f34bc-69ca-4b38-8419-295ef8ea24cc.mp4",
+    "encodingVersion": 2,
+    "outputIndex": 2,
+    "outputName": "BasicAttack",
+    "frames": 72,
+    "duration": 3.0,
+    "packedSize": [
+      1024,
+      512
+    ],
+    "sourceSha256": "99cd360eb00994336455047929c6655d9136759c86400426cc99864fc5530e0d",
+    "runtimeSha256": "f56f28d133ff220c9f8bf0d424fed7e8fc62e661004f9c96dfd2ee95bed791c8",
+    "runtimeBytes": 741850
+  },
+  {
+    "index": 3,
+    "name": "AlternateAttack",
+    "id": "aef94371-71c3-44cb-a806-a41b24873c21",
+    "status": "completed",
+    "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260918_202704_aef94371-71c3-44cb-a806-a41b24873c21.mp4",
+    "encodingVersion": 2,
+    "outputIndex": 3,
+    "outputName": "AlternateAttack",
+    "frames": 72,
+    "duration": 3.0,
+    "packedSize": [
+      1024,
+      512
+    ],
+    "sourceSha256": "0f41510984c06a256786e1e2b47cee6583ae5ac5a29f89a3d8056383a05e5321",
+    "runtimeSha256": "0f0eede9f5ca705050b29b975bc8b047cc15fddbbbda9ed845be36b82e0462b5",
+    "runtimeBytes": 764354
+  },
+  {
+    "index": 4,
+    "name": "HeavyAttack",
+    "id": "69a99841-ad39-44c4-adf1-fe456944344e",
+    "status": "completed",
+    "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260918_202731_69a99841-ad39-44c4-adf1-fe456944344e.mp4",
+    "encodingVersion": 2,
+    "outputIndex": 4,
+    "outputName": "HeavyAttack",
+    "frames": 96,
+    "duration": 4.0,
+    "packedSize": [
+      1024,
+      512
+    ],
+    "sourceSha256": "7521261cfa1d334676dedafcb5bad0a75a40230787aa2174d0433598fccf51ac",
+    "runtimeSha256": "3bf700e2575fdb78f21eade3baedceac42c7e3bcf2f583953e722e631827679b",
+    "runtimeBytes": 1074159
+  },
+  {
+    "index": 19,
+    "name": "MajorFinisherAttack_ContainedRetry",
+    "id": "e935afaf-f2d4-4ae0-9405-a13b262fb682",
+    "status": "completed",
+    "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260919_010929_e935afaf-f2d4-4ae0-9405-a13b262fb682.mp4",
+    "outputIndex": 5,
+    "outputName": "MajorFinisherAttack",
+    "encodingVersion": 2,
+    "frames": 96,
+    "duration": 4.0,
+    "packedSize": [
+      1024,
+      512
+    ],
+    "sourceSha256": "23209b400698fadf3c43c8fb33bcd11072c3adde511befdc83a97209179e95a0",
+    "runtimeSha256": "328ecf621d20cd00a48aef0ba4356cab855542d0274dc4c1332e3248adeb245c",
+    "runtimeBytes": 1059512
+  },
+  {
+    "index": 6,
+    "name": "Block",
+    "id": "15f60d30-4897-4ef0-8480-79045fc3addf",
+    "status": "completed",
+    "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260918_203018_15f60d30-4897-4ef0-8480-79045fc3addf.mp4",
+    "encodingVersion": 2,
+    "outputIndex": 6,
+    "outputName": "Block",
+    "frames": 72,
+    "duration": 3.0,
+    "packedSize": [
+      1024,
+      512
+    ],
+    "sourceSha256": "2793ff116cf5999ca2d0ce866046c7581c8d535d8ebfe900fcde1d366b6cad4a",
+    "runtimeSha256": "418eab78b0d81b09110ac722fabe47b8c89fa3b192332673870c7c08c71a43c4",
+    "runtimeBytes": 715455
+  },
+  {
+    "index": 7,
+    "name": "BlockImpact",
+    "id": "1b29622f-bf7a-4711-a10e-3a3db91dcb12",
+    "status": "completed",
+    "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260918_203302_1b29622f-bf7a-4711-a10e-3a3db91dcb12.mp4",
+    "encodingVersion": 2,
+    "outputIndex": 7,
+    "outputName": "BlockImpact",
+    "frames": 72,
+    "duration": 3.0,
+    "packedSize": [
+      1024,
+      512
+    ],
+    "sourceSha256": "52ef50220c1ec877cf37ce873d99ab956c15c635432796c34fdefc6557446801",
+    "runtimeSha256": "b949edf6ea2875da7447adf97481dc468b8da33b8089082be448faec8282adf3",
+    "runtimeBytes": 786823
+  },
+  {
+    "index": 8,
+    "name": "MajorDefense",
+    "id": "82f064fe-7c23-49c8-ba94-6b0eef94d02c",
+    "status": "completed",
+    "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260918_203546_82f064fe-7c23-49c8-ba94-6b0eef94d02c.mp4",
+    "encodingVersion": 2,
+    "outputIndex": 8,
+    "outputName": "MajorDefense",
+    "frames": 96,
+    "duration": 4.0,
+    "packedSize": [
+      1024,
+      512
+    ],
+    "sourceSha256": "31ca22dc21c5f8649b2abbd4c2c3974bd25dc3ae2f70b0b0853633e95357d198",
+    "runtimeSha256": "7d61a0d4583668c3e98e44762ffe5d181948b0feaea652b94fc16e79919c5023",
+    "runtimeBytes": 1121472
+  },
+  {
+    "index": 9,
+    "name": "LightHit",
+    "id": "90fc2e1a-80a7-465b-967f-ecf7f8369fb3",
+    "status": "completed",
+    "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260918_203607_90fc2e1a-80a7-465b-967f-ecf7f8369fb3.mp4",
+    "encodingVersion": 2,
+    "outputIndex": 9,
+    "outputName": "LightHit",
+    "frames": 72,
+    "duration": 3.0,
+    "packedSize": [
+      1024,
+      512
+    ],
+    "sourceSha256": "e1f77c9873ee2b3366f3e1de7ba5f132ecbd47d57389b0d2406744c38002f366",
+    "runtimeSha256": "5dcf32377dd10e8132eda05248eaba200b212d27223ec3a384021f57bbd7f60e",
+    "runtimeBytes": 742492
+  },
+  {
+    "index": 10,
+    "name": "HeavyHitStagger",
+    "id": "0d541cb6-4bf6-4bd9-939b-270c37534cd8",
+    "status": "completed",
+    "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260918_203758_0d541cb6-4bf6-4bd9-939b-270c37534cd8.mp4",
+    "encodingVersion": 2,
+    "outputIndex": 10,
+    "outputName": "HeavyHitStagger",
+    "frames": 72,
+    "duration": 3.0,
+    "packedSize": [
+      1024,
+      512
+    ],
+    "sourceSha256": "b53bf6d31f7e5c937436042c78dc849f47fdb989dcbe6606b1d878483621bf15",
+    "runtimeSha256": "da4075202c4c7ed6bcfe53aabf1dd7b7fa4ccda9eaf98e7bee8c02cff5cfe537",
+    "runtimeBytes": 785640
+  },
+  {
+    "index": 11,
+    "name": "AspectActivation",
+    "id": "49fc693a-85f2-4795-883c-807ca2ca6d98",
+    "status": "completed",
+    "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260919_005913_49fc693a-85f2-4795-883c-807ca2ca6d98.mp4",
+    "encodingVersion": 2,
+    "outputIndex": 11,
+    "outputName": "AspectActivation",
+    "frames": 72,
+    "duration": 3.0,
+    "packedSize": [
+      1024,
+      512
+    ],
+    "sourceSha256": "a825d1eea7bce86c39560751ce2896db09a1bd317b2439440a13af51e6d68203",
+    "runtimeSha256": "5f84d387c86783f1820edd858492a32b1830bd5d5bba7be1bb621086aa9af982",
+    "runtimeBytes": 711207
+  },
+  {
+    "index": 12,
+    "name": "BuffStrength",
+    "id": "d334b2c1-6d52-4149-b55a-9aaddfada825",
+    "status": "completed",
+    "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260919_010051_d334b2c1-6d52-4149-b55a-9aaddfada825.mp4",
+    "encodingVersion": 2,
+    "outputIndex": 12,
+    "outputName": "BuffStrength",
+    "frames": 72,
+    "duration": 3.0,
+    "packedSize": [
+      1024,
+      512
+    ],
+    "sourceSha256": "d3ef13902719b71c4eae6f82ab4496e68c2571ed3c973de5bb6bbac05500c391",
+    "runtimeSha256": "0d679bf9b4718ae0b49ac7c8482bfdf17b896a8a59557a0f7660e1bdf9c87961",
+    "runtimeBytes": 730197
+  },
+  {
+    "index": 13,
+    "name": "Fortify",
+    "id": "4ccbd848-f917-4adb-a051-24a1f45716d0",
+    "status": "completed",
+    "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260919_010141_4ccbd848-f917-4adb-a051-24a1f45716d0.mp4",
+    "encodingVersion": 2,
+    "outputIndex": 13,
+    "outputName": "Fortify",
+    "frames": 72,
+    "duration": 3.0,
+    "packedSize": [
+      1024,
+      512
+    ],
+    "sourceSha256": "d2ac15e1f3eb53be76e376b73a55704dde6296385c56e5a69989550f3260371e",
+    "runtimeSha256": "022166bd825aeda2585c81d7fbd8da7fb6578e4fc1adb29af04c148bda8d29dd",
+    "runtimeBytes": 567289
+  },
+  {
+    "index": 14,
+    "name": "RetaliateReady",
+    "id": "eabea52f-285d-4c4c-9374-6ca86e7f1a88",
+    "status": "completed",
+    "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260919_010325_eabea52f-285d-4c4c-9374-6ca86e7f1a88.mp4",
+    "encodingVersion": 2,
+    "outputIndex": 14,
+    "outputName": "RetaliateReady",
+    "frames": 72,
+    "duration": 3.0,
+    "packedSize": [
+      1024,
+      512
+    ],
+    "sourceSha256": "6c24e333ce101e23f9ff40b84156364da7e3f9d0febd71024e2dae11bd400247",
+    "runtimeSha256": "78fc33e388c8add074773dfa114fc0ccc5d5e6184c5273a5a408cf5c2fb24d10",
+    "runtimeBytes": 777473
+  },
+  {
+    "index": 15,
+    "name": "RetaliateAttack",
+    "id": "29422f9b-7a87-42ff-8a8b-76d849247bf0",
+    "status": "completed",
+    "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260919_010417_29422f9b-7a87-42ff-8a8b-76d849247bf0.mp4",
+    "encodingVersion": 2,
+    "outputIndex": 15,
+    "outputName": "RetaliateAttack",
+    "frames": 72,
+    "duration": 3.0,
+    "packedSize": [
+      1024,
+      512
+    ],
+    "sourceSha256": "a9c3151b0411626d247f2f0f9dbe42c81e6a2dee8846eb6c2dae229a271367ca",
+    "runtimeSha256": "445b0c8f96e4379172c078ffd10b0e3201b4b8c05d2ed553ef4f5ffd8c2792b0",
+    "runtimeBytes": 858344
+  },
+  {
+    "index": 16,
+    "name": "LowHPIdle",
+    "id": "f039966a-090c-4eb3-8d01-b50d62469105",
+    "status": "completed",
+    "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260919_010613_f039966a-090c-4eb3-8d01-b50d62469105.mp4",
+    "encodingVersion": 2,
+    "outputIndex": 16,
+    "outputName": "LowHPIdle",
+    "frames": 96,
+    "duration": 4.0,
+    "packedSize": [
+      1024,
+      512
+    ],
+    "sourceSha256": "61af00702743998004b8cc9f3a901c127c800cbad724d10a77a1010468a2db3c",
+    "runtimeSha256": "1e92f6f1685a0cb64a7680811be3f7d3ae211c90d945dd9c2cd09ae6237a480b",
+    "runtimeBytes": 871020
+  },
+  {
+    "index": 17,
+    "name": "Defeat",
+    "id": "fc752794-efeb-4d3d-87fc-45eac4a4f845",
+    "status": "completed",
+    "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J90Kiwz4QISGac5QlSgYngKSH0/hf_20260919_010615_fc752794-efeb-4d3d-87fc-45eac4a4f845.mp4",
+    "encodingVersion": 2,
+    "outputIndex": 17,
+    "outputName": "Defeat",
+    "frames": 96,
+    "duration": 4.0,
+    "packedSize": [
+      1024,
+      512
+    ],
+    "sourceSha256": "c613362fb6390676a28126cb7488af72a5f3a49040d912bdbf587d420a68c965",
+    "runtimeSha256": "1cdc09449d10b0412edbff39bf810f7530406d960408eb4447becc8c6ed8d0ff",
+    "runtimeBytes": 977326
+  }
+]
