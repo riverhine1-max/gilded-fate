@@ -17,6 +17,14 @@ return_seat() {
 }
 trap return_seat EXIT
 
+# Secrets pasted into GitHub often pick up a trailing newline or spaces; strip them.
+strip_nl() { local s="$1"; s="${s//$'\r'/}"; s="${s//$'\n'/}"; printf '%s' "$s"; }
+trim() { local s; s="$(strip_nl "$1")"; s="${s#"${s%%[![:space:]]*}"}"; s="${s%"${s##*[![:space:]]}"}"; printf '%s' "$s"; }
+had_nl=no; case "${UNITY_PASSWORD:-}" in *$'\n'*|*$'\r'*) had_nl=yes;; esac
+UNITY_EMAIL="$(trim "${UNITY_EMAIL:-}")"
+UNITY_PASSWORD="$(strip_nl "${UNITY_PASSWORD:-}")"
+echo "Credential check: email looks like an address: $(case "$UNITY_EMAIL" in *@*.*) echo yes;; *) echo NO;; esac); password had a line break (removed): $had_nl"
+
 echo "::group::Unity license"
 if [ -n "${UNITY_LICENSE:-}" ]; then
   mkdir -p "$LICENSE_DIR"
