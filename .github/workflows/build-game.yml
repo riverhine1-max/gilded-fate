@@ -1,0 +1,176 @@
+# Builds Gilded Fate in the cloud so it can be played without installing Unity.
+#   windows       -> downloadable .zip on the "playtest" release (runs on any Windows PC)
+#   webgl         -> playable in the browser on GitHub Pages
+#   linux-trailer -> Linux player with the trailer-capture harness, pushed to the
+#                    "trailer-player" branch for recording trailer footage
+#
+# One-time setup (repository Settings):
+#   Secrets and variables > Actions > New repository secret:
+#     UNITY_EMAIL     your Unity account email
+#     UNITY_PASSWORD  your Unity account password  (two-step verification must be OFF)
+#   Pages > Build and deployment > Source: GitHub Actions
+name: Build Gilded Fate
+
+on:
+  workflow_dispatch:
+    inputs:
+      targets:
+        description: Which builds to make
+        type: choice
+        default: all
+        options: [all, windows, webgl, linux-trailer, windows+webgl]
+  push:
+    branches: [main]
+    paths:
+      - 'Assets/**'
+      - 'Packages/**'
+      - 'ProjectSettings/**'
+      - 'ci/**'
+      - '.github/workflows/build-game.yml'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: build-gilded-fate
+  cancel-in-progress: false
+
+env:
+  UNITY_VERSION: 6000.5.9f1
+  IMAGE_VERSION: '3'
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.pick.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: pick
+        shell: bash
+        run: |
+          targets="${{ github.event.inputs.targets }}"
+          if [ -z "$targets" ]; then
+            targets="windows+webgl"
+            before="${{ github.event.before }}"
+            if [ -n "$before" ] && git cat-file -e "$before" 2>/dev/null; then
+              git diff --name-only "$before" "${{ github.sha }}" | grep -q '^ci/\|^\.github/' && targets="all"
+            else
+              targets="all"
+            fi
+          fi
+          items=()
+          case "$targets" in all|windows|windows+webgl) items+=('{"name":"windows","image":"windows-mono","target":"StandaloneWindows64","method":"GildedFate.Editor.GildedFateCiBuild.BuildWindows","output":"Builds/Windows/GildedFate.exe"}');; esac
+          case "$targets" in all|webgl|windows+webgl) items+=('{"name":"webgl","image":"webgl","target":"WebGL","method":"GildedFate.Editor.GildedFateCiBuild.BuildWebGL","output":"Builds/WebGL"}');; esac
+          case "$targets" in all|linux-trailer) items+=('{"name":"linux-trailer","image":"linux-il2cpp","target":"StandaloneLinux64","method":"GildedFate.Editor.GildedFateCiBuild.BuildLinux","output":"Builds/Linux/GildedFate.x86_64"}');; esac
+          json=$(IFS=,; echo "{\"include\":[${items[*]}]}")
+          echo "Building: $targets"
+          echo "matrix=$json" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: plan
+    name: Build ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      # A Unity Personal account has a small number of activation seats, so build one at a time.
+      max-parallel: 1
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    steps:
+      - name: Free disk space for the Unity image
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL /usr/local/share/boost || true
+          docker image prune -af >/dev/null || true
+          df -h /
+
+      - uses: actions/checkout@v4
+
+      - name: Restore Git LFS cache (art, audio, video)
+        run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
+      - uses: actions/cache@v4
+        with:
+          path: .git/lfs
+          key: lfs-${{ hashFiles('.lfs-assets-id') }}
+          restore-keys: lfs-
+      - run: git lfs pull && rm -f .lfs-assets-id
+
+      - name: Restore Unity Library cache
+        uses: actions/cache@v4
+        with:
+          path: Library
+          key: library-${{ matrix.name }}-${{ hashFiles('Packages/packages-lock.json', 'ProjectSettings/ProjectVersion.txt') }}-${{ github.sha }}
+          restore-keys: |
+            library-${{ matrix.name }}-${{ hashFiles('Packages/packages-lock.json', 'ProjectSettings/ProjectVersion.txt') }}-
+            library-${{ matrix.name }}-
+
+      - name: Prepare trailer-capture build
+        if: matrix.name == 'linux-trailer'
+        run: bash ci/trailer/prepare.sh
+
+      - name: Build with Unity ${{ env.UNITY_VERSION }}
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        run: |
+          docker run --rm \
+            -e UNITY_EMAIL -e UNITY_PASSWORD -e UNITY_LICENSE \
+            -v "$GITHUB_WORKSPACE":/project -w /project \
+            "unityci/editor:ubuntu-${UNITY_VERSION}-${{ matrix.image }}-${IMAGE_VERSION}" \
+            bash /project/ci/unity-build.sh "${{ matrix.target }}" "${{ matrix.method }}" "${{ matrix.output }}"
+          sudo chown -R "$(id -u):$(id -g)" "$GITHUB_WORKSPACE"
+
+      # ---------- Windows: zip on the "playtest" release ----------
+      - name: Publish Windows playtest
+        if: matrix.name == 'windows'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd Builds/Windows && rm -rf *_BurstDebugInformation_DoNotShip *_BackUpThisFolder_ButDontShipItWithYourGame && zip -qr ../../GildedFate-Windows.zip . && cd ../..
+          ls -lh GildedFate-Windows.zip
+          gh release delete playtest --cleanup-tag --yes || true
+          gh release create playtest GildedFate-Windows.zip --prerelease --title "Gilded Fate — Windows playtest" \
+            --notes "Built from ${GITHUB_SHA::7}. Download the zip, unzip it, and run GildedFate.exe. No Unity install needed."
+
+      # ---------- WebGL: hand the site to the Pages deploy job ----------
+      - name: Package WebGL site
+        if: matrix.name == 'webgl'
+        run: touch Builds/WebGL/.nojekyll && du -sh Builds/WebGL
+      - uses: actions/upload-pages-artifact@v3
+        if: matrix.name == 'webgl'
+        with:
+          path: Builds/WebGL
+
+      # ---------- Linux trailer player: split into <95 MB parts on a side branch ----------
+      - name: Publish trailer player
+        if: matrix.name == 'linux-trailer'
+        run: |
+          tar -C Builds -czf /tmp/linux-trailer.tar.gz Linux
+          mkdir -p /tmp/tp && cd /tmp/tp
+          split -b 90m -d -a 2 /tmp/linux-trailer.tar.gz linux-trailer.tar.gz.part
+          sha256sum /tmp/linux-trailer.tar.gz | cut -d' ' -f1 > linux-trailer.sha256
+          printf 'Linux trailer-capture player built from %s\n' "$GITHUB_SHA" > README.txt
+          git init -q -b trailer-player
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add . && git commit -qm "Trailer player from ${GITHUB_SHA::7}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" trailer-player
+          ls -lh
+
+  pages:
+    needs: [plan, build]
+    # Runs even if another target failed, as long as a WebGL build was requested.
+    if: ${{ !cancelled() && contains(needs.plan.outputs.matrix, '"webgl"') }}
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4
+        continue-on-error: true
