@@ -101,7 +101,15 @@ namespace GildedFate.UI
         }
         private void DrawCombatChoice(float w,float h)
         {
-            Fill(new Rect(0,0,w,h),new Color(.008f,.012f,.022f,1));
+            var sigilChoice=combat.ChoiceKind is CardChoiceKind.SigilMode or CardChoiceKind.SigilSlot;
+            if(sigilChoice)
+            {
+                if(currentEnemy?.boss==true)DrawAtlasIcon(bossArenaAtlas,Mathf.Max(0,System.Array.IndexOf(WorldContent.Enemies,currentEnemy)-14),3,1,new Rect(0,0,w,h));
+                else if(combatBackground)GUI.DrawTexture(new Rect(0,0,w,h),combatBackground,ScaleMode.ScaleAndCrop);
+                DrawCombat3DStage(w,h);DrawCombatActors(w,h);DrawCombatStats(w,h);
+                Fill(new Rect(0,58,w,h-58),new Color(.002f,.004f,.011f,.82f));
+            }
+            else Fill(new Rect(0,0,w,h),new Color(.008f,.012f,.022f,1));
             if(combat.ChoiceOptions.Count>0){DrawCombatOptionChoice(w,h);return;}
             var discard=combat.ChoiceKind==CardChoiceKind.DiscardFromHand;var exhaust=combat.ChoiceKind is CardChoiceKind.ExhaustFromHand or CardChoiceKind.ExhaustCurseFromHand or CardChoiceKind.ExhaustSoulFromHand;var fromExhaust=combat.ChoiceKind is CardChoiceKind.ReturnAttackFromExhaust or CardChoiceKind.ReturnSkillFromExhaust;
             Heading(w,combat.ChoiceKind==CardChoiceKind.ExpansionCard?"CHOOSE A CARD":discard?"CHOOSE A CARD TO DISCARD":exhaust?"CHOOSE A CARD TO DISSIPATE":fromExhaust?"RETURN FROM DISSIPATE":"RETURN A DISCARDED CARD",(combat.pendingPlay?.card.name??"CARD EFFECT")+" · CHOOSE ONE EXACT COPY");

@@ -15,8 +15,20 @@ namespace GildedFate.UI
         }
         private void DrawFateMap(float w,float h,bool inspectOnly=false)
         {
-            Fill(new Rect(0,0,w,h),new Color(.003f,.004f,.007f,1));DrawPersistentRunBar(w,inspectOnly&&screen==ScreenMode.Combat);
-            var viewport=MapViewport(w,h);var maxScroll=Mathf.Max(0,MapContentHeight-viewport.height);FocusMapToCurrentFloor(w,h);var pointer=PointerPosition;
+            Fill(new Rect(0,0,w,h),new Color(.003f,.004f,.007f,1));
+            if(mapBackground)
+            {
+                var old=GUI.color;GUI.color=new Color(.62f,.68f,.78f,.42f);GUI.DrawTexture(new Rect(0,58,w,h-58),mapBackground,ScaleMode.ScaleAndCrop);GUI.color=old;
+            }
+            Fill(new Rect(0,58,w,h-58),new Color(.002f,.005f,.012f,.58f));
+            for(var i=0;i<7;i++)
+            {
+                var x=w*(.08f+i*.145f);var drift=profile.reduceMotion?0:Mathf.Sin(shimmer*.18f+i)*18;
+                DrawLine(new Vector2(x+drift,72),new Vector2(x-drift*.4f,h),i%2==0?new Color(1f,.68f,.22f,.065f):new Color(.18f,.56f,1f,.055f),2+i%3);
+            }
+            DrawPersistentRunBar(w,inspectOnly&&screen==ScreenMode.Combat);
+            var viewport=MapViewport(w,h);var maxScroll=Mathf.Max(0,MapContentHeight-viewport.height);FocusMapToCurrentFloor(w,h);var pointer=PointerPosition;var mapReady=Time.unscaledTime>=mapInputReadyAt;
+            GUI.Label(new Rect(viewport.x,80,viewport.width,24),mapReady?"CHOOSE YOUR NEXT ROOM · CLICK A GILDED NODE":"RETURNING TO THE ACT MAP…",new GUIStyle(footerStyle){fontSize=12,fontStyle=FontStyle.Bold,normal={textColor=Gold}});
             if(MapScrollZone(w,h).Contains(pointer)&&Event.current.type==EventType.ScrollWheel&&!mapPauseOpen){if(mapWheelFrame!=Time.frameCount){mapScroll=Mathf.Clamp(mapScroll+Event.current.delta.y*34,0,maxScroll);mapFocusFloor=run.floor;mapWheelFrame=Time.frameCount;}Event.current.Use();}
             var local=pointer-viewport.position+new Vector2(0,mapScroll);
             var hovered=viewport.Contains(pointer)&&!mapPauseOpen?run.nodes.FirstOrDefault(n=>Vector2.Distance(MapPosition(n,viewport.width),local)<46):null;
@@ -38,7 +50,7 @@ namespace GildedFate.UI
                 if(current)DrawCurrentMapMarker(r);
                 var roomLabel=node.kind==NodeKind.Sanctuary?"REST SHRINE":node.kind.ToString().ToUpperInvariant();
                 GUI.Label(new Rect(p.x-95,p.y+size*.5f+7,190,22),roomLabel+(current?" · HERE":node.complete?" · CLEARED":""),new GUIStyle(footerStyle){fontSize=11,normal={textColor=current||active?Gold:new Color(.78f,.77f,.70f)}});
-                if(!inspectOnly&&active&&!mapPauseOpen&&pendingMapNode==null&&GUI.Button(r,"",GUIStyle.none))clicked=node;
+                if(!inspectOnly&&mapReady&&active&&!mapPauseOpen&&pendingMapNode==null&&GUI.Button(r,"",GUIStyle.none))clicked=node;
             }
             GUI.EndGroup();
             var boss=run.nodes.FirstOrDefault(n=>n.kind==NodeKind.Boss);if(boss!=null)
@@ -46,7 +58,7 @@ namespace GildedFate.UI
                 var crown=new Rect(w-207,106,126,132);DrawBossMapPortrait(crown,boss);
                 GUI.Label(new Rect(w-258,244,232,42),"ACT "+RomanAct(run.act)+" · SUMMIT KEEPER",new GUIStyle(footerStyle){fontSize=12,normal={textColor=Gold}});
                 if(crown.Contains(pointer))SetRunHudTooltip(crown,EnemyForNode(boss).name,"The keeper waits above "+run.ActFloorCount+" layers of fate. Click to view the summit; enter only after reaching its connected path.");
-                if(!mapPauseOpen&&GUI.Button(crown,"",GUIStyle.none)){if(!inspectOnly&&boss.floor==run.floor&&boss.available)BeginMapTravel(boss);else{mapScroll=0;mapFocusFloor=run.floor;}}
+                if(!mapPauseOpen&&GUI.Button(crown,"",GUIStyle.none)){if(!inspectOnly&&mapReady&&boss.floor==run.floor&&boss.available)BeginMapTravel(boss);else{mapScroll=0;mapFocusFloor=run.floor;}}
             }
             DrawMapLegend(w,h);
             var rail=new Rect(viewport.xMax-5,viewport.y+8,2,viewport.height-16);Fill(rail,new Color(.5f,.36f,.2f,.4f));var thumb=rail.height*viewport.height/MapContentHeight;Fill(new Rect(rail.x,rail.y+(rail.height-thumb)*mapScroll/Mathf.Max(1,maxScroll),2,thumb),Gold);

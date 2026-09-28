@@ -44,10 +44,10 @@ namespace GildedFate.UI
             vanguardPriority=priority;vanguardBusyUntil=Time.unscaledTime+seconds+.12f;
             if(clip=="Defeat"){vanguardDefeated=true;vanguardVideoBeats.Clear();}
         }
-        private void QueueVanguardVideo(string clip,float seconds,int priority,float delay=0)
+        private void QueueVanguardVideo(string clip,float seconds,int priority,float delay=0,bool allowRepeat=false)
         {
             if(!VanguardVideoEnabled||vanguardDefeated||VanguardVideoCatalog.Find(clip)==null)return;
-            if(vanguardVideoBeats.Any(b=>b.clip==clip))return;
+            if(!allowRepeat&&vanguardVideoBeats.Any(b=>b.clip==clip))return;
             if(vanguardVideoBeats.Count>=8)vanguardVideoBeats.RemoveAt(0);
             vanguardVideoBeats.Add(new VanguardVideoBeat{clip=clip,seconds=seconds,priority=priority,at=Time.unscaledTime+delay});
         }
@@ -70,6 +70,20 @@ namespace GildedFate.UI
             var clip=VanguardCardAnimation(card);
             StartVanguardVideo(clip,AnimationSeconds(clip=="MajorFinisherAttack"||clip=="HeavyAttack"?1.05f:.8f),50);
             if(card.kind==CardKind.Attack)vanguardAttackVariant++;
+        }
+        private void ScheduleVanguardVideoReceipts(CombatEvent[] facts,float[] offsets,float now,CardDef played)
+        {
+            if(!VanguardVideoEnabled||played?.kind!=CardKind.Attack)return;
+            var seen=new HashSet<int>();var hit=0;
+            for(var i=0;i<facts.Length;i++)
+            {
+                var fact=facts[i];
+                if(fact.playerSide||fact.hitId<=0||fact.card?.instanceId!=played.instanceId||fact.kind is not (CombatEventKind.Damage or CombatEventKind.Block)||!seen.Add(fact.hitId))continue;
+                if(hit++==0)continue; // The card-play animation owns the opening hit.
+                var clip=vanguardAttackVariant%2==0?"BasicAttack":"AlternateAttack";vanguardAttackVariant++;
+                var delay=Mathf.Max(0,now+offsets[i]-Time.unscaledTime-AnimationSeconds(.22f));
+                QueueVanguardVideo(clip,AnimationSeconds(.62f),50+hit,delay,true);
+            }
         }
         private void PlayVanguardVital(CombatEvent fact)
         {

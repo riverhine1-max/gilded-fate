@@ -31,7 +31,7 @@ namespace GildedFate.UI
             run.floor=floor;run.stage=RunStage.Map;run.activeNodeFloor=run.activeNodeLane=-1;
             foreach(var candidate in run.nodes){candidate.available=false;candidate.complete=candidate.floor<floor;}
             var node=run.nodes.Where(n=>n.floor==floor).OrderBy(n=>Mathf.Abs(n.lane-RunModel.LaneCount*.5f)).First();node.kind=kind;node.available=true;
-            currentNode=null;currentEnemy=null;currentEvent=null;combat=null;pendingMapNode=null;screen=ScreenMode.Map;mapFocusFloor=-1;mapScroll=0;
+            currentNode=null;currentEnemy=null;currentEvent=null;combat=null;pendingMapNode=null;screen=ScreenMode.Map;mapFocusFloor=-1;mapScroll=0;mapInputReadyAt=0;
             FocusMapToCurrentFloor(CombatWidth,CombatHeight);
             return node;
         }
@@ -66,6 +66,7 @@ namespace GildedFate.UI
                 yield return WaitForMapRoom();
                 RunFlowCheck(screen==test.Item3&&run.stage==test.Item4,test.Item1+" opens the correct room screen and run stage");
                 if(test.Item3==ScreenMode.Combat)RunFlowCheck(combat!=null&&combat.hand.Count==5&&combat.energy==3&&currentEnemy!=null,test.Item1+" initializes a playable battle");
+                if(test.Item1==NodeKind.Boss)RunFlowCheck(currentEnemy?.id==EnemyForNode(node).id,"Summit portrait and entered boss resolve to the same keeper");
                 yield return null;
             }
 

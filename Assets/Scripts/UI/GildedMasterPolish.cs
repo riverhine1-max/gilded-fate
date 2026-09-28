@@ -9,10 +9,11 @@ namespace GildedFate.UI
     public sealed partial class GildedMainMenu
     {
         private bool IsRunInspectionPaused=>hudNavigationIndex>=0||combatHudInspectActive||routeInspectionOpen||screen==ScreenMode.Collection&&viewingRunDeck
-            ||screen==ScreenMode.Settings||screen==ScreenMode.Combat&&(combatPauseOpen||pileOpen>=0||inspectedCard!=null)
+            ||screen==ScreenMode.Settings||screen==ScreenMode.Combat&&(combatPauseOpen||pileOpen>=0||inspectedCard!=null||inspectedRelic!=null)
             ||screen==ScreenMode.Map&&mapPauseOpen||runPauseOpen;
         private readonly List<(float time,SigilKind[] slots)> sigilStateBeats=new();
         private readonly List<(float time,int slot)> sigilPulseBeats=new();
+        private readonly List<(float time,int slot)> sigilShatterBeats=new();
         private readonly List<(float time,int value)> resonanceBeats=new();
         private readonly List<(float time,CombatEvent fact)> statusVisualBeats=new();
         private SigilKind[] presentedSigils=System.Array.Empty<SigilKind>();
@@ -28,7 +29,7 @@ namespace GildedFate.UI
         {
             InvalidateEnemyIntents();
             combatHudInspectActive=false;combatHudFocusKey=null;combatHudTargets.Clear();
-            retaliateReturns.Clear();sigilStateBeats.Clear();sigilPulseBeats.Clear();resonanceBeats.Clear();statusVisualBeats.Clear();relicPulseBeats.Clear();
+            retaliateReturns.Clear();sigilStateBeats.Clear();sigilPulseBeats.Clear();sigilShatterBeats.Clear();resonanceBeats.Clear();statusVisualBeats.Clear();relicPulseBeats.Clear();
             presentedSigils=combat?.sigils.ToArray()??System.Array.Empty<SigilKind>();
             resonanceTarget=combat?.resonance??0;shardFrameShatterAt=-1;
             playerHealthFill=combat?.player.hp??0;enemyHealthFill=combat?.enemy.hp??0;playerHealGlow=enemyHealGlow=0;
@@ -52,6 +53,7 @@ namespace GildedFate.UI
             if(fact.sigils!=null)sigilStateBeats.Add((at,fact.sigils));
             if(fact.sigilSlot>=0&&fact.kind==CombatEventKind.Status&&fact.label.StartsWith("TRIGGER:SIGIL "))
                 sigilPulseBeats.Add((at,fact.sigilSlot));
+            if(fact.sigilSlot>=0&&fact.kind==CombatEventKind.Status&&fact.label=="SIGIL SHATTER")sigilShatterBeats.Add((at,fact.sigilSlot));
             if(fact.kind==CombatEventKind.Resonance)resonanceBeats.Add((at,fact.amount));
         }
         private void UpdateMasterPolishPlayback(float now)
@@ -70,6 +72,7 @@ namespace GildedFate.UI
             while(resonanceBeats.Count>0&&resonanceBeats[0].time<=now)
             {resonanceTarget=resonanceBeats[0].value;resonanceBeats.RemoveAt(0);resonancePulse=1;}
             sigilPulseBeats.RemoveAll(b=>now>b.time+.26f);
+            sigilShatterBeats.RemoveAll(b=>now>b.time+.38f);
             relicPulseBeats.RemoveAll(b=>now>b.time+.38f);
             retaliateReturns.RemoveAll(b=>now>=b.landAt);
             if(!combatBusy&&sigilStateBeats.Count==0)

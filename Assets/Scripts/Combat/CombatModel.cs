@@ -24,7 +24,7 @@ namespace GildedFate.Combat
         public int battleTemper,ironBlood,warMachine,warMachineUses,patientWarrior,retributionPower,holdLinePower,relentless,onslaughtThreshold,indomitable;
         public int sigilMastery,grandConvergence,ashes,deathsGaze,embraceVoid,damnationStrength,battleRhythm,reserveEnergy,tacticalAdvantage,resourceful,overflowPower,chainReaction,againstAllOddsDraw,perfectForm;
         public int sigilActivations,echoArmed,retaliateTriggers,retaliateTriggeredTurn,burnTriggersThisTurn,debuffApplicationsThisTurn,exhaustsThisTurn,extraDrawDamage,cycleMask,cycleCompletesThisTurn,makeNextDrawFree,retainBlock;
-        public int nextHeavyCostReduction,temporaryFortify,grimAscensionBonus;
+        public int nextHeavyCostReduction,battleRushCharges,temporaryFortify,grimAscensionBonus;
         public int soulsPlayedThisTurn,soulsPlayedCombat,soulsDrawn,soulsSacrificed,cardsDrawnThisTurn,nextSoulDamageBonus,nextSoulReplay,soulDamageBonus,deathIncarnate;
         public int deathsEmbrace,deathMarchCadence,gravePactBonus,gravekeeper,endlessHarvest,grimAscensionCadence,soulboundTome,eternalSouls,reapersCalling;
         public bool firstAttackPlayed,firstSkillPlayed,firstBlockPlayed,lastCardWasAttack,previousWasSkill,previousWasPower,wasAttackedLastTurn,attackedThisEnemyTurn,crownSacrificeDebt;
@@ -69,7 +69,7 @@ namespace GildedFate.Combat
             if(memory.freeThisTurnIds.Contains(card.instanceId))cost=0;
             if(card.firstDrawFree&&card.instanceId>0&&!memory.specialPlayIds.Contains(-card.instanceId))cost=0;
             if(card.specialModification=="quickened"&&card.instanceId>0&&!memory.specialPlayIds.Contains(-card.instanceId))cost--;
-            if(card.kind==CardKind.Attack){cost-=memory.nextAttackCostReduction;if(card.keywords?.Contains("Heavy")==true)cost-=memory.nextHeavyCostReduction;if(memory.perfectForm>0&&!memory.firstAttackPlayed)cost--;if(card.id=="grand_finale"&&memory.attacksThisTurn>=3)cost--;if(hand.Any(c=>c.id=="heavy_chains")&&!memory.firstAttackPlayed)cost++;}
+            if(card.kind==CardKind.Attack){cost-=memory.nextAttackCostReduction+Math.Min(1,memory.battleRushCharges);if(card.keywords?.Contains("Heavy")==true)cost-=memory.nextHeavyCostReduction;if(memory.perfectForm>0&&!memory.firstAttackPlayed)cost--;if(card.id=="grand_finale"&&memory.attacksThisTurn>=3)cost--;if(hand.Any(c=>c.id=="heavy_chains")&&!memory.firstAttackPlayed)cost++;}
             if(card.kind==CardKind.Skill){cost-=memory.nextSkillCostReduction;if(memory.perfectForm>0&&!memory.firstSkillPlayed)cost--;}
             if(card.id=="vengeful_rush"&&(memory.wasAttackedLastTurn||memory.attackedThisEnemyTurn))cost=0;
             if(memory.nextCardCostPenalty>0)cost+=memory.nextCardCostPenalty;
@@ -143,9 +143,11 @@ namespace GildedFate.Combat
         public bool Play(CardDef card)
         {
             if(!CanPlay(card))return false;var paid=CostFor(card);if(memory.perfectForm>0&&card.cost>0&&(card.kind==CardKind.Attack&&!memory.firstAttackPlayed||card.kind==CardKind.Skill&&!memory.firstSkillPlayed))PresentationPulse("perfect_form");if(relics.Contains("crown_of_sacrifice")&&cardsPlayed==0&&card.cost>0)RelicPresentationPulse("crown_of_sacrifice");if(relics.Contains("crown_of_sacrifice")&&cardsPlayed==0&&card.cost>=2)memory.crownSacrificeDebt=true;energy-=paid;Emit(CombatEventKind.Energy,energy,true);hand.Remove(card);
-            if(card.kind==CardKind.Attack){memory.nextAttackCostReduction=0;if(card.keywords?.Contains("Heavy")==true)memory.nextHeavyCostReduction=0;}if(card.kind==CardKind.Skill)memory.nextSkillCostReduction=0;memory.nextCardCostPenalty=0;
+            if(card.kind==CardKind.Attack){memory.nextAttackCostReduction=0;if(memory.battleRushCharges>0)memory.battleRushCharges--;if(card.keywords?.Contains("Heavy")==true)memory.nextHeavyCostReduction=0;}if(card.kind==CardKind.Skill)memory.nextSkillCostReduction=0;memory.nextCardCostPenalty=0;
             if(card.firstDrawFree||card.specialModification=="quickened")memory.specialPlayIds.Add(-card.instanceId);memory.freeThisTurnIds.Remove(card.instanceId);
-            var repeats=1;var echoCadence=sigils.Contains(SigilKind.Echo)?4:0;if(memory.echoArmed>0){repeats++;memory.echoArmed--;}else if(echoCadence>0&&(cardsPlayed+1)%echoCadence==0){PassiveSigilPresentationPulse(SigilKind.Echo);repeats++;GainResonance(1);Emit(CombatEventKind.Status,1,true,null,"ECHO SIGIL");}
+            // Echo is deliberately activation-only. Activating it arms exactly one
+            // repeat; simply keeping an Echo Sigil in a slot has no passive cadence.
+            var repeats=1;if(memory.echoArmed>0){repeats++;memory.echoArmed--;}
             
             if(card.specialModification=="golden_echo"&&!memory.specialPlayIds.Contains(card.instanceId)){repeats++;memory.specialPlayIds.Add(card.instanceId);}
             if(card.specialModification=="fateful"&&IncrementFateful(card.instanceId)%3==0)repeats++;
@@ -285,7 +287,7 @@ namespace GildedFate.Combat
                 case "spiked_guard":case "come_at_me":case "last_bastion":GainRetaliate(secondary);break;
                 case "bloodied_armor":if(player.strength>0)GainRetaliate(secondary);break;
                 case "forceful_guard":memory.nextAttackBonus+=secondary;break;case "countercharge":if(memory.retaliateTriggeredTurn>0){energy++;Emit(CombatEventKind.Energy,energy,true);}break;
-                case "battle_rush":memory.nextAttackCostReduction=1;if(secondary>0)Draw(secondary,false);break;case "preparation":memory.nextSkillCostReduction=1;break;case "preparation_strike":memory.nextAttackCostReduction=1;break;
+                case "battle_rush":memory.battleRushCharges++;Emit(CombatEventKind.Status,memory.battleRushCharges,true,null,"BATTLE RUSH");if(secondary>0)Draw(secondary,false);break;case "preparation":memory.nextSkillCostReduction=1;break;case "preparation_strike":memory.nextAttackCostReduction=1;break;
                 case "arcane_ward":case "kindle":GainResonance(secondary);break;case "cinder":ApplyBurn(secondary);break;case "marked_shot":ApplyMarked(secondary);break;
                 case "hexed_blade":if(enemy.marked>0)GainResonance(secondary);break;case "burning_hex":ApplyMarked(secondary);break;case "hexfire":if(enemy.marked>0)ApplyBurn(secondary);break;
                 case "quick_thinking":if(secondary>0)GainBlock(secondary,true,card);break;case "adrenaline_rush":AddTemporaryCard("dazed_mind",false);if(secondary>0)Draw(secondary,false);break;
@@ -330,7 +332,7 @@ namespace GildedFate.Combat
             switch(card.id)
             {
                 case "ember_ritual":CreateSigil(SigilKind.Ember);if(secondary>0)GainResonance(secondary);break;case "hex_ritual":CreateSigil(SigilKind.Hex);if(secondary>0)GainResonance(secondary);break;case "echo_ritual":CreateSigil(SigilKind.Echo);if(secondary>0)GainResonance(secondary);break;
-                case "invocation":if(sigils.Count>0)ActivateSigil(0);else GainBlock(4,true,card);break;case "first_ritual":pendingPlay.choice=CardChoiceKind.SigilMode;pendingPlay.choiceFollowupValue=-secondary;break;case "shatter_sigil":if(sigils.Count>0){for(var i=0;i<value;i++)ActivateSigil(0);Emit(CombatEventKind.Status,1,true,null,"SIGIL SHATTER");RemoveRemainingSigil(0);}break;
+                case "invocation":if(sigils.Count>0)ActivateSigil(0);else GainBlock(4,true,card);break;case "first_ritual":pendingPlay.choice=CardChoiceKind.SigilMode;pendingPlay.choiceFollowupValue=-secondary;break;case "shatter_sigil":if(sigils.Count>0){for(var i=0;i<value;i++)ActivateSigil(0);RemoveRemainingSigil(0);EmitSigilShatter(0);}break;
                 case "ritual_cycle":ActivateSigil(0);GainResonance(secondary);Draw(1,false);break;case "perfect_ritual":for(var repeat=0;repeat<value;repeat++)for(var i=0;i<sigils.Count;i++)ActivateSigil(i);break;
                 case "blasphemous_ritual":pendingPlay.choice=CardChoiceKind.SigilMode;pendingPlay.choiceFollowupValue=secondary;break;case "void_sigil":break;
             }
@@ -373,7 +375,7 @@ namespace GildedFate.Combat
             foreach(var card in hand.ToArray()){if(card.id=="lingering_pain")LosePlayerHp(3,false);else if(card.id is "decay" or "haunting")LosePlayerHp(2,false);if(card.ethereal){hand.Remove(card);ExhaustCard(card);}else{hand.Remove(card);discard.Add(card);Emit(CombatEventKind.Discard,1,true,card);}card.firstDrawFree=false;}
             ExpireEffects(CombatEffectDuration.TurnEnd);memory.temporaryDamageIds.Clear();memory.temporaryDamageValues.Clear();memory.nextSoulDamageBonus=memory.nextSoulReplay=memory.gravePactBonus=0;
             if(memory.temporaryFortify>0){var expired=Math.Min(player.fortify,memory.temporaryFortify);player.fortify-=expired;memory.temporaryFortify=0;Emit(CombatEventKind.Status,-expired,true,null,"FORTIFY");}
-            memory.nextAttackBonus=memory.nextAttackPenalty=0;if(memory.temporaryStrength>0){player.strength=Math.Max(0,player.strength-memory.temporaryStrength);memory.temporaryStrength=0;}
+            memory.nextAttackBonus=memory.nextAttackPenalty=memory.battleRushCharges=0;if(memory.temporaryStrength>0){player.strength=Math.Max(0,player.strength-memory.temporaryStrength);memory.temporaryStrength=0;}
             if(memory.crownSacrificeDebt){RelicPresentationPulse("crown_of_sacrifice");LosePlayerHp(3,true);}
             ShardRetainEnergy();
             if(activeShardId=="duelist"&&activeShardFractured&&shardMemory.attacks==1){ShardPulse();Draw(2,false);}
@@ -487,7 +489,20 @@ namespace GildedFate.Combat
             if(amount<=0)return;var damage=amount;enemy.hp=Math.Max(0,enemy.hp-damage);Emit(CombatEventKind.Damage,damage,false,null,"BURN");RelicDamageDealt(damage,"Burn",false);memory.burnTriggersThisTurn++;if(memory.ashes>0&&memory.burnTriggersThisTurn==1){PresentationPulse("ashes");GainResonance(memory.ashes);}if(outsideNormal&&relics.Contains("ashen_crown")){RelicPresentationPulse("ashen_crown");ApplyBurn(2);}if(!outsideNormal)enemy.burn=Math.Max(0,enemy.burn-GameContent.BurnDecayPerTrigger);ShardBurnTriggered();RefreshEnemyState();
         }
 
-        private int CreateSigil(SigilKind kind){R.accessibleSigils|=1<<(int)kind;if(sigils.Count>=SigilCapacity)return -1;sigils.Add(kind);Emit(CombatEventKind.Status,1,true,null,kind.ToString().ToUpperInvariant()+" SIGIL");if(memory.sigilMastery>0&&!memory.sigilMasteryUsed){PresentationPulse("sigil_mastery");ActivateSigil(sigils.Count-1);memory.sigilMasteryUsed=true;}if(sigils.Count==3&&relics.Contains("third_eye")){RelicPresentationPulse("third_eye");ActivateSigil(0);}return sigils.Count-1;}
+        private int CreateSigil(SigilKind kind)
+        {
+            R.accessibleSigils|=1<<(int)kind;
+            // A full ritual row cycles instead of silently failing: the leftmost
+            // Sigil resolves twice, visibly leaves, and the new rune enters last.
+            if(sigils.Count>=SigilCapacity&&sigils.Count>0)
+            {
+                ActivateSigil(0);ActivateSigil(0);RemoveRemainingSigil(0);EmitSigilShatter(0);
+            }
+            if(sigils.Count>=SigilCapacity)return -1;
+            sigils.Add(kind);Emit(CombatEventKind.Status,1,true,null,kind.ToString().ToUpperInvariant()+" SIGIL");
+            if(memory.sigilMastery>0&&!memory.sigilMasteryUsed){PresentationPulse("sigil_mastery");ActivateSigil(sigils.Count-1);memory.sigilMasteryUsed=true;}
+            if(sigils.Count==3&&relics.Contains("third_eye")){RelicPresentationPulse("third_eye");ActivateSigil(0);}return sigils.Count-1;
+        }
         private void ActivateSigil(int index)
         {
             if(index<0||index>=sigils.Count)return;
@@ -502,6 +517,12 @@ namespace GildedFate.Combat
                     if(relics.Contains("ritual_bell")&&memory.sigilActivations%3==0)RelicTrigger("ritual_bell",()=>GainResonance(1));
                 });
             }
+            finally{feedbackSigilSlot=previousSlot;}
+        }
+        private void EmitSigilShatter(int index,CardDef card=null)
+        {
+            var previousSlot=feedbackSigilSlot;feedbackSigilSlot=index;
+            try{Emit(CombatEventKind.Status,1,true,card,"SIGIL SHATTER");}
             finally{feedbackSigilSlot=previousSlot;}
         }
         private SigilKind PreferredSigil(){if(!sigils.Contains(SigilKind.Ember))return SigilKind.Ember;if(!sigils.Contains(SigilKind.Hex))return SigilKind.Hex;return SigilKind.Echo;}

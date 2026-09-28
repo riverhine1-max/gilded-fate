@@ -65,6 +65,23 @@ namespace GildedFate.UI
             var sequence=CardPreview(carver);CombatCheck(sequence.hitDamage.Distinct().Count()>1&&StripRichTags.Replace(LiveCardRules(carver,sequence),"").Contains(sequence.DamageExpression),"Unequal multi-hit values remain visible in the card text");
             CombatCheck(!FormatCardRules("Power. Exhaust. Exhausted cards.").Contains("Exhaust")&&FormatCardRules("Power. Exhaust.").Contains("Aspect"),"Rules display Aspect / Dissipate terminology");
             CombatCheck(RuleKeywords.First(k=>k.term=="Fortify").detail.Contains("triggered effects"),"Fortify tooltip matches its canonical rule");
+            PrepareCombatCheck("battle_rush",5);combat.hand.Clear();combat.energy=9;
+            CardDef Add(string id){var copy=GameContent.Find(id).Copy();copy.instanceId=++combat.nextInstanceId;combat.hand.Add(copy);return copy;}
+            var rushA=Add("battle_rush");var rushB=Add("battle_rush");var rushAttackA=Add("strike");var rushAttackB=Add("strike");
+            combat.Play(rushA);combat.Play(rushB);
+            CombatCheck(combat.memory.battleRushCharges==2&&combat.CostFor(rushAttackA)==0&&PlayerEffectChips().Any(c=>c.title=="BATTLE RUSH"&&c.value==2),"Stacked Battle Rush shows two one-Attack discounts");
+            combat.Play(rushAttackA);CombatCheck(combat.memory.battleRushCharges==1&&combat.CostFor(rushAttackB)==0,"First Attack consumes exactly one Battle Rush charge");
+            combat.Play(rushAttackB);CombatCheck(combat.memory.battleRushCharges==0&&!PlayerEffectChips().Any(c=>c.title=="BATTLE RUSH"),"Second Attack consumes the final Battle Rush charge");
+            PrepareCombatCheck("stand_firm",5);combat.hand.Clear();combat.energy=9;var standFirm=GameContent.Find("stand_firm").Copy();standFirm.instanceId=++combat.nextInstanceId;combat.hand.Add(standFirm);combat.Play(standFirm);
+            var standFirmChip=PlayerEffectChips().FirstOrDefault(c=>c.title=="STAND FIRM");
+            CombatCheck(standFirmChip!=null&&standFirmChip.value==0&&CombatReadabilityIcon(standFirmChip)!=CombatReadabilityIcon(new CombatEffectChip("FOR","FORTIFY","",1,Color.white)),"Stand Firm uses its own numberless icon beside Fortify");
+            PrepareCombatCheck("ward",5);combat.hand.Clear();combat.energy=20;combat.player.block=0;combat.cardsPlayed=3;combat.sigils.Add(SigilKind.Echo);
+            var passiveWard=Add("ward");combat.Play(passiveWard);
+            CombatCheck(combat.player.block==passiveWard.value&&combat.memory.echoArmed==0,"An idle Echo Sigil has no passive fourth-card repeat");
+            var armedWard=Add("ward");combat.memory.echoArmed=1;var beforeEchoBlock=combat.player.block;combat.Play(armedWard);
+            CombatCheck(combat.player.block-beforeEchoBlock==armedWard.value*2&&combat.memory.echoArmed==0,"Activating Echo still grants exactly one one-use repeat");
+            PrepareCombatCheck("ember_ritual",5);combat.hand.Clear();combat.energy=20;combat.sigils.AddRange(new[]{SigilKind.Ember,SigilKind.Hex,SigilKind.Echo});var overflowRitual=Add("ember_ritual");combat.Play(overflowRitual);
+            CombatCheck(combat.sigils.SequenceEqual(new[]{SigilKind.Hex,SigilKind.Echo,SigilKind.Ember})&&combat.memory.sigilActivations==2,"Creating into a full row activates the leftmost Sigil twice, removes it, then adds the new Sigil");
             foreach(var id in new[]{"second_wind","whirlwind_guard","iron_momentum"})
             {
                 PrepareCombatCheck(id,5);combat.memory.powersInPlay=3;combat.memory.attacksThisTurn=2;combat.player.fortify=3;cardPreviewCache.Clear();

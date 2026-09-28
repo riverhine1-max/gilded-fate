@@ -26,7 +26,10 @@ namespace GildedFate.Combat
                 offsets[i]=time;var fact=facts[i];
                 if(fact.kind is CombatEventKind.ShardTrigger or CombatEventKind.RelicTrigger)time+=.20f;
                 else if(fact.kind==CombatEventKind.Status&&!IsRelicWrapper(fact)&&fact.label.StartsWith("TRIGGER:",StringComparison.Ordinal))time+=.20f;
-                else if(fact.kind==CombatEventKind.EnemyAction)time+=.20f;
+                else if(fact.kind==CombatEventKind.Status&&fact.label=="SIGIL SHATTER")time+=.22f;
+                // Each member of a group gets a readable beat before the next one
+                // begins instead of appearing to attack simultaneously.
+                else if(fact.kind==CombatEventKind.EnemyAction)time+=.25f;
                 else if(fact.kind is CombatEventKind.Damage or CombatEventKind.Heal)time+=gap;
                 else if(fact.kind==CombatEventKind.Block&&fact.label=="BLOCKED")
                 {

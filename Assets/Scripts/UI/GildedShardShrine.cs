@@ -47,8 +47,10 @@ namespace GildedFate.UI
                 var old=GUI.color;GUI.color=dim?new Color(.48f,.48f,.55f,.64f):Color.white;
                 if(def!=null)
                 {
+                    var artCenter=c+Vector2.up*(profile.reduceMotion?0:Mathf.Sin(shimmer*1.35f+i*1.7f)*3.5f);var hovered=r.Contains(PointerPosition);
+                    if((hovered||active)&&!profile.reduceFlashing)Fill(new Rect(artCenter.x-35,artCenter.y-35,70,70),new Color(accent.r,accent.g,accent.b,hovered ? .18f : .09f));
                     var scale=1+pulse*.14f+(fracture&&!profile.reduceMotion?Mathf.Sin(shimmer*2.6f)*.022f:0);
-                    DrawFateShardArt(new Rect(c.x-r.width*.47f*scale,c.y-r.height*.47f*scale,r.width*.94f*scale,r.height*.94f*scale),def);
+                    DrawFateShardArt(new Rect(artCenter.x-r.width*.47f*scale,artCenter.y-r.height*.47f*scale,r.width*.94f*scale,r.height*.94f*scale),def);
                     if(owned.uses>=(active?2:1))
                     {
                         var cracks=fracture?3:1;
@@ -161,8 +163,10 @@ namespace GildedFate.UI
             if(!reward.relicClaimed&&!string.IsNullOrEmpty(reward.relicId))
             {
                 DrawFullBackdrop(rewardBackground,w,h,.28f);DrawImportantRewardAtmosphere(w,h);DrawRunDock(w);Heading(w,"A RELIC AWAKENS","A RARE SPOIL FROM THIS ENCOUNTER");
-                var relic=GameContent.Relics.First(r=>r.id==reward.relicId);var r=new Rect(w*.5f-250,h*.30f,500,260);
-                DrawRelicArt(new Rect(r.x+15,r.y+24,130,130),Array.IndexOf(GameContent.Relics,relic));GUI.Label(new Rect(r.x+168,r.y+24,320,52),relic.name,new GUIStyle(titleStyle){fontSize=23,wordWrap=true});GUI.Label(new Rect(r.x+168,r.y+94,320,112),relic.text,new GUIStyle(footerStyle){fontSize=18,wordWrap=true,alignment=TextAnchor.UpperLeft});
+                var relic=GameContent.Relics.First(r=>r.id==reward.relicId);var r=new Rect(w*.5f-250,h*.30f,500,260);var relicArt=new Rect(r.x+15,r.y+24,130,130);
+                DrawRelicArt(relicArt,Array.IndexOf(GameContent.Relics,relic));GUI.Label(new Rect(r.x+168,r.y+24,320,52),relic.name,new GUIStyle(titleStyle){fontSize=23,wordWrap=true});GUI.Label(new Rect(r.x+168,r.y+94,320,112),relic.text,new GUIStyle(footerStyle){fontSize=18,wordWrap=true,alignment=TextAnchor.UpperLeft});
+                if(relicArt.Contains(PointerPosition)){Outline(new Rect(relicArt.x-3,relicArt.y-3,relicArt.width+6,relicArt.height+6),Gold,2);SetRunHudTooltip(relicArt,relic.name,relic.text+"\n\nClick the relic or TAKE RELIC to claim it.");}
+                if(!acquisitionActive&&GUI.Button(relicArt,"",GUIStyle.none))ClaimRolledRelic();
                 if(GUI.Button(new Rect(r.x+100,r.yMax-30,300,48),"TAKE RELIC",buttonStyle))ClaimRolledRelic();return true;
             }
             if(!reward.shardClaimed&&!string.IsNullOrEmpty(reward.shardId))

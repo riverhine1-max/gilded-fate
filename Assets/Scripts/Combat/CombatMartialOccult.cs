@@ -52,7 +52,7 @@ namespace GildedFate.Combat
                 case "sigil_of_malice":
                     if(sigils.Count<SigilCapacity){pendingPlay.choice=CardChoiceKind.SigilMode;pendingPlay.choiceFollowupValue=EnemyDebuffCount()>0?1:0;}return true;
                 case "unstable_ritual":
-                    if(sigils.Count>0){var slot=sigils.Count-1;for(var i=0;i<value;i++)ActivateSigil(slot);RemoveRemainingSigil(slot);Emit(CombatEventKind.Status,1,true,card,"SIGIL SHATTER");}return true;
+                    if(sigils.Count>0){var slot=sigils.Count-1;for(var i=0;i<value;i++)ActivateSigil(slot);RemoveRemainingSigil(slot);EmitSigilShatter(slot,card);}return true;
                 case "dark_resonance":
                     if(!card.upgraded)AddRandomCurse(false);ActivateAllSigils(1);if(card.upgraded){GainResonance(sigils.Count);AddRandomCurse(false);}return true;
                 case "arcane_detonation":

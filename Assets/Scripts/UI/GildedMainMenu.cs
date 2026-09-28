@@ -26,7 +26,7 @@ namespace GildedFate.UI
         private ScreenMode controllerScreen=ScreenMode.Menu;
         private bool controllerNavigation;
         private MapNode pendingMapNode;
-        private float mapTravelStartedAt;
+        private float mapTravelStartedAt,mapInputReadyAt;
         private HeroId selectedHero=HeroId.Vanguard;
         private float heroSelectionTime;
         private int guiRepaintCount;
@@ -268,6 +268,7 @@ namespace GildedFate.UI
 
         private void Update()
         {
+            if(screen!=previousScreen){previousScreen=screen;transitionAlpha=1f;if(screen==ScreenMode.Map)mapInputReadyAt=Time.unscaledTime+.22f;}
             UpdateHexerVideos();UpdateVanguardVideos();UpdateReaperVideos();
             if(runStartActive){if(!runStartCaptureFrozen)AdvanceRunStart(Time.unscaledDeltaTime);return;}
             UpdatePointerNavigationMode();
@@ -281,7 +282,7 @@ namespace GildedFate.UI
             shimmer += Time.unscaledDeltaTime;
             if(run.gold!=observedGold){if(run.gold>observedGold&&goldCollectTime<=0){goldCollectAmount=run.gold-observedGold;goldCollectOrigin=new Vector2(CombatWidth*.64f,CombatHeight*.48f);goldCollectTime=profile.reduceMotion?.32f:1.08f;}observedGold=run.gold;}
             impactFlash=Mathf.Max(0,impactFlash-Time.unscaledDeltaTime*4f);gildedFlash=Mathf.Max(0,gildedFlash-Time.unscaledDeltaTime*2.2f);
-            if(screen!=previousScreen){previousScreen=screen;transitionAlpha=1f;}transitionAlpha=Mathf.Max(0,transitionAlpha-Time.unscaledDeltaTime*(profile!=null&&profile.fastMode?6f:2.8f));
+            transitionAlpha=Mathf.Max(0,transitionAlpha-Time.unscaledDeltaTime*(profile!=null&&profile.fastMode?6f:2.8f));
             enemyVfxTime=Mathf.Max(0,enemyVfxTime-Time.unscaledDeltaTime*2.1f);playerVfxTime=Mathf.Max(0,playerVfxTime-Time.unscaledDeltaTime*2.1f);bossIntroTime=Mathf.Max(0,bossIntroTime-Time.unscaledDeltaTime);bossPhaseTime=Mathf.Max(0,bossPhaseTime-Time.unscaledDeltaTime);rewardRevealTime=Mathf.Max(0,rewardRevealTime-Time.unscaledDeltaTime*(profile!=null&&profile.fastMode?2f:1f));goldCollectTime=Mathf.Max(0,goldCollectTime-Time.unscaledDeltaTime);
             if(run.deck.Count>0&&!IsRunInspectionPaused&&screen!=ScreenMode.Menu&&screen!=ScreenMode.Settings&&screen!=ScreenMode.Statistics&&screen!=ScreenMode.Credits&&screen!=ScreenMode.RunResult)run.elapsedSeconds+=Time.unscaledDeltaTime;
             for (var i = 0; i < motes.Count; i++)
@@ -334,7 +335,7 @@ namespace GildedFate.UI
                 if(mapPauseOpen){if(back)mapPauseOpen=false;return;}
                 var available=run.nodes.Where(n=>n.floor==run.floor&&n.available).OrderBy(n=>n.lane).ToArray();if(available.Length==0)return;
                 if(delta!=0){mapControllerIndex=(mapControllerIndex+delta+available.Length)%available.Length;Sfx(SoundCue.UiHover);}
-                if(accept)BeginMapTravel(available[Mathf.Clamp(mapControllerIndex,0,available.Length-1)]);
+                if(accept&&Time.unscaledTime>=mapInputReadyAt)BeginMapTravel(available[Mathf.Clamp(mapControllerIndex,0,available.Length-1)]);
                 else if(back)mapPauseOpen=true;return;
             }
             if(screen==ScreenMode.Merchant)
@@ -661,7 +662,7 @@ namespace GildedFate.UI
         }
         private bool TryActivateMapNodeAt(Vector2 pointer)
         {
-            if(screen!=ScreenMode.Map||pendingMapNode!=null||run.nodes==null||run.nodes.Count==0)return false;
+            if(screen!=ScreenMode.Map||Time.unscaledTime<mapInputReadyAt||pendingMapNode!=null||run.nodes==null||run.nodes.Count==0)return false;
             var w=CombatWidth;var h=CombatHeight;if(mapPauseOpen)return false;FocusMapToCurrentFloor(w,h);
             var viewport=MapViewport(w,h);if(!viewport.Contains(pointer))return false;
             var local=pointer-viewport.position+new Vector2(0,mapScroll);
@@ -676,7 +677,7 @@ namespace GildedFate.UI
         }
         private void UpdateMapPointerInput()
         {
-            if(screen!=ScreenMode.Map||profile==null||pendingMapNode!=null||mapPauseOpen||inspectedCard!=null||ShardDiscoveryOpen||acquisitionActive)return;
+            if(screen!=ScreenMode.Map||Time.unscaledTime<mapInputReadyAt||profile==null||pendingMapNode!=null||mapPauseOpen||inspectedCard!=null||ShardDiscoveryOpen||acquisitionActive)return;
             FocusMapToCurrentFloor(CombatWidth,CombatHeight);
             var mouse=UnityEngine.InputSystem.Mouse.current;if(mouse==null)return;
             var physical=mouse.position.ReadValue();var pointer=guiPointerReady?guiPointerPosition:CanvasPointFromPhysical(physical,Screen.height,CombatScale);
@@ -730,7 +731,7 @@ namespace GildedFate.UI
 
         private void BeginMapTravel(MapNode node)
         {
-            if(node==null||pendingMapNode!=null||node.floor!=run.floor||!node.available)return;
+            if(node==null||Time.unscaledTime<mapInputReadyAt||pendingMapNode!=null||node.floor!=run.floor||!node.available)return;
             pendingMapNode=node;mapTravelStartedAt=Time.unscaledTime;Sfx(SoundCue.MapStep);gildedFlash=1f;
         }
         private void UpdateMapTravel()
@@ -817,6 +818,15 @@ namespace GildedFate.UI
         {
             if(node.kind==NodeKind.Combat){var chosen=EncounterContent.Choose(run.act,node.floor+1,run.normalCombatsCompleted,run.seed^run.act*104729^node.floor*397^node.lane*7919^27011);return WorldContent.Enemies.First(e=>e.id==chosen.enemies[0]);}
             var candidates=WorldContent.Enemies.Where(e=>node.kind==NodeKind.Boss?e.boss:e.elite).ToArray();
+            if(node.kind==NodeKind.Boss)
+            {
+                // Shuffle the keeper roster once from the run seed. Each act gets
+                // one random, stable boss, so every portrait previews the exact
+                // enemy that will be waiting at the summit.
+                var rng=new System.Random(unchecked(run.seed^0x4B1D5A77));
+                for(var i=candidates.Length-1;i>0;i--){var j=rng.Next(i+1);(candidates[i],candidates[j])=(candidates[j],candidates[i]);}
+                return candidates[Mathf.Abs(run.act-1)%candidates.Length];
+            }
             var hash=unchecked((uint)run.seed*2654435761u^(uint)(node.floor*397+node.lane*71));
             return candidates[hash%(uint)candidates.Length];
         }
@@ -1159,6 +1169,7 @@ namespace GildedFate.UI
 
         private void DrawRelicArt(Rect r,int index)
         {
+            r=new Rect(r.x+2,r.y+2,Mathf.Max(1,r.width-4),Mathf.Max(1,r.height-4));
             if(index>=36&&index<GameContent.Relics.Length){var relative=index-36;var atlas=LoadAuthoredArt("Art/Relics/Expansion/major_relics_"+(relative/18+1));if(atlas)DrawAtlasIcon(atlas,relative%18,6,3,r);return;}
             if(index>=0&&index<GameContent.Relics.Length&&GameContent.Relics[index].id=="deaths_keepsake"&&deathsKeepsake)GUI.DrawTexture(r,deathsKeepsake,ScaleMode.ScaleToFit,true);
             else if(relicIconAtlas)DrawAtlasIcon(relicIconAtlas,Mathf.Clamp(index,0,35),6,6,r);
@@ -1431,7 +1442,7 @@ namespace GildedFate.UI
 
         private void DrawEventCancel(float w,float h){var r=new Rect(34,h-67,170,38);DrawButtonFrame(r,r.Contains(PointerPosition),false);if(GUI.Button(r,"CANCEL",buttonStyle)&&EventSystem.CancelSelection(run)){collectionPage=0;SaveService.Save(run);screen=ScreenMode.Event;}}
         private void DrawEventBackdrop(float w,float h){if(mapBackground)GUI.DrawTexture(new Rect(0,0,w,h),mapBackground,ScaleMode.ScaleAndCrop);else DrawLocationBackdrop(w,h,(currentEvent?.artIndex??0)%4);Fill(new Rect(0,0,w,h),new Color(.002f,.005f,.01f,.66f));var seed=(currentEvent?.artIndex??0)+1;for(var i=0;i<9;i++){var x=Mathf.Repeat(seed*127+i*173,w);var sway=profile.reduceMotion?0:Mathf.Sin(shimmer*.5f+i)*24;DrawLine(new Vector2(x+sway,-20),new Vector2(x-sway+70,h+20),new Color(1f,.65f,.16f,.025f+(i%3)*.012f),1+(i%2));}}
-        private void DrawEventArtwork(Rect r){var index=currentEvent?.artIndex??0;var atlas=index<15?eventAtlasActI:index<30?eventAtlasActII:index<45?eventAtlasActIII:eventAtlasGeneral;var local=index<15?index:index<30?index-15:index<45?index-30:index-45;if(atlas)DrawAtlasIcon(atlas,local,5,index<45?3:1,r);else DrawAtlasIcon(locationAtlas,index%4,4,1,r);Fill(new Rect(r.x,r.y,r.width,24),new Color(0,0,0,.24f));}
+        private void DrawEventArtwork(Rect r){var index=currentEvent?.artIndex??0;var atlas=index<15?eventAtlasActI:index<30?eventAtlasActII:index<45?eventAtlasActIII:eventAtlasGeneral;var local=index<15?index:index<30?index-15:index<45?index-30:index-45;if(atlas)DrawAtlasIcon(atlas,local,5,index<45?3:1,r);else DrawAtlasIcon(locationAtlas,index%4,4,1,r);var accent=index<15?new Color(1f,.46f,.18f):index<30?new Color(.55f,.34f,1f):index<45?new Color(.20f,.72f,1f):Gold;Fill(new Rect(r.x,r.y,r.width,4),new Color(accent.r,accent.g,accent.b,.72f));Fill(new Rect(r.x,r.y,4,r.height),new Color(accent.r,accent.g,accent.b,.34f));Outline(r,new Color(accent.r,accent.g,accent.b,.58f),2);Fill(new Rect(r.x,r.y,r.width,24),new Color(0,0,0,.18f));}
         private void DrawPersistentRunBar(float w,bool combatMode)
         {
             runHudTooltipTitle=runHudTooltipDetail=null;
@@ -1448,7 +1459,7 @@ namespace GildedFate.UI
             GUI.Label(new Rect(gold.x+39,gold.y,gold.width-42,gold.height),run.gold.ToString(),new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=18,alignment=TextAnchor.MiddleLeft,normal={textColor=new Color(1f,.85f,.52f)}});
             if(gold.Contains(pointer))SetRunHudTooltip(gold,"GOLD",$"{run.gold} Gold. Spend it with merchants and at certain Vault events.");
 
-            var bossIndex=Mathf.Clamp(13+run.act,14,16);var boss=WorldContent.Enemies[bossIndex];var bossRect=new Rect(313,6,46,46);
+            var bossNode=run.nodes?.FirstOrDefault(n=>n.kind==NodeKind.Boss);var boss=bossNode!=null?EnemyForNode(bossNode):WorldContent.Enemies.First(e=>e.boss);var bossRect=new Rect(313,6,46,46);
             DrawFloatingEnemy(bossRect,boss);
             if(bossRect.Contains(pointer))SetRunHudTooltip(bossRect,$"ACT {run.act} BOSS · {boss.name}",boss.description);
 
@@ -1465,6 +1476,7 @@ namespace GildedFate.UI
                 RegisterCombatHudTarget("relic:"+id,9,r,relic?.name??id,(relic?.text??"")+(combat!=null?"\n\n"+combat.RelicProgress(id):""));
                 var grow=screen==ScreenMode.Combat?RelicPulseGrowth(id,Time.unscaledTime):0;var relicDraw=new Rect(r.x-grow,r.y-grow,r.width+grow*2,r.height+grow*2);DrawRelicArt(relicDraw,Mathf.Max(0,atlasIndex));DrawRelicCounter(r,id);
                 if(r.Contains(pointer)){Outline(new Rect(r.x-2,r.y-2,r.width+4,r.height+4),Gold,2);SetRunHudTooltip(r,relic?.name??id.Replace('_',' ').ToUpperInvariant(),(relic?.text??"A relic carried for the rest of this run.")+(screen==ScreenMode.Combat&&combat!=null?"\n\n"+combat.RelicProgress(id):""));}
+                if(relic!=null&&!acquisitionActive&&(!combatMode||!combatBusy)&&GUI.Button(r,"",GUIStyle.none)){inspectedRelic=relic;Sfx(SoundCue.UiConfirm);}
             }
             if(run.relics.Count>shown)
             {
@@ -1489,6 +1501,7 @@ namespace GildedFate.UI
         }
         private void DrawFateShardArt(Rect r,FateShardDef shard)
         {
+            r=new Rect(r.x+2,r.y+2,Mathf.Max(1,r.width-4),Mathf.Max(1,r.height-4));
             var index=Mathf.Max(0,System.Array.IndexOf(WorldContent.FateShards,shard));if(fateShardIconAtlas)DrawAtlasIcon(fateShardIconAtlas,index,6,5,r);else DrawAtlasIcon(consumableAtlas,index%8,4,2,r);
         }
         private void SetRunHudTooltip(Rect anchor,string title,string detail){runHudTooltipAnchor=anchor;runHudTooltipTitle=title;runHudTooltipDetail=detail;}

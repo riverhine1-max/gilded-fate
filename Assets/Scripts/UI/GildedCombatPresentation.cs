@@ -147,7 +147,7 @@ namespace GildedFate.UI
         private Vector2 CardImpactPoint(CardDef card)=>combat!=null&&card!=null&&combat.RequiresEnemyTarget(card)?
             new Vector2(EnemyVisualCenterX,CombatHeight*.34f):card?.kind==CardKind.Power?
             HeroPortraitRect.center+Vector2.right*72:new Vector2(CombatWidth*.43f,CombatHeight*.38f);
-        private bool CanAcceptCombatInput=>!combatHudInspectActive&&!ShardDiscoveryOpen&&inspectedCard==null&&!combatPauseOpen&&!choicePresented&&!combatBusy&&Time.unscaledTime>=handReadyAt&&bossIntroTime<=0&&combat!=null&&combat.pendingPlay==null&&!combat.IsOver&&combat.phase==CombatPhase.Player;
+        private bool CanAcceptCombatInput=>!combatHudInspectActive&&!ShardDiscoveryOpen&&inspectedCard==null&&inspectedRelic==null&&!combatPauseOpen&&!choicePresented&&!combatBusy&&Time.unscaledTime>=handReadyAt&&bossIntroTime<=0&&combat!=null&&combat.pendingPlay==null&&!combat.IsOver&&combat.phase==CombatPhase.Player;
         private bool CombatInspectionAllowed=>!controllerNavigation&&!ShardDiscoveryOpen&&inspectedCard==null&&dragView==null&&selectedView==null&&!controllerTargeting&&!cardDragging&&!combatBusy;
 
         private void ResetCombatPresentation()
@@ -425,7 +425,8 @@ namespace GildedFate.UI
                 if(combat.RequiresEnemyTarget(card)){enemyVfxIndex=vfx;enemyVfxTime=.48f;}else{playerVfxIndex=vfx;playerVfxTime=.48f;}
                 if(gilded){gildedFlash=.65f;resonancePulse=1;Sfx(SoundCue.Resonance);}
                 UpdateBossPhaseVisual();
-                yield return new WaitForSecondsRealtime(Mathf.Max(settling,AnimationSeconds(important?.52f:.33f)));
+                var ritualLead=card.id=="first_ritual"?AnimationSeconds(.72f):0;
+                yield return new WaitForSecondsRealtime(Mathf.Max(settling,Mathf.Max(AnimationSeconds(important?.52f:.33f),ritualLead)));
                 yield return ResolvePendingCardChoices(card);
             }
             movingCard=-1;
@@ -483,9 +484,18 @@ namespace GildedFate.UI
             var arrivalGap=AnimationSeconds(CombatHitTiming.CardStagger(facts.Count(f=>f.card!=null&&(f.generatedCard||f.kind==CombatEventKind.Draw))));
             var exitGap=AnimationSeconds(CombatHitTiming.CardStagger(facts.Count(f=>f.kind is CombatEventKind.Discard or CombatEventKind.Exhaust),.025f));
             var finish=0f;var startupCardsReady=0f;var drawDelay=0f;var discardDelay=0f;var numberDelay=0f;var now=Time.unscaledTime;var playerNumbers=0;var enemyNumbers=0;
-            var hitGap=Mathf.Max(.09f,AnimationSeconds(CombatHitTiming.DefaultHitGap));var hitOffsets=CombatHitTiming.PresentationOffsets(facts,hitGap);var factIndex=0;
+            var vanguardAttack=run.hero==HeroId.Vanguard&&played?.kind==CardKind.Attack;
+            var vanguardHits=vanguardAttack?facts.Where(f=>!f.playerSide&&f.hitId>0&&f.card?.instanceId==played.instanceId&&f.kind is CombatEventKind.Damage or CombatEventKind.Block).Select(f=>f.hitId).Distinct().Count():0;
+            var hitGap=Mathf.Max(.09f,AnimationSeconds(vanguardHits>1?.46f:CombatHitTiming.DefaultHitGap));var hitOffsets=CombatHitTiming.PresentationOffsets(facts,hitGap);
+            if(vanguardAttack)
+            {
+                var firstHit=System.Array.FindIndex(facts,f=>!f.playerSide&&f.hitId>0&&f.card?.instanceId==played.instanceId&&f.kind is CombatEventKind.Damage or CombatEventKind.Block);
+                if(firstHit>=0){var lead=AnimationSeconds(.16f);for(var i=firstHit;i<hitOffsets.Length;i++)hitOffsets[i]+=lead;}
+            }
+            var factIndex=0;
             ScheduleRetaliateReturns(facts,hitOffsets,now);
             ScheduleHexerVideoReceipts(facts,hitOffsets,now);
+            ScheduleVanguardVideoReceipts(facts,hitOffsets,now,played);
             ScheduleReaperVideoReceipts(facts,hitOffsets,now);
             foreach(var fact in facts)
             {
@@ -913,6 +923,7 @@ namespace GildedFate.UI
             var hero=HeroPortraitRect;var foe=EnemyPortraitRect;var playerHealth=new Rect(hero.x,hero.yMax+8,hero.width,22);var enemyHealth=new Rect(foe.x,foe.yMax+8,foe.width,22);
             var playerChips=PlayerEffectChips();
             DrawActorHealthBar(playerHealth,combat.player,true);DrawEffectStrip(PlayerEffectArea(playerChips.Count),playerChips,true);
+            if(CombatInspectionAllowed&&hero.Contains(combatPointer))SetCombatEffectTooltip("THE "+run.hero.ToString().ToUpperInvariant(),ActorEffectSummary(playerChips),hero.center);
             if(GroupCombat){DrawGroupStats();if(run.hero==HeroId.Hexer){DrawSigilSlots(HexerSigilArea);DrawHexerResonance();}return;}
             DrawActorHealthBar(enemyHealth,combat.enemy,false);if(currentEnemy?.boss==true)DrawBossPhaseMarkers(enemyHealth);DrawEffectStrip(new Rect(foe.center.x-Mathf.Max(foe.width,282)*.5f,enemyHealth.yMax+6,Mathf.Max(foe.width,282),98),EnemyEffectChips(),false);
             if(run.hero==HeroId.Hexer){DrawSigilSlots(HexerSigilArea);DrawHexerResonance();}
@@ -975,7 +986,8 @@ namespace GildedFate.UI
             AddPowerChip(chips,"brand_of_ruin",combat.memory.brandOfRuin,power);
             AddPowerChip(chips,"beyond_the_veil_hexer",combat.memory.extraSigilSlots,power);
             AddFighterStatusChips(chips,PresentedPlayerStatuses(),true,harmful,positive);
-            if(combat.memory.temporaryFortify>0)chips.Add(new("FOR","TEMPORARY FORTIFY",$"{combat.memory.temporaryFortify} of your Fortify expires at the end of this turn. Iron Will and other persistent Fortify remain.",combat.memory.temporaryFortify,positive));
+            if(combat.memory.temporaryFortify>0)chips.Add(new("SFM","STAND FIRM",$"Stand Firm is sustaining {combat.memory.temporaryFortify} temporary Fortify. That Fortify expires at the end of this turn; persistent Fortify remains.",0,positive));
+            if(combat.memory.battleRushCharges>0)chips.Add(new("RSH","BATTLE RUSH",$"Your next {combat.memory.battleRushCharges} Attack{(combat.memory.battleRushCharges==1?"":"s")} this turn cost 1 less each. One charge is consumed per Attack.",combat.memory.battleRushCharges,new Color(1f,.72f,.25f)));
             if(combat.memory.nextHeavyCostReduction>0)chips.Add(new("BRACE","BRACE",$"Your next Heavy Attack costs {combat.memory.nextHeavyCostReduction} less. Other cards do not consume this discount.",combat.memory.nextHeavyCostReduction,positive));
             if(VisibleRetaliation>0)chips.Add(new("RET","RETALIATE",$"The next enemy attack takes {VisibleRetaliation} damage back, then consumes all Retaliate. Persists between turns. A multi-hit attack triggers once; Block is not required.",VisibleRetaliation,positive));
             AddPowerChip(chips,"battle_temper",combat.memory.battleTemper,power);AddPowerChip(chips,"iron_blood",combat.memory.ironBlood,power);AddPowerChip(chips,"living_armor",combat.memory.livingArmor,power);AddPowerChip(chips,"war_machine",combat.memory.warMachine,power,$"{Mathf.Min(combat.memory.warMachineUses,combat.memory.warMachine)}/{combat.memory.warMachine}");
@@ -1012,8 +1024,10 @@ namespace GildedFate.UI
                 var r=SigilSlotRect(i);var accent=filled?SigilAccent(kind):new Color(.47f,.44f,.51f);
                 var pulse=0f;foreach(var beat in sigilPulseBeats)if(beat.slot==i&&Time.unscaledTime>=beat.time)
                     pulse=Mathf.Max(pulse,1-(Time.unscaledTime-beat.time)/.26f);
+                var shatter=0f;foreach(var beat in sigilShatterBeats)if(beat.slot==i&&Time.unscaledTime>=beat.time)
+                    shatter=Mathf.Max(shatter,1-(Time.unscaledTime-beat.time)/.38f);
                 var old=GUI.color;GUI.color=new Color(1,1,1,reveal);
-                var c=r.center;var inset=filled?5:11;var lineAlpha=filled?.48f:.22f;
+                var c=r.center;if(filled&&!profile.reduceMotion)c.y+=Mathf.Sin(shimmer*1.25f+i*.85f)*2.5f;var inset=filled?5:11;var lineAlpha=filled?.48f:.22f;
                 DrawLine(new Vector2(r.x+inset,r.yMax-4),new Vector2(r.xMax-inset,r.yMax-4),new Color(accent.r,accent.g,accent.b,lineAlpha),1);
                 if(filled)
                 {
@@ -1031,6 +1045,11 @@ namespace GildedFate.UI
                     DrawLine(c+Vector2.down*d,c+Vector2.left*d,new Color(.55f,.50f,.61f,.35f),1);
                     DrawLine(c+Vector2.left*d,c+Vector2.up*d,new Color(.55f,.50f,.61f,.35f),1);
                 }
+                if(shatter>0&&!profile.reducedVfx)for(var shard=0;shard<8;shard++)
+                {
+                    var angle=shard*Mathf.PI*.25f;var from=c+new Vector2(Mathf.Cos(angle),Mathf.Sin(angle))*18;var to=c+new Vector2(Mathf.Cos(angle),Mathf.Sin(angle))*(24+(1-shatter)*25);
+                    DrawLine(from,to,new Color(accent.r,accent.g,accent.b,shatter),2);
+                }
                 GUI.Label(new Rect(r.x-5,r.yMax+1,r.width+10,14),filled?kind.ToString().ToUpperInvariant():(i+1).ToString(),
                     new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=10,normal={textColor=accent}});
                 GUI.color=old;
@@ -1045,6 +1064,11 @@ namespace GildedFate.UI
             var chips=new List<CombatEffectChip>();AddFighterStatusChips(chips,PresentedEnemyStatuses(owner<0?combat.EnemyContextIndex:owner),false,new Color(.90f,.32f,.45f),new Color(.35f,.78f,1f));
             // Passive encounter prose remains available on enemy inspection, not in the active-effect strip.
             return chips;
+        }
+        private static string ActorEffectSummary(List<CombatEffectChip> chips)
+        {
+            if(chips==null||chips.Count==0)return "NO ACTIVE BUFFS OR DEBUFFS";
+            return string.Join("   ·   ",chips.Select(chip=>chip.title+(chip.value>0?" "+(string.IsNullOrEmpty(chip.counter)?chip.value.ToString():chip.counter):"")));
         }
         private static void AddFighterStatusChips(List<CombatEffectChip> chips,FighterState fighter,bool playerSide,Color harmful,Color positive)
         {
@@ -1062,7 +1086,7 @@ namespace GildedFate.UI
             DrawEnemyIntentGroup(0);
             var foe=EnemyPortraitRect;
             if(CombatInspectionAllowed&&foe.Contains(combatPointer))
-                SetCombatEffectTooltip(currentEnemy?.name??"ENEMY",CompleteIntentDetail(0)+"\n\n"+combat.mechanicTitle+"\n"+combat.mechanicText,foe.center);
+                SetCombatEffectTooltip(currentEnemy?.name??"ENEMY",ActorEffectSummary(EnemyEffectChips()),foe.center);
         }
         private void DrawEffectStrip(Rect r,List<CombatEffectChip> chips,bool playerSide)
         {
@@ -1091,7 +1115,7 @@ namespace GildedFate.UI
         {
             return chip.title switch
             {
-                "BLOCK"=>1,"STRENGTH"=>2,"TEMPORARY FORTIFY"=>3,"BRACE"=>42,"FORTIFY"=>3,"RETALIATE"=>4,"BURN"=>5,"MARKED"=>6,"WEAK"=>7,"VULNERABLE"=>8,"FRAIL"=>9,
+                "BLOCK"=>1,"STRENGTH"=>2,"STAND FIRM"=>58,"BATTLE RUSH"=>57,"BRACE"=>42,"FORTIFY"=>3,"RETALIATE"=>4,"BURN"=>5,"MARKED"=>6,"WEAK"=>7,"VULNERABLE"=>8,"FRAIL"=>9,
                 "BATTLE TEMPER"=>16,"IRON BLOOD"=>17,"LIVING ARMOR"=>18,"WAR MACHINE"=>19,"UNBREAKABLE SPIRIT"=>20,"PATIENT WARRIOR"=>21,"RETRIBUTION"=>22,"HOLD THE LINE"=>23,
                 "RELENTLESS"=>24,"ONSLAUGHT"=>25,"INDOMITABLE"=>26,"SIGIL MASTERY"=>27,"GRAND CONVERGENCE"=>28,"ASHES"=>29,"DEATH'S GAZE"=>30,"EMBRACE THE VOID"=>31,
                 "DAMNATION"=>32,"BATTLE RHYTHM"=>33,"RESERVE ENERGY"=>34,"TACTICAL ADVANTAGE"=>35,"RESOURCEFUL"=>36,"OVERFLOW"=>37,"CHAIN REACTION"=>38,"AGAINST ALL ODDS"=>39,"PERFECT FORM"=>40,
@@ -1103,8 +1127,9 @@ namespace GildedFate.UI
         private void DrawCombatEffectTooltip(float w,float h)
         {
             if(string.IsNullOrEmpty(combatEffectTooltipTitle))return;
-            const float width=340;var x=combatEffectTooltipAnchor.x+28;if(x+width>w-18)x=combatEffectTooltipAnchor.x-width-28;if(x<18)x=18;var y=Mathf.Clamp(combatEffectTooltipAnchor.y-54,118,h-210);
-            DrawTooltip(new Rect(x,y,width,116),combatEffectTooltipTitle,combatEffectTooltipDetail);
+            const float width=340;var measure=new GUIStyle(footerStyle){fontSize=15,wordWrap=true};var height=Mathf.Clamp(measure.CalcHeight(new GUIContent(combatEffectTooltipDetail??""),width-30)+58,106,260);
+            var x=combatEffectTooltipAnchor.x+28;if(x+width>w-18)x=combatEffectTooltipAnchor.x-width-28;if(x<18)x=18;var y=Mathf.Clamp(combatEffectTooltipAnchor.y-height*.46f,72,h-height-18);
+            DrawTooltip(new Rect(x,y,width,height),combatEffectTooltipTitle,combatEffectTooltipDetail);
         }
         private void DrawCombatRelics()
         {

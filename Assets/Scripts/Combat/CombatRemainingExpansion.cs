@@ -204,7 +204,7 @@ namespace GildedFate.Combat
                 case "forbidden_transfusion":if(index==0)GainStrength(c.value);else if(index==1)GainFortify(c.value);else GainResonance(c.value);break;
                 case "arcane_contagion":if(RC.stage==0){RC.selectedDebuff=Array.IndexOf(new[]{"BURN","MARKED","WEAK","VULNERABLE"},option);BeginRemainingOptions(1);}else{var dest=int.Parse(option.Substring(0,option.IndexOf(' ')))-1;var n=new[]{"BURN","MARKED","WEAK","VULNERABLE"}[RC.selectedDebuff];var amount=Math.Min(c.value,DebuffAmount(EnemyAt(RC.source),n));OnEnemy(RC.source,()=>RemoveDebuff(enemy,n,amount));OnEnemy(dest,()=>AddDebuff(n,amount,c.id));}break;
                 case "ritual_spark":ActivateSigil(index);R.sparkSlots.Add(index);break;
-                case "ritual_collapse":var repeats=(int)sigils[index]>=3?c.value:2;for(var i=0;i<repeats;i++)ActivateSigil(index);RemoveRemainingSigil(index);Emit(CombatEventKind.Status,1,true,c,"SIGIL SHATTER");break;
+                case "ritual_collapse":var repeats=(int)sigils[index]>=3?c.value:2;for(var i=0;i<repeats;i++)ActivateSigil(index);RemoveRemainingSigil(index);EmitSigilShatter(index,c);break;
                 case "sigil_mutation":if(RC.stage==0){RC.slot=index;BeginRemainingOptions(1);}else{sigils[RC.slot]=(SigilKind)Enum.Parse(typeof(SigilKind),option.Replace(" SIGIL",""),true);ActivateSigil(RC.slot);ActivateSigil(RC.slot);}break;
             }
             FinishRemainingChoice();return true;

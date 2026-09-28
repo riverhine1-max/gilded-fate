@@ -120,7 +120,7 @@ namespace GildedFate.UI
                     var cell=GroupCell(index);DrawEffectStrip(GroupEffectArea(index),EnemyEffectChips(index),false);
                     DrawEnemyIntentGroup(index);
                     if(CombatInspectionAllowed&&portrait.Contains(combatPointer))
-                        SetCombatEffectTooltip(currentEnemy.name,CompleteIntentDetail(index)+"\n\n"+combat.mechanicText,portrait.center);
+                        SetCombatEffectTooltip(currentEnemy.name,ActorEffectSummary(EnemyEffectChips(index)),portrait.center);
                 });
             }
         }

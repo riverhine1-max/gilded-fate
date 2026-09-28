@@ -74,25 +74,29 @@ namespace GildedFate.UI
             SigilKind.Mirror=>"ACTIVATE: Repeat the activation effect of the Sigil immediately to the left. Never repeats another Mirror. Gain 1 Resonance.",
             SigilKind.Ember=>"ACTIVATE: Apply 2 Burn. Gain 1 Resonance.\nPASSIVE: Activates at the end of your turn.",
             SigilKind.Hex=>"ACTIVATE: Apply 1 Marked. Gain 1 Resonance.\nPASSIVE: Your first Attack each turn applies 1 Marked and gains 1 Resonance.",
-            _=>"ACTIVATE: Your next card repeats. Gain 1 Resonance.\nPASSIVE: Every fourth card repeats and gains 1 Resonance."
+            _=>"ACTIVATE: Your next card repeats once. Gain 1 Resonance.\nNO PASSIVE EFFECT."
         };
         private void DrawSigilChoice(float w,float h)
         {
             combatEffectTooltipTitle=combatEffectTooltipDetail=null;
             var existing=combat.ChoiceKind==CardChoiceKind.SigilSlot;var options=combat.ChoiceOptions;
-            Heading(w,existing?"CHOOSE A SIGIL TO ECHO":"CHOOSE A SIGIL",combat.pendingPlay.card.name+" · "+(existing?"ACTIVATE YOUR CHOSEN SIGIL TWICE":"CREATE IN THE NEXT OPEN SLOT"));
-            var columns=Mathf.Min(6,options.Count);var rows=Mathf.CeilToInt(options.Count/(float)columns);var width=Mathf.Min(260,(w-220-(columns-1)*18)/columns);var height=Mathf.Min(274,(h-220)/Mathf.Max(1,rows));var start=Mathf.Max(140,(w-columns*width-(columns-1)*18)*.5f);
+            var ritualTitle=combat.pendingPlay.card.id=="first_ritual"?"FIRST RITUAL: CHOOSE A SIGIL":"CHOOSE A SIGIL";
+            GUI.Label(new Rect(w*.15f,91,w*.7f,54),existing?"CHOOSE A SIGIL TO ECHO":ritualTitle,new GUIStyle(titleStyle){fontSize=32,normal={textColor=new Color(1f,.88f,.58f)}});
+            GUI.Label(new Rect(w*.2f,145,w*.6f,28),existing?"ACTIVATE ONE OF YOUR EXISTING SIGILS TWICE":"EMBER · HEX · ECHO",new GUIStyle(footerStyle){fontSize=13,fontStyle=FontStyle.Bold,normal={textColor=new Color(.86f,.82f,.76f)}});
+            var columns=Mathf.Min(6,options.Count);var rows=Mathf.CeilToInt(options.Count/(float)columns);var width=Mathf.Min(190,(w-220-(columns-1)*24)/columns);var height=190f;var start=(w-columns*width-(columns-1)*24)*.5f;
             for(var i=0;i<options.Count;i++)
             {
                 var kind=existing?combat.sigils[i]:(SigilKind)i;var color=kind==SigilKind.Ember?new Color(1,.55f,.27f):kind==SigilKind.Hex?new Color(.8f,.57f,1f):new Color(.51f,.81f,1f);
-                var rect=new Rect(start+i%columns*(width+18),h*.26f+i/columns*(height+12),width,height);var hot=rect.Contains(combatPointer)||controllerNavigation&&choiceControllerIndex==i;
-                Fill(rect,new Color(.018f,.019f,.03f,.97f));Outline(rect,hot?color:new Color(.32f,.30f,.38f),hot?3:1);
-                DrawRemainingSigilIcon(kind,new Rect(rect.center.x-42,rect.y+12,84,84));
-                GUI.Label(new Rect(rect.x+8,rect.y+98,rect.width-16,28),options[i],new GUIStyle(buttonStyle){fontSize=16,normal={textColor=color}});
-                GUI.Label(new Rect(rect.x+16,rect.y+132,rect.width-32,rect.height-146),SigilDescription(kind),new GUIStyle(subtitleStyle){fontSize=13,alignment=TextAnchor.UpperLeft,wordWrap=true});
+                var rect=new Rect(start+i%columns*(width+24),h*.30f+i/columns*(height+18),width,height);var hot=rect.Contains(combatPointer)||controllerNavigation&&choiceControllerIndex==i;
+                var pulse=profile.reduceMotion?0:(Mathf.Sin(shimmer*2.2f+i*.8f)+1)*.5f;var glow=(hot ? .25f : .07f)+pulse*.025f;
+                Fill(new Rect(rect.center.x-70,rect.y+7,140,140),new Color(color.r,color.g,color.b,glow));
+                var size=hot?124f:112f;DrawRemainingSigilIcon(kind,new Rect(rect.center.x-size*.5f,rect.y+15-(profile.reduceMotion?0:pulse*3),size,size));
+                if(hot){Outline(new Rect(rect.center.x-72,rect.y+5,144,144),new Color(color.r,color.g,color.b,.88f),2);DrawLine(new Vector2(rect.center.x-48,rect.y+155),new Vector2(rect.center.x+48,rect.y+155),color,2);}
+                GUI.Label(new Rect(rect.x+8,rect.y+155,rect.width-16,30),options[i],new GUIStyle(buttonStyle){fontSize=17,normal={textColor=hot?Color.white:color}});
                 if(rect.Contains(combatPointer))SetCombatEffectTooltip(kind.ToString().ToUpperInvariant()+" SIGIL",SigilDescription(kind),new Vector2(rect.xMax,rect.center.y));
                 if(GUI.Button(rect,"",GUIStyle.none)&&choiceOptionSelected==null){choiceOptionSelected=options[i];Sfx(SoundCue.UiConfirm);}
             }
+            Outline(new Rect(w*.12f,76,w*.76f,h*.65f),new Color(.72f,.55f,.28f,.35f),1);
             DrawCombatEffectTooltip(w,h);
         }
     }

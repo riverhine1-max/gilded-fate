@@ -53,6 +53,14 @@ namespace GildedFate.UI
             PrepareCombatCheck("strike",5);profile.reduceMotion=false;
             CombatCheck(VanguardCardAnimation(combat.hand[0])=="BasicAttack","Basic attack mapping");
             vanguardAttackVariant=1;CombatCheck(VanguardCardAnimation(combat.hand[0])=="AlternateAttack","Alternate attack mapping");
+            var multi=GameContent.Find("flurry").Copy();multi.instanceId=7001;var multiFacts=new[]
+            {
+                new CombatEvent(CombatEventKind.Damage,3,false,multi){hitId=1},
+                new CombatEvent(CombatEventKind.Damage,3,false,multi){hitId=2},
+                new CombatEvent(CombatEventKind.Damage,3,false,multi){hitId=3}
+            };
+            vanguardVideoBeats.Clear();vanguardAttackVariant=1;ScheduleVanguardVideoReceipts(multiFacts,new[]{.16f,.62f,1.08f},Time.unscaledTime,multi);
+            CombatCheck(vanguardVideoBeats.Select(b=>b.clip).SequenceEqual(new[]{"AlternateAttack","BasicAttack"})&&vanguardAttackVariant==3,"Multi-hit Vanguard receipts alternate one attack animation per additional hit");
             foreach(var pair in new[]{new[]{"STRENGTH","BuffStrength"},new[]{"FORTIFY","Fortify"},new[]{"RETALIATE","RetaliateReady"}})
             {
                 vanguardVideoBeats.Clear();PlayVanguardStatus(new CombatEvent(CombatEventKind.Status,1,true,null,pair[0]));
