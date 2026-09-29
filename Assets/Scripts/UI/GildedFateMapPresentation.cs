@@ -38,7 +38,7 @@ namespace GildedFate.UI
             {
                 var a=viewport.position+MapPosition(from,viewport.width)-new Vector2(0,mapScroll);var b=viewport.position+MapPosition(target,viewport.width)-new Vector2(0,mapScroll);
                 var completed=from.complete&&(target.complete||target==CurrentMapLocation);var current=from.complete&&target.available&&target.floor==run.floor;var hot=from==hovered||target==hovered;
-                DrawFateThread(a,b,viewport,completed,current,hot);
+                if(MapPolishThread(a,b,viewport,completed,current,hot,from,target))DrawFateThread(a,b,viewport,completed,current,hot);
             }
             MapNode clicked=null;GUI.BeginGroup(viewport);
             foreach(var node in run.nodes)
@@ -46,16 +46,17 @@ namespace GildedFate.UI
                 var current=node==CurrentMapLocation;var p=MapPosition(node,viewport.width)-new Vector2(0,mapScroll);var active=node.floor==run.floor&&node.available;var hot=node==hovered;var size=node.kind==NodeKind.Boss?108:current?84:hot?84:active?78:64;
                 if(p.y<-size||p.y>viewport.height+size)continue;var r=new Rect(p.x-size*.5f,p.y-size*.5f,size,size);var old=GUI.color;
                 GUI.color=current?Color.white:node.complete?new Color(.44f,.42f,.37f):active||hot?Color.white:new Color(.78f,.77f,.71f);
-                DrawMapNodeIcon((int)node.kind,r);GUI.color=old;
+                MapPolishNodeUnder(node,r,active,hot,current);
+                DrawMapNodeIcon((int)node.kind,r);GUI.color=old;MapPolishNodeOver(node,r,current);
                 if(current)DrawCurrentMapMarker(r);
                 var roomLabel=node.kind==NodeKind.Sanctuary?"REST SHRINE":node.kind.ToString().ToUpperInvariant();
                 GUI.Label(new Rect(p.x-95,p.y+size*.5f+7,190,22),roomLabel+(current?" · HERE":node.complete?" · CLEARED":""),new GUIStyle(footerStyle){fontSize=11,normal={textColor=current||active?Gold:new Color(.78f,.77f,.70f)}});
                 if(!inspectOnly&&mapReady&&active&&!mapPauseOpen&&pendingMapNode==null&&GUI.Button(r,"",GUIStyle.none))clicked=node;
             }
-            GUI.EndGroup();
+            GUI.EndGroup();MapPolishFog(viewport);
             var boss=run.nodes.FirstOrDefault(n=>n.kind==NodeKind.Boss);if(boss!=null)
             {
-                var crown=new Rect(w-207,106,126,132);DrawBossMapPortrait(crown,boss);
+                var crown=new Rect(w-207,106,126,132);MapPolishBossAura(crown);DrawBossMapPortrait(crown,boss);
                 GUI.Label(new Rect(w-258,244,232,42),"ACT "+RomanAct(run.act)+" · SUMMIT KEEPER",new GUIStyle(footerStyle){fontSize=12,normal={textColor=Gold}});
                 if(crown.Contains(pointer))SetRunHudTooltip(crown,EnemyForNode(boss).name,"The keeper waits above "+run.ActFloorCount+" layers of fate. Click to view the summit; enter only after reaching its connected path.");
                 if(!mapPauseOpen&&GUI.Button(crown,"",GUIStyle.none)){if(!inspectOnly&&mapReady&&boss.floor==run.floor&&boss.available)BeginMapTravel(boss);else{mapScroll=0;mapFocusFloor=run.floor;}}

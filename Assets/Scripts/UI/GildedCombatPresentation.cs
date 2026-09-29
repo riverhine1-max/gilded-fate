@@ -620,7 +620,7 @@ namespace GildedFate.UI
             Fill(new Rect(0,0,w,h),new Color(.005f,.008f,.015f,.24f));
             DrawCombat3DStage(w,h);
             DrawCombatRunBar(w);
-            if(bossIntroTime>0){DrawBossIntro(w,h);return;}
+            if(bossIntroTime>0){DrawBossIntroCinematic(w,h);return;}
             DrawCombatAtmosphere(w,h);
             var matrix=GUI.matrix;
             if(profile.screenShake&&!profile.reduceMotion&&impactShake>0)GUI.matrix=matrix*Matrix4x4.Translate(new Vector3(Mathf.Sin(shimmer*61)*impactShake*3,Mathf.Cos(shimmer*47)*impactShake*2,0));
@@ -639,7 +639,7 @@ namespace GildedFate.UI
                 Fill(new Rect(w*.34f,132,w*.32f,44),new Color(.015f,.02f,.035f,alpha*.92f));
                 GUI.Label(new Rect(w*.34f,132,w*.32f,44),turnBanner,new GUIStyle(buttonStyle){fontSize=22,normal={textColor=new Color(1,.88f,.57f,alpha)}});
             }
-            if(bossPhaseTime>0)DrawBossPhaseTransition(w,h);
+            if(bossPhaseTime>0)DrawBossPhaseCinematic(w,h);
         }
 
         private void DrawCombatHand()
@@ -881,6 +881,7 @@ namespace GildedFate.UI
             var color=index==1?new Color(.69f,.39f,.90f):index==2?new Color(.28f,.83f,.73f):new Color(.96f,.64f,.26f);
             if(identityLastEnergy!=combat.energy){identityEnergyGain=combat.energy>identityLastEnergy;identityEnergyChangedAt=identityLastEnergy<0?-10:Time.unscaledTime;identityLastEnergy=combat.energy;}
             var seal=new Rect(r.x,r.y,r.width,r.height-12);var old=GUI.color;
+            DrawEnergyOrbBack(seal,color);
             var reaction=profile.reduceFlashing?0:1-Mathf.Clamp01((Time.unscaledTime-identityEnergyChangedAt)/.36f);
             GUI.color=Color.Lerp(combat.energy>0?Color.white:new Color(.56f,.56f,.60f),identityEnergyGain?new Color(1.16f,1.12f,1.08f):new Color(.66f,.66f,.70f),reaction*.65f);
             DrawIdentityEnergy(seal,index);GUI.color=old;
@@ -930,6 +931,7 @@ namespace GildedFate.UI
 
         private void DrawCombatStats(float w,float h)
         {
+            DrawVitalsPolishOverlay(); // GildedCombatPolishVitals.cs: death dust + block shards
             var hero=HeroPortraitRect;var foe=EnemyPortraitRect;var playerHealth=new Rect(hero.x,hero.yMax+8,hero.width,22);var enemyHealth=new Rect(foe.x,foe.yMax+8,foe.width,22);
             var playerChips=PlayerEffectChips();
             DrawActorHealthBar(playerHealth,combat.player,true);DrawEffectStrip(PlayerEffectArea(playerChips.Count),playerChips,true);
@@ -950,6 +952,7 @@ namespace GildedFate.UI
             // The orange damage slice exists only during the short impact animation;
             // the resting lost-health region remains pure black.
             FillBeveledHealthBar(r,ratio,shownFill<shownHp?ratio:Mathf.Clamp01(trail/Mathf.Max(1,fighter.maxHp)),healthColor,guarded?new Color(.58f,.88f,1f):new Color(.86f,.61f,.34f));
+            DrawVitalsPolish(r,playerSide?-1:Mathf.Max(0,groupRenderIndex),shownHp,shownBlock,fighter.maxHp,ratio); // GildedCombatPolishVitals.cs
             var healGlow=playerSide?playerHealGlow:group?.healGlow??enemyHealGlow;
             if(healGlow>0&&!profile.reduceFlashing)DrawLine(new Vector2(r.x+6,r.y+2),new Vector2(r.x+Mathf.Max(6,(r.width-6)*ratio),r.y+2),new Color(.5f,1f,.67f,healGlow),2);
             if(playerSide)DrawFateHealthTreatment(r);

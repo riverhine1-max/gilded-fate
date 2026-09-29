@@ -141,6 +141,7 @@ namespace GildedFate.UI
         private void Start()
         {
             PrepareRunStartMaterial();
+            TryBeginLaunchBootIntro();
             var capture=CommandValue("-gfCapture");if(string.IsNullOrEmpty(capture))return;
             if(capture=="audio-checks"){combatTestInput=true;PrepareCombatCheck("strike",5);}
             else if(capture=="credits")screen=ScreenMode.Credits;
@@ -271,6 +272,7 @@ namespace GildedFate.UI
             if(screen!=previousScreen){previousScreen=screen;transitionAlpha=1f;if(screen==ScreenMode.Map)mapInputReadyAt=Time.unscaledTime+.22f;}
             UpdateHexerVideos();UpdateVanguardVideos();UpdateReaperVideos();
             if(runStartActive){if(!runStartCaptureFrozen)AdvanceRunStart(Time.unscaledDeltaTime);return;}
+            if(bootIntroActive){AdvanceBootIntro(Time.unscaledDeltaTime);return;}
             UpdatePointerNavigationMode();
             if(routeInspectionOpen){UpdateRouteInspectionInput();return;}
             UpdateAudioPresentation();
@@ -472,6 +474,7 @@ namespace GildedFate.UI
             var w = Screen.width / uiScale;
             var h = Screen.height / uiScale;
             DrawBackdrop(w, h);
+            if(bootIntroActive&&DrawBootIntro(w,h))return;
             if(runStartActive)
             {
                 if(Event.current.isMouse||Event.current.isKey||Event.current.type==EventType.ScrollWheel)Event.current.Use();
@@ -514,18 +517,22 @@ namespace GildedFate.UI
             var titleY = Mathf.Max(55f, h * .095f);
             var pulse = .82f + Mathf.Sin(shimmer * 1.35f) * .12f;
             titleStyle.normal.textColor = new Color(1f, .72f + pulse * .12f, .28f, 1f);
-            if(logoTexture){var old=GUI.color;GUI.color=new Color(1f,1f,1f,.9f+pulse*.08f);GUI.DrawTexture(new Rect(left-130,titleY-70,contentW+260,190),logoTexture,ScaleMode.ScaleToFit,true);GUI.color=old;}else ShadowLabel(new Rect(left, titleY, contentW, 82), "GILDED FATE", titleStyle);
+            MenuLiveBackdrop(w,h);MenuLiveLogoBack(new Rect(left-130,titleY-70,contentW+260,190));
+            if(logoTexture){if(!bootIntroActive){var old=GUI.color;GUI.color=new Color(1f,1f,1f,.9f+pulse*.08f);GUI.DrawTexture(new Rect(left-130,titleY-70,contentW+260,190),logoTexture,ScaleMode.ScaleToFit,true);GUI.color=old;}}else ShadowLabel(new Rect(left, titleY, contentW, 82), "GILDED FATE", titleStyle);
+            MenuLiveLogoSweep(new Rect(left-130,titleY-70,contentW+260,190));
             subtitleStyle.normal.textColor = new Color(.88f,.84f,.73f);
             GUI.Label(new Rect(left, titleY + 88, contentW, 30), "ENTER THE VAULT", subtitleStyle);
 
-            var menuY = titleY + 154f;
+            var menuY = titleY + 154f + BootIntroMenuSlide;
             hovered = -1;
             for (var i = 0; i < labels.Length; i++)
             {
                 var rect = new Rect(left + 82, menuY + i * 56, contentW - 164, 47);
                 var over = rect.Contains(PointerPosition)||(controllerNavigation&&menuControllerIndex==i);
                 if (over) hovered = i;
+                rect=MenuLiveLift(rect,over,i);
                 DrawButtonFrame(rect, over, i == 0&&!SaveService.HasRun);
+                MenuLivePlaque(rect,over,i);
                 GUI.enabled=i!=0||SaveService.HasRun;
                 if (GUI.Button(rect, labels[i], buttonStyle)) Activate(i);
                 GUI.enabled=true;
@@ -534,6 +541,7 @@ namespace GildedFate.UI
 
             if(!string.IsNullOrEmpty(banner)){var note=new GUIStyle(footerStyle){fontSize=12,normal={textColor=new Color(.95f,.67f,.24f)}};GUI.Label(new Rect(w*.2f,h-62,w*.6f,24),banner,note);}
             GUI.Label(new Rect(0, h - 34, w, 20), "THE GILDED VAULT AWAITS  ·  VERSION 0.1", footerStyle);
+            if(bootIntroActive)DrawBootIntroSettle(w,h);
             DrawTransition(w,h);
         }
 
@@ -594,6 +602,7 @@ namespace GildedFate.UI
             Heading(w,selectingNewRun?"CHOOSE YOUR FATE":"CHARACTER ARCHIVE",selectingNewRun?"SELECT A HERO · THEN CONFIRM THE ASCENT":"ONE HERO · ONE COMPLETE DECKBUILDING PATH");
             var stage=new Rect(64,116,790,h-196);Fill(stage,new Color(.008f,.012f,.021f,.62f));Outline(stage,new Color(accent.r,accent.g,accent.b,.7f),2);
             DrawSelectedHeroArtwork(new Rect(stage.x+4,stage.y+4,stage.width-8,stage.height-8),selectedHero);
+            DrawHeroSelectPedestal(stage);
             Fill(new Rect(stage.x,stage.yMax-132,stage.width,132),new Color(.006f,.009f,.016f,.88f));
             var heroName=selectedHero==HeroId.Vanguard?"THE VANGUARD":selectedHero==HeroId.Hexer?"THE HEXER":"THE REAPER";
             var heroRole=selectedHero==HeroId.Vanguard?"STEEL · BLOCK · RETRIBUTION":selectedHero==HeroId.Hexer?"MARKS · BURN · RITUAL":"SOULS · DISSIPATE · SCYTHE";
@@ -610,6 +619,7 @@ namespace GildedFate.UI
             var deckTitle=new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=13,alignment=TextAnchor.UpperLeft,normal={textColor=new Color(.84f,.76f,.58f)}};
             GUI.Label(new Rect(panel.x+31,panel.y+285,panel.width-62,25),"STARTING DECK",deckTitle);
             GUI.Label(new Rect(panel.x+31,panel.y+315,panel.width-62,62),selectedHero==HeroId.Vanguard?"4 Strike · 4 Defend\nBattle Cry · Brace":selectedHero==HeroId.Hexer?"4 Hex Strike · 4 Ward\nInvocation · First Ritual":"4 Scythe Strike · 4 Death's Veil\nSoul Call · Reaping Blow",new GUIStyle(body){fontSize=16});
+            DrawHeroSelectTextReveal(panel);
             var confirm=new Rect(panel.x+28,panel.yMax-68,panel.width-56,46);DrawButtonFrame(confirm,confirm.Contains(PointerPosition),false);
             if(GUI.Button(confirm,selectingNewRun?"CONFIRM HERO · BEGIN ASCENT":"OPEN HERO CARD ARCHIVE",buttonStyle))ConfirmSelectedHero();
 
@@ -632,6 +642,7 @@ namespace GildedFate.UI
             Fill(new Rect(r.x-5,r.y-5,r.width+10,r.height+10),selected?new Color(accent.r,accent.g,accent.b,.22f):new Color(0,0,0,.5f));
             DrawSelectedHeroArtwork(r,hero);Outline(r,selected?accent:new Color(.5f,.48f,.44f),selected?4:over?3:1);
             if(GUI.Button(r,"",GUIStyle.none)&&!selected){selectedHero=hero;heroSelectionTime=Time.unscaledTime;Sfx(SoundCue.UiConfirm);}
+            DrawHeroSelectorPolish(r,hero);
         }
 
         private void ConfirmSelectedHero()
@@ -750,6 +761,7 @@ namespace GildedFate.UI
             DrawFateThread(start,destination,viewport,true,true,true,progress);
             if(viewport.Contains(end))Fill(new Rect(end.x-4,end.y-4,8,8),new Color(1,1,.82f));
             if(t>.72f)Fill(new Rect(0,58,w,h-58),new Color(.025f,.015f,.002f,(t-.72f)*2.4f));
+            MapPolishTravel(start,destination,viewport,progress,t);
         }
         private void DrawBossMapPortrait(Rect r,MapNode node)
         {
@@ -1003,7 +1015,7 @@ namespace GildedFate.UI
             if(run.encounterRewards.cardClaimed&&!acquisitionActive){Advance();return;}
             DrawFullBackdrop(rewardBackground,w,h,.26f);DrawImportantRewardAtmosphere(w,h);DrawRunDock(w);
             Heading(w,CombatRewardTitle,"CHOOSE ONE CARD · OR SKIP");var options=RewardCards();
-            var rewardGap=28f;var rewardW=Mathf.Min(220f,(w-180-rewardGap*(options.Length-1))/options.Length);var rewardH=Mathf.Min(rewardW*1.41f,h*.37f);var rewardStart=Mathf.Max(124,(w-(rewardW*options.Length+rewardGap*(options.Length-1)))*.5f);for(int i=0;i<options.Length;i++){var reveal=RewardReveal(i)*RewardChoiceOpacity;var r=new Rect(rewardStart+i*(rewardW+rewardGap),h*.29f+(1f-reveal)*85f,rewardW,rewardH);var old=GUI.color;GUI.color=new Color(1f,1f,1f,reveal);DrawCard(r,options[i]);RegisterCardKeywordHelp(r,options[i]);if(controllerNavigation&&screenControllerIndex==i){Outline(new Rect(r.x-5,r.y-5,r.width+10,r.height+10),Gold,4);hoveredCardHelp=options[i];hoveredCardHelpAnchor=r;}if(acquisitionActive)Fill(r,new Color(.004f,.008f,.012f,1-RewardChoiceOpacity));GUI.color=old;if(!acquisitionActive&&reveal>=.99f&&GUI.Button(r,"",GUIStyle.none)){var chosen=options[i];if(run.ClaimEncounterCard(chosen.id)){SaveService.Save(run);BeginCardAcquisition(chosen,Advance);}}}
+            var rewardGap=28f;var rewardW=Mathf.Min(220f,(w-180-rewardGap*(options.Length-1))/options.Length);var rewardH=Mathf.Min(rewardW*1.41f,h*.37f);var rewardStart=Mathf.Max(124,(w-(rewardW*options.Length+rewardGap*(options.Length-1)))*.5f);DrawRewardCardThreads(w,h,options.Length);for(int i=0;i<options.Length;i++){var reveal=RewardReveal(i)*RewardChoiceOpacity;var r=new Rect(rewardStart+i*(rewardW+rewardGap),h*.29f+(1f-reveal)*85f,rewardW,rewardH);var old=GUI.color;GUI.color=new Color(1f,1f,1f,reveal);DrawCard(r,options[i]);RegisterCardKeywordHelp(r,options[i]);if(controllerNavigation&&screenControllerIndex==i){Outline(new Rect(r.x-5,r.y-5,r.width+10,r.height+10),Gold,4);hoveredCardHelp=options[i];hoveredCardHelpAnchor=r;}if(acquisitionActive)Fill(r,new Color(.004f,.008f,.012f,1-RewardChoiceOpacity));GUI.color=old;if(!acquisitionActive&&reveal>=.99f&&GUI.Button(r,"",GUIStyle.none)){var chosen=options[i];if(run.ClaimEncounterCard(chosen.id)){SaveService.Save(run);BeginCardAcquisition(chosen,Advance);}}}
             var skip=new Rect(w*.5f-95,h*.72f,190,50);var skipHot=ScreenChoiceHot(skip,options.Length);DrawButtonFrame(skip,skipHot,rewardRevealTime>.05f);if(!acquisitionActive&&rewardRevealTime<=.05f&&GUI.Button(skip,"SKIP",buttonStyle))Advance();
         }
         private bool DrawPendingCombatGold(float w,float h)
@@ -1021,7 +1033,7 @@ namespace GildedFate.UI
         private static Rect RunGoldIconRect=>new Rect(195,13,30,30);
         private void DrawGoldCollectFlight()
         {
-            if(goldCollectTime<=0||goldCollectAmount<=0)return;var duration=profile.reduceMotion?.32f:1.08f;var t=1-Mathf.Clamp01(goldCollectTime/duration);var target=RunGoldIconRect.center;for(var i=0;i<7;i++){var p=Mathf.Clamp01(t-i*.055f);var at=Vector2.Lerp(goldCollectOrigin,target,Mathf.SmoothStep(0,1,p));at.y-=Mathf.Sin(p*Mathf.PI)*(70+i*5);var size=Mathf.Lerp(36,20,p);DrawGoldIcon(new Rect(at.x-size*.5f,at.y-size*.5f,size,size));}GUI.Label(new Rect(goldCollectOrigin.x+34,goldCollectOrigin.y-22,160,34),"+"+goldCollectAmount,new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=20,alignment=TextAnchor.MiddleLeft,normal={textColor=new Color(1f,.86f,.44f,1-t*.65f)}});
+            if(goldCollectTime<=0||goldCollectAmount<=0)return;var duration=profile.reduceMotion?.32f:1.08f;var t=1-Mathf.Clamp01(goldCollectTime/duration);var target=RunGoldIconRect.center;for(var i=0;i<7;i++){var p=Mathf.Clamp01(t-i*.055f);var at=Vector2.Lerp(goldCollectOrigin,target,Mathf.SmoothStep(0,1,p));at.y-=Mathf.Sin(p*Mathf.PI)*(70+i*5);var size=Mathf.Lerp(36,20,p);DrawGoldIcon(new Rect(at.x-size*.5f,at.y-size*.5f,size,size));}if(!TfRewardGoldBurstActive)GUI.Label(new Rect(goldCollectOrigin.x+34,goldCollectOrigin.y-22,160,34),"+"+goldCollectAmount,new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=20,alignment=TextAnchor.MiddleLeft,normal={textColor=new Color(1f,.86f,.44f,1-t*.65f)}});
         }
         private float RewardReveal(int index){if(profile.reduceMotion)return 1f;var elapsed=1.15f-rewardRevealTime;return Mathf.SmoothStep(0,1,Mathf.Clamp01((elapsed-Mathf.Min(index,2)*.16f)/.58f));}
 
@@ -1243,7 +1255,7 @@ namespace GildedFate.UI
         private void DrawSanctuary(float w,float h)
         {
             DrawLocationBackdrop(w,h,1);DrawRunDock(w);
-            Heading(w,"SANCTUARY","A QUIET FLAME BURNS WITHOUT FUEL"); Choice(new Rect(w*.125f,h*.34f,w*.23f,220),"REST","Heal 30% maximum HP.\nRecover up to "+Mathf.Min(run.maxHp-run.hp,Mathf.RoundToInt(run.maxHp*.3f))+" HP now.",RestAtShrine,0); Choice(new Rect(w*.385f,h*.34f,w*.23f,220),"UPGRADE","Choose one physical card copy and improve its authored upgrade.\nYou can cancel before choosing a card.",()=>{collectionPage=0;cardServiceScroll=0;cardServiceReturnScreen=ScreenMode.Sanctuary;run.stage=RunStage.CardUpgrade;SaveService.Save(run);screen=ScreenMode.CardUpgrade;},1); Choice(new Rect(w*.645f,h*.34f,w*.23f,220),"BIND A CARD","Choose one Act-appropriate Binding, then engrave it onto one eligible unmodified card copy.\nYou can cancel before engraving.",()=>{collectionPage=0;cardChoiceScroll=0;run.BeginBindingChoice();SaveService.Save(run);screen=ScreenMode.BindingSelect;},2);
+            Heading(w,"SANCTUARY","A QUIET FLAME BURNS WITHOUT FUEL");DrawShopRestSanctuaryPolish(w,h); Choice(new Rect(w*.125f,h*.34f,w*.23f,220),"REST","Heal 30% maximum HP.\nRecover up to "+Mathf.Min(run.maxHp-run.hp,Mathf.RoundToInt(run.maxHp*.3f))+" HP now.",RestAtShrine,0); Choice(new Rect(w*.385f,h*.34f,w*.23f,220),"UPGRADE","Choose one physical card copy and improve its authored upgrade.\nYou can cancel before choosing a card.",()=>{collectionPage=0;cardServiceScroll=0;cardServiceReturnScreen=ScreenMode.Sanctuary;run.stage=RunStage.CardUpgrade;SaveService.Save(run);screen=ScreenMode.CardUpgrade;},1); Choice(new Rect(w*.645f,h*.34f,w*.23f,220),"BIND A CARD","Choose one Act-appropriate Binding, then engrave it onto one eligible unmodified card copy.\nYou can cancel before engraving.",()=>{collectionPage=0;cardChoiceScroll=0;run.BeginBindingChoice();SaveService.Save(run);screen=ScreenMode.BindingSelect;},2);
         }
 
         private void DrawDeckService(float w,float h,bool upgrading)
@@ -1273,9 +1285,10 @@ namespace GildedFate.UI
             var eventTitle=new GUIStyle(titleStyle){fontSize=31,alignment=TextAnchor.UpperLeft,wordWrap=true,normal={textColor=new Color(1f,.91f,.68f)}};GUI.Label(new Rect(story.x+48,story.y+20,story.width-78,76),currentEvent.name,eventTitle);
             var storyText=EventStory(currentEvent);var promptRect=new Rect(story.x+49,story.y+94,story.width-84,story.height-126);var promptStyle=new GUIStyle(footerStyle){fontSize=17,alignment=TextAnchor.UpperLeft,wordWrap=true,normal={textColor=new Color(.97f,.94f,.87f)}};while(promptStyle.fontSize>12&&promptStyle.CalcHeight(new GUIContent(storyText),promptRect.width)>promptRect.height)promptStyle.fontSize--;GUI.Label(promptRect,storyText,promptStyle);
             GUI.Label(new Rect(story.x+49,story.yMax-28,story.width-84,18),currentEvent.ambientCue.ToUpperInvariant()+"  ·  A VAULT ENCOUNTER",new GUIStyle(footerStyle){fontSize=9,alignment=TextAnchor.MiddleLeft,normal={textColor=new Color(.85f,.69f,.40f)}});
+            StoryEndEventPolish(scene);
 
             var choices=currentEvent.choices??System.Array.Empty<EventChoiceDef>();var rightX=scene.xMax-18;var rightW=w-rightX-28;var gap=12f;var availableHeight=h-164;var choiceH=Mathf.Min(190f,(availableHeight-gap*Mathf.Max(0,choices.Length-1))/Mathf.Max(1,choices.Length));var startY=116+(availableHeight-(choiceH*choices.Length+gap*Mathf.Max(0,choices.Length-1)))*.5f;
-            for(var i=0;i<choices.Length;i++)DrawClearEventChoice(new Rect(rightX,startY+i*(choiceH+gap),rightW,choiceH),choices[i],i);
+            for(var i=0;i<choices.Length;i++){var choiceRect=new Rect(rightX,startY+i*(choiceH+gap),rightW,choiceH);DrawClearEventChoice(choiceRect,choices[i],i);StoryEndChoiceThread(choiceRect,i);}
             DrawPersistentRunTooltip(w,h);
         }
 
@@ -1543,7 +1556,7 @@ namespace GildedFate.UI
         };
         private static string BindingGlyph(string id)=>id switch{"serrated"=>"╱╱","reinforced"=>"⬡","weighted"=>"⇊","quickened"=>"⌛","lingering"=>"∞","gilded"=>"♛","focused"=>"◎","chained"=>"⚭","recurring"=>"↻","fateful"=>"✦✦✦","perfected"=>"◇",_=>"✦"};
 
-        private void DrawTreasure(float w,float h){DrawLocationBackdrop(w,h,2);DrawRunDock(w);Heading(w,"TREASURE VAULT",run.beggarFavor?"SIX GOLDEN HANDPRINTS SHIMMER ON THE LOCK":"GOLDEN LIGHT ESCAPES FROM THE SEAMS");Choice(new Rect(w*.35f,h*.34f,w*.3f,260),"OPEN THE CHEST","Gain gold, a relic, and sometimes a Fate Shard.",OpenTreasure,0);}
+        private void DrawTreasure(float w,float h){DrawLocationBackdrop(w,h,2);DrawRunDock(w);Heading(w,"TREASURE VAULT",run.beggarFavor?"SIX GOLDEN HANDPRINTS SHIMMER ON THE LOCK":"GOLDEN LIGHT ESCAPES FROM THE SEAMS");Choice(new Rect(w*.35f,h*.34f,w*.3f,260),"OPEN THE CHEST","Gain gold, a relic, and sometimes a Fate Shard.",OpenTreasure,0);if(!acquisitionActive)DrawRelicPedestal(new Rect(w*.5f-45,h*.34f-92,90,90));}
         private void OpenTreasure()
         {
             if(acquisitionActive)return;var gain=run.beggarFavor?105:45;run.gold+=gain;observedGold=run.gold;profile.goldCollected+=gain;run.beggarFavor=false;goldCollectAmount=gain;goldCollectOrigin=new Vector2(CombatWidth*.5f,CombatHeight*.48f);goldCollectTime=profile.reduceMotion?.32f:1.08f;
@@ -1557,7 +1570,7 @@ namespace GildedFate.UI
             // Migrate old unfinished elite/boss reward screens into the card reward flow.
             if(currentNode?.kind!=NodeKind.Treasure){run.RollEncounterRewards(currentNode?.kind??NodeKind.Combat);run.stage=RunStage.CardReward;screen=ScreenMode.Reward;SaveService.Save(run);DrawReward(w,h);return;}
             DrawFullBackdrop(rewardBackground,w,h,.24f);DrawRunDock(w);Heading(w,"TREASURE RECOVERED","A RELIC FROM THE SEALED VAULT");
-            if(!ShardDiscoveryOpen)Choice(new Rect(w*.35f,h*.34f,w*.3f,200),run.treasureRelicClaimedReceipt==run.RoomReceipt?"CONTINUE":"CLAIM RELIC",run.treasureRelicClaimedReceipt==run.RoomReceipt?"Relic collected. Return to your ascent.":"Take the relic and return to your ascent.",GrantRelic);
+            if(!ShardDiscoveryOpen)Choice(new Rect(w*.35f,h*.34f,w*.3f,200),run.treasureRelicClaimedReceipt==run.RoomReceipt?"CONTINUE":"CLAIM RELIC",run.treasureRelicClaimedReceipt==run.RoomReceipt?"Relic collected. Return to your ascent.":"Take the relic and return to your ascent.",GrantRelic);if(!ShardDiscoveryOpen&&!acquisitionActive)DrawRelicPedestal(new Rect(w*.5f-45,h*.34f-92,90,90));
         }
         private void EnterFateweave(){if(run.act>=3){CompleteRun();return;}run.BeginNextAct();run.BeginFateweave();rewardRevealTime=profile.reduceMotion?0:1.4f;SaveService.Save(run);screen=ScreenMode.Fateweave;Sfx(SoundCue.Fateweave);}
 
@@ -1623,7 +1636,7 @@ namespace GildedFate.UI
 
         private void DrawRunResult(float w,float h)
         {
-            DrawFullBackdrop(runResultVictory?rewardBackground:combatBackground,w,h,runResultVictory ? .2f : .55f);var title=runResultVictory?"THE LOWER VAULT FALLS":"FATE SHATTERED";var subtitle=runResultVictory?"THE CROWN ANSWERS TO YOU":"THE VAULT REMEMBERS THIS ATTEMPT";Heading(w,title,subtitle);var time=System.TimeSpan.FromSeconds(run.elapsedSeconds).ToString(@"mm\:ss");var result=$"{run.hero.ToString().ToUpperInvariant()}\n\nACT REACHED   {run.act} / 3\nFLOOR REACHED   {Mathf.Min(run.ActFloorCount,run.floor+1)} / {run.ActFloorCount}\nFINAL GOLD   {run.gold}\nDECK SIZE   {run.deck.Count}\nRELICS   {run.relics.Count}\nFATEWEAVES   {run.fateweaveSelections.Count}\nRUN TIME   {time}";var style=new GUIStyle(titleStyle){fontSize=18,fontStyle=FontStyle.Normal,alignment=TextAnchor.UpperCenter,normal={textColor=new Color(.9f,.84f,.7f)}};GUI.Label(new Rect(w*.33f,h*.25f,w*.34f,h*.4f),result,style);var retry=new Rect(w*.5f-220,h*.72f,200,44);var menu=new Rect(w*.5f+20,h*.72f,200,44);DrawButtonFrame(retry,retry.Contains(PointerPosition)||controllerNavigation&&screenControllerIndex==0,false);DrawButtonFrame(menu,menu.Contains(PointerPosition)||controllerNavigation&&screenControllerIndex==1,false);if(GUI.Button(retry,"BEGIN NEW RUN",buttonStyle)){selectingNewRun=true;selectedHero=HeroId.Vanguard;heroSelectionTime=Time.unscaledTime;screen=ScreenMode.CharacterSelect;}if(GUI.Button(menu,"MAIN MENU",buttonStyle))screen=ScreenMode.Menu;
+            DrawFullBackdrop(runResultVictory?rewardBackground:combatBackground,w,h,runResultVictory ? .2f : .55f);var title=runResultVictory?"THE LOWER VAULT FALLS":"FATE SHATTERED";var subtitle=runResultVictory?"THE CROWN ANSWERS TO YOU":"THE VAULT REMEMBERS THIS ATTEMPT";Heading(w,title,subtitle);StoryEndRunResultPolish(w,h);var time=System.TimeSpan.FromSeconds(run.elapsedSeconds).ToString(@"mm\:ss");var result=$"{run.hero.ToString().ToUpperInvariant()}\n\nACT REACHED   {run.act} / 3\nFLOOR REACHED   {Mathf.Min(run.ActFloorCount,run.floor+1)} / {run.ActFloorCount}\nFINAL GOLD   {run.gold}\nDECK SIZE   {run.deck.Count}\nRELICS   {run.relics.Count}\nFATEWEAVES   {run.fateweaveSelections.Count}\nRUN TIME   {time}";var style=new GUIStyle(titleStyle){fontSize=18,fontStyle=FontStyle.Normal,alignment=TextAnchor.UpperCenter,normal={textColor=new Color(.9f,.84f,.7f)}};GUI.Label(new Rect(w*.33f,h*.25f,w*.34f,h*.4f),result,style);var retry=new Rect(w*.5f-220,h*.72f,200,44);var menu=new Rect(w*.5f+20,h*.72f,200,44);DrawButtonFrame(retry,retry.Contains(PointerPosition)||controllerNavigation&&screenControllerIndex==0,false);DrawButtonFrame(menu,menu.Contains(PointerPosition)||controllerNavigation&&screenControllerIndex==1,false);if(GUI.Button(retry,"BEGIN NEW RUN",buttonStyle)){selectingNewRun=true;selectedHero=HeroId.Vanguard;heroSelectionTime=Time.unscaledTime;screen=ScreenMode.CharacterSelect;}if(GUI.Button(menu,"MAIN MENU",buttonStyle))screen=ScreenMode.Menu;
         }
 
         private void DrawCredits(float w,float h)
@@ -1708,7 +1721,7 @@ namespace GildedFate.UI
         private static void DrawAtlasIcon(Texture2D atlas,int index,int columns,int rows,Rect destination){if(!atlas||index<0)return;var col=index%columns;var row=index/columns;var uv=new Rect(col/(float)columns,1f-(row+1)/(float)rows,1f/columns,1f/rows);GUI.DrawTextureWithTexCoords(destination,atlas,uv,true);}
         private void DrawFullBackdrop(Texture2D texture,float w,float h,float veil){if(texture)GUI.DrawTexture(new Rect(0,0,w,h),texture,ScaleMode.ScaleAndCrop);Fill(new Rect(0,0,w,h),new Color(.004f,.007f,.014f,veil));}
         private void DrawLocationBackdrop(float w,float h,int index){DrawAtlasIcon(locationAtlas,index,2,2,new Rect(0,0,w,h));Fill(new Rect(0,0,w,h),new Color(.005f,.008f,.015f,.24f));}
-private void DrawTransition(float w,float h){if(ShowsPersistentRunHud){if(ShowsNormalShardShrine)DrawShardShrine(w,h);if(ShowsNormalShardShrine||acquisitionActive)DrawShardFlights();}if(ShardDiscoveryOpen){GUI.enabled=!acquisitionActive;DrawShardDiscovery(w,h);}for(var i=0;i<6;i++){var a=.075f*(1f-i/6f);var edge=12f+i*16f;Fill(new Rect(i*16,0,16,h),new Color(0,0,0,a));Fill(new Rect(w-edge,0,16,h),new Color(0,0,0,a));Fill(new Rect(0,i*12,w,12),new Color(0,0,0,a*.7f));Fill(new Rect(0,h-(i+1)*12,w,12),new Color(0,0,0,a));}Outline(new Rect(1,1,w-2,h-2),new Color(.62f,.41f,.14f,.22f),2);if(transitionAlpha>0)Fill(new Rect(0,0,w,h),new Color(.005f,.008f,.015f,transitionAlpha));if(ShowsPersistentRunHud)DrawPersistentRunTooltip(w,h);DrawScreenCardKeywordHelp(w,h);DrawAcquisitionPresentation(w,h);DrawGoldCollectFlight();DrawSeveredThread(w,h);DrawCombatHudFocus(w,h);DrawMenuHudNavigation(w,h);DrawScreenNavigationHint(w,h);if(inspectedCard!=null)DrawCardInspection(w,h,inspectedCard);if(inspectedRelic!=null&&!ShardDiscoveryOpen&&!acquisitionActive)DrawRelicInspection(w,h,inspectedRelic);DrawFinalPolishProbe(w,h);}
+private void DrawTransition(float w,float h){if(ShowsPersistentRunHud){if(ShowsNormalShardShrine)DrawShardShrine(w,h);if(ShowsNormalShardShrine||acquisitionActive)DrawShardFlights();}if(ShardDiscoveryOpen){GUI.enabled=!acquisitionActive;DrawShardDiscovery(w,h);}for(var i=0;i<6;i++){var a=.075f*(1f-i/6f);var edge=12f+i*16f;Fill(new Rect(i*16,0,16,h),new Color(0,0,0,a));Fill(new Rect(w-edge,0,16,h),new Color(0,0,0,a));Fill(new Rect(0,i*12,w,12),new Color(0,0,0,a*.7f));Fill(new Rect(0,h-(i+1)*12,w,12),new Color(0,0,0,a));}Outline(new Rect(1,1,w-2,h-2),new Color(.62f,.41f,.14f,.22f),2);if(transitionAlpha>0)Fill(new Rect(0,0,w,h),new Color(.005f,.008f,.015f,transitionAlpha));DrawGoldenThreadWipe(w,h);if(ShowsPersistentRunHud)DrawPersistentRunTooltip(w,h);DrawScreenCardKeywordHelp(w,h);DrawAcquisitionPresentation(w,h);DrawGoldCollectFlight();DrawRewardGoldBurst();DrawSeveredThread(w,h);DrawCombatHudFocus(w,h);DrawMenuHudNavigation(w,h);DrawScreenNavigationHint(w,h);if(inspectedCard!=null)DrawCardInspection(w,h,inspectedCard);if(inspectedRelic!=null&&!ShardDiscoveryOpen&&!acquisitionActive)DrawRelicInspection(w,h,inspectedRelic);DrawFinalPolishProbe(w,h);}
         private MusicMood MoodForScreen(){var page=AudioContextScreen();if(page==ScreenMode.Combat)return currentEnemy!=null&&currentEnemy.boss?MusicMood.Boss:MusicMood.Combat;if(page==ScreenMode.Map)return MusicMood.Map;if(page==ScreenMode.Sanctuary||page is ScreenMode.BindingSelect or ScreenMode.BindingCard)return MusicMood.Sanctuary;if(page==ScreenMode.Merchant)return MusicMood.Merchant;if(page is ScreenMode.Event or ScreenMode.EventSelection or ScreenMode.EventResult||page==ScreenMode.Treasure)return MusicMood.Event;if(page is ScreenMode.Reward or ScreenMode.RelicReward or ScreenMode.Fateweave or ScreenMode.FateweaveCard||page==ScreenMode.RunResult&&runResultVictory)return MusicMood.Victory;return MusicMood.Menu;}
 
 

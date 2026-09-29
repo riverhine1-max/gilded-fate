@@ -63,7 +63,7 @@ namespace GildedFate.UI
         {
             run.PrepareMerchantStock();DrawLocationBackdrop(w,h,0);DrawRunDock(w);
             if(rejectedShopUntil>Time.unscaledTime)Fill(new Rect(190,8,104,40),new Color(1,.28f,.12f,Mathf.Clamp01((rejectedShopUntil-Time.unscaledTime)/.45f)*.2f));
-            Heading(w,"THE THREAD BROKER","A PRICE FOR EVERY POSSIBILITY");
+            Heading(w,"THE THREAD BROKER","A PRICE FOR EVERY POSSIBILITY");DrawShopRestMerchantPolish(w,h);
             // Two low gilded stall rails; the existing shop painting remains the room.
             var shelf=ShopCardRect(0).yMax+51;
             Fill(new Rect(160,shelf,w-187,14),new Color(.10f,.058f,.029f,.92f));DrawLine(new Vector2(153,shelf),new Vector2(w-25,shelf),new Color(.78f,.54f,.25f,.8f),2);

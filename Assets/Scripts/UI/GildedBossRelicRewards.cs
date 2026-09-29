@@ -27,7 +27,7 @@ namespace GildedFate.UI
                 var relic=offers[i];var r=new Rect(start+i*(width+28),h*.24f,width,height);
                 var hot=r.Contains(PointerPosition)||controllerNavigation&&screenControllerIndex==i;
                 Fill(r,new Color(.015f,.018f,.025f,.96f));Outline(r,hot?Gold:new Color(.56f,.44f,.25f),hot?3:1);
-                var art=new Rect(r.center.x-76,r.y+19,152,152);DrawRelicArt(art,Array.IndexOf(GameContent.Relics,relic));
+                var art=new Rect(r.center.x-76,r.y+19,152,152);DrawRelicPedestal(art);DrawRelicArt(art,Array.IndexOf(GameContent.Relics,relic));
                 DrawReadableText(new Rect(r.x+16,r.y+180,r.width-32,58),FitReadableText(relic.name,new Rect(0,0,r.width-32,58),21,17,true));
                 var rules=new Rect(r.x+23,r.y+247,r.width-46,132);
                 DrawReadableText(rules,FitReadableText(FormatCardRules(relic.text),rules,17,14));

@@ -55,6 +55,7 @@ namespace GildedFate.UI
                 var age=Time.unscaledTime-motion.changedAt;var changing=age>=0&&age<.23f;
                 var oldColor=GUI.color;var alpha=action.prevented||action.amount==0?.48f:1f;GUI.color=new Color(1,1,1,alpha);
                 if(changing&&!profile.reduceMotion){var grow=Mathf.Sin(age/.23f*Mathf.PI)*3;icon=new Rect(icon.x-grow,icon.y-grow,icon.width+grow*2,icon.height+grow*2);}
+                DrawIntentMedallion(icon,action.type,alpha);
                 if(atlas)
                 {
                     if(changing&&motion.oldIcon!=action.Icon&&!profile.reduceMotion&&!profile.reduceFlashing){GUI.color=new Color(1,1,1,alpha*(1-age/.23f));DrawAtlasIcon(atlas,motion.oldIcon,5,5,icon);GUI.color=new Color(1,1,1,alpha*age/.23f);}

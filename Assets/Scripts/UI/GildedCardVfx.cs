@@ -694,6 +694,7 @@ namespace GildedFate.UI
                     if(!profile.reducedVfx){var spark=previous+(previous-c).normalized*(3+CardVfxHash(seed,9)*6);Fill(new Rect(spark.x-1,spark.y-1,2,2),tint);}
                 }
             }
+            DrawEnergyOrbFront(seal,color);
         }
 
         // ---------- fate shard (hook at the end of DrawShardFlights) ----------

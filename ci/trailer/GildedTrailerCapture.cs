@@ -331,6 +331,7 @@ namespace GildedFate.UI
                 case "speed":GildedTrailerDirector.SetSpeed(st.value);break;
                 case "mark":GildedTrailerDirector.Mark(st.text);break;
                 case "wait":yield return new TrailerWait(st.seconds);break;
+                case "intro":{BeginBootIntro(true);var end=Time.unscaledTime+(st.seconds>0?st.seconds:15);while(bootIntroActive&&Time.unscaledTime<end)yield return null;break;}
                 case "waitIdle":yield return TrailerWaitIdle(st.seconds);break;
                 case "play":yield return TrailerPlay(st);break;
                 case "endTurn":yield return TrailerWaitIdle(20);QueueEndTurn();yield return null;break;
