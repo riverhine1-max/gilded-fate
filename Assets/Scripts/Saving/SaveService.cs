@@ -60,7 +60,7 @@ namespace GildedFate.Saving
             preserveRecoveredBackup=recovered;
             if(recovered)RecoveryNotice="Recovered the previous safe save after an interrupted or damaged save.";
             if(loaded.closed)return null;
-            loaded.upgradedCards??=new();loaded.relics??=new();loaded.consumables??=new();loaded.merchantSold??=new();loaded.cards??=new();loaded.shards??=new();loaded.fateweaveSelections??=new();loaded.temporaryMultiCombatStatuses??=new();loaded.fateweaveOffers??=new();loaded.bindingOffers??=new();loaded.pendingCardOfferIds??=new();loaded.pendingSelectedCardIds??=new();loaded.EnsureEventState();
+            loaded.upgradedCards??=new();loaded.relics??=new();loaded.consumables??=new();loaded.merchantSold??=new();loaded.cards??=new();loaded.shards??=new();loaded.fateweaveSelections??=new();loaded.temporaryMultiCombatStatuses??=new();loaded.fateweaveOffers??=new();loaded.bindingOffers??=new();loaded.pendingCardOfferIds??=new();loaded.pendingSelectedCardIds??=new();loaded.EnsureEventState();loaded.EnsureFateweaveState();
             if(string.IsNullOrEmpty(loaded.runId))loaded.runId="legacy-"+loaded.seed;
             loaded.EnsureCardInstances();
             if(ProfileService.Load().completedRunIds?.Contains(loaded.runId)==true){RecoveryNotice="This run was already completed.";return null;}

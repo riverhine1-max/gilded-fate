@@ -194,6 +194,7 @@ namespace GildedFate.UI
                 var elapsed=now-f.start;
                 if(elapsed>.04f&&elapsed<.20f){var p=(elapsed-.04f)/.16f;var end=Vector2.Lerp(f.from,f.to,p);DrawLine(Vector2.Lerp(f.from,f.to,Mathf.Max(0,p-.17f)),end,new Color(1f,.82f,.4f,.8f),2.5f);}
             }
+            DrawShardFractureBursts(); // Fractured activation crystals (GildedCardVfx.cs)
         }
     }
 }

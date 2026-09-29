@@ -78,6 +78,7 @@ namespace GildedFate.UI
             new("Ethereal","ETHEREAL","If this remains in hand at end of turn, it Exhausts.","D8C3FF"),
             new("Binding","BINDING","A permanent special modification on this individual card copy.","FFE28A"),
             new("Fateweave","FATEWEAVE MODIFICATION","A permanent strand-of-fate change. It occupies the card's one special-modification slot.","FFE28A"),
+            new("Gild","GILD","Once per turn, spend Gold so your next playable card plays twice. Costs 15 Gold, then 10 more for each further Gild this combat. It waits through Curses, Statuses and later turns until a card is played.","FFC94A"),
             new("Fate Shard","FATE SHARD","A selectable three-use combat power. Only one can be active in a combat.","FFD35A"),
             new("Stable","STABLE","The first two activations use the Shard's stable effect.","8FD6FF"),
             new("Fractured","FRACTURED","The third and final activation is stronger; the Shard shatters after combat.","FF806F"),
@@ -194,6 +195,7 @@ namespace GildedFate.UI
                     if(mouse.rightButton.wasPressedThisFrame){if(inspectedCard!=null){PrepareCardInspection(inspectedCard);SelectInspectionVersion(true);}else if(dragView!=null||selectedView!=null){dragView=selectedView=null;cardDragging=false;}else if(pileOpen<0&&hoverView!=null)InspectUpgrade(hoverView.card);}
                 }
                 if(Keyboard.current?.spaceKey.wasPressedThisFrame==true&&CanAcceptCombatInput&&pileOpen<0)QueueEndTurn();
+                if(GildShortcutPressed)TryGild();
                 HandleCombatController();
             }
             ReconcileCombatHandFocus();
@@ -237,6 +239,7 @@ namespace GildedFate.UI
             displayResonance=resonanceTarget;
             resonancePulse=Mathf.Max(0,resonancePulse-dt);powerBadgePulse=Mathf.Max(0,powerBadgePulse-dt*1.7f);drawPulse=Mathf.Max(0,drawPulse-dt*2);discardPulse=Mathf.Max(0,discardPulse-dt*2);exhaustPulse=Mathf.Max(0,exhaustPulse-dt*2);
             playerAction=Mathf.Max(0,playerAction-dt*2.3f);enemyAction=Mathf.Max(0,enemyAction-dt*1.8f);heroHit=Mathf.Max(0,heroHit-dt*3);foeHit=Mathf.Max(0,foeHit-dt*3);heroBuff=Mathf.Max(0,heroBuff-dt*1.5f);foeBuff=Mathf.Max(0,foeBuff-dt*1.5f);impactShake=Mathf.Max(0,impactShake-dt*3.5f);energyPulse=Mathf.Max(0,energyPulse-dt*2.8f);targetLockPulse=Mathf.Max(0,targetLockPulse-dt*4.5f);
+            UpdateCardVfx(dt,now);
         }
 
         private void HandleCombatController()
@@ -503,6 +506,7 @@ namespace GildedFate.UI
                 ScheduleMasterPolishReceipt(fact,now+hitTime);
                 if(fact.playerStatuses!=null)playerStatusBeats.Add((now+hitTime,fact.playerStatuses,fact.playerRetaliation,fact.spiritDirectionsUsed));
                 if(fact.enemyStatuses!=null)enemyStatusBeats.Add((now+hitTime,fact.enemyIndex,fact.enemyStatuses));
+                if(PresentGildReceipt(fact,played,now+hitTime))continue;
                 AppendCombatHistory(fact,played);
                 if(CombatHitTiming.IsRelicWrapper(fact))continue; // Its dedicated relic receipt owns the single pulse/cue.
                 if(fact.kind==CombatEventKind.Status&&fact.label=="RETALIATE"&&fact.amount<0)continue; // Consumption is shown by the returning stack, not a debuff burst.
@@ -620,13 +624,14 @@ namespace GildedFate.UI
             DrawCombatAtmosphere(w,h);
             var matrix=GUI.matrix;
             if(profile.screenShake&&!profile.reduceMotion&&impactShake>0)GUI.matrix=matrix*Matrix4x4.Translate(new Vector3(Mathf.Sin(shimmer*61)*impactShake*3,Mathf.Cos(shimmer*47)*impactShake*2,0));
+            ApplyBigHitPunch();
             DrawCombatActors(w,h);GUI.matrix=matrix;
             combatEffectTooltipTitle=combatEffectTooltipDetail=null;DrawCombatStats(w,h);
             DrawTargetGuide();
             Fill(new Rect(0,h-138,w,138),new Color(.005f,.009f,.017f,.18f));
             var hint=Time.unscaledTime<hintUntil?inputHint:combatBusy?"":controllerNavigation?(menuUsesGamepad?"STICK / D-PAD · A PLAY · B BACK · X INSPECT · LB EFFECTS · Y END TURN":"ARROWS  SELECT CARD · ENTER  PLAY · BACKSPACE  CANCEL"):"DRAG A CARD TO PLAY · RIGHT-CLICK TO CANCEL";
             GUI.Label(new Rect(w*.5f-330,h-292,660,26),hint,new GUIStyle(footerStyle){fontSize=14,normal={textColor=new Color(.88f,.83f,.7f)}});
-            DrawCombatHand();DrawCombatMotions();DrawRetaliateReturns();DrawCombatControls();DrawCombatNativeHitTargets();DrawCombatNumbers();DrawCardKeywordHelp(w,h);DrawCombatEffectTooltip(w,h);DrawPersistentRunTooltip(w,h);
+            DrawGildControl();DrawCombatHand();DrawCombatMotions();DrawRetaliateReturns();DrawCombatControls();DrawCombatNativeHitTargets();DrawCombatNumbers();DrawCardKeywordHelp(w,h);DrawCombatEffectTooltip(w,h);DrawPersistentRunTooltip(w,h);
             if(!profile.reduceFlashing&&gildedFlash>0)Fill(new Rect(0,0,w,h),new Color(1,.7f,.25f,gildedFlash*.12f));
             if(Time.unscaledTime<turnBannerUntil)
             {
@@ -676,8 +681,10 @@ namespace GildedFate.UI
             if(Time.unscaledTime<view.readyAt)return;
             var focus=view==hoverView||view==selectedView||view==dragView;
             drawingDisabledHandCard=view.readinessKnown&&!view.playable;
+            var cardVfxMatrix=BeginHandCardVfx(view);
             try{DrawMovingCard(view.card,view.position,view.angle,view.scale,focus,1);}
             finally{drawingDisabledHandCard=false;}
+            EndHandCardVfx(view,focus,cardVfxMatrix);
         }
         private void DrawMovingCard(CardDef card,Vector2 center,float angle,float scale,bool focus,float alpha,bool back=false)
         {
@@ -687,7 +694,7 @@ namespace GildedFate.UI
             if(back||card==null)
             {
                 Fill(r,new Color(.027f,.033f,.06f));Outline(r,Gold,3);Outline(new Rect(r.x+12,r.y+12,r.width-24,r.height-24),new Color(.48f,.38f,.2f),1);
-                var oldMatrix=GUI.matrix;GUIUtility.RotateAroundPivot(45,Vector2.zero);Outline(new Rect(-43,-43,86,86),Gold,3);GUI.matrix=oldMatrix;
+                var oldMatrix=GUI.matrix;GUI.matrix=oldMatrix*Matrix4x4.TRS(Vector3.zero,Quaternion.Euler(0,0,45),Vector3.one);Outline(new Rect(-43,-43,86,86),Gold,3);GUI.matrix=oldMatrix;
                 GUI.Label(new Rect(r.x,-24,r.width,48),"FATE",new GUIStyle(buttonStyle){fontSize=25});
             }
             else
@@ -771,6 +778,7 @@ namespace GildedFate.UI
                 var t=(Time.unscaledTime-motion.start)/motion.duration;if(t<0||t>1)continue;
                 var eased=t*t*(3-2*t);var destination=motion.absorb&&motion.card!=null?PowerHudTarget(motion.card).center:motion.to;var p=Vector2.Lerp(motion.from,destination,eased);
                 if(!profile.reduceMotion)p.y-=Mathf.Sin(t*Mathf.PI)*(motion.back?65:38);
+                if(DrawCardMotionVfx(motion,t,eased,p))continue; // Dissipate burn, draw flip, play/absorb trails (GildedCardVfx.cs)
                 if(motion.exhaust)p=motion.from+new Vector2(0,profile.reduceMotion?0:-Mathf.SmoothStep(.22f,1f,t)*18);
                 // A readable resolve beat precedes the calm purple essence fade.
                 var alpha=motion.exhaust?1-Mathf.SmoothStep(.22f,1f,t):motion.absorb?1-Mathf.SmoothStep(.12f,.72f,t):1;
@@ -791,6 +799,7 @@ namespace GildedFate.UI
                         for(var i=0;i<5;i++){var angle=i*Mathf.PI*.4f+shimmer;var radius=(1-t)*26+5;Fill(new Rect(p.x+Mathf.Cos(angle)*radius-1,p.y+Mathf.Sin(angle)*radius-1,2,2),new Color(accent.r,accent.g,accent.b,flare*.6f));}
                 }
             }
+            DrawCardVfxLayer();
         }
 
         private void DrawTargetGuide()
@@ -876,6 +885,7 @@ namespace GildedFate.UI
             GUI.color=Color.Lerp(combat.energy>0?Color.white:new Color(.56f,.56f,.60f),identityEnergyGain?new Color(1.16f,1.12f,1.08f):new Color(.66f,.66f,.70f),reaction*.65f);
             DrawIdentityEnergy(seal,index);GUI.color=old;
             DrawIdentityEnergyReaction(seal,color,reaction);
+            DrawEnergyOrbVfx(seal,color);
             GUI.Label(seal,$"{combat.energy}<size=15>/{baseEnergy}</size>",new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=31,richText=true,alignment=TextAnchor.MiddleCenter,normal={textColor=Color.white}});
             GUI.Label(new Rect(r.x-4,r.yMax-14,r.width+8,16),"ENERGY",new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=8,normal={textColor=Color.Lerp(color,Color.white,.28f)}});
             if(r.Contains(combatPointer))SetCombatEffectTooltip("ENERGY",$"{combat.energy} available now. Your normal turn begins with {baseEnergy}. Cards spend the value shown in their Energy vessel.",r.center);
@@ -1154,6 +1164,7 @@ namespace GildedFate.UI
             foreach(var number in combatNumbers)
             {
                 var t=Time.unscaledTime-number.start;if(t<0)continue;var alpha=Mathf.Clamp01((1.1f-t)*2.5f);var p=number.origin-new Vector2(0,profile.reduceMotion?0:t*44);
+                if(DrawCritCombatNumber(number,t,alpha))continue; // ≥50 gold crit numbers (GildedCardVfx.cs)
                 var baseSize=number.text.Length>9?23:31;var style=new GUIStyle(titleStyle){font=labelFont,fontSize=profile.largeDamageNumbers?baseSize+8:baseSize,normal={textColor=new Color(number.color.r,number.color.g,number.color.b,alpha)}};
                 ShadowLabel(new Rect(p.x-170,p.y-30,340,54),number.text,style);
             }

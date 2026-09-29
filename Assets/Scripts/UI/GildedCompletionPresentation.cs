@@ -85,21 +85,5 @@ namespace GildedFate.UI
             DrawLine(new Vector2(w*.5f+78,y),new Vector2(w*.5f+span,y),new Color(.9f,.69f,.34f,.5f*entrance*strength),1);
             GUI.Label(new Rect(w*.5f-96,y-11,192,23),boss?"ACT SEAL BROKEN":"ELITE DEFEATED",new GUIStyle(footerStyle){fontSize=12,fontStyle=FontStyle.Bold,normal={textColor=new Color(1,.83f,.5f,entrance)}});
         }
-        private void DrawFateweaveVoid(float w,float h)
-        {
-            Fill(new Rect(0,0,w,h),new Color(.003f,.004f,.009f));
-            // No room art, horizon or floor: the strands exist outside the Vault.
-            if(!profile.reducedVfx)
-            {
-                var previous=GUI.color;GUI.color=new Color(.55f,.28f,.74f,.09f);
-                DrawAtlasIcon(combatVfxAtlas,4,4,2,new Rect(w*.5f-470,h*.5f-370,940,740));GUI.color=previous;
-            }
-            for(var i=0;i<20;i++)
-            {
-                var x=Mathf.Repeat(i*137.71f+57,w);var sway=profile.reduceMotion?0:Mathf.Sin(shimmer*.12f+i)*5;
-                DrawLine(new Vector2(x+sway,0),new Vector2(x+Mathf.Sin(i)*35,h),new Color(.87f,.62f,.26f,.025f+i%4*.008f),1);
-            }
-            DrawRunHud(w);
-        }
     }
 }

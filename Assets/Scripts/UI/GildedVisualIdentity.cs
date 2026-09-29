@@ -53,11 +53,16 @@ namespace GildedFate.UI
         }
         private void DrawIdentityCardLight(Rect r,CardDef card,bool focused)
         {
-            if(combat==null||!combat.hand.Contains(card)||card.instanceId==movingCard||!combat.CanPlay(card))return;
+            if(combat==null||!combat.hand.Contains(card)||card.instanceId==movingCard)return;
+            DrawCardVfxUnderlay(r,card); // Golden Echo ghost (GildedCardVfx.cs)
+            if(!combat.CanPlay(card))return;
             EnsureIdentityHalo();var ready=CardPreview(card)?.conditionActive==true;
-            var color=ready?new Color(.88f,.105f,.17f):new Color(1f,.98f,.89f);
-            color.a=focused?.86f:.60f;
-            DrawCardUiShape(new Rect(r.x-r.width*.12f,r.y-r.height*.075f,r.width*1.24f,r.height*1.15f),identityHalo,color);
+            var color=ready?new Color(.88f,.105f,.17f):new Color(1f,.95f,.78f);
+            // Slow per-card breath (alpha + spread); static under Reduce Motion.
+            var breath=CardVfxBreath(card);var spread=1+(breath-.5f)*.035f;
+            color.a=(focused?.86f:.60f)*Mathf.Lerp(.78f,1.05f,breath);
+            DrawCardUiShape(new Rect(r.center.x-r.width*.62f*spread,r.center.y-r.height*.575f*spread,r.width*1.24f*spread,r.height*1.15f*spread),identityHalo,color);
+            if(ready)DrawCardVfxFlames(r,card,focused);
         }
         private static Vector2 FateThreadPoint(Vector2 a,Vector2 b,float t)
         {

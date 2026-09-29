@@ -72,6 +72,9 @@ namespace GildedFate.Map
         public string pendingEventChoiceId="",pendingEventBindingId="",pendingEventResult="";
         public int pendingEventChoicesNeeded;
         public string pendingFateweaveId="",pendingBindingId="";public int pendingChoicesNeeded;
+        // Pull one, cut one: the strand severed for gold after the pulled boon resolves.
+        // Empty on older saves, which then simply offer the cut when resumed.
+        public string fateweaveCutId="";
         public List<string> deck=new(), upgradedCards=new(), relics=new(), consumables=new(), merchantSold=new(); public List<MapNode> nodes=new();
         public void NewRun(HeroId selected, int seed)
         {
@@ -79,7 +82,7 @@ namespace GildedFate.Map
             BuildMap(rng);
             cards.Clear();deck.Clear();upgradedCards.Clear();nextCardSerial=0;var strike=selected==HeroId.Vanguard?"strike":selected==HeroId.Hexer?"hex_strike":"scythe_strike";var defend=selected==HeroId.Vanguard?"defend":selected==HeroId.Hexer?"ward":"deaths_veil";
             for(var i=0;i<4;i++){AddCard(strike);AddCard(defend);}AddCard(selected==HeroId.Vanguard?"battle_cry":selected==HeroId.Hexer?"invocation":"soul_call");AddCard(selected==HeroId.Vanguard?"stand_firm":selected==HeroId.Hexer?"first_ritual":"reaping_blow");
-            relics.Clear();relics.Add(selected==HeroId.Vanguard?"gilded_buckle":selected==HeroId.Hexer?"cracked_prism":"deaths_keepsake");shards.Clear();fateweaveSelections.Clear();temporaryMultiCombatStatuses.Clear();temporaryEventEffects.Clear();seenEventIds.Clear();pendingEventOfferIds.Clear();pendingEventSelectionIds.Clear();pendingEventShardDecisions.Clear();eventSelectionKind=EventSelectionKind.None;pendingEventChoiceId=pendingEventBindingId=pendingEventResult="";pendingEventChoicesNeeded=0;fateweaveOffers.Clear();bindingOffers.Clear();pendingCardOfferIds.Clear();pendingSelectedCardIds.Clear();pendingFateweaveId=pendingBindingId="";pendingChoicesNeeded=0;consumables.Clear();merchantSold.Clear();act=1;floor=0;gold=75;pendingCombatGold=pendingBonusCardRewards=0;combatGoldClaimed=true;elapsedSeconds=0;beggarFavor=merchantRemoved=merchantHealed=false;stage=RunStage.Map;activeNodeFloor=activeNodeLane=-1;activeEnemyId=activeEventId="";
+            relics.Clear();relics.Add(selected==HeroId.Vanguard?"gilded_buckle":selected==HeroId.Hexer?"cracked_prism":"deaths_keepsake");shards.Clear();fateweaveSelections.Clear();temporaryMultiCombatStatuses.Clear();temporaryEventEffects.Clear();seenEventIds.Clear();pendingEventOfferIds.Clear();pendingEventSelectionIds.Clear();pendingEventShardDecisions.Clear();eventSelectionKind=EventSelectionKind.None;pendingEventChoiceId=pendingEventBindingId=pendingEventResult="";pendingEventChoicesNeeded=0;fateweaveOffers.Clear();bindingOffers.Clear();pendingCardOfferIds.Clear();pendingSelectedCardIds.Clear();pendingFateweaveId=pendingBindingId=fateweaveCutId="";pendingChoicesNeeded=0;consumables.Clear();merchantSold.Clear();act=1;floor=0;gold=75;pendingCombatGold=pendingBonusCardRewards=0;combatGoldClaimed=true;elapsedSeconds=0;beggarFavor=merchantRemoved=merchantHealed=false;stage=RunStage.Map;activeNodeFloor=activeNodeLane=-1;activeEnemyId=activeEventId="";
         }
         public RunCard AddCard(string cardId,bool upgraded=false)
         {
@@ -140,11 +143,11 @@ namespace GildedFate.Map
         }
         public void BeginFateweave()
         {
-            hp=maxHp;fateweaveOffers=PickIds(WorldContent.Fateweaves.Where(f=>f.act==act&&FateweaveViable(f)).Select(f=>f.id),3,seed^act*7919);pendingFateweaveId="";pendingCardOfferIds.Clear();pendingSelectedCardIds.Clear();pendingChoicesNeeded=0;stage=RunStage.Fateweave;
+            hp=maxHp;fateweaveOffers=PickIds(WorldContent.Fateweaves.Where(f=>f.act==act&&FateweaveViable(f)).Select(f=>f.id),3,seed^act*7919);pendingFateweaveId=fateweaveCutId="";pendingCardOfferIds.Clear();pendingSelectedCardIds.Clear();pendingChoicesNeeded=0;stage=RunStage.Fateweave;
         }
         public bool SelectFateweave(string id)
         {
-            var fate=WorldContent.Fateweaves.FirstOrDefault(f=>f.id==id);if(fate==null||fate.act!=act||!fateweaveOffers.Contains(id))return false;pendingFateweaveId=id;fateweaveSelections.Add(id);pendingSelectedCardIds.Clear();pendingCardOfferIds.Clear();
+            var fate=WorldContent.Fateweaves.FirstOrDefault(f=>f.id==id);if(fate==null||fate.act!=act||!fateweaveOffers.Contains(id)||!string.IsNullOrEmpty(pendingFateweaveId))return false;pendingFateweaveId=id;fateweaveSelections.Add(id);pendingSelectedCardIds.Clear();pendingCardOfferIds.Clear();
             switch(id)
             {
                 case "foreign_memory":OfferOtherCharacterCards();break;case "wanderers_thread":OfferCards(CardOrigin.Wanderer,false);break;case "favorable_hand":OfferCards(OwnOrigin(),false);break;case "entangled_fates":OfferCards(OtherOrigin(),true);break;case "stolen_destiny":OfferRareDestinies();break;
@@ -188,11 +191,51 @@ namespace GildedFate.Map
         }
         public void BeginNextAct()
         {
-            act++;floor=0;nodes.Clear();BuildMap(new Random(seed^act*104729));stage=RunStage.Map;activeNodeFloor=activeNodeLane=-1;activeEnemyId=activeEventId="";merchantSold.Clear();pendingFateweaveId="";pendingCardOfferIds.Clear();pendingSelectedCardIds.Clear();fateweaveOffers.Clear();
+            act++;floor=0;nodes.Clear();BuildMap(new Random(seed^act*104729));stage=RunStage.Map;activeNodeFloor=activeNodeLane=-1;activeEnemyId=activeEventId="";merchantSold.Clear();pendingFateweaveId=fateweaveCutId="";pendingCardOfferIds.Clear();pendingSelectedCardIds.Clear();fateweaveOffers.Clear();
         }
-        public void CompleteFateweave()
+        // Once the pulled boon has resolved, one of the two strands left hanging must
+        // be cut for gold before the act begins. Returns false while that cut is owed.
+        public bool CompleteFateweave()
         {
-            pendingFateweaveId="";pendingChoicesNeeded=0;pendingCardOfferIds.Clear();pendingSelectedCardIds.Clear();fateweaveOffers.Clear();stage=RunStage.Map;
+            if(FateweaveAwaitingCut)return false;
+            pendingFateweaveId=fateweaveCutId="";pendingChoicesNeeded=0;pendingCardOfferIds.Clear();pendingSelectedCardIds.Clear();fateweaveOffers.Clear();stage=RunStage.Map;return true;
+        }
+        public bool FateweavePullResolved=>stage==RunStage.Fateweave&&!string.IsNullOrEmpty(pendingFateweaveId)&&pendingChoicesNeeded==0;
+        // The offered strands that were not pulled, in their original offer order.
+        public List<string> FateweaveCutCandidates()
+        {
+            var result=new List<string>();if(fateweaveOffers==null)return result;
+            foreach(var id in fateweaveOffers)if(!string.IsNullOrEmpty(id)&&id!=pendingFateweaveId&&!result.Contains(id)&&WorldContent.Fateweaves.Any(f=>f.id==id))result.Add(id);
+            return result;
+        }
+        // Fewer than two unpulled strands (test fixtures, tiny pools) means there is
+        // no choice to make, so the cut is skipped rather than owed.
+        public bool FateweaveAwaitingCut=>FateweavePullResolved&&string.IsNullOrEmpty(fateweaveCutId)&&FateweaveCutCandidates().Count>=2;
+        public bool FateweaveCutDone=>!string.IsNullOrEmpty(fateweaveCutId);
+        // Deterministic per strand: act base plus a bonus for how valuable the boon is.
+        public int FateweaveCutGold(string id)
+        {
+            var fate=WorldContent.Fateweaves.FirstOrDefault(f=>f.id==id);if(fate==null)return 0;
+            var strandAct=Math.Max(1,Math.Min(3,fate.act));var baseGold=strandAct==1?20:strandAct==2?30:40;
+            var bonus=id switch
+            {
+                "gilded_cache" or "burdened_fortune" or "heavy_crown" or "fortunes_burden"=>15,
+                "perfected_edge" or "perfected_guard" or "golden_echo" or "stolen_destiny"=>20,
+                "severed_burden"=>10,
+                _=>5
+            };
+            return baseGold+bonus;
+        }
+        public bool CutFateweave(string id)
+        {
+            if(string.IsNullOrEmpty(id)||!FateweaveAwaitingCut||!FateweaveCutCandidates().Contains(id))return false;
+            fateweaveCutId=id;gold+=FateweaveCutGold(id);return true;
+        }
+        // Save repair: a cut id must name an unpulled offered strand.
+        public void EnsureFateweaveState()
+        {
+            fateweaveOffers??=new List<string>();pendingFateweaveId??="";fateweaveCutId??="";
+            if(fateweaveCutId.Length>0&&(!fateweaveOffers.Contains(fateweaveCutId)||fateweaveCutId==pendingFateweaveId))fateweaveCutId="";
         }
         public IEnumerable<CardDef> TemporaryCombatCards()
         {

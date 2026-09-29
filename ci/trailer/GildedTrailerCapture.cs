@@ -334,6 +334,7 @@ namespace GildedFate.UI
                 case "waitIdle":yield return TrailerWaitIdle(st.seconds);break;
                 case "play":yield return TrailerPlay(st);break;
                 case "endTurn":yield return TrailerWaitIdle(20);QueueEndTurn();yield return null;break;
+                case "gild":yield return TrailerWaitIdle(20);if(!TryGild())GildedTrailerDirector.Log($"gild failed: {GildBlockedHint()} gold={run.gold} cost={combat?.GildCost}");yield return null;break;
                 case "shard":
                 {
                     yield return TrailerWaitIdle(20);
@@ -359,7 +360,23 @@ namespace GildedFate.UI
                     if(run.SelectFateweave(id))BeginFateweavePull(fate,()=>{screen=run.stage==RunStage.FateweaveCard?ScreenMode.FateweaveCard:ScreenMode.Fateweave;PresentNewRunAcquisitions(cardsBefore,relicsBefore);});
                     break;
                 }
-                case "enterAct":run.CompleteFateweave();mapFocusFloor=-1;screen=ScreenMode.Map;mapInputReadyAt=Time.unscaledTime+.22f;break;
+                case "cut":
+                {
+                    // index into the strands left after the pull, or text = a fateweave id.
+                    yield return TrailerWaitIdle(20);
+                    var remaining=run.FateweaveCutCandidates();
+                    var id=!string.IsNullOrEmpty(st.text)?(remaining.Contains(st.text)?st.text:null):st.index>=0&&st.index<remaining.Count?remaining[st.index]:null;
+                    if(id==null||!CutFateweaveStrand(id)){GildedTrailerDirector.Log($"cut failed index={st.index} text={st.text} awaiting={run.FateweaveAwaitingCut}");break;}
+                    if(st.seconds>0)yield return new TrailerWait(st.seconds);
+                    break;
+                }
+                case "enterAct":
+                {
+                    // Older scripts never cut: sever the first remaining strand so the act can begin.
+                    if(run.FateweaveAwaitingCut){var first=run.FateweaveCutCandidates().FirstOrDefault();if(first!=null&&!CutFateweaveStrand(first,false)){run.CutFateweave(first);observedGold=run.gold;}}
+                    if(!run.CompleteFateweave()){GildedTrailerDirector.Log("enterAct: a cut is still owed");break;}
+                    mapFocusFloor=-1;screen=ScreenMode.Map;mapInputReadyAt=Time.unscaledTime+.22f;break;
+                }
                 case "travel":
                 {
                     while(Time.unscaledTime<mapInputReadyAt)yield return null;

@@ -39,7 +39,7 @@ namespace GildedFate.UI
         }
         private void BeginFateweavePull(FateweaveDef fateweave,Action complete)
         {
-            if(fateweave==null||acquisitionActive)return;acquisitionFateweave=fateweave;BeginAcquisition(AcquisitionKind.Fateweave,null,null,complete);
+            if(fateweave==null||acquisitionActive)return;acquisitionFateweave=fateweave;fateweavePullFrom=FateweaveSlotRect(fateweave.id);BeginAcquisition(AcquisitionKind.Fateweave,null,null,complete);
         }
         private HashSet<string> SnapshotCardCopies()=>run.cards.Select(card=>card.persistentId).ToHashSet();
         private HashSet<string> SnapshotRelics()=>run.relics.ToHashSet();
@@ -113,10 +113,8 @@ namespace GildedFate.UI
             }
             else if(acquisitionKind==AcquisitionKind.Fateweave&&acquisitionFateweave!=null)
             {
-                var accent=new Color(1f,.70f,.27f);var snap=profile.reduceMotion?1:Mathf.SmoothStep(0,1,Mathf.Clamp01((t-.18f)/.52f));var iconSize=Mathf.Lerp(126,184,reveal)*(1-depart*.55f);var iconCenter=new Vector2(center.x,center.y-15);DrawAtlasIcon(bindingFateIconAtlas,FateweaveIconIndex(acquisitionFateweave.id),4,4,new Rect(iconCenter.x-iconSize*.5f,iconCenter.y-iconSize*.5f,iconSize,iconSize));
-                var top=new Vector2(center.x,0);var end=Vector2.Lerp(new Vector2(center.x,center.y-iconSize*.56f),center,snap);for(var segment=0;segment<14;segment++){var a=segment/14f;var b=(segment+1)/14f;var pa=Vector2.Lerp(top,end,a)+Vector2.right*Mathf.Sin(segment*.83f+shimmer*3)*8*(1-snap);var pb=Vector2.Lerp(top,end,b)+Vector2.right*Mathf.Sin((segment+1)*.83f+shimmer*3)*8*(1-snap);DrawLine(pa,pb,new Color(1f,.72f,.25f,.92f*(1-depart)),snap>.7f?1:4);}
-                if(!profile.reduceMotion&&!profile.reducedVfx)for(var i=0;i<22;i++){var a=i*Mathf.PI*2/22+shimmer*.7f;var radius=50+snap*130;var p=center+new Vector2(Mathf.Cos(a)*radius,Mathf.Sin(a)*radius*.62f);Fill(new Rect(p.x-2,p.y-2,4,4),new Color(i%3==0?.62f:1f,i%3==0?.36f:.7f,i%3==0?1f:.25f,(1-depart)*.75f));}
-                if(depart<.4f){GUI.Label(new Rect(w*.20f,h*.12f,w*.60f,46),"THE STRAND IS PULLED",new GUIStyle(titleStyle){fontSize=32,normal={textColor=accent}});GUI.Label(new Rect(w*.25f,h*.72f,w*.50f,34),acquisitionFateweave.name,new GUIStyle(titleStyle){fontSize=24,normal={textColor=new Color(1f,.88f,.54f)}});GUI.Label(new Rect(w*.27f,h*.77f,w*.46f,64),acquisitionFateweave.text,new GUIStyle(footerStyle){fontSize=15,wordWrap=true,alignment=TextAnchor.UpperCenter,normal={textColor=new Color(.94f,.92f,.86f)}});}
+                // Tapestry unravels into gold motes that stream to the centre, then the boon is revealed.
+                DrawFateweavePullCinematic(w,h,t,reveal,depart,center);
             }
             if(!profile.reduceMotion&&!profile.reducedVfx)for(var i=0;i<14;i++){var a=i*Mathf.PI*2/14+shimmer*.35f;var radius=(70+90*reveal)*(1-depart);Fill(new Rect(center.x+Mathf.Cos(a)*radius-2,center.y+Mathf.Sin(a)*radius-2,4,4),new Color(1f,.75f,.28f,(1-depart)*.75f));}
         }
