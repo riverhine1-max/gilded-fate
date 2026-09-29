@@ -79,17 +79,20 @@ namespace GildedFate.UI
             var outer=GildBand(r,.875f,.985f,.022f);var inner=GildBand(r,.770f,.825f,.016f)*.82f;
             // Beads minted into the groove between the two rims.
             const int beads=36;var step=Mathf.PI*2f/beads;var angle=Mathf.Round(Mathf.Atan2(v,u)/step)*step;
-            var bead=1f-Mathf.SmoothStep(.016f,.028f,Vector2.Distance(new Vector2(u,v),new Vector2(Mathf.Cos(angle),Mathf.Sin(angle))*.85f));
+            var bead=1f-GildSmooth(.016f,.028f,Vector2.Distance(new Vector2(u,v),new Vector2(Mathf.Cos(angle),Mathf.Sin(angle))*.85f));
             var h=Mathf.Max(outer,Mathf.Max(inner,bead*.62f));
-            var field=1f-Mathf.SmoothStep(.72f,.76f,r);
+            var field=1f-GildSmooth(.72f,.76f,r);
             if(field<=0)return h;
             var hammered=(Mathf.PerlinNoise(u*7.3f+3.1f,v*7.3f+1.7f)-.5f)*.075f+(Mathf.PerlinNoise(u*19f+9.2f,v*19f+4.6f)-.5f)*.03f;
             var stamp=doubled?GildDoubleMask(u,v):GildCrownMask(u,v);
             return Mathf.Max(h,(.32f+.06f*(1-r*r)+hammered+stamp*.52f)*field);
         }
 
-        private static float GildBand(float r,float a,float b,float w)=>Mathf.SmoothStep(a-w,a+w,r)*(1f-Mathf.SmoothStep(b-w,b+w,r));
-        private static float GildCover(float distance,float w=.022f)=>1f-Mathf.SmoothStep(-w,w,distance);
+        // Hermite edge like shader smoothstep(e0,e1,x). Mathf.SmoothStep interpolates between its
+        // first two arguments instead, which flattened every edge of the minted relief.
+        private static float GildSmooth(float e0,float e1,float x){var t=Mathf.Clamp01((x-e0)/(e1-e0));return t*t*(3f-2f*t);}
+        private static float GildBand(float r,float a,float b,float w)=>GildSmooth(a-w,a+w,r)*(1f-GildSmooth(b-w,b+w,r));
+        private static float GildCover(float distance,float w=.022f)=>1f-GildSmooth(-w,w,distance);
 
         private static float GildBox(float u,float v,float hx,float hy)
         {
