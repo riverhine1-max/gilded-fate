@@ -14,8 +14,8 @@ namespace GildedFate.UI
         private struct MenuNavigation
         {
             public int x,y,page;
-            public bool accept,back,inspect,category,sort,hud,deck,map,pause;
-            public bool Any=>x!=0||y!=0||page!=0||accept||back||inspect||category||sort||hud||deck||map||pause;
+            public bool accept,back,inspect,category,sort,hud,deck,map,pause,topBar;
+            public bool Any=>x!=0||y!=0||page!=0||accept||back||inspect||category||sort||hud||deck||map||pause||topBar;
         }
         private bool menuInputConsumed,menuUsesGamepad;
         private MenuNavigation combatNavigationInput;
@@ -35,10 +35,15 @@ namespace GildedFate.UI
             input.accept=pad?.buttonSouth.wasPressedThisFrame==true||key?.enterKey.wasPressedThisFrame==true;
             input.back=pad?.buttonEast.wasPressedThisFrame==true||pad?.startButton.wasPressedThisFrame==true||key?.escapeKey.wasPressedThisFrame==true||key?.backspaceKey.wasPressedThisFrame==true;
             input.pause=pad?.startButton.wasPressedThisFrame==true||key?.escapeKey.wasPressedThisFrame==true;
-            input.inspect=pad?.buttonWest.wasPressedThisFrame==true||key?.iKey.wasPressedThisFrame==true;
+            // Wherever the top bar (Map / Deck / Settings) is shown, X opens it and card
+            // inspection moves to R3. The Collection keeps X inspect and R3 sort.
+            var west=pad?.buttonWest.wasPressedThisFrame==true;var r3=pad?.rightStickButton.wasPressedThisFrame==true;
+            var topBarOnX=TopBarUsesX;
+            input.topBar=topBarOnX&&west;
+            input.inspect=(topBarOnX?r3:west)||key?.iKey.wasPressedThisFrame==true;
             input.category=pad?.buttonNorth.wasPressedThisFrame==true||key?.cKey.wasPressedThisFrame==true;
-            input.sort=pad?.rightStickButton.wasPressedThisFrame==true||key?.sKey.wasPressedThisFrame==true;
-            input.hud=pad?.selectButton.wasPressedThisFrame==true||key?.tabKey.wasPressedThisFrame==true;
+            input.sort=(!topBarOnX&&r3)||key?.sKey.wasPressedThisFrame==true;
+            input.hud=pad?.selectButton.wasPressedThisFrame==true||key?.tabKey.wasPressedThisFrame==true||input.topBar;
             input.deck=key?.dKey.wasPressedThisFrame==true;input.map=key?.mKey.wasPressedThisFrame==true;
             if(input.Any)menuUsesGamepad=pad!=null&&(pad.allControls.Any(c=>c is UnityEngine.InputSystem.Controls.ButtonControl b&&b.wasPressedThisFrame)||axis!=Vector2Int.zero);
             return input;

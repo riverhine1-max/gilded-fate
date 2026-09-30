@@ -441,6 +441,7 @@ namespace GildedFate.UI
         private void QueueEndTurn()
         {
             if(!CanAcceptCombatInput||pileOpen>=0)return;
+            endTurnPressedAt=Time.unscaledTime;
             combatBusy=true;hoverView=dragView=selectedView=null;cardDragging=false;Sfx(SoundCue.EndTurn,combatSound:true);
             combatSequence=StartCoroutine(AnimateEnemyTurn());
         }
@@ -635,7 +636,7 @@ namespace GildedFate.UI
             combatEffectTooltipTitle=combatEffectTooltipDetail=null;DrawCombatStats(w,h);
             DrawTargetGuide();
             Fill(new Rect(0,h-138,w,138),new Color(.005f,.009f,.017f,.18f));
-            var hint=Time.unscaledTime<hintUntil?inputHint:combatBusy?"":controllerNavigation?(menuUsesGamepad?"STICK / D-PAD · A PLAY · B BACK · X INSPECT · LB EFFECTS · Y END TURN":"ARROWS  SELECT CARD · ENTER  PLAY · BACKSPACE  CANCEL"):"DRAG A CARD TO PLAY · RIGHT-CLICK TO CANCEL";
+            var hint=Time.unscaledTime<hintUntil?inputHint:combatBusy?"":controllerNavigation?(menuUsesGamepad?"STICK / D-PAD · A PLAY · B BACK · R3 INSPECT · X TOP BAR · LB EFFECTS · Y END TURN":"ARROWS  SELECT CARD · ENTER  PLAY · BACKSPACE  CANCEL"):"DRAG A CARD TO PLAY · RIGHT-CLICK TO CANCEL";
             GUI.Label(new Rect(w*.5f-330,h-292,660,26),hint,new GUIStyle(footerStyle){fontSize=14,normal={textColor=new Color(.88f,.83f,.7f)}});
             DrawGildControl();DrawCombatHand();DrawCombatMotions();DrawRetaliateReturns();DrawCombatControls();DrawCombatNativeHitTargets();DrawCombatNumbers();DrawCardKeywordHelp(w,h);DrawCombatEffectTooltip(w,h);DrawPersistentRunTooltip(w,h);
             if(!profile.reduceFlashing&&gildedFlash>0)Fill(new Rect(0,0,w,h),new Color(1,.7f,.25f,gildedFlash*.12f));
@@ -877,9 +878,8 @@ namespace GildedFate.UI
             }
             DrawEnergyMeter(EnergyMeterRect);
             var end=EndTurnRect;var enabled=CanAcceptCombatInput&&pileOpen<0;
-            DrawButtonFrame(end,!controllerNavigation&&end.Contains(combatPointer)&&enabled,!enabled);GUI.enabled=enabled;
-            if(GUI.Button(end,combatBusy?"RESOLVING…":"END TURN",buttonStyle))QueueEndTurn();GUI.enabled=true;
-            GUI.Label(new Rect(end.x,end.y-26,end.width,22),"HAND  "+combat.hand.Count+(controllerNavigation&&menuUsesGamepad?"     ·     Y":"     ·     SPACE"),footerStyle);
+            if(DrawEndTurnButton(end,enabled))QueueEndTurn(); // GildedEndTurnButton.cs
+            GUI.Label(new Rect(end.x,end.y-26,end.width,22),"HAND  "+combat.hand.Count+(ShowPadGlyphs?"":"     ·     SPACE"),footerStyle);
         }
         private void DrawEnergyMeter(Rect r)
         {

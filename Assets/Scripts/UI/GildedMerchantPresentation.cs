@@ -99,7 +99,7 @@ namespace GildedFate.UI
             ShopPrice(heal,35,"heal",merchantHealed);if(!merchantHealed&&run.hp>=run.maxHp)GUI.Label(new Rect(heal.x-24,heal.y-20,114,20),"FULL HEALTH",new GUIStyle(footerStyle){fontSize=11});
             if(controllerNavigation?screenControllerIndex==11:heal.Contains(pointer)){Outline(new Rect(heal.x-4,heal.y-4,heal.width+8,heal.height+8),Gold,2);SetRunHudTooltip(heal,"RESTORE 18 HP","Recover up to 18 HP for 35 Gold. Once per visit."+(run.hp>=run.maxHp?"\n\nAlready at full health — no purchase needed.":""));}
             if(!MerchantBusy&&GUI.Button(heal,"",GUIStyle.none))BuyShopHeal();
-            GUI.Label(new Rect(178,h-68,w-430,30),"CLICK AN ITEM TO BUY · RIGHT CLICK / I / X TO INSPECT CARDS",new GUIStyle(footerStyle){fontSize=12,normal={textColor=new Color(.84f,.78f,.66f)}});
+            GUI.Label(new Rect(178,h-68,w-430,30),"CLICK AN ITEM TO BUY · RIGHT CLICK / I / R3 TO INSPECT CARDS",new GUIStyle(footerStyle){fontSize=12,normal={textColor=new Color(.84f,.78f,.66f)}});
             var leave=new Rect(w-220,h-67,190,43);DrawButtonFrame(leave,ScreenChoiceHot(leave,12),MerchantBusy);if(!MerchantBusy&&GUI.Button(leave,"LEAVE SHOP",buttonStyle))Advance();
         }
         private void BuyShopShard()

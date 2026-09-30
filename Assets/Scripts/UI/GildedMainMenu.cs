@@ -719,6 +719,7 @@ namespace GildedFate.UI
         private void DrawPersistentRunControls(float w,Vector2 pointer)
         {
             DrawRouteMapControl(w,pointer);
+            if(ShowPadGlyphs&&TopBarUsesX)DrawPadGlyph(new Vector2(RouteMapButton(w).x-17,RouteMapButton(w).center.y),"X",true); // X opens the top bar
             var deck=RunDeckControlRect(w);var gear=new Rect(w-67,7,46,44);var icon=new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=25,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(.94f,.86f,.67f)}};
             RegisterCombatHudTarget("nav:map",0,RouteMapButton(w),"ACT MAP","Inspect your route. A: open; no rooms can be entered from the preview.",2);
             RegisterCombatHudTarget("nav:deck",0,deck,"FULL DECK","Inspect your permanent deck. A: open; return without advancing the run.",1);
@@ -799,6 +800,8 @@ namespace GildedFate.UI
         };
         private void DrawMapNodeIcon(int index,Rect r){DrawIdentityRoom(index,r);}
         private static string RiskLabel(NodeKind kind)=>kind==NodeKind.Elite?" · HIGH RISK":kind==NodeKind.Boss?" · FINAL":kind==NodeKind.Treasure?" · REWARD":"";
+        private int RunFloorNumber=>(Mathf.Clamp(run.act,1,3)-1)*RunModel.FloorCount+run.floor+1;
+        private static int RunFloorTotal=>3*RunModel.FloorCount;
         private static string RomanAct(int act)=>act==1?"I":act==2?"II":"III";
         private void DrawLine(Vector2 a,Vector2 b,Color color,float width)
         {
@@ -1476,8 +1479,15 @@ namespace GildedFate.UI
 
             var floorRect=new Rect(376,7,116,43);DrawFloorHudIcon(new Rect(floorRect.x+4,floorRect.y+5,39,32));
             GUI.Label(new Rect(floorRect.x+49,floorRect.y+1,floorRect.width-50,21),"FLOOR",new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=8,alignment=TextAnchor.MiddleLeft,normal={textColor=new Color(.72f,.71f,.67f)}});
-            GUI.Label(new Rect(floorRect.x+49,floorRect.y+17,floorRect.width-50,25),(run.floor+1).ToString(),new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=18,alignment=TextAnchor.MiddleLeft,normal={textColor=new Color(.98f,.88f,.65f)}});
-            if(floorRect.Contains(pointer))SetRunHudTooltip(floorRect,$"ACT {run.act} · FLOOR {run.floor+1}","Your current room in this ascent. Follow a connected golden path to climb toward the pictured boss.");
+            // Floors count up through the whole run (1 to the final boss) instead of restarting each act.
+            GUI.Label(new Rect(floorRect.x+49,floorRect.y+17,floorRect.width-50,25),$"{RunFloorNumber}<size=12>/{RunFloorTotal}</size>",new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=18,richText=true,alignment=TextAnchor.MiddleLeft,normal={textColor=new Color(.98f,.88f,.65f)}});
+            if(floorRect.Contains(pointer))SetRunHudTooltip(floorRect,$"FLOOR {RunFloorNumber} OF {RunFloorTotal}",$"Act {RomanAct(run.act)}, room {run.floor+1} of this act. Follow a connected golden path to climb toward the pictured boss. The final boss waits on floor {RunFloorTotal}.");
+            // A clear act badge next to the floor counter.
+            var actRect=new Rect(floorRect.xMax+8,7,78,43);
+            Fill(actRect,new Color(.10f,.07f,.03f,.85f));Outline(actRect,new Color(.86f,.66f,.30f,.9f),1);
+            GUI.Label(new Rect(actRect.x,actRect.y+1,actRect.width,16),"ACT",new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=9,fontStyle=FontStyle.Bold,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(.86f,.74f,.52f)}});
+            GUI.Label(new Rect(actRect.x,actRect.y+14,actRect.width,28),$"{RomanAct(run.act)}<size=11> / III</size>",new GUIStyle(titleStyle){font=headingFont?headingFont:labelFont,fontSize=22,richText=true,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(1f,.82f,.42f)}});
+            if(actRect.Contains(pointer))SetRunHudTooltip(actRect,$"ACT {RomanAct(run.act)} OF III",$"Defeat this act's boss to advance. Three acts lead to the final boss on floor {RunFloorTotal}.");
             DrawPersistentRunControls(w,pointer);
 
             var shown=VisibleRunRelics(w);

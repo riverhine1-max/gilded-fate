@@ -68,6 +68,12 @@ namespace GildedFate.UI
         }
         private bool HandleCombatHudNavigation(MenuNavigation input)
         {
+            if(input.topBar)
+            {
+                // X: jump straight to the top bar (Map / Deck / Settings).
+                if(combatHudInspectActive)combatHudInspectActive=false;else OpenCombatHudFocus(0);
+                return true;
+            }
             if(input.page<0||input.hud)
             {
                 if(combatHudInspectActive)combatHudInspectActive=false;else OpenCombatHudFocus();
