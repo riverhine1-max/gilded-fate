@@ -62,6 +62,7 @@ namespace GildedFate.UI
             {
                 var fact=statusVisualBeats[0].fact;statusVisualBeats.RemoveAt(0);
                 PlayHexerStatus(fact);PlayVanguardStatus(fact);PlayReaperStatus(fact);
+                FinalVfxOnStatus(fact,now); // quick apply/trigger feedback on the actor
                 var positive=fact.playerSide&&fact.amount>0;
                 var effect=fact.label=="BURN"?2:positive?run.hero==HeroId.Vanguard?4:run.hero==HeroId.Reaper?5:3:3;
                 if(fact.playerSide){playerVfxIndex=effect;playerVfxTime=.32f;heroBuff=1;}

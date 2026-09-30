@@ -96,11 +96,14 @@ namespace GildedFate.UI
             for(var i=0;i<combat.EnemyCount;i++)
             {
                 if(i>=opponentVisuals.Count)continue;var v=opponentVisuals[i];var r=GroupPresentedPortrait(i);
-                var alpha=v.death<0?1:1-Mathf.Clamp01((Time.unscaledTime-v.death)*2);if(alpha<=0)continue;
-                // Portrait, health and effect anchor share this fighter\'s motion.
-                var old=GUI.color;GUI.color=Color.Lerp(new Color(1,1,1,alpha),new Color(1,.55f,.36f,alpha),v.hit*.6f);
-                DrawFloatingEnemy(r,WorldContent.Enemies.First(e=>e.id==combat.EnemyIdAt(i)));GUI.color=old;
-                if(v.hit>0)DrawCombatVfx(r.center,Mathf.Min(160,r.width),7,v.hit*.3f);
+                var def=FinalEnemyDef(i);if(def==null||def.id!=combat.EnemyIdAt(i))def=WorldContent.Enemies.First(e=>e.id==combat.EnemyIdAt(i));
+                // The sprite animates procedurally around its stable feet anchor
+                // (GildedEnemyAnimation.cs); health and effects keep the presented rect.
+                if(v.death>=0&&Time.unscaledTime-v.death>EnemyDeathDuration(EnemyAnimFor(i,def),true))continue;
+                var old=GUI.color;
+                DrawAnimatedEnemy(i,profile.reduceMotion?r:GroupPortrait(i),def,Color.Lerp(Color.white,new Color(1,.55f,.36f),v.hit*.6f),v.death);GUI.color=old;
+                var hitAtlas=i<enemyAnims.Length?enemyAnims[i].hitAtlas:7;
+                if(v.hit>0&&hitAtlas>=0)DrawCombatVfx(r.center,Mathf.Min(160,r.width),hitAtlas,v.hit*.3f);
             }
         }
         private Rect GroupEffectArea(int owner)

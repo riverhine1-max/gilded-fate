@@ -48,10 +48,11 @@ namespace GildedFate.UI
                 var damage=fact.kind==CombatEventKind.Damage;var block=fact.kind==CombatEventKind.Block;
                 var effect=damage?7:block?1:5;
                 if(fact.playerSide){playerVfxIndex=effect;playerVfxTime=.48f;}else{enemyVfxIndex=effect;enemyVfxTime=.48f;}
+                FinalVfxOnVital(fact,beat.source,now); // hero-specific hits, attacker-matched strikes, casts
                 if(damage)
                 {
                     if(fact.playerSide)heroHit=1;else foeHit=1;
-                    impactShake=Mathf.Max(impactShake,Mathf.Min(.65f,fact.amount/35f));
+                    impactShake=Mathf.Max(impactShake,FinalImpactShake(fact));
                 }
                 else{if(fact.playerSide)heroBuff=1;else foeBuff=1;}
             }

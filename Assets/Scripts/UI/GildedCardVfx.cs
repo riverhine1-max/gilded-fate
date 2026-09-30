@@ -204,8 +204,9 @@ namespace GildedFate.UI
                 if(number.start>now||cardVfxSeenNumbers.Contains(number))continue;
                 cardVfxSeenNumbers.Add(number);
                 var amount=CardVfxCritAmount(number);if(amount<50||now-number.start>.12f)continue;
-                cardVfxHitStopUntil=number.start+.07f;cardVfxHitStopShake=impactShake;cardVfxHitStopFoe=foeHit;
-                cardVfxPunchStart=number.start;cardVfxPunchStrength=amount>=150?1:.55f;cardVfxPunchCenter=new Vector2(number.origin.x,CombatHeight*.36f);
+                // Hold scales with the hit: 70 ms at 50+, 95 ms at 100+, 115 ms at 150+.
+                cardVfxHitStopUntil=number.start+(amount>=150?.115f:amount>=100?.095f:.07f);cardVfxHitStopShake=impactShake;cardVfxHitStopFoe=foeHit;
+                cardVfxPunchStart=number.start;cardVfxPunchStrength=amount>=150?1:amount>=100?.8f:.55f;cardVfxPunchCenter=new Vector2(number.origin.x,CombatHeight*.36f);
             }
             if(combatNumbers.Count==0)cardVfxSeenNumbers.Clear();else if(cardVfxSeenNumbers.Count>combatNumbers.Count)cardVfxSeenNumbers.RemoveWhere(n=>!combatNumbers.Contains(n));
             if(now<cardVfxHitStopUntil){impactShake=Mathf.Max(impactShake,cardVfxHitStopShake);foeHit=Mathf.Max(foeHit,cardVfxHitStopFoe);}
@@ -236,7 +237,9 @@ namespace GildedFate.UI
             if(CardVfxIsStrike(card))
             {
                 var hits=Mathf.Clamp(card.hits,1,3);
-                void Slash(Vector2 point,int index){for(var h=0;h<hits;h++)QueueCardVfx(CardVfxKind.Slash,point,at+h*.07f,.32f,new Color(1f,.6f,.24f),seed+h*101+index*7,strength,h%2==0?35:-35);}
+                // The swing trail carries the hero's colour; the hit itself is drawn by GildedCombatFinalVfx.
+                var hero=card.hero??run.hero;var tint=hero==HeroId.Hexer?new Color(.76f,.50f,1f):hero==HeroId.Reaper?new Color(.30f,.92f,.82f):new Color(1f,.78f,.40f);
+                void Slash(Vector2 point,int index){for(var h=0;h<hits;h++)QueueCardVfx(CardVfxKind.Slash,point,at+h*.07f,.32f,tint,seed+h*101+index*7,strength,h%2==0?35:-35);}
                 if(combat.RequiresEnemyTarget(card))Slash(motion.to,0);
                 else if(GroupCombat){for(var i=0;i<combat.EnemyCount;i++)if(combat.IsLivingTarget(i))Slash(GroupPortrait(i).center,i);}
                 else Slash(EnemyPortraitRect.center,0);
@@ -558,12 +561,24 @@ namespace GildedFate.UI
                 var k=(now-burst.start)/burst.duration;if(k<0||k>=1)continue;
                 switch(burst.kind)
                 {
-                    case CardVfxKind.Slash:DrawCardVfxSlash(burst,k);break;
-                    case CardVfxKind.Ward:DrawCardVfxWard(burst,k);break;
+                    // Slash and Ward target actors; they draw from DrawCardVfxActorBursts.
                     case CardVfxKind.Sigil:DrawCardVfxSigil(burst,k);break;
                     case CardVfxKind.PilePulse:DrawCardVfxPilePulse(burst,k);break;
                     case CardVfxKind.HandSweep:DrawCardVfxHandSweep(burst,k);break;
                 }
+            }
+            GUI.color=old;
+        }
+        // Actor-targeted bursts draw in the actor layer (DrawCombatActors) so health,
+        // intents and status icons are never covered.
+        private void DrawCardVfxActorBursts()
+        {
+            if(!CardVfxRepaint||cardVfxBursts.Count==0)return;
+            EnsureCardVfxTextures();var now=Time.unscaledTime;var old=GUI.color;
+            foreach(var burst in cardVfxBursts)
+            {
+                var k=(now-burst.start)/burst.duration;if(k<0||k>=1)continue;
+                if(burst.kind==CardVfxKind.Slash)DrawCardVfxSlash(burst,k);else if(burst.kind==CardVfxKind.Ward)DrawCardVfxWard(burst,k);
             }
             GUI.color=old;
         }
@@ -574,7 +589,7 @@ namespace GildedFate.UI
             var start=b.position-dir*length*.5f;var end=Vector2.Lerp(start,b.position+dir*length*.5f,1-(1-draw)*(1-draw));
             var tail=Vector2.Lerp(start,end,.18f);var head=Vector2.Lerp(start,end,.82f);
             void Stroke(float width,Color color){DrawLine(start,tail,color,width*.45f);DrawLine(tail,head,color,width);DrawLine(head,end,color,width*.45f);}
-            Stroke(15,new Color(.72f,.08f,.05f,.32f*fade));
+            Stroke(15,new Color(b.color.r*.45f,b.color.g*.2f,b.color.b*.3f,.32f*fade));
             Stroke(6,new Color(b.color.r,b.color.g,b.color.b,.85f*fade));
             if(!profile.reduceFlashing&&!profile.reducedVfx)Stroke(2,new Color(1f,.96f,.84f,.95f*fade));
         }

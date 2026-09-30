@@ -21,3 +21,11 @@ Runtime files deliberately contain RGB on the left and a grayscale transparency 
 ## Known limits
 
 These are generated video performances, not skeletal animation clips. Fine detail, soft halos, edge-reaching trails and imperfect loop seams can remain. Unity/Windows Media Foundation may emit a color-metadata fallback warning despite explicit BT.709 tags; tested clips still decode. No revive clip is mapped for Vanguard or Reaper because the current gameplay does not require one.
+
+## Enemy animation and combat VFX
+
+Enemies are illustrated portraits animated procedurally in `GildedEnemyAnimation.cs`: the sprite is transformed around its feet with `GUI.matrix`, so health bars, intents, status strips and hit targets keep their stable anchors. Each enemy has a motion archetype (beast, crawler, knight, brute, caster, spirit, colossus) with idle breathing or hovering, an intent-matched wind-up, a strike timed to the first damage receipt, a hit recoil held through the existing hit-stop, a white silhouette hit flash, and a death collapse or dissolve. Bosses tremble and flare on phase changes and have a longer, larger death. The flash and charge-aura silhouettes are baked once per enemy texture (a small RenderTexture read-back) and cached.
+
+`GildedCombatFinalVfx.cs` draws the combat effects in the actor layer, before any HUD: attacker-matched enemy strikes (claws, bites, blades, cleaves, slams, bolts, mirror shards, thrown cards, spectral blades, crushes), hero-specific hits (Vanguard steel slashes and sparks, Hexer violet glyphs, Reaper scythe crescent and souls), damage-tiered scale, shake and hit-stop, gilded accents, enemy casts, status apply pulses and deaths.
+
+Both files are presentation only: they read combat receipts that were already being presented and never change rules, AI, damage or saves. Reduce Motion freezes enemy transforms and moving particles, Reduce Flashing dims flashes and replaces the white hit flash with a warm tint, Reduced VFX lowers particle counts and sizes, and Screen Shake still gates all shake and zoom punch.

@@ -240,6 +240,7 @@ namespace GildedFate.UI
             resonancePulse=Mathf.Max(0,resonancePulse-dt);powerBadgePulse=Mathf.Max(0,powerBadgePulse-dt*1.7f);drawPulse=Mathf.Max(0,drawPulse-dt*2);discardPulse=Mathf.Max(0,discardPulse-dt*2);exhaustPulse=Mathf.Max(0,exhaustPulse-dt*2);
             playerAction=Mathf.Max(0,playerAction-dt*2.3f);enemyAction=Mathf.Max(0,enemyAction-dt*1.8f);heroHit=Mathf.Max(0,heroHit-dt*3);foeHit=Mathf.Max(0,foeHit-dt*3);heroBuff=Mathf.Max(0,heroBuff-dt*1.5f);foeBuff=Mathf.Max(0,foeBuff-dt*1.5f);impactShake=Mathf.Max(0,impactShake-dt*3.5f);energyPulse=Mathf.Max(0,energyPulse-dt*2.8f);targetLockPulse=Mathf.Max(0,targetLockPulse-dt*4.5f);
             UpdateCardVfx(dt,now);
+            UpdateFinalCombatVfx(now); // GildedCombatFinalVfx.cs
         }
 
         private void HandleCombatController()
@@ -414,6 +415,7 @@ namespace GildedFate.UI
             playerActionKind=card.effect;playerAction=1;Sfx(combat.RequiresEnemyTarget(card)?AttackSound(card):SoundCue.CardPickup,combatSound:true);
             yield return new WaitForSecondsRealtime(travel);
             while(combatPauseOpen)yield return null;
+            FinalVfxNoteCardPlay(card,gilded);
             var energyBefore=combat.energy;var resolved=combat.Play(card,combatTargetIndex);if(combat.energy!=energyBefore)energyPulse=1;
             if(resolved)SaveCombatCheckpoint();
             if(resolved)
@@ -451,6 +453,7 @@ namespace GildedFate.UI
             {
                 enemyAction=1;var anticipate=currentEnemy?.boss==true?.65f:combat.intent==IntentKind.Special?.48f:.30f;
                 if(combat.IntentDealsDamage)Sfx(SoundCue.EnemyAttack,pan:.25f,combatSound:true);
+                BeginEnemyTurnAnimation(profile.reduceMotion?.14f:anticipate); // GildedEnemyAnimation.cs: intent-matched telegraph
                 yield return new WaitForSecondsRealtime(AnimationSeconds(profile.reduceMotion?.14f:anticipate));
                 while(combatPauseOpen)yield return null;
                 combat.ResolveEnemyTurn();SaveCombatCheckpoint();UpdateBossPhaseVisual();
@@ -473,7 +476,8 @@ namespace GildedFate.UI
             RecordShardShatter();if(combat.player.hp<=0)heroDeath=Time.unscaledTime;else{foeDeath=Time.unscaledTime;heroVictory=Time.unscaledTime;}
             Sfx(combat.player.hp<=0?SoundCue.Defeat:SoundCue.Victory);
             turnBanner=combat.player.hp<=0?"FATE SHATTERED":"VICTORY";turnBannerUntil=Time.unscaledTime+1.2f;
-            yield return new WaitForSecondsRealtime(AnimationSeconds(profile.reduceMotion?.25f:.85f));
+            // Bosses and elites hold a little longer so their death reads (presentation only).
+            yield return new WaitForSecondsRealtime(AnimationSeconds(FinalDeathHold()));
             CheckCombat();
         }
         private void MoveCard(CardDef card,Vector2 from,Vector2 to,float duration,float fromScale=1,float toScale=.24f,float fromAngle=0,float toAngle=0,float delay=0,bool exhaust=false,bool back=false,bool absorb=false)
@@ -500,10 +504,12 @@ namespace GildedFate.UI
             ScheduleHexerVideoReceipts(facts,hitOffsets,now);
             ScheduleVanguardVideoReceipts(facts,hitOffsets,now,played);
             ScheduleReaperVideoReceipts(facts,hitOffsets,now);
+            BeginFinalVfxBatch();
             foreach(var fact in facts)
             {
                 var hitTime=hitOffsets[factIndex++];
                 ScheduleMasterPolishReceipt(fact,now+hitTime);
+                ScheduleFinalVfxFact(fact,now+hitTime); // enemy strike timing, projectiles, casts
                 if(fact.playerStatuses!=null)playerStatusBeats.Add((now+hitTime,fact.playerStatuses,fact.playerRetaliation,fact.spiritDirectionsUsed));
                 if(fact.enemyStatuses!=null)enemyStatusBeats.Add((now+hitTime,fact.enemyIndex,fact.enemyStatuses));
                 if(PresentGildReceipt(fact,played,now+hitTime))continue;
@@ -919,15 +925,18 @@ namespace GildedFate.UI
             if(heroDeath>0)hero.y+=Mathf.Clamp01(now-heroDeath)*35;
             var old=GUI.color;GUI.color=heroDeath>0?new Color(1,.6f,.6f,1-Mathf.Clamp01(now-heroDeath)*.8f):Color.Lerp(Color.white,new Color(1,.6f,.48f),heroHit*.5f);
             var matrix=GUI.matrix;if(!HasHero3D&&!videoHero){GUIUtility.ScaleAroundPivot(new Vector2(1,breathe),new Vector2(hero.center.x,hero.yMax));DrawHeroPortrait(hero,run.hero);}GUI.matrix=matrix;GUI.color=old;
-            if(GroupCombat){DrawGroupActors();DrawCombatVfx(hero.center,215,playerVfxIndex,playerVfxTime);return;}
-            var anticipation=enemyAction>.55f?-(enemyAction-.55f)*16:Mathf.Sin(enemyAction/.55f*Mathf.PI)*-37;
-            foe.x+=(anticipation+Mathf.Sin(shimmer*63)*foeHit*7)*motion;
-            if(foeDeath>0)foe.y+=Mathf.Clamp01((now-foeDeath)*1.4f)*50;
-            GUI.color=foeDeath>0?new Color(1,.65f,.5f,1-Mathf.Clamp01(now-foeDeath)*.9f):Color.Lerp(Color.white,new Color(1,.6f,.43f),foeHit*.5f);
-            if(!HasEnemy3D)DrawEnemySigil(foe);GUI.color=old;
+            if(GroupCombat){DrawGroupActors();DrawCombatVfx(hero.center,215,playerVfxIndex,playerVfxTime);DrawFinalActorLayer();return;}
+            // Wind-up, strike, hit recoil and death are procedural poses around the
+            // enemy's feet (GildedEnemyAnimation.cs); the stable rect still anchors UI.
+            var foeTint=foeDeath>0?new Color(1,.65f,.5f,1):Color.Lerp(Color.white,new Color(1,.6f,.43f),foeHit*.5f);
+            if(!HasEnemy3D)DrawAnimatedEnemy(0,foe,currentEnemy,foeTint,foeDeath>0?foeDeath:-1);GUI.color=old;
             DrawCombatVfx(new Vector2(foe.center.x,foe.center.y),230,enemyVfxIndex,enemyVfxTime);
             DrawCombatVfx(new Vector2(hero.center.x,hero.center.y),215,playerVfxIndex,playerVfxTime);
+            DrawFinalActorLayer();
         }
+        // Actor-layer VFX: drawn before DrawCombatStats, so health, intents, status
+        // strips, targeting and cards always render on top.
+        private void DrawFinalActorLayer(){DrawCardVfxActorBursts();DrawFinalCombatVfx();}
 
         private void DrawCombatStats(float w,float h)
         {
