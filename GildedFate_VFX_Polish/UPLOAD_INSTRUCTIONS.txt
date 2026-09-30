@@ -1,0 +1,31 @@
+GILDED FATE: COMBAT VFX AND ENEMY ANIMATION POLISH
+===================================================
+
+This update only changes how combat looks (presentation). It does not change
+rules, cards, damage, AI, saves or balance.
+
+HOW TO APPLY (GitHub website)
+1. Open https://github.com/riverhine1-max/gilded-fate
+2. Click "Add file" > "Upload files".
+3. Drag the "Assets" and "Docs" folders from this zip into the page. GitHub
+   keeps the folder paths, so each file replaces the one at the same path.
+4. Commit with a message such as "Combat VFX polish + enemy animations".
+5. Open the project in Unity 6000.5.9f1 and let it recompile.
+
+HOW TO APPLY (git, alternative)
+  git apply vfx-polish.patch
+
+NEW FILES
+  Assets/Scripts/UI/GildedEnemyAnimation.cs (+ .meta)
+  Assets/Scripts/UI/GildedCombatFinalVfx.cs (+ .meta)
+
+CHANGED FILES (small hooks only)
+  Assets/Scripts/UI/GildedCombatPresentation.cs
+  Assets/Scripts/UI/GildedEncounterPresentation.cs
+  Assets/Scripts/UI/GildedCombatHealthPlayback.cs
+  Assets/Scripts/UI/GildedMasterPolish.cs
+  Assets/Scripts/UI/GildedCardVfx.cs
+  Assets/Scripts/UI/GildedMainMenu.cs   (one line: boss phase subtitle)
+  Docs/CombatAnimationPlayback.md
+
+The files are based on the current main branch (commit 155f0bc).
