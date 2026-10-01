@@ -17,6 +17,7 @@ namespace GildedFate.UI
         private string continueSummary="";private float continueSummaryAt=-10;
         private static readonly string[] WhatsNew=
         {
+            "TITLE SCREEN · PLAY and ARCHIVE gather every mode and record into two big hubs.",
             "FATE DEBT · ten stacking challenge levels per hero. Win to unlock the next.",
             "DAILY RUN · one seed for everyone each day, a rotating hero and two modifiers.",
             "UNLOCKS · earn Fate Marks every run to open new cards for each hero.",
@@ -62,7 +63,7 @@ namespace GildedFate.UI
             if(!SaveService.HasRun)return continueSummary;
             var saved=SaveService.Load();if(saved==null||saved.closed)return continueSummary;
             var floor=(Mathf.Clamp(saved.act,1,3)-1)*Map.RunModel.FloorCount+saved.floor+1;
-            continueSummary=$"{saved.hero.ToString().ToUpperInvariant()} · ACT {FateDebt.Roman(Mathf.Clamp(saved.act,1,3))} · FLOOR {floor}"+(saved.fateDebt>0?" · DEBT "+FateDebt.Roman(saved.fateDebt):"")+(saved.IsDaily?" · DAILY":"");
+            continueHero=saved.hero;continueSummary=$"{saved.hero.ToString().ToUpperInvariant()} · ACT {FateDebt.Roman(Mathf.Clamp(saved.act,1,3))} · FLOOR {floor}"+(saved.fateDebt>0?" · DEBT "+FateDebt.Roman(saved.fateDebt):"")+(saved.IsDaily?" · DAILY":"");
             return continueSummary;
         }
         // Drawn at the end of the main menu.
@@ -77,6 +78,7 @@ namespace GildedFate.UI
             void Link(string label,string url){if(string.IsNullOrEmpty(url))return;var r=new Rect(x,h-74,170,38);DrawButtonFrame(r,r.Contains(PointerPosition),false);if(GUI.Button(r,label,new GUIStyle(buttonStyle){fontSize=12}))Application.OpenURL(url);x+=180;}
             Link("WISHLIST ON STEAM",SteamPageUrl);Link("DISCORD",DiscordUrl);Link("SEND FEEDBACK",FeedbackUrl);
             var news=new Rect(w-170,h-74,144,38);DrawButtonFrame(news,news.Contains(PointerPosition),false);if(GUI.Button(news,"WHAT'S NEW",new GUIStyle(buttonStyle){fontSize=12}))whatsNewOpen=true;
+            if(!whatsNewOpen&&!quitConfirmOpen)DrawPlaygroundMenuButton(w,h); // Editor / Development Build only
             if(whatsNewOpen)DrawWhatsNew(w,h);
             if(quitConfirmOpen)DrawQuitConfirm(w,h);
         }

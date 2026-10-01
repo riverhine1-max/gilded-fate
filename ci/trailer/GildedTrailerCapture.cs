@@ -457,8 +457,14 @@ namespace GildedFate.UI
                 case "marks":profile.EnsureMeta();for(var i=0;i<3;i++)profile.heroMarks[i]=v;profile.totalMarks=v*3;BindMetaUnlocks();return;
                 case "demoMeta":TrailerDemoMeta();return;
                 case "quitConfirm":quitConfirmOpen=v!=0;return;
+                case "menuHub":screen=ScreenMode.Menu;OpenMenuHub((MenuHub)v);return;
+                case "hubFocus":controllerNavigation=true;hubFocus=v;return;
+                case "menuFocusIdx":controllerNavigation=true;menuControllerIndex=v;return;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
                 case "playground":OpenPlayground();return;
+                case "pgAdmin":OpenPlayground();pgAdminOpen=true;return;
+                case "pgUnlockAll":PgUnlockCards();PgUnlockDebt();PgUnlockAchievements();PgSaveProfile("EVERYTHING UNLOCKED · all cards, Fate Debt X for every hero, all achievements.");GildedTrailerDirector.Log($"unlocked cards {PgUnlockedCardCount()}/{MetaUnlocks.LockedTotal()} debt {profile.fateDebtUnlocked[0]} ach {profile.achievements.Count}");return;
+                case "pgReset":PgResetProgress();GildedTrailerDirector.Log($"reset cards {PgUnlockedCardCount()}/{MetaUnlocks.LockedTotal()} ach {profile.achievements.Count}");return;
                 case "playgroundFight":OpenPlayground();pgEnemies[0]="gilded_sentry";pgEnemies[1]="gilded_sentry";pgEnemies[2]="";pgEnemies[3]="";StartPlaygroundFight();return;
 #endif
                 case "fateDebtCombat":if(combat==null)return;run.fateDebt=v;run.fateDebtMask=FateDebt.MaskForLevel(v);ApplyFateDebtToCombat(currentEnemy);GildedTrailerDirector.Log($"debt {v}: enemy hp={combat.enemy.hp}/{combat.enemy.maxHp} str={combat.enemy.strength} gildExtra={combat.gildCostExtra}");return;

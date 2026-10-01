@@ -62,6 +62,7 @@ namespace GildedFate.UI
 
         private void BeginRunStartTransition()
         {
+            menuHub=MenuHub.None; // the next visit to the title screen starts at the top
             if(runStartActive)return;
             runStartHero=selectedHero;runStartElapsed=0;runStartBlackPresented=false;
             runStartPortraitReveal=Mathf.Clamp01((Time.unscaledTime-heroSelectionTime)*5f);

@@ -147,14 +147,14 @@ namespace GildedFate.UI
         // Hook: after `var over=...` in the menu-button loop. Returns the lifted rect.
         private Rect MenuLiveLift(Rect rect,bool over,int index)
         {
-            if(bootIntroActive||(index==0&&!GildedFate.Saving.SaveService.HasRun))return rect;var a=MenuLiveHoverAmount(index,over);
+            if(bootIntroActive)return rect;var a=MenuLiveHoverAmount(index,over);
             if(!MenuLiveMotion)return rect;rect.y-=Mathf.SmoothStep(0f,1f,a)*2.5f;return rect;
         }
 
         // Hook: after DrawButtonFrame in the menu-button loop. Gold thread underline + glint.
         private void MenuLivePlaque(Rect rect,bool over,int index)
         {
-            if(bootIntroActive||(index==0&&!GildedFate.Saving.SaveService.HasRun)||Event.current.type!=EventType.Repaint)return;
+            if(bootIntroActive||Event.current.type!=EventType.Repaint)return;
             var a=index<menuLiveHover.Length?menuLiveHover[index]:(over?1f:0f);if(a<=.001f)return;
             MenuLiveEnsureTextures();var e=Mathf.SmoothStep(0f,1f,a);
             var cx=rect.center.x;var half=(rect.width*.5f-22f)*e;var y=rect.yMax-7f;

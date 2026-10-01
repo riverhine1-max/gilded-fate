@@ -190,7 +190,7 @@ namespace GildedFate.UI
             }
             ProfileService.Save(profile);
         }
-        private void SyncAchievementsToSteam(){if(profile?.achievements==null)return;foreach(var id in profile.achievements)GildedSteam.Unlock(id);}
+        private void SyncAchievementsToSteam(){if(profile?.achievements==null||profile.adminUnlocked)return;foreach(var id in profile.achievements)GildedSteam.Unlock(id);}
 
         // ---------- overlay: brightness + achievement toasts (drawn last) ----------
         private void DrawMetaOverlay()

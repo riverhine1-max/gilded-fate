@@ -87,6 +87,15 @@ Every tab has **Reset to Defaults**, which only resets that tab.
 
 Button remapping is not included yet.
 
+## Title screen
+
+The title screen has 4 buttons: **PLAY**, **ARCHIVE**, **SETTINGS** and **QUIT**. A **CONTINUE RUN** button appears above them when you have a saved run.
+
+- **PLAY** opens "Choose your path": big banners for New Run, Daily Run and Continue.
+- **ARCHIVE** opens Collection, Characters, Records and Credits.
+
+The banners hang from a gold rod on strands, like the Fateweave. Hovering one pulls its strand taut and lifts the banner. BACK from any sub-screen returns to the hub you came from.
+
 ## Admin Playground (not in release builds)
 
 The Playground lets you set up any fight:
@@ -101,9 +110,27 @@ The Playground lets you set up any fight:
 - the exact cards and copies (with upgrades)
 - a Fate Shard and relics
 
-It never saves. Your real run is restored when you leave.
+Fights in the Playground never save. Your real run is restored when you leave.
 
-The Playground's code is wrapped in `#if UNITY_EDITOR || DEVELOPMENT_BUILD`:
+### Opening it (Unity Editor or a Development Build only)
 
-- **In the Unity Editor, or a build with Development Build ticked:** on the main menu, press **Ctrl + Shift + P**, or **LB + RB + View** on a controller.
-- **In a release build (Development Build unticked):** the Playground is compiled out completely. There is no menu entry, shortcut or code left in it.
+- Click **PLAYGROUND · DEV** on the main menu (bottom right), or
+- press **F9**, or
+- on a controller, hold **LB + RB** and press **View**.
+
+Ctrl + Shift + P also works in Development Builds, but not in the Unity Editor, which uses that shortcut for Pause.
+
+### ADMIN PANEL (bottom right of the Playground)
+
+These buttons change your real save on that computer:
+
+- **UNLOCK EVERYTHING:** every card, Fate Debt X for every hero and all 30 achievements.
+- **UNLOCK ALL CARDS**, **UNLOCK ALL FATE DEBT**, **UNLOCK ALL ACHIEVEMENTS:** one category at a time.
+- **+100 FATE MARKS:** step through the unlock tiers one at a time.
+- **RESET PROGRESS:** back to a fresh save. Click twice to confirm. Settings are kept.
+
+Achievements unlocked this way are never sent to Steam. Relics have no locks.
+
+### Release builds
+
+Untick **Development Build** in Build Profiles and the Playground and admin panel are compiled out completely. The cloud "playtest" build on GitHub is already a release build.

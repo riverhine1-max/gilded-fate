@@ -25,6 +25,7 @@ namespace GildedFate.Saving
         public int gameSpeed=0,windowMode=1,resolutionWidth=0,resolutionHeight=0,padPromptStyle=0;
         public float brightness=1f;
         public bool instantEnemyTurns=false,confirmEndTurn=true,muteInBackground=true,showPadPrompts=true,displayMigrated=false;
+        public bool adminUnlocked=false; // set by the dev-only Playground admin panel; keeps those unlocks off Steam
         public string lastSeenVersion="";
         // ---- meta progression ----
         public int[] heroMarks=new int[3];public int totalMarks;

@@ -80,11 +80,12 @@ namespace GildedFate.UI
         private PlayerProfile profile;
         private Texture2D vaultBackground, heroBackground, reaperCharacter, deathsKeepsake, combatBackground, bossArenaAtlas, mapBackground, mapNodeAtlas, combatIconAtlas, combatReadabilityAtlas, combatVfxAtlas, cardFrameAtlas, bindingFateIconAtlas, hudEmblemAtlas, relicIconAtlas, fateShardIconAtlas, collectionBackground, rewardBackground, logoTexture, relicAtlas, relicAtlasBonus, consumableAtlas, vanguardCardAtlas, hexerCardAtlas, reaperCardAtlasA, reaperCardAtlasB, reaperCardAtlasC, neutralCardAtlas, enemyAtlas, locationAtlas, eventAtlasActI, eventAtlasActII, eventAtlasActIII, eventAtlasGeneral;
 
-        private readonly string[] labels =
-        {
-            "CONTINUE RUN", "NEW RUN", "DAILY RUN", "COLLECTION", "RECORDS",
-            "CHARACTERS", "SETTINGS", "CREDITS", "QUIT"
-        };
+        // Title screen. PLAY and ARCHIVE open full-screen hubs (GildedMenuHubs.cs):
+        // PLAY holds New Run, Daily Run and Continue; ARCHIVE holds Collection,
+        // Characters, Records and Credits. Continue only appears when a save exists.
+        private static readonly string[] MenuWithContinue={"CONTINUE RUN","PLAY","ARCHIVE","SETTINGS","QUIT"};
+        private static readonly string[] MenuFresh={"PLAY","ARCHIVE","SETTINGS","QUIT"};
+        private string[] labels=>SaveService.HasRun?MenuWithContinue:MenuFresh;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void Create()
@@ -327,8 +328,10 @@ namespace GildedFate.UI
             if(PerfectedScreenOpen){var options=run.PerfectedEligible();if(options.Length>0){screenControllerIndex=(screenControllerIndex+delta+options.Length)%options.Length;if(accept)ChoosePerfectedCard(options[screenControllerIndex]);else if(inspectPressed)inspectedCard=options[screenControllerIndex].BuildDefinition();}if(back){SaveService.Save(run);screen=ScreenMode.Menu;}return;}
             if(screen==ScreenMode.Menu)
             {
-                if(delta!=0){do menuControllerIndex=(menuControllerIndex+delta+labels.Length)%labels.Length;while(menuControllerIndex==0&&!SaveService.HasRun);Sfx(SoundCue.UiHover);}
-                if(accept&&(menuControllerIndex!=0||SaveService.HasRun))Activate(menuControllerIndex);return;
+                if(menuHub!=MenuHub.None){HandleMenuHubNavigation(input);return;}
+                var items=labels;menuControllerIndex=Mathf.Clamp(menuControllerIndex,0,items.Length-1);
+                if(delta!=0){menuControllerIndex=(menuControllerIndex+delta+items.Length)%items.Length;Sfx(SoundCue.UiHover);}
+                if(accept)Activate(menuControllerIndex);return;
             }
             if(screen==ScreenMode.CharacterSelect)
             {
@@ -524,6 +527,7 @@ namespace GildedFate.UI
             if (screen == ScreenMode.Daily) { DrawDaily(w,h); DrawTransition(w,h); return; }
             if (screen == ScreenMode.Playground) { DrawPlayground(w,h); return; }
 
+            if(menuHub!=MenuHub.None){DrawMenuHub(w,h);DrawTransition(w,h);return;}
             var contentW = Mathf.Min(720f, w * .66f);
             var left = (w - contentW) * .5f;
             var titleY = Mathf.Max(55f, h * .095f);
@@ -535,21 +539,23 @@ namespace GildedFate.UI
             subtitleStyle.normal.textColor = new Color(.88f,.84f,.73f);
             GUI.Label(new Rect(left, titleY + 88, contentW, 30), "ENTER THE VAULT", subtitleStyle);
 
-            var menuY = titleY + 154f + BootIntroMenuSlide;
+            var items=labels;
+            var menuY = titleY + 170f + (5-items.Length)*31f + BootIntroMenuSlide;
             hovered = -1;
-            for (var i = 0; i < labels.Length; i++)
+            var buttonW=Mathf.Min(contentW-164,460f);var buttonX=(w-buttonW)*.5f;
+            for (var i = 0; i < items.Length; i++)
             {
-                var spacing=labels.Length>7?50f:56f;var rect = new Rect(left + 82, menuY + i * spacing, contentW - 164, labels.Length>7?43f:47f);
+                var rect = new Rect(buttonX, menuY + i * 66f, buttonW, 54f);
                 var over = rect.Contains(PointerPosition)||(controllerNavigation&&menuControllerIndex==i);
                 if (over) hovered = i;
                 rect=MenuLiveLift(rect,over,i);
-                DrawButtonFrame(rect, over, i == 0&&!SaveService.HasRun);
+                DrawButtonFrame(rect, over, false);
                 MenuLivePlaque(rect,over,i);
-                GUI.enabled=(i!=0||SaveService.HasRun)&&!quitConfirmOpen&&!whatsNewOpen;
-                if (GUI.Button(rect, labels[i], buttonStyle)) Activate(i);
+                GUI.enabled=!quitConfirmOpen&&!whatsNewOpen;
+                if (GUI.Button(rect, items[i], new GUIStyle(buttonStyle){fontSize=buttonStyle.fontSize+3})) Activate(i);
                 GUI.enabled=true;
             }
-            DrawMenuExtras(w,h,new Rect(left+82,menuY,contentW-164,labels.Length>7?43f:47f));
+            DrawMenuExtras(w,h,new Rect(buttonX,menuY,buttonW,54f));
             if(hovered>=0&&hovered!=lastHoverAudio)Sfx(SoundCue.UiHover);lastHoverAudio=hovered;
 
             if(!string.IsNullOrEmpty(banner)){var note=new GUIStyle(footerStyle){fontSize=12,normal={textColor=new Color(.95f,.67f,.24f)}};GUI.Label(new Rect(w*.2f,h-62,w*.6f,24),banner,note);}
@@ -595,20 +601,25 @@ namespace GildedFate.UI
         private void Activate(int index)
         {
             Sfx(SoundCue.UiConfirm);
-            var item=index>=0&&index<labels.Length?labels[index]:"";
+            var items=labels;ActivateMenuItem(index>=0&&index<items.Length?items[index]:"");
+        }
+        private void ActivateMenuItem(string item)
+        {
+            if(item=="PLAY"){OpenMenuHub(MenuHub.Play);return;}
+            if(item=="ARCHIVE"){OpenMenuHub(MenuHub.Archive);return;}
             if(item=="DAILY RUN"){screen=ScreenMode.Daily;return;}
             if(item=="RECORDS"){OpenRecords();return;}
             if(item=="QUIT"){quitConfirmOpen=true;return;}
             // Remaining items keep their original order (indices below map past the new entries).
-            index=item switch{"CONTINUE RUN"=>0,"NEW RUN"=>1,"COLLECTION"=>2,"CHARACTERS"=>3,"SETTINGS"=>4,"CREDITS"=>5,_=>-1};
-            if (index == 0 && SaveService.HasRun) { var loaded=SaveService.Load();if(loaded==null){banner=SaveService.LastError;return;} CopyRun(loaded);banner=SaveService.RecoveryNotice;if(run.floor>=run.ActFloorCount){SaveService.Clear();banner="THAT FATE HAS ALREADY BEEN SEALED";screen=ScreenMode.Menu;}else RestoreRunStage(); }
+            var index=item switch{"CONTINUE RUN"=>0,"NEW RUN"=>1,"COLLECTION"=>2,"CHARACTERS"=>3,"SETTINGS"=>4,"CREDITS"=>5,_=>-1};
+            if (index == 0 && SaveService.HasRun) {menuHub=MenuHub.None; var loaded=SaveService.Load();if(loaded==null){banner=SaveService.LastError;return;} CopyRun(loaded);banner=SaveService.RecoveryNotice;if(run.floor>=run.ActFloorCount){SaveService.Clear();banner="THAT FATE HAS ALREADY BEEN SEALED";screen=ScreenMode.Menu;}else RestoreRunStage(); }
             else if (index == 1) {selectingNewRun=true;selectedHero=HeroId.Vanguard;heroSelectionTime=Time.unscaledTime;screen=ScreenMode.CharacterSelect;}
             else if (index == 2) {viewingRunDeck=false;collectionRelics=false;collectionReturnScreen=ScreenMode.Menu;collectionPage=collectionFilter=collectionSort=screenControllerIndex=0;collectionScroll=0;inspectedCard=null;inspectedRelic=null;screen=ScreenMode.Collection;}
             else if (index == 3) {selectingNewRun=false;selectedHero=HeroId.Vanguard;heroSelectionTime=Time.unscaledTime;screen=ScreenMode.CharacterSelect;}
             else if (index == 4) {settingsReturnScreen=ScreenMode.Menu;settingsOverview=true;settingsFocusIndex=0;screen=ScreenMode.Settings;}
             else if (index == 5) screen=ScreenMode.Credits;
             else if (index == 6) Application.Quit();
-            else banner = labels[index] + " · COMING IN THE NEXT VAULT UPDATE";
+            else banner = item + " · COMING IN THE NEXT VAULT UPDATE";
         }
 
         private void DrawCharacterSelect(float w,float h)
