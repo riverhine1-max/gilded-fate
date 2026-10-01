@@ -56,6 +56,7 @@ namespace GildedFate.UI
     {
         public static TrailerScript Script;
         public static bool Active;
+        public static Vector2 Pointer=new Vector2(-9999,-9999);
         private static Process encoderProcess;
         private static Stream encoderInput;
         private static Texture2D grab;
@@ -89,6 +90,7 @@ namespace GildedFate.UI
 
         public static void Log(string line){Debug.Log("[Trailer] "+line);log?.WriteLine($"{DateTime.Now:HH:mm:ss} f{totalFrames} {line}");}
         public static void SetSpeed(float s){speed=Mathf.Clamp(s<=0?1:s,.05f,8f);Time.captureDeltaTime=speed/Script.fps;}
+        public static void Sfx(string cue,int take,float gain,float pan,float pitch){if(encoderInput!=null)Log($"SFX shot={shotName} frame={shotFrames} cue={cue} take={take+1} gain={gain:0.000} pan={pan:0.00} pitch={pitch:0.000}");}
         public static void Mark(string text){Log($"MARK shot={shotName} frame={shotFrames} time={shotFrames/(float)Script.fps:0.000}s {text}");}
 
         private IEnumerator Start()
@@ -207,7 +209,7 @@ namespace GildedFate.UI
             TrailerParkPointer();
         }
 
-        private void TrailerParkPointer(){if(combat!=null&&screen==ScreenMode.Combat)HandleCombatPointer(new Vector2(-9999,-9999),false,false,false);}
+        private void TrailerParkPointer(){GildedTrailerDirector.Pointer=new Vector2(-9999,-9999);if(combat!=null&&screen==ScreenMode.Combat)HandleCombatPointer(new Vector2(-9999,-9999),false,false,false);}
 
         private RunCard TrailerRunCard(string spec)
         {
@@ -303,7 +305,7 @@ namespace GildedFate.UI
             if(s.setEnergy)combat.energy=s.energy;
             if(s.setResonance)combat.resonance=s.resonance;
             if(s.setPlayerHp)combat.player.hp=s.playerHp;
-            if(s.setEnemyHp){combat.enemy.hp=s.enemyHp;}
+            if(s.setEnemyHp){combat.enemy.hp=s.enemyHp;if(combat.enemy.maxHp<s.enemyHp)combat.enemy.maxHp=s.enemyHp;}
             combat.player.strength+=s.strength;combat.player.fortify+=s.fortify;combat.player.block+=s.block;combat.retaliation+=s.retaliation;
             combat.enemy.block+=s.enemyBlock;combat.enemy.burn+=s.enemyBurn;combat.enemy.marked+=s.enemyMarked;
             combat.memory.echoArmed+=s.echoArmed;
@@ -390,7 +392,7 @@ namespace GildedFate.UI
                 case "mapScroll":{var from=mapScroll;var t0=Time.unscaledTime;var d=Mathf.Max(.01f,st.seconds);while(Time.unscaledTime-t0<d){mapScroll=Mathf.Lerp(from,st.value,Mathf.SmoothStep(0,1,(Time.unscaledTime-t0)/d));yield return null;}mapScroll=st.value;break;}
                 case "collectionScroll":{var from=collectionScroll;var t0=Time.unscaledTime;var d=Mathf.Max(.01f,st.seconds);while(Time.unscaledTime-t0<d){collectionScroll=Mathf.Lerp(from,st.value,Mathf.SmoothStep(0,1,(Time.unscaledTime-t0)/d));yield return null;}collectionScroll=st.value;break;}
                 case "menuFocus":controllerNavigation=true;menuControllerIndex=st.index;break;
-                case "pointer":HandleCombatPointer(new Vector2(st.x,st.y),false,false,false);break;
+                case "pointer":GildedTrailerDirector.Pointer=new Vector2(st.x,st.y);if(combat!=null&&screen==ScreenMode.Combat)HandleCombatPointer(new Vector2(st.x,st.y),false,false,false);break;
                 case "park":TrailerParkPointer();break;
                 case "inspectCard":inspectedCard=string.IsNullOrEmpty(st.card)?null:TrailerSpecDefinition(st.card);break;
                 case "inspectRelic":inspectedRelic=string.IsNullOrEmpty(st.text)?null:GameContent.Relics.FirstOrDefault(r=>r.id==st.text);break;
@@ -402,10 +404,11 @@ namespace GildedFate.UI
                     if(run.ClaimEncounterCard(pick.id))BeginCardAcquisition(pick,Advance);break;
                 }
                 case "advance":Advance();break;
+                case "bossRelic":{var offers=run.BossRelicOffers();if(offers.Length>0)ClaimBossRelicChoice(offers[0]);break;}
                 case "treasure":OpenTreasure();break;
                 case "set":TrailerSet(st.text,st.value);break;
                 case "screen":screen=(ScreenMode)Enum.Parse(typeof(ScreenMode),st.text,true);break;
-                case "log":GildedTrailerDirector.Log(st.text+$" screen={screen} energy={combat?.energy} enemyHp={combat?.enemy?.hp}");break;
+                case "log":GildedTrailerDirector.Log(st.text+$" screen={screen} act={run.act} stage={run.stage} energy={combat?.energy} enemyHp={combat?.enemy?.hp}");break;
                 default:GildedTrailerDirector.Log("unknown op "+op);break;
             }
         }
@@ -417,11 +420,56 @@ namespace GildedFate.UI
             return def==null?null:up?GameContent.Upgrade(def):def.Copy();
         }
 
+        // Fills the profile with plausible history so Records screens can be reviewed.
+        private void TrailerDemoMeta()
+        {
+            profile.EnsureMeta();
+            var ids=new[]{"ACH_FIRST_ASCENT","ACH_WIN_VANGUARD","ACH_BOSS_HOLLOW_KING","ACH_DEBT_1","ACH_HIT_50","ACH_GILD_1","ACH_ELITES_10","ACH_DAILY_1","ACH_UNLOCK_FIRST"};
+            foreach(var id in ids)if(!profile.achievements.Contains(id))profile.achievements.Add(id);
+            profile.runHistory.Clear();
+            var heroes=new[]{"Vanguard","Hexer","Reaper"};var killers=new[]{"","The Hollow King","Gilded Sentry","Vault Mother","","Executioner"};
+            for(var i=0;i<8;i++)
+            {
+                var win=killers[i%killers.Length]=="";
+                profile.runHistory.Add(new GildedFate.Saving.RunRecord{date=System.DateTime.UtcNow.AddDays(-i).ToString("yyyy-MM-dd HH:mm"),hero=heroes[i%3],victory=win,killedBy=killers[i%killers.Length],fateDebt=i%4,act=win?3:1+i%3,floor=win?17:4+i*2,score=win?2400-i*90:600+i*140,seconds=1500+i*230,highestHit=40+i*17,gilds=i%5,marks=win?90:20+i*6,
+                    deck=new System.Collections.Generic.List<string>(run.deck.Take(12).Select(id=>GameContent.Find(id.TrimEnd('+'))?.name??id)),relics=new System.Collections.Generic.List<string>(GameContent.Relics.Skip(i).Take(4).Select(r=>r.name))});
+            }
+            profile.winsByHero[0]=3;profile.winsByHero[1]=1;profile.totalGilds=14;profile.dailyRunsCompleted=2;
+        }
+
         private void TrailerSet(string key,float value)
         {
-            if(combat==null)return;var v=Mathf.RoundToInt(value);
+            var v=Mathf.RoundToInt(value);
+            // Meta-progression QA keys (work outside combat).
             switch(key)
             {
+                case "settingsPage":settingsReturnScreen=ScreenMode.Menu;screen=ScreenMode.Settings;settingsOverview=false;settingsPage=v;settingsFocusIndex=0;return;
+                case "settingsOverview":settingsReturnScreen=ScreenMode.Menu;screen=ScreenMode.Settings;settingsOverview=true;settingsFocusIndex=v;controllerNavigation=true;return;
+                case "settingsFocus":controllerNavigation=true;settingsFocusIndex=v;return;
+                case "displayConfirm":CaptureDisplayRevert();displayConfirmOpen=true;displayConfirmUntil=Time.unscaledTime+12;return;
+                case "padStyle":profile.padPromptStyle=v;return;
+                case "gameSpeed":profile.gameSpeed=v;return;case "confirmEndTurn":profile.confirmEndTurn=v!=0;captureAllowsEndTurnConfirm=v!=0;return;case "instantEnemyTurns":profile.instantEnemyTurns=v!=0;return;
+                case "brightness":profile.brightness=value/100f;return;
+                case "recordsTab":OpenRecords();recordsTab=v;return;
+                case "historySelected":historySelected=v;return;
+                case "fateDebtUnlocked":profile.EnsureMeta();for(var i=0;i<3;i++)profile.fateDebtUnlocked[i]=v;return;
+                case "fateDebt":profile.EnsureMeta();for(var i=0;i<3;i++)selectedFateDebt[i]=v;return;
+                case "marks":profile.EnsureMeta();for(var i=0;i<3;i++)profile.heroMarks[i]=v;profile.totalMarks=v*3;BindMetaUnlocks();return;
+                case "demoMeta":TrailerDemoMeta();return;
+                case "quitConfirm":quitConfirmOpen=v!=0;return;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                case "playground":OpenPlayground();return;
+                case "playgroundFight":OpenPlayground();pgEnemies[0]="gilded_sentry";pgEnemies[1]="gilded_sentry";pgEnemies[2]="";pgEnemies[3]="";StartPlaygroundFight();return;
+#endif
+                case "fateDebtCombat":if(combat==null)return;run.fateDebt=v;run.fateDebtMask=FateDebt.MaskForLevel(v);ApplyFateDebtToCombat(currentEnemy);GildedTrailerDirector.Log($"debt {v}: enemy hp={combat.enemy.hp}/{combat.enemy.maxHp} str={combat.enemy.strength} gildExtra={combat.gildCostExtra}");return;
+            }
+            if(combat==null)return;
+            switch(key)
+            {
+                case "gamepad":if(UnityEngine.InputSystem.Gamepad.current==null)UnityEngine.InputSystem.InputSystem.AddDevice<UnityEngine.InputSystem.Gamepad>();menuUsesGamepad=v!=0;controllerNavigation=v!=0;break;
+                case "reduceMotion":profile.reduceMotion=v!=0;break;case "reducedVfx":profile.reducedVfx=v!=0;break;
+                case "reduceFlashing":profile.reduceFlashing=v!=0;break;case "screenShake":profile.screenShake=v!=0;break;
+                case "enemyStrength":combat.enemy.strength=v;break;
                 case "energy":combat.energy=v;break;case "strength":combat.player.strength=v;break;case "fortify":combat.player.fortify=v;break;
                 case "block":combat.player.block=v;break;case "retaliation":combat.retaliation=v;break;case "resonance":combat.resonance=v;break;
                 case "playerHp":combat.player.hp=v;break;case "enemyHp":combat.enemy.hp=v;break;case "echo":combat.memory.echoArmed=v;break;
@@ -464,13 +512,13 @@ namespace GildedFate.UI
             {
                 var t=Mathf.SmoothStep(0,1,(Time.unscaledTime-t0)/duration);
                 var a=Vector2.Lerp(start,lift,t);var b=Vector2.Lerp(lift,target,t);var p=Vector2.Lerp(a,b,t);
-                HandleCombatPointer(p,false,true,false);yield return null;
+                GildedTrailerDirector.Pointer=p;HandleCombatPointer(p,false,true,false);yield return null;
             }
             HandleCombatPointer(target,false,true,false);yield return null;
             HandleCombatPointer(target,false,false,true);yield return null;
             if(!combatBusy&&combat.hand.Contains(card)&&handViews.TryGetValue(card.instanceId,out var view))
             {GildedTrailerDirector.Log("drag rejected, queueing directly: "+spec);combatPointer=target;QueueCardPlay(view);yield return null;}
-            HandleCombatPointer(new Vector2(-9999,-9999),false,false,false);
+            GildedTrailerDirector.Pointer=new Vector2(-9999,-9999);HandleCombatPointer(new Vector2(-9999,-9999),false,false,false);
         }
     }
 }

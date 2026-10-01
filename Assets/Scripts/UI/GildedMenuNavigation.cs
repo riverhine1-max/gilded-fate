@@ -125,7 +125,7 @@ namespace GildedFate.UI
         private void DrawMenuNavigationHint(float w,float h,string keyboard,string gamepad)
         {
             if(!controllerNavigation)return;
-            GUI.Label(new Rect(210,h-36,w-420,24),menuUsesGamepad?gamepad:keyboard,new GUIStyle(footerStyle){fontSize=12,normal={textColor=new Color(.78f,.77f,.71f)}});
+            GUI.Label(new Rect(210,h-36,w-420,24),menuUsesGamepad?PadHintText(gamepad):keyboard,new GUIStyle(footerStyle){fontSize=12,normal={textColor=new Color(.78f,.77f,.71f)}});
         }
         private void HandleCollectionNavigation(MenuNavigation input)
         {

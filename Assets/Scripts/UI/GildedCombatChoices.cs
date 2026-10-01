@@ -30,7 +30,7 @@ namespace GildedFate.UI
         {
             if(captureMode)return;
             if(screen==ScreenMode.Combat)SaveCombatCheckpoint();
-            ProfileService.Save(profile);
+            ProfileService.Save(profile);GildedFate.Saving.GildedSteam.Shutdown();
         }
         private void OnDestroy(){DisposeHexerVideos();DisposeVanguardVideos();DisposeReaperVideos();DisposeRunStartSurface();DisposeCombat3D();}
         private bool SaveCombatAndReturnToMenu()

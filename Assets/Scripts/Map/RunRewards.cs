@@ -79,7 +79,7 @@ namespace GildedFate.Map
             // another card pick or rerolls the already determined relic/shard.
             count=Math.Min(count,4);
             if(count<=0||encounterRewards==null||encounterRewards.receipt!=RoomReceipt||encounterRewards.cardClaimed)return;
-            var random=new Random(RoomSeed(28193));var pool=GameContent.Cards.Where(c=>c.hero==hero&&c.rarity is Rarity.Common or Rarity.Uncommon or Rarity.Rare).ToArray();
+            var random=new Random(RoomSeed(28193));var pool=MetaUnlocks.Filter(GameContent.Cards.Where(c=>c.hero==hero&&c.rarity is Rarity.Common or Rarity.Uncommon or Rarity.Rare)).ToArray();
             for(var i=encounterRewards.extraChoices;i<count;i++)
             {
                 if(encounterRewards.unboundDeck)

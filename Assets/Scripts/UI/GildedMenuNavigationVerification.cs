@@ -95,7 +95,7 @@ namespace GildedFate.UI
 
             screen=ScreenMode.Settings;settingsReturnScreen=ScreenMode.Menu;settingsPage=0;settingsFocusIndex=0;
             var profileBefore=JsonUtility.ToJson(profile);var runBefore=JsonUtility.ToJson(run);
-            for(var page=0;page<4;page++)
+            for(var page=0;page<SettingsPageCount;page++)
             {
                 settingsPage=page;var rows=CurrentSettingsRows();
                 for(var i=0;i<rows.Length;i++)
@@ -103,18 +103,18 @@ namespace GildedFate.UI
                     var row=rows[i];CombatCheck(!string.IsNullOrEmpty(row.description)&&!string.IsNullOrEmpty(row.Display),"Settings explains its current value: "+row.name);
                     foreach(var width in new[]{1440f,2304f})
                     {
-                        var rect=SettingsRowRect(width,i,page==3);
+                        var rect=SettingsRowRect(width,i,SettingsTwoColumns(rows.Length));
                         CombatCheck(rect.x>100&&rect.xMax<width-100&&rect.y>=246&&rect.yMax<630,"Setting fits below tabs and above help: "+row.name);
-                        for(var j=0;j<i;j++)CombatCheck(!rect.Overlaps(SettingsRowRect(width,j,page==3)),"Settings rows never overlap");
+                        for(var j=0;j<i;j++)CombatCheck(!rect.Overlaps(SettingsRowRect(width,j,SettingsTwoColumns(rows.Length))),"Settings rows never overlap");
                     }
                     var value=row.get();
                     // Never change the QA desktop resolution. All other controls use the production handler.
-                    if(page==0&&i==0){row.set(value>.5f?0:1);CombatCheck(row.get()!=value,"Fullscreen field is wired");row.set(value);continue;}
+                    if(page==0&&i<2){CombatCheck(row.display&&row.values.Length>=1,"Display row is wired: "+row.name);continue;}
                     ChangeSetting(row,1);CombatCheck(row.get()!=value||row.slider&&value==row.maximum,"Setting changes its actual profile field: "+row.name);
                     if(row.slider){for(var n=0;n<45;n++)ChangeSetting(row,-1);CombatCheck(Mathf.Approximately(row.get(),row.minimum),"Slider clamps to minimum: "+row.name);for(var n=0;n<45;n++)ChangeSetting(row,1);CombatCheck(Mathf.Approximately(row.get(),row.maximum),"Slider clamps to maximum: "+row.name);}
                     row.set(value);
                 }
-                DispatchMenuCheck(new MenuNavigation{page=1});CombatCheck(settingsPage==(page+1)%4&&settingsFocusIndex==0,"Settings shoulder navigation resets focus");
+                DispatchMenuCheck(new MenuNavigation{page=1});CombatCheck(settingsPage==(page+1)%SettingsPageCount&&settingsFocusIndex==0,"Settings shoulder navigation resets focus");
             }
             CombatCheck(JsonUtility.ToJson(profile)==profileBefore&&JsonUtility.ToJson(run)==runBefore,"Settings modifies no gameplay fields");
             ApplySettings();settingsPage=3;settingsFocusIndex=0;

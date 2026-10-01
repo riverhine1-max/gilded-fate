@@ -17,7 +17,8 @@ namespace GildedFate.Combat
         public bool gildArmed,gildUsedThisTurn;
         public int gildsThisCombat;
 
-        public int GildCost=>GildBaseCost+GildCostStep*Math.Max(0,gildsThisCombat);
+        public int gildCostExtra; // Fate Debt surcharge, set once at combat start
+        public int GildCost=>GildBaseCost+gildCostExtra+GildCostStep*Math.Max(0,gildsThisCombat);
         public bool GildReady=>phase==CombatPhase.Player&&pendingPlay==null&&!IsOver&&!gildArmed&&!gildUsedThisTurn;
         public bool CanGild(int gold)=>GildReady&&gold>=GildCost;
         // Curses, Statuses and unplayable cards never spend the gild; it waits for the next real play.

@@ -18,8 +18,8 @@ namespace GildedFate.Map
         {
             if(merchantStockReceipt==RoomReceipt&&merchantCardIds?.Count==7&&merchantRelicIds?.Count==2)return;
             var random=new Random(RoomSeed(77893));
-            merchantCardIds=StockSample(GameContent.Cards.Where(c=>c.hero==hero&&c.rarity is Rarity.Common or Rarity.Uncommon or Rarity.Rare).Select(c=>c.id),5,random);
-            merchantCardIds.AddRange(StockSample(GameContent.Cards.Where(c=>c.origin==CardOrigin.Wanderer&&c.rarity is Rarity.Common or Rarity.Uncommon or Rarity.Rare).Select(c=>c.id),2,random));
+            merchantCardIds=StockSample(MetaUnlocks.Filter(GameContent.Cards.Where(c=>c.hero==hero&&c.rarity is Rarity.Common or Rarity.Uncommon or Rarity.Rare),5).Select(c=>c.id),5,random);
+            merchantCardIds.AddRange(StockSample(MetaUnlocks.Filter(GameContent.Cards.Where(c=>c.origin==CardOrigin.Wanderer&&c.rarity is Rarity.Common or Rarity.Uncommon or Rarity.Rare),2).Select(c=>c.id),2,random));
             var eligible=GameContent.Relics.Where(r=>r.rarity is Rarity.Common or Rarity.Uncommon or Rarity.Rare).ToArray();
             var unowned=eligible.Where(r=>!relics.Contains(r.id)).ToArray();
             merchantRelicIds=StockSample((unowned.Length>=2?unowned:eligible).Select(r=>r.id),2,random);

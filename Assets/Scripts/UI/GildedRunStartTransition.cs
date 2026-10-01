@@ -74,7 +74,7 @@ namespace GildedFate.UI
             // Even after a stalled frame, render an opaque black frame before committing.
             if(runStartElapsed<RunStartDuration(runStartHero)||!runStartBlackPresented)return;
             runStartActive=false;
-            run.NewRun(runStartHero,System.Environment.TickCount);run.BeginFateweave();
+            run.NewRun(runStartHero,ConsumeRunSeed());ApplyRunStartMeta();run.BeginFateweave();
             profile.runsPlayed++;ProfileService.Save(profile);SaveService.Save(run);
             mapFocusFloor=-1;screen=ScreenMode.Fateweave;previousScreen=screen;transitionAlpha=1;
             heldMenuAxis=Vector2Int.zero;menuAxisRepeatAt=Time.unscaledTime+.32f;

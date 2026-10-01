@@ -118,7 +118,10 @@ namespace GildedFate.UI
         private float CombatScale=>Mathf.Max(.35f,Mathf.Min(Screen.width/1440f,Screen.height/810f));
         private float CombatWidth=>Screen.width/CombatScale;
         private float CombatHeight=>Screen.height/CombatScale;
-        private float AnimationSeconds(float seconds)=>seconds/Mathf.Clamp(profile.cardAnimationSpeed,.5f,2f)/(profile.fastMode?1.55f:1f);
+        // Game Speed (Settings > Gameplay) scales every combat beat; rules are unchanged.
+        private float GameSpeedFactor=>profile.gameSpeed>=2?2.2f:profile.gameSpeed==1?1.5f:1f;
+        private float AnimationSeconds(float seconds)=>seconds/Mathf.Clamp(profile.cardAnimationSpeed,.5f,2f)/(profile.fastMode?1.55f:1f)/GameSpeedFactor;
+        private float EnemyTurnSeconds(float seconds)=>AnimationSeconds(seconds)*(profile.instantEnemyTurns?.35f:1f);
         private float EnemyVisualCenterX=>GroupCombat?GroupPortrait(Mathf.Clamp(groupRenderIndex>=0?groupRenderIndex:combatTargetIndex,0,combat.EnemyCount-1)).center.x:CombatWidth*.695f;
         private float EnemyPortraitScale=>EnemyBodyScale(currentEnemy);
         private Rect HeroPortraitRect=>HasHero3D?new Rect(CombatWidth*.22f-125,174,250,276):run.hero==HeroId.Hexer?new Rect(CombatWidth*.22f-93,196,186,254):new Rect(CombatWidth*.22f-93,174,186,276);
@@ -438,9 +441,16 @@ namespace GildedFate.UI
             yield return FinishCombatIfNeeded();
             combatBusy=false;combatSequence=null;
         }
+        private float endTurnConfirmUntil=-10;
+        // Automated checks press End Turn on purpose; only QA scripts that ask for it see the confirm.
+        private bool captureAllowsEndTurnConfirm;
         private void QueueEndTurn()
         {
             if(!CanAcceptCombatInput||pileOpen>=0)return;
+            // Optional safety: ending with playable cards asks for a second press.
+            if(profile.confirmEndTurn&&(!captureMode||captureAllowsEndTurnConfirm)&&AnyPlayableCard()&&combat.energy>0&&Time.unscaledTime>endTurnConfirmUntil&&!playgroundActive)
+            {endTurnConfirmUntil=Time.unscaledTime+2.2f;ShowInputHint("YOU STILL HAVE PLAYS · PRESS END TURN AGAIN TO CONFIRM");Sfx(SoundCue.UiDenied);return;}
+            endTurnConfirmUntil=-10;
             endTurnPressedAt=Time.unscaledTime;
             combatBusy=true;hoverView=dragView=selectedView=null;cardDragging=false;Sfx(SoundCue.EndTurn,combatSound:true);
             combatSequence=StartCoroutine(AnimateEnemyTurn());
@@ -455,11 +465,11 @@ namespace GildedFate.UI
                 enemyAction=1;var anticipate=currentEnemy?.boss==true?.65f:combat.intent==IntentKind.Special?.48f:.30f;
                 if(combat.IntentDealsDamage)Sfx(SoundCue.EnemyAttack,pan:.25f,combatSound:true);
                 BeginEnemyTurnAnimation(profile.reduceMotion?.14f:anticipate); // GildedEnemyAnimation.cs: intent-matched telegraph
-                yield return new WaitForSecondsRealtime(AnimationSeconds(profile.reduceMotion?.14f:anticipate));
+                yield return new WaitForSecondsRealtime(EnemyTurnSeconds(profile.reduceMotion?.14f:anticipate));
                 while(combatPauseOpen)yield return null;
                 combat.ResolveEnemyTurn();SaveCombatCheckpoint();UpdateBossPhaseVisual();
                 var effectTime=ConsumeCombatEvents(combat.TakeEvents());
-                yield return new WaitForSecondsRealtime(Mathf.Max(effectTime,AnimationSeconds(.44f)));
+                yield return new WaitForSecondsRealtime(Mathf.Max(profile.instantEnemyTurns?effectTime*.5f:effectTime,EnemyTurnSeconds(.44f)));
             }
             if(!combat.IsOver&&combat.phase==CombatPhase.EnemyResolved)
             {
@@ -647,6 +657,7 @@ namespace GildedFate.UI
                 GUI.Label(new Rect(w*.34f,132,w*.32f,44),turnBanner,new GUIStyle(buttonStyle){fontSize=22,normal={textColor=new Color(1,.88f,.57f,alpha)}});
             }
             if(bossPhaseTime>0)DrawBossPhaseCinematic(w,h);
+            DrawPlaygroundCombatHud(w);
         }
 
         private void DrawCombatHand()

@@ -83,6 +83,7 @@ namespace GildedFate.Map
             cards.Clear();deck.Clear();upgradedCards.Clear();nextCardSerial=0;var strike=selected==HeroId.Vanguard?"strike":selected==HeroId.Hexer?"hex_strike":"scythe_strike";var defend=selected==HeroId.Vanguard?"defend":selected==HeroId.Hexer?"ward":"deaths_veil";
             for(var i=0;i<4;i++){AddCard(strike);AddCard(defend);}AddCard(selected==HeroId.Vanguard?"battle_cry":selected==HeroId.Hexer?"invocation":"soul_call");AddCard(selected==HeroId.Vanguard?"stand_firm":selected==HeroId.Hexer?"first_ritual":"reaping_blow");
             relics.Clear();relics.Add(selected==HeroId.Vanguard?"gilded_buckle":selected==HeroId.Hexer?"cracked_prism":"deaths_keepsake");shards.Clear();fateweaveSelections.Clear();temporaryMultiCombatStatuses.Clear();temporaryEventEffects.Clear();seenEventIds.Clear();pendingEventOfferIds.Clear();pendingEventSelectionIds.Clear();pendingEventShardDecisions.Clear();eventSelectionKind=EventSelectionKind.None;pendingEventChoiceId=pendingEventBindingId=pendingEventResult="";pendingEventChoicesNeeded=0;fateweaveOffers.Clear();bindingOffers.Clear();pendingCardOfferIds.Clear();pendingSelectedCardIds.Clear();pendingFateweaveId=pendingBindingId=fateweaveCutId="";pendingChoicesNeeded=0;consumables.Clear();merchantSold.Clear();act=1;floor=0;gold=75;pendingCombatGold=pendingBonusCardRewards=0;combatGoldClaimed=true;elapsedSeconds=0;beggarFavor=merchantRemoved=merchantHealed=false;stage=RunStage.Map;activeNodeFloor=activeNodeLane=-1;activeEnemyId=activeEventId="";
+            ResetRunMeta();
         }
         public RunCard AddCard(string cardId,bool upgraded=false)
         {
@@ -254,15 +255,15 @@ namespace GildedFate.Map
         }
 
         private void CompleteFateweaveEffect(){pendingCardOfferIds.Clear();pendingSelectedCardIds.Clear();stage=RunStage.Fateweave;}
-        private void OfferCards(CardOrigin origin,bool upgraded){var pool=GameContent.Cards.Where(c=>c.origin==origin&&c.rarity is Rarity.Common or Rarity.Uncommon or Rarity.Rare).Select(c=>c.id);pendingCardOfferIds=PickIds(pool,3,seed^act*3571);pendingChoicesNeeded=1;stage=RunStage.FateweaveCard;}
+        private void OfferCards(CardOrigin origin,bool upgraded){var pool=MetaUnlocks.Filter(GameContent.Cards.Where(c=>c.origin==origin&&c.rarity is Rarity.Common or Rarity.Uncommon or Rarity.Rare)).Select(c=>c.id);pendingCardOfferIds=PickIds(pool,3,seed^act*3571);pendingChoicesNeeded=1;stage=RunStage.FateweaveCard;}
         private void OfferOtherCharacterCards()
         {
             // Pool every other playable character together, not one fixed partner.
             // Keep the existing collectible rarities, seed, and choose-one flow.
-            var pool=GameContent.Cards.Where(c=>c.hero.HasValue&&c.hero.Value!=hero&&c.rarity is Rarity.Common or Rarity.Uncommon or Rarity.Rare).Select(c=>c.id);
+            var pool=MetaUnlocks.Filter(GameContent.Cards.Where(c=>c.hero.HasValue&&c.hero.Value!=hero&&c.rarity is Rarity.Common or Rarity.Uncommon or Rarity.Rare)).Select(c=>c.id);
             pendingCardOfferIds=PickIds(pool,3,seed^act*3571);pendingChoicesNeeded=1;stage=RunStage.FateweaveCard;
         }
-        private void OfferRareDestinies(){pendingCardOfferIds.Clear();foreach(var origin in new[]{CardOrigin.Knight,CardOrigin.Arcane,CardOrigin.Reaper,CardOrigin.Wanderer}){var pool=GameContent.Cards.Where(c=>c.origin==origin&&c.rarity==Rarity.Rare).ToArray();pendingCardOfferIds.Add(pool[Math.Abs(seed^act*97+(int)origin*31)%pool.Length].id);}pendingChoicesNeeded=1;stage=RunStage.FateweaveCard;}
+        private void OfferRareDestinies(){pendingCardOfferIds.Clear();foreach(var origin in new[]{CardOrigin.Knight,CardOrigin.Arcane,CardOrigin.Reaper,CardOrigin.Wanderer}){var pool=MetaUnlocks.Filter(GameContent.Cards.Where(c=>c.origin==origin&&c.rarity==Rarity.Rare),1).ToArray();pendingCardOfferIds.Add(pool[Math.Abs(seed^act*97+(int)origin*31)%pool.Length].id);}pendingChoicesNeeded=1;stage=RunStage.FateweaveCard;}
         private void GrantRandomRelic(Rarity rarity,int count){var pool=GameContent.Relics.Where(r=>r.rarity==rarity&&!relics.Contains(r.id)).ToList();for(var i=0;i<count&&pool.Count>0;i++){var index=Math.Abs(seed^act*193+i*71)%pool.Count;AcquireRelic(pool[index].id);pool.RemoveAt(index);}}
         private CardOrigin OwnOrigin()=>hero==HeroId.Vanguard?CardOrigin.Knight:hero==HeroId.Hexer?CardOrigin.Arcane:CardOrigin.Reaper;private CardOrigin OtherOrigin()=>hero==HeroId.Vanguard?CardOrigin.Arcane:hero==HeroId.Hexer?CardOrigin.Reaper:CardOrigin.Knight;
         private static List<string> PickIds(IEnumerable<string> source,int count,int seed){var pool=source.Distinct().ToList();var rng=new Random(seed);var result=new List<string>();while(result.Count<count&&pool.Count>0){var index=rng.Next(pool.Count);result.Add(pool[index]);pool.RemoveAt(index);}return result;}

@@ -28,7 +28,7 @@ namespace GildedFate.Core
             for(var i=0;i<3;i++)
             {
                 var rarity=CardRarity(kind,random.Next(100));
-                var pool=GameContent.Cards.Where(c=>c.hero==hero&&c.rarity==rarity&&!result.Any(r=>r.id==c.id)).ToArray();
+                var pool=MetaUnlocks.Filter(GameContent.Cards.Where(c=>c.hero==hero&&c.rarity==rarity&&!result.Any(r=>r.id==c.id)),1).ToArray();
                 if(pool.Length==0)throw new InvalidOperationException("The reward rarity needs three unique character cards.");
                 result.Add(pool[random.Next(pool.Length)].Copy());
             }
@@ -50,7 +50,7 @@ namespace GildedFate.Core
                 // Preserve encounter rarity odds, then weight each source equally.
                 // Catalog size must not make the larger character pool more likely.
                 var rarity=CardRarity(kind,random.Next(100));
-                var groups=origins.Select(origin=>GameContent.Cards.Where(c=>c.origin==origin&&c.rarity==rarity&&!used.Contains(c.id)).ToArray()).Where(g=>g.Length>0).ToArray();
+                var groups=origins.Select(origin=>MetaUnlocks.Filter(GameContent.Cards.Where(c=>c.origin==origin&&c.rarity==rarity&&!used.Contains(c.id)),1).ToArray()).Where(g=>g.Length>0).ToArray();
                 if(groups.Length==0)throw new InvalidOperationException("The Unbound Deck reward rarity has no unique cards remaining.");
                 var pool=groups[random.Next(groups.Length)];var card=pool[random.Next(pool.Length)];used.Add(card.id);result.Add(card.Copy());
             }

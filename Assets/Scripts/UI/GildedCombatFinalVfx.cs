@@ -203,6 +203,7 @@ namespace GildedFate.UI
                 var body=FinalEnemyRect(index);var a=EnemyAnimFor(index,FinalEnemyDef(index));
                 if(damage&&fact.amount>0)
                 {
+                    PlaygroundTrackDamage(fact.amount);
                     var card=fact.card??source;var style=FinalHeroStyleFor(fact,card);
                     var power=FinalHitPower(fact.amount)+(card!=null&&card.rarity==Rarity.Rare?.1f:0)+(fact.enemyHp<=0?.25f:0);
                     a.hitAt=now;a.hitPower=power;a.hitAtlas=FinalHeroAtlas(style);

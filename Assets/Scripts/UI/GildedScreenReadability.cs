@@ -18,7 +18,7 @@ namespace GildedFate.UI
         private void RestAtShrine()
         {
             if(acquisitionActive||runPauseOpen)return;
-            var before=run.hp;run.hp=Mathf.Min(run.maxHp,run.hp+Mathf.RoundToInt(run.maxHp*.3f));
+            var before=run.hp;run.hp=Mathf.Min(run.maxHp,run.hp+Mathf.RoundToInt(run.maxHp*run.RestHealFraction));
             ShowHealthServiceGain(before);Advance();
         }
         private void DrawHealthServiceFeedback()

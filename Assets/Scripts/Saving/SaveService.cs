@@ -39,8 +39,11 @@ namespace GildedFate.Saving
                 {LastError="Could not access the saved run: "+error.Message;return false;}
             }
         }
+        // The Playground never touches the player's saved run.
+        public static bool Suspended;
         public static bool Save(RunModel run)
         {
+            if(Suspended)return true;
             if(run==null)return false;
             if(!run.closed){run.EnsureCardInstances();run.SyncLegacyDeck();}
             run.saveFormat=4;

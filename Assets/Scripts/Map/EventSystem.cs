@@ -314,7 +314,7 @@ namespace GildedFate.Map
 
         private static void Transform(RunModel run,RunCard card)
         {
-            var definition=card.BuildDefinition();if(definition==null)return;var own=OwnOrigin(run);var pool=GameContent.Cards.Where(c=>c.origin==own&&c.rarity==definition.rarity&&c.id!=card.cardId).ToList();if(pool.Count==0)return;
+            var definition=card.BuildDefinition();if(definition==null)return;var own=OwnOrigin(run);var pool=MetaUnlocks.Filter(GameContent.Cards.Where(c=>c.origin==own&&c.rarity==definition.rarity&&c.id!=card.cardId),1).ToList();if(pool.Count==0)return;
             card.cardId=pool[PositiveHash(run.seed,run.floor,card.persistentId.GetHashCode(),1231)%pool.Count].id;card.upgraded=false;card.specialModification="";card.specialModificationKind=SpecialModificationKind.None;card.permanentDamageBonus=card.permanentBlockBonus=0;card.firstDrawFree=false;
         }
 
@@ -389,7 +389,7 @@ namespace GildedFate.Map
 
         private static IEnumerable<CardDef> CardPool(RunModel run,EventEffectDef effect)
         {
-            var normal=GameContent.Cards.Where(c=>c.rarity is Rarity.Common or Rarity.Uncommon or Rarity.Rare);var own=OwnOrigin(run);IEnumerable<CardDef> pool=effect.source switch
+            var normal=MetaUnlocks.Filter(GameContent.Cards.Where(c=>c.rarity is Rarity.Common or Rarity.Uncommon or Rarity.Rare));var own=OwnOrigin(run);IEnumerable<CardDef> pool=effect.source switch
             {
                 EventCardSource.Own=>normal.Where(c=>c.origin==own),
                 EventCardSource.Foreign=>normal.Where(c=>PlayableOrigins().Contains(c.origin)&&c.origin!=own),
@@ -406,14 +406,14 @@ namespace GildedFate.Map
         {
             if(run.activeEventId=="strangers_deck")
             {
-                var own=OwnOrigin(run);var foreign=GameContent.Cards.Where(c=>PlayableOrigins().Contains(c.origin)&&c.origin!=own&&c.rarity is Rarity.Common or Rarity.Uncommon or Rarity.Rare).ToList();var wanderers=GameContent.Cards.Where(c=>c.origin==CardOrigin.Wanderer&&c.rarity is Rarity.Common or Rarity.Uncommon or Rarity.Rare).ToList();var special=new List<CardDef>();
+                var own=OwnOrigin(run);var foreign=MetaUnlocks.Filter(GameContent.Cards.Where(c=>PlayableOrigins().Contains(c.origin)&&c.origin!=own&&c.rarity is Rarity.Common or Rarity.Uncommon or Rarity.Rare)).ToList();var wanderers=GameContent.Cards.Where(c=>c.origin==CardOrigin.Wanderer&&c.rarity is Rarity.Common or Rarity.Uncommon or Rarity.Rare).ToList();var special=new List<CardDef>();
                 for(var i=0;i<2&&foreign.Count>0;i++){var index=PositiveHash(run.seed,run.floor,i,631)%foreign.Count;special.Add(foreign[index]);foreign.RemoveAt(index);}if(wanderers.Count>0)special.Add(wanderers[PositiveHash(run.seed,run.act,run.floor,997)%wanderers.Count]);return special;
             }
             var pool=CardPool(run,effect).ToList();var result=new List<CardDef>();var seed=PositiveHash(run.seed,run.act,run.floor,4513);
             while(result.Count<Math.Max(1,effect.count)&&pool.Count>0){var index=PositiveHash(seed,result.Count,pool.Count,17)%pool.Count;result.Add(pool[index]);pool.RemoveAt(index);}
             if(effect.source==EventCardSource.AnyPlayable&&result.Count>0&&PositiveHash(run.seed,run.act,run.floor,1559)%100<EventContent.CrossroadsWandererChancePercent)
             {
-                var wanderers=GameContent.Cards.Where(c=>c.origin==CardOrigin.Wanderer&&c.rarity is Rarity.Common or Rarity.Uncommon or Rarity.Rare&&!result.Any(r=>r.id==c.id)).ToList();if(wanderers.Count>0)result[result.Count-1]=wanderers[PositiveHash(run.seed,run.floor,result.Count,2017)%wanderers.Count];
+                var wanderers=MetaUnlocks.Filter(GameContent.Cards.Where(c=>c.origin==CardOrigin.Wanderer&&c.rarity is Rarity.Common or Rarity.Uncommon or Rarity.Rare&&!result.Any(r=>r.id==c.id)),1).ToList();if(wanderers.Count>0)result[result.Count-1]=wanderers[PositiveHash(run.seed,run.floor,result.Count,2017)%wanderers.Count];
             }
             return result;
         }
