@@ -98,11 +98,16 @@ namespace GildedFate.UI
         }
         private void DrawWhatsNew(float w,float h)
         {
-            var panel=new Rect(w*.5f-330,h*.5f-220,660,440);DrawModalPanel(w,h,panel);
+            // Emblem column on the left, one row per change on the right; the panel grows with the list.
+            const float rowH=44f;var listH=WhatsNew.Length*rowH;
+            var panel=new Rect(w*.5f-410,h*.5f-(listH+170)*.5f,820,listH+170);DrawModalPanel(w,h,panel);
             GUI.Label(new Rect(panel.x,panel.y+22,panel.width,40),"WHAT'S NEW · "+GameVersion,new GUIStyle(titleStyle){fontSize=27});
+            var emblem=MetaArt("WhatsNewEmblem");var textX=panel.x+40;
+            if(emblem){var s=Mathf.Min(190,listH);GUI.DrawTexture(new Rect(panel.x+30,panel.y+76+(listH-s)*.5f,s,s),emblem,ScaleMode.ScaleToFit,true);textX=panel.x+30+s+24;}
             var body=new GUIStyle(footerStyle){fontSize=14,wordWrap=true,alignment=TextAnchor.UpperLeft,normal={textColor=new Color(.9f,.87f,.8f)}};
-            for(var i=0;i<WhatsNew.Length;i++){Fill(new Rect(panel.x+36,panel.y+92+i*46,6,6),Gold);GUI.Label(new Rect(panel.x+52,panel.y+82+i*46,panel.width-90,44),WhatsNew[i],body);}
-            var close=new Rect(panel.center.x-100,panel.yMax-66,200,44);DrawButtonFrame(close,close.Contains(PointerPosition),false);if(GUI.Button(close,"CONTINUE",buttonStyle))CloseWhatsNew();
+            var textW=panel.xMax-36-textX-16;
+            for(var i=0;i<WhatsNew.Length;i++){var y=panel.y+80+i*rowH;Fill(new Rect(textX,y+8,6,6),Gold);GUI.Label(new Rect(textX+16,y,textW,rowH-2),WhatsNew[i],body);}
+            var close=new Rect(panel.center.x-100,panel.yMax-64,200,44);DrawButtonFrame(close,close.Contains(PointerPosition),false);if(GUI.Button(close,"CONTINUE",buttonStyle))CloseWhatsNew();
         }
 
         // ---------- Records ----------
