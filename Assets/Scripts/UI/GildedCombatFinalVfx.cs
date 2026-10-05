@@ -115,6 +115,7 @@ namespace GildedFate.UI
             "vault_mother"=>lastBossPhase>=3?"THE VAULTBLOOM HARDENS · SHE GROWS STRONGER":"THE VAULTBLOOM HARDENS · HEAVY BLOCK",
             "last_dealer"=>lastBossPhase>=3?"THE BLACK HAND · CURSES DEALT · ENERGY TAXED":"THE DECK IS STACKED · CURSES DEALT",
             AshenWildsContent.Alpha=>lastBossPhase>=3?"ITS HIDE TEARS AWAY · THE PACK FLEES · A PURE DIRECT FIGHT":"THE ALPHA IGNITES · +1 STRENGTH",
+            DrownedQuarterContent.Magistrate=>lastBossPhase>=3?"IT TEARS FREE OF THE COURT · THE BAILIFF SINKS":"THE COURT FLOODS · THE MAGISTRATE PULLS PARTLY FREE",
             _=>"THE VAULT REWRITES ITS COMMAND"
         };
 

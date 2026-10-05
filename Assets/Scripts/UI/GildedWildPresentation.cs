@@ -15,10 +15,10 @@ namespace GildedFate.UI
         private sealed class WildCallout{public int index;public string text;public float at;public Color color;}
         private readonly List<WildCallout> wildCallouts=new();
 
-        // Cinder Alpha art follows its phase: Art/Enemies/ashen_wilds_cinder_alpha(_phase2|_phase3).
+        // Phase bosses' art follows their phase: Art/Enemies/<id>(_phase2|_phase3).
         private string EnemyArtId(string id)
         {
-            if(id!=AshenWildsContent.Alpha||combat==null||screen!=ScreenMode.Combat)return id;
+            if(id!=AshenWildsContent.Alpha&&id!=DrownedQuarterContent.Magistrate||combat==null||screen!=ScreenMode.Combat)return id;
             var boss=combat.WildBossIndex;var phase=boss>=0?combat.MindAt(boss)?.phase??1:1;
             return phase>=3?id+"_phase3":phase==2?id+"_phase2":id;
         }
@@ -36,7 +36,25 @@ namespace GildedFate.UI
             string text=null;var color=new Color(1f,.72f,.36f);
             switch(name)
             {
-                case "cinder_alpha_phase2":case "cinder_alpha_phase3":RefreshEnemyArt(fact.enemyIndex);return; // the boss phase cinematic owns the banner
+                case "cinder_alpha_phase2":case "cinder_alpha_phase3":
+                case "drowned_magistrate_phase2":case "drowned_magistrate_phase3":RefreshEnemyArt(fact.enemyIndex);return; // the boss phase cinematic owns the banner
+                // ---- Drowned Quarter ----
+                case "drowned_lurker_submerge":text="SUBMERGES · SURFACE STRIKE NEXT";color=new Color(.45f,.8f,.85f);break;
+                case "drowned_lurker_surface_strike":text="SURFACES";color=new Color(.55f,.9f,.95f);break;
+                case "bell_diver_toll":case "bellkeeper_toll":text="TOLL";color=new Color(.9f,.85f,.6f);break;
+                case "tidecaller_summon":text="REACH FROM BELOW";color=new Color(.45f,.85f,.82f);break;
+                case "tidecaller_command":case "bellkeeper_command":case "drowned_magistrate_order":text="COMMAND";color=new Color(1f,.85f,.45f);break;
+                case "drowned_magistrate_summon":text="BAILIFF CALLED";color=new Color(.6f,.85f,1f);break;
+                case "drowned_hand_death":text="SINKS";color=new Color(.65f,.75f,.78f);break;
+                case "barnacle_hulk_shell_break":text="SHELL BREAKS · EXPOSED";color=new Color(1f,.6f,.35f);break;
+                case "marionette_string_loss":text="A STRING SNAPS";color=new Color(.85f,.82f,.9f);break;
+                case "ferryman_raise_anchor":text="ANCHOR RAISED";color=new Color(1f,.7f,.4f);break;
+                case "ferryman_anchor_drop":text="ANCHOR DROP";color=new Color(1f,.5f,.3f);break;
+                case "sunken_engine_pressure":text="PRESSURE RISES";color=new Color(.55f,.9f,1f);break;
+                case "sunken_engine_burst_valve":text="BURST VALVE";color=new Color(1f,.55f,.3f);break;
+                case "sunken_engine_vent":text="VENT";color=new Color(.7f,.85f,.9f);break;
+                case "bailiff_echo_removed":text="THE BAILIFF SINKS";color=new Color(.65f,.75f,.78f);break;
+                case "drowned_magistrate_final_sentence":text="FINAL SENTENCE";color=new Color(1f,.42f,.3f);break;
                 case "cinder_alpha_minion_flees":text="FLEES";color=new Color(.8f,.8f,.78f);break;
                 case "burned_hart_splintered":RefreshEnemyArt(fact.enemyIndex);text="THE CROWN SPLINTERS";color=new Color(1f,.55f,.3f);break;
                 case "burned_hart_bare":text="THE CROWN BREAKS · BARE";color=new Color(1f,.4f,.25f);break;
@@ -96,7 +114,7 @@ namespace GildedFate.UI
             return string.IsNullOrEmpty(text)?"":"\n\n"+text;
         }
 
-        // Ashen Wilds motion reuses the existing animation archetypes until bespoke
+        // Themed (Ashen Wilds, Drowned Quarter) motion reuses the existing animation archetypes until bespoke
         // animation sheets arrive.
         private static EnemyMotionProfile WildMotionFor(string id)=>id switch
         {
@@ -117,6 +135,22 @@ namespace GildedFate.UI
             AshenWildsContent.Alpha=>new(EnemyMotionKind.Beast,EnemyStrikeStyle.Claw,1.45f,0,.95f,84,new Color(1f,.45f,.12f)),
             AshenWildsContent.Whelp=>new(EnemyMotionKind.Beast,EnemyStrikeStyle.Bite,.55f,0,1.7f,62,new Color(1f,.5f,.2f)),
             AshenWildsContent.Runner=>new(EnemyMotionKind.Beast,EnemyStrikeStyle.Claw,.5f,0,1.9f,70,new Color(1f,.6f,.25f)),
+            DrownedQuarterContent.Rustwalker=>new(EnemyMotionKind.Brute,EnemyStrikeStyle.Cleave,1.1f,0,.95f,52,new Color(.86f,.55f,.3f)),
+            DrownedQuarterContent.Lurker=>new(EnemyMotionKind.Crawler,EnemyStrikeStyle.Chomp,.9f,0,1.2f,70,new Color(.4f,.85f,.85f)),
+            DrownedQuarterContent.BellDiver=>new(EnemyMotionKind.Brute,EnemyStrikeStyle.Slam,1.05f,0,.95f,50,new Color(.45f,.9f,.9f)),
+            DrownedQuarterContent.RustPriest=>new(EnemyMotionKind.Caster,EnemyStrikeStyle.Bolt,.85f,4,1f,20,new Color(.5f,.95f,.85f)),
+            DrownedQuarterContent.CanalStalker=>new(EnemyMotionKind.Knight,EnemyStrikeStyle.Blade,.7f,0,1.5f,78,new Color(.6f,.85f,.8f)),
+            DrownedQuarterContent.Tidecaller=>new(EnemyMotionKind.Caster,EnemyStrikeStyle.Bolt,.9f,4,1f,22,new Color(.4f,.9f,.85f)),
+            DrownedQuarterContent.Hand=>new(EnemyMotionKind.Crawler,EnemyStrikeStyle.Grab,.5f,0,1.4f,50,new Color(.5f,.85f,.95f)),
+            DrownedQuarterContent.Hulk=>new(EnemyMotionKind.Brute,EnemyStrikeStyle.Crush,1.35f,0,.85f,48,new Color(.7f,.85f,.8f)),
+            DrownedQuarterContent.Marionette=>new(EnemyMotionKind.Spirit,EnemyStrikeStyle.Claw,.7f,6,1.3f,52,new Color(.6f,.85f,.9f)),
+            DrownedQuarterContent.Ferryman=>new(EnemyMotionKind.Knight,EnemyStrikeStyle.Cleave,1.3f,0,.9f,64,new Color(.9f,.6f,.35f)),
+            DrownedQuarterContent.Bellkeeper=>new(EnemyMotionKind.Caster,EnemyStrikeStyle.Slam,1.2f,2,.9f,40,new Color(.45f,.95f,.9f)),
+            DrownedQuarterContent.TollThrall=>new(EnemyMotionKind.Brute,EnemyStrikeStyle.Slam,.65f,0,1.3f,50,new Color(.8f,.75f,.55f)),
+            DrownedQuarterContent.SinkerThrall=>new(EnemyMotionKind.Brute,EnemyStrikeStyle.Crush,.8f,0,1.1f,46,new Color(.7f,.7f,.65f)),
+            DrownedQuarterContent.Engine=>new(EnemyMotionKind.Colossus,EnemyStrikeStyle.Crush,1.5f,0,.75f,40,new Color(.45f,.9f,1f)),
+            DrownedQuarterContent.Magistrate=>new(EnemyMotionKind.Colossus,EnemyStrikeStyle.Crush,1.5f,0,.75f,44,new Color(.4f,.9f,.85f)),
+            DrownedQuarterContent.Bailiff=>new(EnemyMotionKind.Spirit,EnemyStrikeStyle.Spectral,.7f,8,1.2f,40,new Color(.5f,.85f,1f)),
             _=>new(EnemyMotionKind.Knight,EnemyStrikeStyle.Blade,1f,0,1f,50,new Color(1f,.62f,.36f))
         };
         private static float WildBodyScale(EnemyDef enemy)=>enemy?.id switch
@@ -125,6 +159,10 @@ namespace GildedFate.UI
             AshenWildsContent.Stalker=>.8f,AshenWildsContent.Rootcaller=>1.02f,AshenWildsContent.Sapling=>.55f,AshenWildsContent.Elk=>1.05f,
             AshenWildsContent.Maw=>1.12f,AshenWildsContent.Packmother=>1.25f,AshenWildsContent.FangPup=>.58f,AshenWildsContent.AshbackCub=>.64f,
             AshenWildsContent.Hart=>1.25f,AshenWildsContent.Titan=>1.4f,AshenWildsContent.Alpha=>1.45f,AshenWildsContent.Whelp=>.62f,AshenWildsContent.Runner=>.58f,
+            DrownedQuarterContent.Rustwalker=>.95f,DrownedQuarterContent.Lurker=>1.2f,DrownedQuarterContent.BellDiver=>1f,DrownedQuarterContent.RustPriest=>.98f,
+            DrownedQuarterContent.CanalStalker=>.95f,DrownedQuarterContent.Tidecaller=>1.02f,DrownedQuarterContent.Hand=>.55f,DrownedQuarterContent.Hulk=>1.15f,
+            DrownedQuarterContent.Marionette=>1f,DrownedQuarterContent.Ferryman=>1.25f,DrownedQuarterContent.Bellkeeper=>1.2f,DrownedQuarterContent.TollThrall=>.66f,
+            DrownedQuarterContent.SinkerThrall=>.7f,DrownedQuarterContent.Engine=>1.4f,DrownedQuarterContent.Magistrate=>1.65f,DrownedQuarterContent.Bailiff=>.72f,
             _=>enemy?.boss==true?1.4f:enemy?.elite==true?1.2f:1f
         };
     }

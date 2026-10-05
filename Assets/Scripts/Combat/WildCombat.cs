@@ -9,7 +9,7 @@ namespace GildedFate.Combat
     // Stored on each CombatOpponent so it saves with the combat checkpoint.
     [Serializable] public sealed class WildMind
     {
-        public int uid,ownerUid=-1,step,step2,phase=1,diedTurn=-1,summonedTurn=-1,plannedValue;
+        public int uid,ownerUid=-1,step,step2,phase=1,diedTurn=-1,summonedTurn=-1,plannedValue,counter;
         public string state="",planned="",lastMove="";
         public bool minion,dead,mourning,fled;
         public WildMind Copy()=>(WildMind)MemberwiseClone();
@@ -28,8 +28,8 @@ namespace GildedFate.Combat
         public int summonHpPercent=100,summonStrength;
         [NonSerialized] private int wildSweepDepth,wildSinkMute,wildPlanning;[NonSerialized] private int wildTarget=-1;
 
-        public static bool IsWildId(string id)=>AshenWildsContent.Find(id)!=null;
-        private static EnemyDef WildDef(string id)=>AshenWildsContent.Find(id);
+        public static bool IsWildId(string id)=>ThemeRosters.Find(id)!=null;
+        private static EnemyDef WildDef(string id)=>ThemeRosters.Find(id);
         public WildMind MindAt(int index)=>wildCombat&&opponents!=null&&index>=0&&index<opponents.Count?opponents[index].mind:null;
         private WildMind Mind=>MindAt(enemyContextIndex);
         private bool IsWildContext=>wildCombat&&Mind!=null&&IsWildId(enemyId);
@@ -41,9 +41,8 @@ namespace GildedFate.Combat
         private IEnumerable<int> OwnedMinions(int ownerIndex){var uid=MindAt(ownerIndex)?.uid??-99;return Enumerable.Range(0,EnemyCount).Where(i=>IsLivingTarget(i)&&MindAt(i)?.ownerUid==uid);}
         private IEnumerable<int> EligibleCommandTargets(int ownerIndex)=>OwnedMinions(ownerIndex).Where(i=>{var m=MindAt(i);return !string.IsNullOrEmpty(m.lastMove)&&m.summonedTurn!=turn;});
         private static bool DamageCapable(string id)=>WildDef(id)?.support!=true;
-        private static bool OwnsMinions(string id)=>id is AshenWildsContent.Rootcaller or AshenWildsContent.Packmother or AshenWildsContent.Alpha;
-        private static string SummonFor(string id)=>id==AshenWildsContent.Rootcaller?AshenWildsContent.Sapling:"";
-        private static int MinionCap(string id)=>2;
+        private static string SummonFor(string id)=>ThemeRosters.SummonType(id);
+        private static int MinionCap(string id)=>ThemeRosters.MinionCap(id);
 
         // ---------- setup ----------
         private void InitializeWildGroup(string[] ids)
@@ -56,14 +55,15 @@ namespace GildedFate.Combat
                 if(def.minion)
                 {
                     // An authored Minion belongs to the nearest earlier creature that can own it.
-                    var owner=-1;for(var k=expanded.Count-1;k>=0;k--)if(SummonFor(expanded[k].id)==id||AshenWildsContent.StartingMinions(expanded[k].id).Contains(id)){owner=k;break;}
+                    var owner=-1;for(var k=expanded.Count-1;k>=0;k--)if(ThemeRosters.CanOwn(expanded[k].id,id)){owner=k;break;}
                     if(owner<0)throw new ArgumentException("A Minion cannot appear without its owner: "+id);
                     expanded.Add((id,owner));continue;
                 }
                 var me=expanded.Count;expanded.Add((id,-1));
-                foreach(var minion in AshenWildsContent.StartingMinions(id))expanded.Add((minion,me));
+                foreach(var minion in ThemeRosters.StartingMinions(id))expanded.Add((minion,me));
             }
             if(expanded.Count>MaxBattlefieldBodies)throw new ArgumentException("Encounters support at most six creatures.");
+            if(expanded.Where(e=>!(WildDef(e.id)?.minion??false)).All(e=>WildDef(e.id)?.support==true))throw new ArgumentException("A pure Support cannot start a fight alone.");
             var groupedNormals=expanded.Count(e=>!(WildDef(e.id)?.minion??false))>1;
             var uids=new int[expanded.Count];
             for(var i=0;i<expanded.Count;i++)
@@ -80,6 +80,7 @@ namespace GildedFate.Combat
         private static void ResetWildState(WildMind m,string id)
         {
             m.state=id switch{AshenWildsContent.Maw=>"HUNGRY",AshenWildsContent.Hart=>"CROWNED",AshenWildsContent.Titan=>"ROOTED",_=>""};
+            ResetDrownedState(m,id);
         }
 
         // ---------- planning ----------
@@ -170,7 +171,7 @@ namespace GildedFate.Combat
                 case AshenWildsContent.Whelp:return Cycle(m,2)==0?"cinder_bite":"heated_pounce";
                 case AshenWildsContent.Runner:return Cycle(m,2)==0?"scorching_swipe":"fleet_guard";
             }
-            return "strike";
+            return ChooseDrownedMove(m)??"strike";
         }
         private bool CanSummon(int ownerIndex)
         {
@@ -259,7 +260,7 @@ namespace GildedFate.Combat
                 case "scorching_swipe":return new[]{P(A,5),P(EnemyActionType.Weak,1)};
                 case "fleet_guard":return new[]{P(B,7)};
             }
-            return new[]{P(A,Math.Max(1,enemyBaseDamage))};
+            return DrownedActions(move,m)??new[]{P(A,Math.Max(1,enemyBaseDamage))};
         }
         private string WildMoveLabel(string move,WildMind m)=>move switch
         {
@@ -282,7 +283,7 @@ namespace GildedFate.Combat
             "burning_rush"=>"BURNING RUSH","cinder_howl"=>"CINDER HOWL","blazing_claw"=>"BLAZING CLAW","predators_guard"=>"PREDATOR'S GUARD",
             "eruption_claw"=>"ERUPTION CLAW","ashen_frenzy"=>"ASHEN FRENZY","scorching_roar"=>"SCORCHING ROAR","apex_maul"=>"APEX MAUL",
             "cinder_bite"=>"CINDER BITE","heated_pounce"=>"HEATED POUNCE","scorching_swipe"=>"SCORCHING SWIPE","fleet_guard"=>"FLEET GUARD",
-            _=>"STRIKE"
+            _=>DrownedMoveLabel(move,m)
         };
         // Presentation hook names for future animation / VFX (emitted as CombatEventKind.Hook).
         private static string WildHookFor(string id,string move)=>move switch
@@ -294,7 +295,7 @@ namespace GildedFate.Combat
             "uproot"=>"root_titan_uproot","replant"=>"root_titan_root",
             "alpha_bite" or "smoke_pounce" or "burning_rush" or "blazing_claw" or "eruption_claw" or "ashen_frenzy" or "apex_maul"=>"cinder_alpha_major_attack",
             "alpha_command" or "cinder_howl"=>"cinder_alpha_command",
-            _=>""
+            _=>DrownedHook(move)
         };
         private PlannedEnemyAction[] WildPlannedTurn(){var m=Mind;if(string.IsNullOrEmpty(m.planned))PlanWildIntent();return WildActions(m.planned,m);}
 
@@ -308,7 +309,7 @@ namespace GildedFate.Combat
             if(move=="mourning_cry"){m.mourning=false;}
             else if(enemyId==AshenWildsContent.Packmother&&(move=="bereaved_fury"||move=="alpha_maul"&&!OwnedMinions(enemyContextIndex).Any()))m.step2++;
             else if(enemyId==AshenWildsContent.Maw){m.state=m.state switch{"HUNGRY"=>"FED","FED"=>"BURNING",_=>"HUNGRY"};EmitHook("hollow_maw_state:"+m.state);}
-            else m.step++;
+            else if(!BeginDrownedAction(m,move))m.step++;
         }
         private void EndWildAction(){var m=Mind;if(m!=null&&m.minion)m.lastMove=m.planned;m.planned="";}
         private void EmitHook(string name)=>Emit(CombatEventKind.Hook,0,false,null,"HOOK:"+name);
@@ -343,6 +344,7 @@ namespace GildedFate.Combat
                     wildTarget=hurt.OrderBy(i=>EnemyAt(i).hp).ThenBy(i=>i).First();HealEnemyAt(wildTarget,action.amount);break;
                 }
                 case EnemyActionType.BlockTarget:if(wildTarget>=0&&IsLivingTarget(wildTarget))InEnemyContext(wildTarget,()=>{enemy.block+=action.amount;Emit(CombatEventKind.Block,action.amount,false);});wildTarget=-1;break;
+                default:ExecuteDrownedAction(action);break;
             }
         }
         private void HealEnemyAt(int index,int amount)=>InEnemyContext(index,()=>{var before=enemy.hp;enemy.hp=Math.Min(enemy.maxHp,enemy.hp+amount);if(enemy.hp>before)Emit(CombatEventKind.Heal,enemy.hp-before,false);});
@@ -364,7 +366,7 @@ namespace GildedFate.Combat
             var slot=opponents.Count<MaxBattlefieldBodies?-1:ReusableMinionSlot();
             if(slot>=0)opponents[slot]=created;else{opponents.Add(created);slot=opponents.Count-1;}
             created.intent=IntentKind.Unknown;created.intentLabel="SUMMONED";
-            InEnemyContext(slot,()=>Emit(CombatEventKind.Status,1,false,null,"SUMMONED"));
+            InEnemyContext(slot,()=>{Emit(CombatEventKind.Status,1,false,null,"SUMMONED");if(id==DrownedQuarterContent.Hand)EmitHook("drowned_hand_spawn");});
             rosterVersion++;
         }
         private void WildCommand(int ownerIndex)
@@ -412,7 +414,7 @@ namespace GildedFate.Combat
         private void OnWildDeath(int index)
         {
             var m=MindAt(index);var id=EnemyIdAt(index);
-            if(m.minion)InEnemyContext(index,()=>EmitHook(id==AshenWildsContent.Sapling?"sapling_death":"minion_death"));
+            if(m.minion)InEnemyContext(index,()=>EmitHook(id==AshenWildsContent.Sapling?"sapling_death":id==DrownedQuarterContent.Hand?"drowned_hand_death":"minion_death"));
             // Owner death: every Minion it owns withers immediately (no rewards of their own).
             foreach(var k in Enumerable.Range(0,opponents.Count).Where(k=>opponents[k].fighter.hp>0&&opponents[k].mind?.ownerUid==m.uid).ToArray())
             {opponents[k].fighter.hp=0;InEnemyContext(k,()=>EmitHook("minion_withers"));}
@@ -429,7 +431,7 @@ namespace GildedFate.Combat
                 for(var k=0;k<opponents.Count;k++)
                 {
                     var mk=opponents[k].mind;if(mk==null||opponents[k].fighter.hp<=0)continue;
-                    if(mk.planned is "rc_command" or "nourish" or "pm_command" or "alpha_command" or "cinder_howl" or "feed_pack" or "protective_snarl"||opponents[k].id==AshenWildsContent.Packmother)ReplanAt(k);
+                    if(mk.planned is "rc_command" or "nourish" or "pm_command" or "alpha_command" or "cinder_howl" or "feed_pack" or "protective_snarl"||opponents[k].id==AshenWildsContent.Packmother||DrownedReplanOnDeath(k))ReplanAt(k);
                 }
         }
         private void ReplanAt(int index)=>InEnemyContext(index,PlanWildIntent);
@@ -464,6 +466,7 @@ namespace GildedFate.Combat
                     if(PlayerPhaseReplan)ReplanAt(index);
                 }
             }
+            else CheckDrownedThresholds(index);
         }
         public int WildBossIndex{get{if(!wildCombat)return -1;for(var i=0;i<EnemyCount;i++)if(WildDef(EnemyIdAt(i))?.boss==true)return i;return -1;}}
 
@@ -485,6 +488,7 @@ namespace GildedFate.Combat
                 case AshenWildsContent.Rootcaller:lines.Add($"SUMMONER · {OwnedMinions(index).Count()}/2 Ash Saplings.");break;
                 case AshenWildsContent.Packmother:lines.Add(OwnedMinions(index).Any()?"PACK · Commands and feeds her cubs.":"BEREAVED · Her pack is gone. She fights with fury.");break;
                 case AshenWildsContent.Alpha:lines.Add($"PHASE {m.phase} · "+(m.phase==1?"Predatory Alpha":m.phase==2?"Burning Alpha":"Exposed Fire-Beast"));break;
+                default:DrownedStateText(index,m,lines);break;
             }
             return string.Join("\n",lines);
         }
@@ -509,7 +513,7 @@ namespace GildedFate.Combat
                 case EnemyActionType.HealMinion:a.title="NOURISH";return $"Its most wounded Minion heals {amount} HP.";
                 case EnemyActionType.BlockTarget:a.title="BLOCK ALLY";return $"That same ally gains {amount} Block.";
             }
-            return "";
+            return DescribeDrownedAction(type,amount,a);
         }
     }
 }

@@ -54,7 +54,7 @@ namespace GildedFate.Core
             =>act==1&&combatsCompleted==0?EncounterTier.Opening:floor<=4?EncounterTier.Early:floor<=10?EncounterTier.Mid:EncounterTier.Late;
         public static EncounterDef Choose(int act,int floor,int combatsCompleted,int seed)=>Choose(act,floor,combatsCompleted,seed,ActThemes.Vault,"");
         public const string Neutral="neutral";
-        public static EncounterDef[] Themed=>AshenWildsContent.Formations;
+        public static EncounterDef[] Themed=>ThemeRosters.Formations;
         // Themed tier: Easy for the act's first two normal combats, then Standard, with
         // Dangerous formations growing more likely deeper into the act.
         public static EncounterTier ThemedTier(int floor,int combatsCompleted,int seed)

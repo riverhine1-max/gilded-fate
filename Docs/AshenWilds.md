@@ -1,7 +1,8 @@
 # Act 1 · Theme 2 — Ashen Wilds
 
 Each run rolls one theme per act when it starts (`RunModel.actThemes`). Act 1 can roll **The Vault**
-(the original roster) or **Ashen Wilds**. Acts 2 and 3 only have The Vault for now. Saves made before
+(the original roster, standing in for Gilded Ruins), **Ashen Wilds** or **The Drowned Quarter**
+(see `DrownedQuarter.md`). Acts 2 and 3 only have The Vault for now. Saves made before
 this update have no themes, so they keep playing The Vault.
 
 The map shows the act's theme under the summit boss label. Hover it to see the tagline.
@@ -113,11 +114,15 @@ Crawler, Caster, Brute, Colossus, Spirit). See `WildMotionFor` and `WildBodyScal
 
 ## Adding a future theme or Act 1 neutrals
 
-1. Add enemy definitions with `theme` set (and `minion` / `support` where needed), plus formations
-   that use `EncounterDef.theme`.
-2. Add the theme id to `ActThemes.ForAct`.
-3. Add the AI moves to `ChooseWildMove` / `WildActions`, and make `CombatState.IsWildId` recognise
-   the new ids (it currently checks `AshenWildsContent.Find`).
-4. For neutrals, give the formation the theme `EncounterContent.Neutral` and set `minimumAct` and
+1. Add a content file like `Core/DrownedQuarterContent.cs`: enemy definitions with `theme` set (and
+   `minion` / `support` where needed), elites, bosses, starting Minions and formations that use
+   `EncounterDef.theme`.
+2. Register it in `ThemeRosters` (same file as the Drowned Quarter content): `Find`, `AllEnemies`,
+   `Formations`, `Elites`, `Boss`, `StartingMinions`, and `SummonType` / `MinionCap` for summoners.
+   Combat, routing, checkpoints and the Playground all read from there.
+3. Add the theme id to `ActThemes.ForAct` (plus `Name` / `Tagline`).
+4. Add the AI in its own partial file, like `Combat/DrownedCombat.cs`, and chain it from the
+   `default` branches in `WildCombat.cs`.
+5. For neutrals, give the formation the theme `EncounterContent.Neutral` and set `minimumAct` and
    `maximumAct` to the same act. Themed selection already includes neutral formations for that act
    only, so they can join any theme in their act but never another act.

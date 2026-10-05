@@ -59,7 +59,7 @@ namespace GildedFate.UI
                 var crown=new Rect(w-207,106,126,132);MapPolishBossAura(crown);DrawBossMapPortrait(crown,boss);
                 GUI.Label(new Rect(w-258,244,232,42),"ACT "+RomanAct(run.act)+" · SUMMIT KEEPER",new GUIStyle(footerStyle){fontSize=12,normal={textColor=Gold}});
                 // This act's theme (rolled at the start of the run).
-                GUI.Label(new Rect(w-268,272,252,22),ActThemes.Name(run.CurrentTheme),new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=13,fontStyle=FontStyle.Bold,normal={textColor=run.CurrentTheme==ActThemes.AshenWilds?new Color(1f,.55f,.28f):new Color(.84f,.8f,.7f)}});
+                GUI.Label(new Rect(w-268,272,252,22),ActThemes.Name(run.CurrentTheme),new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=13,fontStyle=FontStyle.Bold,normal={textColor=run.CurrentTheme==ActThemes.AshenWilds?new Color(1f,.55f,.28f):run.CurrentTheme==ActThemes.DrownedQuarter?new Color(.45f,.85f,.82f):new Color(.84f,.8f,.7f)}});
                 var themeRect=new Rect(w-268,272,252,22);if(themeRect.Contains(pointer))SetRunHudTooltip(themeRect,ActThemes.Name(run.CurrentTheme),ActThemes.Tagline(run.CurrentTheme));
                 if(crown.Contains(pointer))SetRunHudTooltip(crown,EnemyForNode(boss).name,"The keeper waits above "+run.ActFloorCount+" layers of fate. Click to view the summit; enter only after reaching its connected path.");
                 if(!mapPauseOpen&&GUI.Button(crown,"",GUIStyle.none)){if(!inspectOnly&&mapReady&&boss.floor==run.floor&&boss.available)BeginMapTravel(boss);else{mapScroll=0;mapFocusFloor=run.floor;}}

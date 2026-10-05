@@ -6,7 +6,9 @@ namespace GildedFate.Combat
 {
     public enum EnemyActionType { Attack, Block, Strength, Weak, Vulnerable, StealGold, Curse, SummonWeapon, Heal, ExhaustDiscard,
         // Owner / Minion and ally-support actions (themed enemies).
-        Summon, Command, BlockAllies, BlockPack, BlockMinions, BlockOwner, StrengthAlly, StrengthMinions, HealAlly, HealMinion, BlockTarget }
+        Summon, Command, BlockAllies, BlockPack, BlockMinions, BlockOwner, StrengthAlly, StrengthMinions, HealAlly, HealMinion, BlockTarget,
+        // Drowned Quarter.
+        HealArmored, StrengthRandomAlly, Pressure, PressureRelease }
     public enum IntentDestination { None, Hand, Draw, Discard, Deck }
     public readonly struct PlannedEnemyAction
     {
@@ -28,7 +30,7 @@ namespace GildedFate.Combat
             EnemyActionType.Heal=>6,EnemyActionType.Weak=>8,EnemyActionType.Vulnerable=>9,EnemyActionType.Curse=>10,
             EnemyActionType.ExhaustDiscard=>12,EnemyActionType.StealGold=>13,EnemyActionType.SummonWeapon=>14,
             EnemyActionType.BlockAllies or EnemyActionType.BlockPack or EnemyActionType.BlockMinions or EnemyActionType.BlockOwner or EnemyActionType.BlockTarget=>4,
-            EnemyActionType.StrengthAlly or EnemyActionType.StrengthMinions=>5,EnemyActionType.HealAlly or EnemyActionType.HealMinion=>6,
+            EnemyActionType.StrengthAlly or EnemyActionType.StrengthMinions or EnemyActionType.StrengthRandomAlly or EnemyActionType.Pressure or EnemyActionType.PressureRelease=>5,EnemyActionType.HealAlly or EnemyActionType.HealMinion or EnemyActionType.HealArmored=>6,
             // Summon and Command use their own artwork (IconSummon / IconCommand), not the atlas.
             EnemyActionType.Summon=>IconSummon,EnemyActionType.Command=>IconCommand,_=>19
         };
@@ -107,7 +109,7 @@ namespace GildedFate.Combat
                     {
                         var shown=DescribeEnemyAction(action);
                         // Ashen Wilds: a heal that would restore nothing is left off the intent instead of showing "0".
-                        var idleHeal=wildCombat&&shown.amount<=0&&(action.type==EnemyActionType.Heal||action.type==EnemyActionType.HealAlly||action.type==EnemyActionType.HealMinion);
+                        var idleHeal=wildCombat&&shown.amount<=0&&(action.type==EnemyActionType.Heal||action.type==EnemyActionType.HealAlly||action.type==EnemyActionType.HealMinion||action.type==EnemyActionType.HealArmored);
                         if(!idleHeal)intentPreviewSink[EnemyContextIndex].Add(shown);
                     }
                     switch(action.type)
@@ -126,6 +128,7 @@ namespace GildedFate.Combat
                         case EnemyActionType.ExhaustDiscard:BanishDiscardedCard();break;
                         case EnemyActionType.Summon:case EnemyActionType.Command:case EnemyActionType.BlockAllies:case EnemyActionType.BlockPack:case EnemyActionType.BlockMinions:
                         case EnemyActionType.BlockOwner:case EnemyActionType.StrengthAlly:case EnemyActionType.StrengthMinions:case EnemyActionType.HealAlly:case EnemyActionType.HealMinion:case EnemyActionType.BlockTarget:
+                        case EnemyActionType.HealArmored:case EnemyActionType.StrengthRandomAlly:case EnemyActionType.Pressure:case EnemyActionType.PressureRelease:
                             ExecuteWildAction(action);break;
                         default:throw new InvalidOperationException("Enemy action has no executor: "+action.type);
                     }
