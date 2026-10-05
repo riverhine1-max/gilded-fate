@@ -24,7 +24,7 @@ namespace GildedFate.Combat
         public CardChoiceKind choice;
         public PendingCardPlay Copy(){var copy=(PendingCardPlay)MemberwiseClone();copy.card=card?.Copy();copy.remaining=(remaining??new()).Copy();copy.relicRuptureChecked=new(relicRuptureChecked??new());copy.relicRuptureTargets=new(relicRuptureTargets??new());return copy;}
     }
-    public enum CombatEventKind { Draw, Discard, Exhaust, Shuffle, CardResolved, Damage, Block, Heal, Status, Energy, Resonance, PlayerTurn, EnemyTurn, Death, ShardTrigger, EnemyAction, StateSnapshot, RelicTrigger }
+    public enum CombatEventKind { Draw, Discard, Exhaust, Shuffle, CardResolved, Damage, Block, Heal, Status, Energy, Resonance, PlayerTurn, EnemyTurn, Death, ShardTrigger, EnemyAction, StateSnapshot, RelicTrigger, Hook }
     public enum CombatCardDestination { None, Hand, Draw, Discard, Exhaust, Deck }
 
     // Facts emitted by the rules, not commands that can apply an effect twice.

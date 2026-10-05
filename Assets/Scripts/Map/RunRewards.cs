@@ -33,9 +33,18 @@ namespace GildedFate.Map
         public void PrepareEncounter(NodeKind kind)
         {
             activeEncounterEnemies=new();activeEncounterId="";
+            if(kind==NodeKind.Elite||kind==NodeKind.Boss)
+            {
+                // Themed elites and bosses bring their starting Minions with them.
+                var id=kind==NodeKind.Boss?ThemedBoss:ThemedEliteFor(activeNodeFloor,activeNodeLane);
+                if(string.IsNullOrEmpty(id))return;
+                // Starting Minions are added by the combat itself (CombatState.InitializeWildGroup).
+                activeEncounterId=id;activeEncounterEnemies.Add(id);activeEnemyId=id;return;
+            }
             if(kind!=NodeKind.Combat)return;
-            var encounter=EncounterContent.Choose(act,activeNodeFloor+1,normalCombatsCompleted,RoomSeed(27011));
+            var encounter=EncounterContent.Choose(act,activeNodeFloor+1,normalCombatsCompleted,RoomSeed(27011),CurrentTheme,lastEncounterId);
             activeEncounterId=encounter.id;activeEncounterEnemies.AddRange(encounter.enemies);activeEnemyId=encounter.enemies[0];
+            if(!string.IsNullOrEmpty(encounter.theme))lastEncounterId=encounter.id;
         }
         public void RollEncounterRewards(NodeKind kind)
         {
@@ -158,7 +167,7 @@ namespace GildedFate.Map
             if(pendingShardPrice<0||normalCombatsCompleted<0)return false;
             if(!string.IsNullOrEmpty(pendingShardDiscoveryId)&&WorldContent.FateShards.All(s=>s.id!=pendingShardDiscoveryId))return false;
             if(!string.IsNullOrEmpty(merchantShardId)&&WorldContent.FateShards.All(s=>s.id!=merchantShardId))return false;
-            if(activeEncounterEnemies?.Count>0&&(activeEncounterEnemies.Count>4||activeEncounterEnemies.Any(id=>!WorldContent.Enemies.Any(e=>e.id==id&&!e.elite&&!e.boss))))return false;
+            if(activeEncounterEnemies?.Count>0&&(activeEncounterEnemies.Count>6||activeEncounterEnemies.Select((id,i)=>WorldContent.Enemies.FirstOrDefault(e=>e.id==id)).Any(e=>e==null||(e.elite||e.boss)&&string.IsNullOrEmpty(e.theme))))return false;
             if(encounterRewards==null||string.IsNullOrEmpty(encounterRewards.receipt))return true;
             if(encounterRewards.cards==null||encounterRewards.extraChoices<0||encounterRewards.extraChoices>4||encounterRewards.cards.Count!=3+(encounterRewards.unboundDeck?1:0)+encounterRewards.extraChoices||encounterRewards.cards.Distinct().Count()!=encounterRewards.cards.Count||encounterRewards.bonusIndex<0)return false;
             if(encounterRewards.cards.Any(id=>!GameContent.Cards.Any(c=>c.id==id&&(encounterRewards.unboundDeck

@@ -3,10 +3,13 @@ using System.Linq;
 
 namespace GildedFate.Core
 {
-    public enum EncounterTier { Opening, Early, Mid, Late }
+    public enum EncounterTier { Opening, Early, Mid, Late, Easy, Standard, Dangerous }
     [Serializable] public sealed class EncounterDef
     {
         public string id;public string[] enemies;public int minimumAct,maximumAct;public EncounterTier tier;
+        // "" = original Vault roster; otherwise an ActThemes id. Future act-neutral
+        // formations use "neutral" and join every theme of their act.
+        public string theme="";
         public EncounterDef(string id,EncounterTier tier,int minAct,int maxAct,params string[] enemies)
         {this.id=id;this.tier=tier;minimumAct=minAct;maximumAct=maxAct;this.enemies=enemies;}
     }
@@ -49,7 +52,30 @@ namespace GildedFate.Core
         public static int GroupHp(int baseHp)=>Math.Max(1,(int)Math.Round(baseHp*.9,MidpointRounding.AwayFromZero));
         public static EncounterTier TierFor(int act,int floor,int combatsCompleted)
             =>act==1&&combatsCompleted==0?EncounterTier.Opening:floor<=4?EncounterTier.Early:floor<=10?EncounterTier.Mid:EncounterTier.Late;
-        public static EncounterDef Choose(int act,int floor,int combatsCompleted,int seed)
+        public static EncounterDef Choose(int act,int floor,int combatsCompleted,int seed)=>Choose(act,floor,combatsCompleted,seed,ActThemes.Vault,"");
+        public const string Neutral="neutral";
+        public static EncounterDef[] Themed=>AshenWildsContent.Formations;
+        // Themed tier: Easy for the act's first two normal combats, then Standard, with
+        // Dangerous formations growing more likely deeper into the act.
+        public static EncounterTier ThemedTier(int floor,int combatsCompleted,int seed)
+        {
+            if(combatsCompleted<2)return EncounterTier.Easy;
+            var dangerChance=floor<=6?0:floor<=11?40:70;
+            return new Random(seed^0x5DEECE).Next(100)<dangerChance?EncounterTier.Dangerous:EncounterTier.Standard;
+        }
+        public static EncounterDef Choose(int act,int floor,int combatsCompleted,int seed,string theme,string previousId)
+        {
+            if(!string.IsNullOrEmpty(theme))
+            {
+                var tier=ThemedTier(floor,combatsCompleted,seed);
+                var themed=Themed.Where(e=>(e.theme==theme||e.theme==Neutral)&&e.minimumAct<=act&&e.maximumAct>=act&&e.tier==tier).ToArray();
+                // Never the exact same formation twice in a row when alternatives exist.
+                var fresh=themed.Where(e=>e.id!=previousId).ToArray();if(fresh.Length>0)themed=fresh;
+                if(themed.Length>0)return themed[new Random(seed).Next(themed.Length)];
+            }
+            return ChooseVault(act,floor,combatsCompleted,seed);
+        }
+        private static EncounterDef ChooseVault(int act,int floor,int combatsCompleted,int seed)
         {
             var tier=TierFor(act,floor,combatsCompleted);
             var pool=All.Where(e=>e.minimumAct<=act&&e.maximumAct>=act&&e.tier==tier

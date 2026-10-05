@@ -109,7 +109,7 @@ namespace GildedFate.Combat
                 if(card.specialModificationKind==SpecialModificationKind.None&&!string.IsNullOrEmpty(card.specialModification)||card.specialModificationKind!=SpecialModificationKind.None&&string.IsNullOrEmpty(card.specialModification))return false;
             }
             if(count==0)return false;
-            if(opponents?.Count>0){if(opponents.Count>4||enemyContextIndex<0||enemyContextIndex>=opponents.Count)return false;foreach(var opponent in opponents){if(opponent?.fighter==null||opponent.fighter.maxHp<1||opponent.fighter.hp<0||opponent.fighter.hp>opponent.fighter.maxHp||!ValidFighterEffects(opponent.fighter)||!Array.Exists(WorldContent.Enemies,e=>e.id==opponent.id&&!e.elite&&!e.boss))return false;}}
+            if(opponents?.Count>0){if(opponents.Count>(wildCombat?MaxBattlefieldBodies:4)||enemyContextIndex<0||enemyContextIndex>=opponents.Count)return false;foreach(var opponent in opponents){if(opponent?.fighter==null||opponent.fighter.maxHp<1||opponent.fighter.hp<0||opponent.fighter.hp>opponent.fighter.maxHp||!ValidFighterEffects(opponent.fighter))return false;if(wildCombat?(!Array.Exists(WorldContent.Enemies,e=>e.id==opponent.id)||IsWildId(opponent.id)&&(opponent.mind==null||opponent.mind.uid<=0)):!Array.Exists(WorldContent.Enemies,e=>e.id==opponent.id&&!e.elite&&!e.boss))return false;}}
             if(pendingPlay!=null)
             {
                 if(phase!=CombatPhase.Player||pendingPlay.card==null||pendingPlay.copiesRemaining<1||pendingPlay.copiesRemaining>32||pendingPlay.resolvedCopies<0||pendingPlay.additionalAttackCount<0||pendingPlay.attackEffectBonus<0||!pendingPlay.effectStarted)return false;

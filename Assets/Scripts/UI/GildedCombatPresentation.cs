@@ -131,7 +131,7 @@ namespace GildedFate.UI
             {
                 if(GroupCombat)return GroupPortrait(Mathf.Clamp(groupRenderIndex>=0?groupRenderIndex:combatTargetIndex,0,combat.EnemyCount-1));
                 var scale=EnemyPortraitScale;var width=236*scale;var height=226*scale;
-                var texture=currentEnemy==null?null:LoadAuthoredArt(GildedArtCatalog.EnemyResource(currentEnemy.id));
+                var texture=currentEnemy==null?null:LoadAuthoredArt(GildedArtCatalog.EnemyResource(EnemyArtId(currentEnemy.id)));
                 if(texture){var fit=Mathf.Min(width/texture.width,height/texture.height);width=texture.width*fit;height=texture.height*fit;}
                 if(height>258){width*=258/height;height=258;}
                 return new Rect(EnemyVisualCenterX-width*.5f,438-height,width,height);
@@ -530,6 +530,7 @@ namespace GildedFate.UI
                 if(fact.kind==CombatEventKind.RelicTrigger){relicPulseBeats.Add((fact.label,now+hitTime));Sfx(SoundCue.RewardRelic,intensity:.32f,combatSound:true,delay:hitTime);finish=Mathf.Max(finish,hitTime+.26f);continue;}
                 if(fact.kind==CombatEventKind.ShardTrigger){run.EnsureShardSlots();var slot=run.shards.FirstOrDefault(s=>s.active&&s.id==fact.label)?.slot??0;var from=ShardHealthOrigin;var to=!fact.playerSide?(GroupCombat?GroupPortrait(fact.enemyIndex).center:EnemyPortraitRect.center):fact.card!=null&&handViews.TryGetValue(fact.card.instanceId,out var targetCard)?targetCard.position:HeroPortraitRect.center;shardFlights.Add(new ShardFlight{from=from,to=to,start=now+hitTime});finish=Mathf.Max(finish,hitTime+.48f);continue;}
                 if(fact.kind==CombatEventKind.EnemyAction){opponentActions.Add((fact.enemyIndex,now+hitTime));continue;}
+                if(fact.kind==CombatEventKind.Hook){ScheduleWildHook(fact,now+hitTime);continue;}
                 if(fact.card!=null&&(fact.generatedCard||fact.kind==CombatEventKind.Draw))
                 {
                     drawDelay=Mathf.Max(drawDelay,hitTime);
@@ -632,7 +633,7 @@ namespace GildedFate.UI
             if(combatPauseOpen){DrawCombatPause(w,h);DrawCombatRunBar(w);return;}
             if(choicePresented){DrawCombatChoice(w,h);DrawCombatRunBar(w);return;}
             if(pileOpen>=0){DrawPileInspector(w,h);DrawCombatRunBar(w);return;}
-            if(currentEnemy?.boss==true)DrawAtlasIcon(bossArenaAtlas,Mathf.Max(0,System.Array.IndexOf(WorldContent.Enemies,currentEnemy)-14),3,1,new Rect(0,0,w,h));
+            if(currentEnemy?.boss==true&&WorldContent.IsLegacy(currentEnemy))DrawAtlasIcon(bossArenaAtlas,Mathf.Max(0,System.Array.IndexOf(WorldContent.Enemies,currentEnemy)-14),3,1,new Rect(0,0,w,h));
             else if(combatBackground)GUI.DrawTexture(new Rect(0,0,w,h),combatBackground,ScaleMode.ScaleAndCrop);
             Fill(new Rect(0,0,w,h),new Color(.005f,.008f,.015f,.24f));
             DrawCombat3DStage(w,h);
@@ -657,7 +658,7 @@ namespace GildedFate.UI
                 GUI.Label(new Rect(w*.34f,132,w*.32f,44),turnBanner,new GUIStyle(buttonStyle){fontSize=22,normal={textColor=new Color(1,.88f,.57f,alpha)}});
             }
             if(bossPhaseTime>0)DrawBossPhaseCinematic(w,h);
-            DrawPlaygroundCombatHud(w);
+            DrawWildCallouts();DrawPlaygroundCombatHud(w);
         }
 
         private void DrawCombatHand()
@@ -1119,7 +1120,7 @@ namespace GildedFate.UI
             DrawEnemyIntentGroup(0);
             var foe=EnemyPortraitRect;
             if(CombatInspectionAllowed&&foe.Contains(combatPointer))
-                SetCombatEffectTooltip(currentEnemy?.name??"ENEMY",ActorEffectSummary(EnemyEffectChips()),foe.center);
+                SetCombatEffectTooltip(currentEnemy?.name??"ENEMY",ActorEffectSummary(EnemyEffectChips())+WildTooltipSuffix(0),foe.center);
         }
         private void DrawEffectStrip(Rect r,List<CombatEffectChip> chips,bool playerSide)
         {

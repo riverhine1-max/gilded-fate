@@ -54,7 +54,7 @@ namespace GildedFate.UI
             "hollow_king"=>new(EnemyMotionKind.Knight,EnemyStrikeStyle.Spectral,1.5f,0,.7f,30,new Color(.66f,.90f,1f)),
             "vault_mother"=>new(EnemyMotionKind.Colossus,EnemyStrikeStyle.Crush,1.7f,0,.6f,34,new Color(.96f,.86f,.46f)),
             "last_dealer"=>new(EnemyMotionKind.Caster,EnemyStrikeStyle.Cards,1.3f,4,.8f,24,new Color(.96f,.30f,.36f)),
-            _=>new(EnemyMotionKind.Knight,EnemyStrikeStyle.Blade,1f,0,1f,50,new Color(1f,.62f,.36f))
+            _=>WildMotionFor(id)
         };
         private static bool EnemyStrikeIsRanged(EnemyStrikeStyle style)=>style is EnemyStrikeStyle.Bolt or EnemyStrikeStyle.Shards or EnemyStrikeStyle.Cards or EnemyStrikeStyle.Spectral;
 
@@ -77,7 +77,7 @@ namespace GildedFate.UI
         }
         private struct EnemyPose { public Vector2 offset; public float angle,sx,sy,alpha,flash,aura; public Color auraColor; }
 
-        private readonly EnemyAnim[] enemyAnims={new EnemyAnim(),new EnemyAnim(),new EnemyAnim(),new EnemyAnim()};
+        private readonly EnemyAnim[] enemyAnims={new EnemyAnim(),new EnemyAnim(),new EnemyAnim(),new EnemyAnim(),new EnemyAnim(),new EnemyAnim()};
         private sealed class EnemySilhouetteSet { public Texture2D solid,glow; public float padX,padY; }
         private readonly Dictionary<Texture2D,EnemySilhouetteSet> enemySilhouettes=new();
 
@@ -288,7 +288,7 @@ namespace GildedFate.UI
         {
             if(def==null)return;
             var texture=index>=0&&index<finalEnemyTextures.Length&&finalEnemyDefs[index]==def?finalEnemyTextures[index]:null;
-            if(!texture)texture=LoadAuthoredArt(GildedArtCatalog.EnemyResource(def.id));
+            if(!texture)texture=LoadAuthoredArt(GildedArtCatalog.EnemyResource(EnemyArtId(def.id)));
             if(!texture)return;
             var a=EnemyAnimFor(index,def);var now=Time.unscaledTime;var group=GroupCombat;
             var pose=EnemyPoseAt(a,now,deathAt,group);

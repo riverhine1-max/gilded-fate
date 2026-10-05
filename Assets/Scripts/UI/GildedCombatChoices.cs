@@ -104,7 +104,7 @@ namespace GildedFate.UI
             var sigilChoice=combat.ChoiceKind is CardChoiceKind.SigilMode or CardChoiceKind.SigilSlot;
             if(sigilChoice)
             {
-                if(currentEnemy?.boss==true)DrawAtlasIcon(bossArenaAtlas,Mathf.Max(0,System.Array.IndexOf(WorldContent.Enemies,currentEnemy)-14),3,1,new Rect(0,0,w,h));
+                if(currentEnemy?.boss==true&&WorldContent.IsLegacy(currentEnemy))DrawAtlasIcon(bossArenaAtlas,Mathf.Max(0,System.Array.IndexOf(WorldContent.Enemies,currentEnemy)-14),3,1,new Rect(0,0,w,h));
                 else if(combatBackground)GUI.DrawTexture(new Rect(0,0,w,h),combatBackground,ScaleMode.ScaleAndCrop);
                 DrawCombat3DStage(w,h);DrawCombatActors(w,h);DrawCombatStats(w,h);
                 Fill(new Rect(0,58,w,h-58),new Color(.002f,.004f,.011f,.82f));

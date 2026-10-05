@@ -38,6 +38,8 @@ namespace GildedFate.UI
         {
             if(authoredArt.TryGetValue(resource,out var texture))return texture;
             texture=Resources.Load<Texture2D>(resource);
+            // QA builds only: -gfMetaArt <folder> supplies art not yet imported into the test player.
+            if(!texture&&captureMode){var dir=CommandValue("-gfMetaArt");var file=string.IsNullOrEmpty(dir)?"":System.IO.Path.Combine(dir,System.IO.Path.GetFileName(resource)+".png");if(file!=""&&System.IO.File.Exists(file)){texture=new Texture2D(2,2,TextureFormat.RGBA32,false);texture.LoadImage(System.IO.File.ReadAllBytes(file));texture.wrapMode=TextureWrapMode.Clamp;}}
             authoredArt.Add(resource,texture);
             if(!texture)Debug.LogWarning("[Gilded Fate Art] Missing authored illustration: "+resource);
             return texture;
@@ -69,7 +71,7 @@ namespace GildedFate.UI
         private void DrawFloatingEnemy(Rect destination,EnemyDef enemy)
         {
             if(enemy==null)return;
-            var texture=LoadAuthoredArt(GildedArtCatalog.EnemyResource(enemy.id));
+            var texture=LoadAuthoredArt(GildedArtCatalog.EnemyResource(EnemyArtId(enemy.id)));
             if(texture)DrawFloatingTexture(destination,texture);
         }
         private static void DrawFloatingTexture(Rect destination,Texture2D texture)

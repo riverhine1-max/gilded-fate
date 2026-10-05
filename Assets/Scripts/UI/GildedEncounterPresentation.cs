@@ -10,7 +10,7 @@ namespace GildedFate.UI
     public sealed partial class GildedMainMenu
     {
         private sealed class OpponentVisual
-        {public int hp,block,tracked;public float trail,hold,hit,action,fill,healGlow,death=-1;}
+        {public int hp,block,tracked,uid;public float trail,hold,hit,action,fill,healGlow,death=-1;}
         private readonly List<OpponentVisual> opponentVisuals=new();
         private readonly List<(int index,float time)> opponentActions=new();
         private int combatTargetIndex,groupRenderIndex=-1;
@@ -27,7 +27,7 @@ namespace GildedFate.UI
             var cell=GroupCell(index);var def=WorldContent.Enemies.First(e=>e.id==combat.EnemyIdAt(index));
             var weight=EnemyBodyScale(def);
             var width=Mathf.Min(236*weight,cell.width-28);var height=Mathf.Min(226*weight,286);
-            var texture=LoadAuthoredArt(GildedArtCatalog.EnemyResource(def.id));
+            var texture=LoadAuthoredArt(GildedArtCatalog.EnemyResource(EnemyArtId(def.id)));
             if(texture){var fit=Mathf.Min(width/texture.width,height/texture.height);width=texture.width*fit;height=texture.height*fit;}
             // Reserve two status rows between group portraits and the resting hand.
             // The same portrait rect drives the health bar, hit region and effect anchor.
@@ -48,7 +48,7 @@ namespace GildedFate.UI
             "chained_brute"=>1.20f,"executioner"=>1.23f,"mirror_witch"=>1.12f,
             "golden_beast"=>1.30f,"collector"=>1.20f,
             "hollow_king"=>1.43f,"vault_mother"=>1.55f,"last_dealer"=>1.34f,
-            _=>enemy?.boss==true?1.4f:enemy?.elite==true?1.2f:1f
+            _=>WildBodyScale(enemy)
         };
         private int TargetAt(Vector2 point)
         {
@@ -72,11 +72,30 @@ namespace GildedFate.UI
         {
             opponentVisuals.Clear();opponentActions.Clear();combatTargetIndex=0;groupRenderIndex=-1;
             if(combat==null)return;combatTargetIndex=combat.EnemyContextIndex;
-            for(var i=0;i<combat.EnemyCount;i++){var f=combat.EnemyAt(i);opponentVisuals.Add(new OpponentVisual{hp=f.hp,block=f.block,tracked=f.hp,trail=f.hp,fill=f.hp});}
+            for(var i=0;i<combat.EnemyCount;i++)opponentVisuals.Add(NewOpponentVisual(i,-100));
         }
+        // Bodies that were already dead when the roster changed stay hidden instead of replaying their death.
+        private OpponentVisual NewOpponentVisual(int i,float deadSince)
+        {var f=combat.EnemyAt(i);return new OpponentVisual{hp=f.hp,block=f.block,tracked=f.hp,trail=f.hp,fill=f.hp,uid=combat.MindAt(i)?.uid??0,death=f.hp<=0?Time.unscaledTime+deadSince:-1};}
+        private int seenRosterVersion=-1;
         private void SyncOpponentVisuals()
         {
-            if(combat==null)return;if(opponentVisuals.Count!=combat.EnemyCount)ResetOpponentVisuals();
+            if(combat==null)return;
+            if(opponentVisuals.Count!=combat.EnemyCount||seenRosterVersion!=combat.rosterVersion)
+            {
+                // Summons add a body or reuse a long-dead Minion's place; keep everyone else's visuals.
+                seenRosterVersion=combat.rosterVersion;var target=combatTargetIndex;
+                if(opponentVisuals.Count>combat.EnemyCount)ResetOpponentVisuals();
+                for(var i=0;i<combat.EnemyCount;i++)
+                {
+                    var uid=combat.MindAt(i)?.uid??0;
+                    if(i>=opponentVisuals.Count){opponentVisuals.Add(NewOpponentVisual(i,-100));OnEnemySlotChanged(i);}
+                    else if(uid!=0&&opponentVisuals[i].uid!=uid){opponentVisuals[i]=NewOpponentVisual(i,-100);OnEnemySlotChanged(i);}
+                }
+                combatTargetIndex=Mathf.Clamp(target,0,combat.EnemyCount-1);
+                if(!combat.IsLivingTarget(combatTargetIndex))FocusLivingTarget(1);
+                InvalidateEnemyIntents();
+            }
             for(var i=0;i<combat.EnemyCount;i++){opponentVisuals[i].hp=combat.EnemyAt(i).hp;opponentVisuals[i].block=combat.EnemyAt(i).block;}
         }
         private void UpdateOpponentVisuals(float dt)
@@ -121,9 +140,9 @@ namespace GildedFate.UI
                     var portrait=GroupPresentedPortrait(index);var health=new Rect(portrait.x,portrait.yMax+8,portrait.width,22);
                     DrawActorHealthBar(health,combat.enemy,false);
                     var cell=GroupCell(index);DrawEffectStrip(GroupEffectArea(index),EnemyEffectChips(index),false);
-                    DrawEnemyIntentGroup(index);
+                    DrawEnemyIntentGroup(index);DrawMinionBadge(index,portrait);
                     if(CombatInspectionAllowed&&portrait.Contains(combatPointer))
-                        SetCombatEffectTooltip(currentEnemy.name,ActorEffectSummary(EnemyEffectChips(index)),portrait.center);
+                        SetCombatEffectTooltip(currentEnemy.name,ActorEffectSummary(EnemyEffectChips(index))+WildTooltipSuffix(index),portrait.center);
                 });
             }
         }

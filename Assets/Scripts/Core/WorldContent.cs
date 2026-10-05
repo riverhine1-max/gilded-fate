@@ -1,10 +1,14 @@
 using System;
+using System.Linq;
 
 namespace GildedFate.Core
 {
     [Serializable] public sealed class EnemyDef
     {
         public string id,name,description; public int hp,baseDamage; public bool elite,boss;
+        // Act themes (see ActThemes): "" is the original Vault roster. Minions belong to an owner,
+        // never appear alone and give no rewards of their own.
+        public string theme="";public bool minion,support;
         public EnemyDef(string id,string name,int hp,int damage,string description,bool elite=false,bool boss=false){this.id=id;this.name=name;this.hp=hp;this.baseDamage=damage;this.description=description;this.elite=elite;this.boss=boss;}
     }
     [Serializable] public sealed class BindingDef
@@ -24,7 +28,7 @@ namespace GildedFate.Core
     }
     public static class WorldContent
     {
-        public static readonly EnemyDef[] Enemies={
+        public static readonly EnemyDef[] Enemies=new EnemyDef[]{
             E("vault_rat","VAULT RAT",32,7,"A quick scavenger with a taste for enchanted metal."),E("gilded_sentry","GILDED SENTRY",48,9,"An armored guardian still obeying a forgotten command."),
             E("masked_acolyte","MASKED ACOLYTE",41,8,"Its whispered rites weaken intruders."),E("ash_hound","ASH HOUND",44,10,"Each breath feeds the furnace in its ribs."),
             E("coin_mimic","COIN MIMIC",52,11,"A glittering reward with far too many teeth."),E("broken_knight","BROKEN KNIGHT",58,12,"An oath animates the empty armor."),
@@ -34,7 +38,9 @@ namespace GildedFate.Core
             E("golden_beast","THE GOLDEN BEAST",86,17,"Its tempo accelerates as blood is spilled.",true),E("collector","THE COLLECTOR",84,14,"Every strike steals gold—victory returns it with interest.",true),
             E("hollow_king","THE HOLLOW KING",180,21,"A fallen ruler commanding spectral weapons.",false,true),E("vault_mother","THE VAULT MOTHER",205,18,"Ancient flesh fused with the architecture of the Vault.",false,true),
             E("last_dealer","THE LAST DEALER",170,20,"A masked master who deals curses from a black hand.",false,true)
-        };
+        }.Concat(AshenWildsContent.Enemies).ToArray();
+        // Original Vault roster only: themed enemies are routed by their own theme.
+        public static bool IsLegacy(EnemyDef e)=>e!=null&&string.IsNullOrEmpty(e.theme);
         public static readonly BindingDef[] Bindings={
             B("serrated","SERRATED",1,"Attack","Each individual damage hit deals +2."),B("reinforced","REINFORCED",1,"Block card","Gain +4 base Block."),B("weighted","WEIGHTED",1,"Attack costing 2+","Gain +6 base damage."),B("quickened","QUICKENED",1,"Card costing 1+","The first draw each combat costs 1 less that turn."),
             B("lingering","LINGERING",2,"Skill","The first play each combat returns it to hand at the start of next turn."),B("gilded","GILDED",2,"Attack or Skill","The first play each combat grants 5 Block."),B("focused","FOCUSED",2,"Buff or debuff card","Apply +1 stack of one existing valid stackable buff or debuff."),B("chained","CHAINED",2,"Attack or Skill","After a different card type: +4 damage for an Attack or +4 Block for a Skill."),

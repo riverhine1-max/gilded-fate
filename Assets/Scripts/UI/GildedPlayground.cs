@@ -70,6 +70,10 @@ namespace GildedFate.UI
             var first=WorldContent.Enemies.First(e=>e.id==ids[0]);
             if(first.boss||first.elite)ids=new List<string>{ids[0]};
             else ids=ids.Where(id=>{var d=WorldContent.Enemies.First(e=>e.id==id);return !d.boss&&!d.elite;}).Take(4).ToList();
+            // A Minion needs an owner earlier in the line-up (e.g. Rootcaller, then Ash Sapling).
+            ids=ids.Where((id,i)=>!AshenWildsContent.IsMinion(id)||ids.Take(i).Contains(AshenWildsContent.Rootcaller)&&id==AshenWildsContent.Sapling).ToList();
+            if(ids.Count==0){pgResult="A MINION CANNOT FIGHT WITHOUT ITS OWNER";return;}
+            first=WorldContent.Enemies.First(e=>e.id==ids[0]);
             if(!playgroundActive){pgBackup=JsonUtility.ToJson(run);pgSavedNode=currentNode;pgSavedEnemy=currentEnemy;}
             playgroundActive=true;SaveService.Suspended=true;ProfileService.Suspended=true;
             run.NewRun(pgHero,Random.Range(1,int.MaxValue));run.sandbox=true;run.act=pgAct;

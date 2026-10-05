@@ -386,11 +386,18 @@ namespace GildedFate.Combat
         {
             if(pendingPlay!=null||IsOver||phase!=CombatPhase.Enemy)return;
             memory.attackedThisEnemyTurn=false;memory.unblockedDamageAttempted=0;ForEachLivingEnemy(()=>enemy.attemptedAttackDamage=0);
+            // Themed fights clear every enemy's Block as the enemy phase begins, so Block an
+            // ally grants during this phase lasts through the player's next turn. For each
+            // enemy this is the same moment its own Block always expired.
+            if(wildCombat)ForEachLivingEnemy(()=>enemy.block=0);
             ForEachLivingEnemy(()=>
             {
                 if(player.hp<=0||enemy.hp<=0)return;
-                enemy.block=0;Emit(CombatEventKind.EnemyAction,EnemyContextIndex);
-                ExecuteEnemyPlan(PlannedEnemyTurn());
+                var wild=IsWildContext;
+                if(wild&&Mind.summonedTurn==turn)return; // summoned this phase: acts from next turn
+                if(!wild)enemy.block=0;Emit(CombatEventKind.EnemyAction,EnemyContextIndex);
+                if(wild){var actions=WildPlannedTurn();BeginWildAction();ExecuteEnemyPlan(actions);EndWildAction();SweepWilds();}
+                else ExecuteEnemyPlan(PlannedEnemyTurn());
                 if(enemy.weak>0)enemy.weak--;if(enemy.hp>0&&enemy.burn>0)TriggerBurn(enemy.burn,false);Emit(CombatEventKind.StateSnapshot);
             });
             memory.wasAttackedLastTurn=memory.attackedThisEnemyTurn;phase=CombatPhase.EnemyResolved;
@@ -486,7 +493,7 @@ namespace GildedFate.Combat
         }
         private void TriggerBurn(int amount,bool outsideNormal)
         {
-            if(amount<=0)return;var damage=amount;enemy.hp=Math.Max(0,enemy.hp-damage);Emit(CombatEventKind.Damage,damage,false,null,"BURN");RelicDamageDealt(damage,"Burn",false);memory.burnTriggersThisTurn++;if(memory.ashes>0&&memory.burnTriggersThisTurn==1){PresentationPulse("ashes");GainResonance(memory.ashes);}if(outsideNormal&&relics.Contains("ashen_crown")){RelicPresentationPulse("ashen_crown");ApplyBurn(2);}if(!outsideNormal)enemy.burn=Math.Max(0,enemy.burn-GameContent.BurnDecayPerTrigger);ShardBurnTriggered();RefreshEnemyState();
+            if(amount<=0)return;var damage=amount;enemy.hp=Math.Max(0,enemy.hp-damage);Emit(CombatEventKind.Damage,damage,false,null,"BURN");if(wildCombat)SweepWilds();RelicDamageDealt(damage,"Burn",false);memory.burnTriggersThisTurn++;if(memory.ashes>0&&memory.burnTriggersThisTurn==1){PresentationPulse("ashes");GainResonance(memory.ashes);}if(outsideNormal&&relics.Contains("ashen_crown")){RelicPresentationPulse("ashen_crown");ApplyBurn(2);}if(!outsideNormal)enemy.burn=Math.Max(0,enemy.burn-GameContent.BurnDecayPerTrigger);ShardBurnTriggered();RefreshEnemyState();
         }
 
         private int CreateSigil(SigilKind kind)
@@ -662,6 +669,7 @@ namespace GildedFate.Combat
 
         private void PlanIntent()
         {
+            if(IsWildContext){intentHits=1;PlanWildIntent();return;}
             RefreshEnemyState();intentHits=1;
             switch(enemyId)
             {
@@ -686,7 +694,7 @@ namespace GildedFate.Combat
             }
         }
         private void SetIntent(IntentKind kind,int value,string label,int hits=1){intent=kind;intentValue=Math.Max(0,value);intentLabel=label;intentHits=Math.Max(1,hits);}
-        public void RefreshEnemyState(){var next=enemy.hp>enemy.maxHp*2/3?1:enemy.hp>enemy.maxHp/3?2:3;if(enemy.hp<=0)return;bossPhase=next;while(memory.resolvedBossPhase<next){memory.resolvedBossPhase++;ApplyBossPhaseEntry(memory.resolvedBossPhase);}}
+        public void RefreshEnemyState(){if(wildCombat){SweepWilds();return;}var next=enemy.hp>enemy.maxHp*2/3?1:enemy.hp>enemy.maxHp/3?2:3;if(enemy.hp<=0)return;bossPhase=next;while(memory.resolvedBossPhase<next){memory.resolvedBossPhase++;ApplyBossPhaseEntry(memory.resolvedBossPhase);}}
         private void ApplyBossPhaseEntry(int next){if(enemyId=="hollow_king"){spectralWeapons=next==2?2:3;enemy.block+=next==2?14:18;if(next==3)enemy.strength+=2;}else if(enemyId=="vault_mother"){vaultWards=0;enemy.block+=next==2?18:24;if(next==3)enemy.strength++;}else if(enemyId=="last_dealer"){for(var i=0;i<(next==2?2:3);i++)AddRandomCurse(false);if(next==3)memory.nextTurnEnergyPenalty=1;}RefreshMechanicTelemetry();}
         private void BanishDiscardedCard(){for(var i=discard.Count-1;i>=0;i--){if(discard[i].origin==CardOrigin.Curse)continue;var card=discard[i];discard.RemoveAt(i);ExhaustCard(card);banishedCards++;return;}}
         private void RefreshMechanicTelemetry(){if(enemyId=="hollow_king")mechanicText=$"{spectralWeapons} spectral weapons strike separately.";else if(enemyId=="vault_mother"){vaultWards=0;mechanicText="Only the visible blue Block bar prevents damage; every third turn restores health.";}else if(enemyId=="last_dealer")mechanicText=$"{cursePressure} curses dealt · {banishedCards} cards banished.";else if(enemyId=="collector")mechanicText=$"Gold held: {stolenGold}.";}

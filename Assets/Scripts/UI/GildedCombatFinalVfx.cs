@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections.Generic;
 using GildedFate.Combat;
 using GildedFate.Core;
@@ -35,9 +36,9 @@ namespace GildedFate.UI
         }
         private readonly List<FinalVfxBurst> finalVfx=new(128);
         private readonly Dictionary<CombatEvent,int> finalFactAttacker=new();
-        private readonly EnemyDef[] finalEnemyDefs=new EnemyDef[4];
-        private readonly Texture2D[] finalEnemyTextures=new Texture2D[4];
-        private readonly bool[] finalDeathSpawned=new bool[4];
+        private readonly EnemyDef[] finalEnemyDefs=new EnemyDef[6];
+        private readonly Texture2D[] finalEnemyTextures=new Texture2D[6];
+        private readonly bool[] finalDeathSpawned=new bool[6];
         private CombatState finalVfxCombat;
         private int finalAttacker=-1,finalSeenBossPhase=1,finalGildedCard=-1,finalSerial;
         private float finalVignetteAt=-10,finalVignettePower;
@@ -61,10 +62,18 @@ namespace GildedFate.UI
             {
                 var id=combat.EnemyIdAt(i);EnemyDef def=null;
                 foreach(var enemy in WorldContent.Enemies)if(enemy.id==id){def=enemy;break;}
-                finalEnemyDefs[i]=def;finalEnemyTextures[i]=def==null?null:LoadAuthoredArt(GildedArtCatalog.EnemyResource(def.id));
+                finalEnemyDefs[i]=def;finalEnemyTextures[i]=def==null?null:LoadAuthoredArt(GildedArtCatalog.EnemyResource(EnemyArtId(def.id)));
                 finalDeathSpawned[i]=combat.EnemyAt(i).hp<=0; // restored checkpoints never replay old deaths
                 EnemyAnimFor(i,def);
             }
+        }
+        // A summoned creature took this place: refresh its art, animation and death state.
+        private void OnEnemySlotChanged(int i)
+        {
+            if(combat==null||i<0||i>=finalEnemyDefs.Length)return;
+            var id=combat.EnemyIdAt(i);var def=WorldContent.Enemies.FirstOrDefault(e=>e.id==id);
+            finalEnemyDefs[i]=def;finalEnemyTextures[i]=def==null?null:LoadAuthoredArt(GildedArtCatalog.EnemyResource(EnemyArtId(def.id)));
+            finalDeathSpawned[i]=combat.EnemyAt(i).hp<=0;enemyAnims[i].Clear();EnemyAnimFor(i,def);
         }
         // End of UpdateCombatPresentation (outside OnGUI).
         private void UpdateFinalCombatVfx(float now)
@@ -105,6 +114,7 @@ namespace GildedFate.UI
             "hollow_king"=>lastBossPhase>=3?"THE FULL ARMORY RISES · THE KING GROWS STRONGER":"THE ARMORY AWAKENS · MORE SPECTRAL BLADES",
             "vault_mother"=>lastBossPhase>=3?"THE VAULTBLOOM HARDENS · SHE GROWS STRONGER":"THE VAULTBLOOM HARDENS · HEAVY BLOCK",
             "last_dealer"=>lastBossPhase>=3?"THE BLACK HAND · CURSES DEALT · ENERGY TAXED":"THE DECK IS STACKED · CURSES DEALT",
+            AshenWildsContent.Alpha=>lastBossPhase>=3?"ITS HIDE TEARS AWAY · THE PACK FLEES · A PURE DIRECT FIGHT":"THE ALPHA IGNITES · +1 STRENGTH",
             _=>"THE VAULT REWRITES ITS COMMAND"
         };
 

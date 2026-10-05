@@ -4,7 +4,9 @@ using System.Linq;
 
 namespace GildedFate.Combat
 {
-    public enum EnemyActionType { Attack, Block, Strength, Weak, Vulnerable, StealGold, Curse, SummonWeapon, Heal, ExhaustDiscard }
+    public enum EnemyActionType { Attack, Block, Strength, Weak, Vulnerable, StealGold, Curse, SummonWeapon, Heal, ExhaustDiscard,
+        // Owner / Minion and ally-support actions (themed enemies).
+        Summon, Command, BlockAllies, BlockPack, BlockMinions, BlockOwner, StrengthAlly, StrengthMinions, HealAlly, HealMinion, BlockTarget }
     public enum IntentDestination { None, Hand, Draw, Discard, Deck }
     public readonly struct PlannedEnemyAction
     {
@@ -24,8 +26,13 @@ namespace GildedFate.Combat
         {
             EnemyActionType.Attack=>ThreatIcon(TotalDamage),EnemyActionType.Block=>4,EnemyActionType.Strength=>5,
             EnemyActionType.Heal=>6,EnemyActionType.Weak=>8,EnemyActionType.Vulnerable=>9,EnemyActionType.Curse=>10,
-            EnemyActionType.ExhaustDiscard=>12,EnemyActionType.StealGold=>13,EnemyActionType.SummonWeapon=>14,_=>19
+            EnemyActionType.ExhaustDiscard=>12,EnemyActionType.StealGold=>13,EnemyActionType.SummonWeapon=>14,
+            EnemyActionType.BlockAllies or EnemyActionType.BlockPack or EnemyActionType.BlockMinions or EnemyActionType.BlockOwner or EnemyActionType.BlockTarget=>4,
+            EnemyActionType.StrengthAlly or EnemyActionType.StrengthMinions=>5,EnemyActionType.HealAlly or EnemyActionType.HealMinion=>6,
+            // Summon and Command use their own artwork (IconSummon / IconCommand), not the atlas.
+            EnemyActionType.Summon=>IconSummon,EnemyActionType.Command=>IconCommand,_=>19
         };
+        public const int IconSummon=100,IconCommand=101;
         public static int ThreatIcon(int total)=>total<=15?0:total<=34?1:total<=49?2:3;
         public string ValueText=>type==EnemyActionType.Attack&&hits>1?amount+" × "+hits:amount.ToString();
     }
@@ -37,6 +44,7 @@ namespace GildedFate.Combat
         public PlannedEnemyAction[] PlannedEnemyTurn()
         {
             PlannedEnemyAction A(EnemyActionType type,int amount,int hits=1)=>new(type,amount,hits);
+            if(IsWildContext)return WildPlannedTurn();
             if(intent==Core.IntentKind.Attack)return new[]{A(EnemyActionType.Attack,intentValue,intentHits)};
             if(intent==Core.IntentKind.Defend)return new[]{A(EnemyActionType.Block,intentValue)};
             if(intent==Core.IntentKind.Buff)return new[]{A(EnemyActionType.Strength,intentValue)};
@@ -80,16 +88,28 @@ namespace GildedFate.Combat
                 case EnemyActionType.SummonWeapon:a.amount=Math.Max(0,Math.Min(3,spectralWeapons+plan.amount)-spectralWeapons);a.title="SUMMON WEAPON";a.detail=$"Add {a.amount} spectral weapon to the armory (maximum 3). Each weapon adds a hit to the King's later volleys; this is not a new enemy.";break;
                 case EnemyActionType.Heal:a.amount=Math.Min(plan.amount,Math.Max(0,enemy.maxHp-enemy.hp));a.title="HEAL";a.detail=$"Restore {a.amount} HP, up to maximum health.";break;
                 case EnemyActionType.ExhaustDiscard:a.amount=discard.Any(c=>c.origin!=Core.CardOrigin.Curse)?1:0;a.title="BANISH CARD";a.destination=IntentDestination.Discard;a.detail=a.amount>0?"Exhaust the most recently discarded non-Curse card.":"No non-Curse card is available in discard to Exhaust.";break;
+                default:a.detail=DescribeWildAction(plan.type,plan.amount,a);break;
             }
             return a;
         }
         private void ExecuteEnemyPlan(PlannedEnemyAction[] actions)
         {
+            RunEnemyActions(actions);
+            if(intent==Core.IntentKind.Special)RefreshMechanicTelemetry();
+        }
+        private void RunEnemyActions(PlannedEnemyAction[] actions)
+        {
             void Execute()
             {
                 foreach(var action in actions)
                 {
-                    intentPreviewSink?[EnemyContextIndex].Add(DescribeEnemyAction(action));
+                    if(wildSinkMute==0&&intentPreviewSink!=null&&EnemyContextIndex<intentPreviewSink.Length)
+                    {
+                        var shown=DescribeEnemyAction(action);
+                        // Ashen Wilds: a heal that would restore nothing is left off the intent instead of showing "0".
+                        var idleHeal=wildCombat&&shown.amount<=0&&(action.type==EnemyActionType.Heal||action.type==EnemyActionType.HealAlly||action.type==EnemyActionType.HealMinion);
+                        if(!idleHeal)intentPreviewSink[EnemyContextIndex].Add(shown);
+                    }
                     switch(action.type)
                     {
                         case EnemyActionType.Attack:
@@ -104,6 +124,9 @@ namespace GildedFate.Combat
                         case EnemyActionType.SummonWeapon:spectralWeapons=Math.Min(3,spectralWeapons+action.amount);break;
                         case EnemyActionType.Heal:var before=enemy.hp;enemy.hp=Math.Min(enemy.maxHp,enemy.hp+action.amount);if(enemy.hp>before)Emit(CombatEventKind.Heal,enemy.hp-before,false);break;
                         case EnemyActionType.ExhaustDiscard:BanishDiscardedCard();break;
+                        case EnemyActionType.Summon:case EnemyActionType.Command:case EnemyActionType.BlockAllies:case EnemyActionType.BlockPack:case EnemyActionType.BlockMinions:
+                        case EnemyActionType.BlockOwner:case EnemyActionType.StrengthAlly:case EnemyActionType.StrengthMinions:case EnemyActionType.HealAlly:case EnemyActionType.HealMinion:case EnemyActionType.BlockTarget:
+                            ExecuteWildAction(action);break;
                         default:throw new InvalidOperationException("Enemy action has no executor: "+action.type);
                     }
                 }
@@ -111,7 +134,6 @@ namespace GildedFate.Combat
             // Retaliate still responds once to the whole original intent, after all
             // of its hits and side effects. This preserves the current combat rules.
             if(actions.Any(a=>a.type==EnemyActionType.Attack))ResolveEnemyAttack(Execute);else Execute();
-            if(intent==Core.IntentKind.Special)RefreshMechanicTelemetry();
         }
         public List<EnemyIntentAction>[] PreviewEnemyIntents()
         {

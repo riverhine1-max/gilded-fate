@@ -224,7 +224,7 @@ namespace GildedFate.Combat
             shardMemory.ashTriggered=true;shardMemory.ashEnemies.Add(key);
             var damage=activeShardFractured?enemy.burn:CeilPercent(enemy.burn,50);
             if(damage<=0)return;ShardPulse(false,amount:damage);
-            var dealt=Math.Min(enemy.hp,damage);enemy.hp-=dealt;
+            var dealt=Math.Min(enemy.hp,damage);enemy.hp-=dealt;if(wildCombat)SweepWilds();
             Emit(CombatEventKind.Damage,dealt,false,null,"ASH SHARD");
         }
     }

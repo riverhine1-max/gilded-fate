@@ -11,7 +11,8 @@ namespace GildedFate.Combat
         public FighterState fighter=new();
         public int baseDamage,intentValue,intentHits=1;
         public IntentKind intent;
-        public CombatOpponent Copy(){var c=(CombatOpponent)MemberwiseClone();c.fighter=fighter.Copy();return c;}
+        public WildMind mind;
+        public CombatOpponent Copy(){var c=(CombatOpponent)MemberwiseClone();c.fighter=fighter.Copy();c.mind=mind?.Copy();return c;}
     }
     public sealed partial class CombatState
     {
@@ -56,7 +57,10 @@ namespace GildedFate.Combat
         }
         private void InitializeOpponentGroup(string[] ids)
         {
-            opponents=new();enemyContextIndex=0;if(ids==null||ids.Length<=1)return;
+            opponents=new();enemyContextIndex=0;wildCombat=false;
+            if((ids==null||ids.Length==0)&&IsWildId(enemyId))ids=new[]{enemyId};
+            if(ids!=null&&ids.Any(IsWildId)){InitializeWildGroup(ids);return;}
+            if(ids==null||ids.Length<=1)return;
             if(ids.Length>4)throw new ArgumentException("Encounters support at most four enemies.");
             foreach(var id in ids)
             {

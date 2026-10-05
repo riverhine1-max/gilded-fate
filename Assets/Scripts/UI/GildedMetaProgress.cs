@@ -79,20 +79,30 @@ namespace GildedFate.UI
         private void ApplyFateDebtToCombat(EnemyDef enemy)
         {
             if(combat==null||enemy==null||run.fateDebtMask==0)return;
-            var boss=enemy.boss;var elite=enemy.elite;var normal=!boss&&!elite;var finalBoss=boss&&run.act>=3;
-            var hp=1f;var strength=0;
-            if(boss&&run.Debt(3))hp*=1.15f;
-            if(elite&&run.Debt(8))hp*=1.15f;
-            if(normal&&run.Debt(7)){hp*=1.10f;strength+=1;}
-            if(finalBoss&&run.Debt(10)){hp*=1.20f;strength+=3;}
-            if(elite&&run.Debt(1))strength+=Mathf.CeilToInt(enemy.baseDamage*.2f);
+            // Each creature uses its own class: Minions count as normal enemies, so an
+            // elite's or boss's pack never receives elite or boss bonuses.
+            (float hp,int strength) Scaling(EnemyDef e)
+            {
+                var boss=e.boss;var elite=e.elite;var normal=!boss&&!elite;var finalBoss=boss&&run.act>=3;
+                var hp=1f;var strength=0;
+                if(boss&&run.Debt(3))hp*=1.15f;
+                if(elite&&run.Debt(8))hp*=1.15f;
+                if(normal&&run.Debt(7)){hp*=1.10f;strength+=1;}
+                if(finalBoss&&run.Debt(10)){hp*=1.20f;strength+=3;}
+                if(elite&&run.Debt(1))strength+=Mathf.CeilToInt(e.baseDamage*.2f);
+                return (hp,strength);
+            }
             for(var i=0;i<combat.EnemyCount;i++)
             {
-                var f=combat.EnemyAt(i);
+                var def=WorldContent.Enemies.FirstOrDefault(e=>e.id==combat.EnemyIdAt(i))??enemy;
+                var (hp,strength)=Scaling(combat.wildCombat?def:enemy);var f=combat.EnemyAt(i);
                 if(hp>1.001f){var full=f.hp>=f.maxHp;f.maxHp=Mathf.RoundToInt(f.maxHp*hp);f.hp=full?f.maxHp:Mathf.Min(f.maxHp,Mathf.RoundToInt(f.hp*hp));}
                 f.strength+=strength;
             }
             if(run.Debt(6))combat.gildCostExtra=10;
+            // Creatures summoned later in the fight receive normal-enemy Fate Debt scaling.
+            var summon=Scaling(new EnemyDef("summon","",1,0,""));
+            combat.summonHpPercent=Mathf.RoundToInt(summon.hp*100);combat.summonStrength=summon.strength;
         }
         private int FateDebtGold(int gain)=>run.Debt(2)?Mathf.RoundToInt(gain*.75f):gain;
 

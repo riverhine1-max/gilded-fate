@@ -860,8 +860,15 @@ namespace GildedFate.UI
 
         private EnemyDef EnemyForNode(MapNode node)
         {
-            if(node.kind==NodeKind.Combat){var chosen=EncounterContent.Choose(run.act,node.floor+1,run.normalCombatsCompleted,run.seed^run.act*104729^node.floor*397^node.lane*7919^27011);return WorldContent.Enemies.First(e=>e.id==chosen.enemies[0]);}
-            var candidates=WorldContent.Enemies.Where(e=>node.kind==NodeKind.Boss?e.boss:e.elite).ToArray();
+            if(node.kind==NodeKind.Combat)
+            {
+                if(run.activeNodeFloor==node.floor&&run.activeNodeLane==node.lane&&run.activeEncounterEnemies?.Count>0)return WorldContent.Enemies.First(e=>e.id==run.activeEncounterEnemies[0]);
+                var chosen=EncounterContent.Choose(run.act,node.floor+1,run.normalCombatsCompleted,run.seed^run.act*104729^node.floor*397^node.lane*7919^27011,run.CurrentTheme,run.lastEncounterId);return WorldContent.Enemies.First(e=>e.id==chosen.enemies[0]);
+            }
+            // Themed acts use their own elites and boss.
+            var themed=node.kind==NodeKind.Boss?run.ThemedBoss:run.ThemedEliteFor(node.floor,node.lane);
+            if(!string.IsNullOrEmpty(themed))return WorldContent.Enemies.First(e=>e.id==themed);
+            var candidates=WorldContent.Enemies.Where(e=>WorldContent.IsLegacy(e)&&(node.kind==NodeKind.Boss?e.boss:e.elite)).ToArray();
             if(node.kind==NodeKind.Boss)
             {
                 // Shuffle the keeper roster once from the run seed. Each act gets
@@ -1010,7 +1017,7 @@ namespace GildedFate.UI
             DrawFloatingEnemy(r,currentEnemy);
         }
         private void DrawBossIntro(float w,float h){Fill(new Rect(0,0,w,h),new Color(0,0,0,.38f));var progress=1f-bossIntroTime/2.4f;var scale=Mathf.Lerp(1.2f,1f,Mathf.SmoothStep(0,1,progress));var portrait=new Rect(w*.5f-180*scale,h*.25f-30*scale,360*scale,320*scale);DrawFloatingEnemy(portrait,currentEnemy);var name=new GUIStyle(titleStyle){fontSize=42,normal={textColor=new Color(1f,.58f,.22f)}};ShadowLabel(new Rect(w*.15f,h*.64f,w*.7f,58),currentEnemy.name,name);var lore=new GUIStyle(subtitleStyle){fontSize=14,wordWrap=true};lore.normal.textColor=new Color(.9f,.78f,.62f);GUI.Label(new Rect(w*.25f,h*.72f,w*.5f,55),currentEnemy.description,lore);var warning=new GUIStyle(footerStyle){fontSize=11,normal={textColor=new Color(1f,.35f,.22f)}};GUI.Label(new Rect(w*.3f,h*.81f,w*.4f,22),"THE FINAL SEAL BREAKS",warning);}
-        private void UpdateBossPhaseVisual(){if(currentEnemy==null||!currentEnemy.boss||combat.enemy.hp<=0)return;combat.RefreshEnemyState();var phase=combat.bossPhase;if(phase>lastBossPhase){lastBossPhase=phase;bossPhaseTime=profile.reduceMotion ? .35f : 1.2f;gildedFlash=1f;Sfx(SoundCue.BossPhase);}}
+        private void UpdateBossPhaseVisual(){if(currentEnemy==null||!currentEnemy.boss)return;var wildBoss=combat.WildBossIndex;if(wildBoss>=0?!combat.IsLivingTarget(wildBoss):combat.enemy.hp<=0)return;if(wildBoss<0)combat.RefreshEnemyState();var phase=wildBoss>=0?combat.MindAt(wildBoss).phase:combat.bossPhase;if(phase>lastBossPhase){lastBossPhase=phase;if(wildBoss>=0)RefreshEnemyArt(wildBoss);bossPhaseTime=profile.reduceMotion ? .35f : 1.2f;gildedFlash=1f;Sfx(SoundCue.BossPhase);}}
         private void DrawBossPhaseTransition(float w,float h){var alpha=Mathf.Clamp01(bossPhaseTime*1.4f);Fill(new Rect(0,0,w,h),new Color(.15f,0,.01f,alpha*.46f));var style=new GUIStyle(titleStyle){fontSize=52,normal={textColor=new Color(1f,.52f,.18f,alpha)}};ShadowLabel(new Rect(w*.2f,h*.39f,w*.6f,72),"PHASE "+lastBossPhase,style);var sub=new GUIStyle(subtitleStyle){fontSize=13};sub.normal.textColor=new Color(1f,.76f,.4f,alpha);GUI.Label(new Rect(w*.25f,h*.48f,w*.5f,28),BossPhaseSubtitle(),sub);}
 
         private void CheckCombat()
@@ -1033,7 +1040,7 @@ namespace GildedFate.UI
                 run.hp=combat.player.hp;run.gold=Mathf.Max(0,run.gold-combat.goldLost);
                 var gain=currentNode.kind==NodeKind.Boss?100:currentNode.kind==NodeKind.Elite?34:18;if(currentEnemy?.id=="collector")gain+=combat.stolenGold+10;if(run.relics.Contains("lucky_coin"))gain=Mathf.CeilToInt(gain*1.15f);gain=FateDebtGold(gain);run.pendingCombatGold=gain;run.combatGoldClaimed=false;
                 run.RollEncounterRewards(currentNode.kind);
-                if(newResult){profile.enemiesDefeated+=combat.EnemyCount;if(currentNode.kind==NodeKind.Combat)run.normalCombatsCompleted++;if(currentNode.kind==NodeKind.Elite)profile.elitesDefeated++;if(currentNode.kind==NodeKind.Boss)profile.bossesDefeated++;}
+                if(newResult){profile.enemiesDefeated+=combat.NonMinionTotal;if(currentNode.kind==NodeKind.Combat)run.normalCombatsCompleted++;if(currentNode.kind==NodeKind.Elite)profile.elitesDefeated++;if(currentNode.kind==NodeKind.Boss)profile.bossesDefeated++;}
                 TrackCombatMeta(true);
                 run.AddEncounterCardChoices(combat.bonusCardRewards);rewardRevealTime=profile.reduceMotion?0:1.15f;
                 run.stage=RunStage.CardReward;screen=ScreenMode.Reward;
