@@ -72,7 +72,14 @@ namespace GildedFate.Core
             var roll=new Random(seed^0x5DEECE).Next(100);
             return roll<standard?EncounterTier.Standard:roll<standard+advanced?EncounterTier.Advanced:EncounterTier.Dangerous;
         }
-        public static EncounterTier ThemedTier(int act,int floor,int combatsCompleted,int seed)=>act==2?Act2Tier(floor,seed):ThemedTier(floor,combatsCompleted,seed);
+        // Act 3 themes: no protected opening fights either. Standard early, Advanced through the middle, Dangerous late.
+        public static EncounterTier Act3Tier(int floor,int seed)
+        {
+            var (standard,advanced)=floor<=5?(60,30):floor<=11?(30,45):(10,35);
+            var roll=new Random(seed^0x5DEECE).Next(100);
+            return roll<standard?EncounterTier.Standard:roll<standard+advanced?EncounterTier.Advanced:EncounterTier.Dangerous;
+        }
+        public static EncounterTier ThemedTier(int act,int floor,int combatsCompleted,int seed)=>act==3?Act3Tier(floor,seed):act==2?Act2Tier(floor,seed):ThemedTier(floor,combatsCompleted,seed);
         public static EncounterDef Choose(int act,int floor,int combatsCompleted,int seed,string theme,string previousId)
         {
             if(!string.IsNullOrEmpty(theme))

@@ -78,16 +78,16 @@ namespace GildedFate.Core
     // instead of a specific theme, so new themes (and Act 1 neutrals) only register here.
     public static class ThemeRosters
     {
-        public static EnemyDef Find(string id)=>AshenWildsContent.Find(id)??DrownedQuarterContent.Find(id)??CrimsonFoundryContent.Find(id)??HollowwoodContent.Find(id)??ShatteredObservatoryContent.Find(id)??GildedRuinsContent.Find(id);
-        public static EnemyDef[] AllEnemies=>AshenWildsContent.Enemies.Concat(DrownedQuarterContent.Enemies).Concat(CrimsonFoundryContent.Enemies).Concat(HollowwoodContent.Enemies).Concat(ShatteredObservatoryContent.Enemies).Concat(GildedRuinsContent.Enemies).ToArray();
-        public static EncounterDef[] Formations=>AshenWildsContent.Formations.Concat(DrownedQuarterContent.Formations).Concat(CrimsonFoundryContent.Formations).Concat(HollowwoodContent.Formations).Concat(ShatteredObservatoryContent.Formations).Concat(GildedRuinsContent.Formations).ToArray();
+        public static EnemyDef Find(string id)=>AshenWildsContent.Find(id)??DrownedQuarterContent.Find(id)??CrimsonFoundryContent.Find(id)??HollowwoodContent.Find(id)??ShatteredObservatoryContent.Find(id)??GildedRuinsContent.Find(id)??BlackCathedralContent.Find(id);
+        public static EnemyDef[] AllEnemies=>AshenWildsContent.Enemies.Concat(DrownedQuarterContent.Enemies).Concat(CrimsonFoundryContent.Enemies).Concat(HollowwoodContent.Enemies).Concat(ShatteredObservatoryContent.Enemies).Concat(GildedRuinsContent.Enemies).Concat(BlackCathedralContent.Enemies).ToArray();
+        public static EncounterDef[] Formations=>AshenWildsContent.Formations.Concat(DrownedQuarterContent.Formations).Concat(CrimsonFoundryContent.Formations).Concat(HollowwoodContent.Formations).Concat(ShatteredObservatoryContent.Formations).Concat(GildedRuinsContent.Formations).Concat(BlackCathedralContent.Formations).ToArray();
         public static string[] Elites(string theme)=>theme switch
         {
-            ActThemes.AshenWilds=>AshenWildsContent.Elites,ActThemes.DrownedQuarter=>DrownedQuarterContent.Elites,ActThemes.CrimsonFoundry=>CrimsonFoundryContent.Elites,ActThemes.Hollowwood=>HollowwoodContent.Elites,ActThemes.ShatteredObservatory=>ShatteredObservatoryContent.Elites,ActThemes.GildedRuins=>GildedRuinsContent.Elites,_=>Array.Empty<string>()
+            ActThemes.AshenWilds=>AshenWildsContent.Elites,ActThemes.DrownedQuarter=>DrownedQuarterContent.Elites,ActThemes.CrimsonFoundry=>CrimsonFoundryContent.Elites,ActThemes.Hollowwood=>HollowwoodContent.Elites,ActThemes.ShatteredObservatory=>ShatteredObservatoryContent.Elites,ActThemes.BlackCathedral=>BlackCathedralContent.Elites,ActThemes.GildedRuins=>GildedRuinsContent.Elites,_=>Array.Empty<string>()
         };
         public static string Boss(string theme)=>theme switch
         {
-            ActThemes.AshenWilds=>AshenWildsContent.Alpha,ActThemes.DrownedQuarter=>DrownedQuarterContent.Magistrate,ActThemes.CrimsonFoundry=>CrimsonFoundryContent.Saint,ActThemes.Hollowwood=>HollowwoodContent.Heartroot,ActThemes.ShatteredObservatory=>ShatteredObservatoryContent.Curator,ActThemes.GildedRuins=>GildedRuinsContent.Procession,_=>""
+            ActThemes.AshenWilds=>AshenWildsContent.Alpha,ActThemes.DrownedQuarter=>DrownedQuarterContent.Magistrate,ActThemes.CrimsonFoundry=>CrimsonFoundryContent.Saint,ActThemes.Hollowwood=>HollowwoodContent.Heartroot,ActThemes.ShatteredObservatory=>ShatteredObservatoryContent.Curator,ActThemes.BlackCathedral=>BlackCathedralContent.Bishop,ActThemes.GildedRuins=>GildedRuinsContent.Procession,_=>""
         };
         public static string[] StartingMinions(string id)
         {
@@ -95,7 +95,8 @@ namespace GildedFate.Core
             a=DrownedQuarterContent.StartingMinions(id);if(a.Length>0)return a;
             a=CrimsonFoundryContent.StartingMinions(id);if(a.Length>0)return a;
             a=HollowwoodContent.StartingMinions(id);if(a.Length>0)return a;
-            a=ShatteredObservatoryContent.StartingMinions(id);return a.Length>0?a:GildedRuinsContent.StartingMinions(id);
+            a=ShatteredObservatoryContent.StartingMinions(id);if(a.Length>0)return a;
+            a=GildedRuinsContent.StartingMinions(id);return a.Length>0?a:BlackCathedralContent.StartingMinions(id);
         }
         // The Minion type an owner can Summon mid-fight ("" = it never summons).
         public static string SummonType(string ownerId)=>ownerId switch
@@ -110,11 +111,12 @@ namespace GildedFate.Core
             ShatteredObservatoryContent.Weaver=>ShatteredObservatoryContent.StarFragment,
             GildedRuinsContent.Keeper=>GildedRuinsContent.Servitor,
             GildedRuinsContent.Collector=>GildedRuinsContent.Guard,
+            BlackCathedralContent.Saint=>BlackCathedralContent.Effigy,
             _=>""
         };
         public static int MinionCap(string ownerId)=>ownerId is DrownedQuarterContent.Magistrate or CrimsonFoundryContent.Saint?1:2;
         // Group HP for normal enemies that start beside another non-Minion: ~90% in Act 1, ~92% in Act 2.
-        public static int GroupHpPercent(EnemyDef def)=>def?.theme is ActThemes.CrimsonFoundry or ActThemes.Hollowwood or ActThemes.ShatteredObservatory?92:90;
+        public static int GroupHpPercent(EnemyDef def)=>def?.theme is ActThemes.CrimsonFoundry or ActThemes.Hollowwood or ActThemes.ShatteredObservatory?92:def?.theme==ActThemes.BlackCathedral?94:90;
         public static bool IsMinion(string id)=>Find(id)?.minion==true;
         // True when this owner may start a fight with (or later summon) this Minion.
         public static bool CanOwn(string ownerId,string minionId)=>SummonType(ownerId)==minionId||StartingMinions(ownerId).Contains(minionId);

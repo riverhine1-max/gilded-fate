@@ -408,6 +408,29 @@ namespace GildedFate.UI
                 case "treasure":OpenTreasure();break;
                 case "set":TrailerSet(st.text,st.value);break;
                 case "screen":screen=(ScreenMode)Enum.Parse(typeof(ScreenMode),st.text,true);break;
+                case "checkpoint":
+                {
+                    var json=JsonUtility.ToJson(combat.CaptureCheckpoint());
+                    var back=JsonUtility.FromJson<CombatCheckpoint>(json);
+                    var ok=back.TryRestore(out var restored,out var why);
+                    var detail=ok?"":"restore failed: "+why;
+                    if(ok)
+                    {
+                        if(restored.EnemyCount!=combat.EnemyCount||restored.wildCombat!=combat.wildCombat)detail+=" count/wild mismatch";
+                        var before=combat.PreviewEnemyIntents();var after=restored.PreviewEnemyIntents();
+                        for(var i=0;i<combat.EnemyCount;i++)
+                        {
+                            var a=combat.MindAt(i);var b=restored.MindAt(i);
+                            if(combat.EnemyIdAt(i)!=restored.EnemyIdAt(i)||combat.EnemyAt(i).hp!=restored.EnemyAt(i).hp||combat.EnemyAt(i).block!=restored.EnemyAt(i).block)detail+=$" body{i}";
+                            if((a==null)!=(b==null)||a!=null&&(a.uid!=b.uid||a.ownerUid!=b.ownerUid||a.step!=b.step||a.step2!=b.step2||a.phase!=b.phase||a.state!=b.state||a.counter!=b.counter||a.planned!=b.planned||a.lastMove!=b.lastMove||a.minion!=b.minion||a.mourning!=b.mourning||a.plannedValue!=b.plannedValue))detail+=$" mind{i}";
+                            var sa=string.Join("+",before[i].Select(x=>x.type+":"+x.ValueText));var sb=string.Join("+",after[i].Select(x=>x.type+":"+x.ValueText));
+                            if(sa!=sb)detail+=$" intent{i}({sa}|{sb})";
+                        }
+                        if(st.value>0&&detail==""){combat=restored;RestoreCombatPresentation();}
+                    }
+                    GildedTrailerDirector.Log((detail==""?"PASS · ":"FAIL · ")+"JsonUtility checkpoint round-trip "+s.name+" bodies="+combat.EnemyCount+" json="+json.Length+(detail==""?"":" ·"+detail));
+                    break;
+                }
                 case "log":GildedTrailerDirector.Log(st.text+$" screen={screen} act={run.act} stage={run.stage} energy={combat?.energy} enemyHp={combat?.enemy?.hp}");break;
                 default:GildedTrailerDirector.Log("unknown op "+op);break;
             }
@@ -441,8 +464,20 @@ namespace GildedFate.UI
         {
             var v=Mathf.RoundToInt(value);
             // Meta-progression QA keys (work outside combat).
+            if(key.StartsWith("wildHp")&&combat!=null)
+            {
+                var i=int.Parse(key.Substring(6));if(i<combat.EnemyCount){combat.EnemyAt(i).hp=v;combat.RefreshEnemyState();ConsumeCombatEvents(combat.TakeEvents(),null,0);UpdateBossPhaseVisual();}
+                return;
+            }
             switch(key)
             {
+                case "ashenTheme":run.actThemes=new System.Collections.Generic.List<string>{ActThemes.AshenWilds,ActThemes.Vault,ActThemes.Vault};return;
+                case "foundryTheme":run.actThemes=new System.Collections.Generic.List<string>{ActThemes.Vault,ActThemes.CrimsonFoundry,ActThemes.Vault};run.act=2;return;
+                case "hollowwoodTheme":run.actThemes=new System.Collections.Generic.List<string>{ActThemes.Vault,ActThemes.Hollowwood,ActThemes.Vault};run.act=2;return;
+                case "ruinsTheme":run.actThemes=new System.Collections.Generic.List<string>{ActThemes.GildedRuins,ActThemes.Vault,ActThemes.Vault};return;
+                case "cathedralTheme":run.actThemes=new System.Collections.Generic.List<string>{ActThemes.Vault,ActThemes.Vault,ActThemes.BlackCathedral};run.act=3;return;
+                case "observatoryTheme":run.actThemes=new System.Collections.Generic.List<string>{ActThemes.Vault,ActThemes.ShatteredObservatory,ActThemes.Vault};run.act=2;return;
+                case "drownedTheme":run.actThemes=new System.Collections.Generic.List<string>{ActThemes.DrownedQuarter,ActThemes.Vault,ActThemes.Vault};return;
                 case "settingsPage":settingsReturnScreen=ScreenMode.Menu;screen=ScreenMode.Settings;settingsOverview=false;settingsPage=v;settingsFocusIndex=0;return;
                 case "settingsOverview":settingsReturnScreen=ScreenMode.Menu;screen=ScreenMode.Settings;settingsOverview=true;settingsFocusIndex=v;controllerNavigation=true;return;
                 case "settingsFocus":controllerNavigation=true;settingsFocusIndex=v;return;
@@ -457,6 +492,7 @@ namespace GildedFate.UI
                 case "marks":profile.EnsureMeta();for(var i=0;i<3;i++)profile.heroMarks[i]=v;profile.totalMarks=v*3;BindMetaUnlocks();return;
                 case "demoMeta":TrailerDemoMeta();return;
                 case "quitConfirm":quitConfirmOpen=v!=0;return;
+                case "whatsNew":whatsNewOpen=v!=0;return;
                 case "menuHub":screen=ScreenMode.Menu;OpenMenuHub((MenuHub)v);return;
                 case "hubFocus":controllerNavigation=true;hubFocus=v;return;
                 case "menuFocusIdx":controllerNavigation=true;menuControllerIndex=v;return;

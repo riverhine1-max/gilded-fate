@@ -24,7 +24,7 @@ namespace GildedFate.Combat
     // move loses its last Minion, an elite or boss crosses an HP threshold).
     public sealed partial class CombatState
     {
-        public const int MaxBattlefieldBodies=6;
+        public const int MaxBattlefieldBodies=4;
         public bool wildCombat;public int nextWildUid=1;
         // Fate Debt scaling for creatures summoned mid-fight (set with the rest of Fate Debt).
         public int summonHpPercent=100,summonStrength;
@@ -64,7 +64,7 @@ namespace GildedFate.Combat
                 var me=expanded.Count;expanded.Add((id,-1));
                 foreach(var minion in ThemeRosters.StartingMinions(id))expanded.Add((minion,me));
             }
-            if(expanded.Count>MaxBattlefieldBodies)throw new ArgumentException("Encounters support at most six creatures.");
+            if(expanded.Count>MaxBattlefieldBodies)throw new ArgumentException("Encounters support at most four creatures.");
             if(expanded.Where(e=>!(WildDef(e.id)?.minion??false)).All(e=>WildDef(e.id)?.support==true))throw new ArgumentException("A pure Support cannot start a fight alone.");
             var groupedNormals=expanded.Count(e=>!(WildDef(e.id)?.minion??false))>1;
             var uids=new int[expanded.Count];
@@ -386,6 +386,26 @@ namespace GildedFate.Combat
                 wildSinkMute++;try{RunEnemyActions(actions);}finally{wildSinkMute--;}
             });
         }
+
+        // ---------- battlefield formation ----------
+        // RULE: Minions stand IN FRONT of their Owner (between the player and the Owner), for every themed fight.
+        // Starting Minions begin there and summoned Minions take the place directly in front of their Owner.
+        // Enemy indices stay stable for the whole fight (so saves, events and intents never shift); this order is
+        // what the battlefield shows and what left/right targeting follows. Front = lowest slot = nearest the player.
+        public int[] BattleOrder()
+        {
+            var n=opponents?.Count??EnemyCount;var order=new List<int>(n);
+            if(!wildCombat||opponents==null){for(var i=0;i<n;i++)order.Add(i);return order.ToArray();}
+            for(var i=0;i<n;i++)
+            {
+                var m=opponents[i].mind;if(m!=null&&m.minion&&OwnerIndexOf(i)>=0)continue; // placed with its Owner
+                for(var j=0;j<n;j++){var mj=opponents[j].mind;if(j!=i&&mj!=null&&mj.minion&&m!=null&&mj.ownerUid==m.uid)order.Add(j);}
+                order.Add(i);
+            }
+            for(var i=0;i<n;i++)if(!order.Contains(i))order.Insert(0,i); // orphans stand at the front
+            return order.ToArray();
+        }
+        public int BattleSlotOf(int index){var order=BattleOrder();var slot=Array.IndexOf(order,index);return slot<0?index:slot;}
 
         // ---------- deaths, ownership, thresholds ----------
         public int rosterVersion;

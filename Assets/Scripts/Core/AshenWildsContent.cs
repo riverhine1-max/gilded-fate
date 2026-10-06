@@ -9,16 +9,16 @@ namespace GildedFate.Core
     public static class ActThemes
     {
         public const string Vault="";
-        public const string GildedRuins="gilded_ruins",AshenWilds="ashen_wilds",DrownedQuarter="drowned_quarter",CrimsonFoundry="crimson_foundry",Hollowwood="hollowwood",ShatteredObservatory="shattered_observatory";
+        public const string GildedRuins="gilded_ruins",AshenWilds="ashen_wilds",DrownedQuarter="drowned_quarter",CrimsonFoundry="crimson_foundry",Hollowwood="hollowwood",ShatteredObservatory="shattered_observatory",BlackCathedral="black_cathedral";
         // Implemented themes per act. Gilded Ruins is Act 1's first theme; the original Vault roster
         // still serves Acts 2 and 3 until their themes exist. Act 2 rolls the Vault or one of three themes.
         public static string[] ForAct(int act)=>act switch
         {
             1=>new[]{GildedRuins,AshenWilds,DrownedQuarter},
             2=>new[]{Vault,CrimsonFoundry,Hollowwood,ShatteredObservatory},
-            _=>new[]{Vault}
+            _=>new[]{Vault,BlackCathedral}
         };
-        public static string Name(string theme)=>theme switch{GildedRuins=>"THE GILDED RUINS",AshenWilds=>"ASHEN WILDS",DrownedQuarter=>"THE DROWNED QUARTER",CrimsonFoundry=>"THE CRIMSON FOUNDRY",Hollowwood=>"HOLLOWWOOD",ShatteredObservatory=>"THE SHATTERED OBSERVATORY",_=>"THE GILDED VAULT"};
+        public static string Name(string theme)=>theme switch{GildedRuins=>"THE GILDED RUINS",AshenWilds=>"ASHEN WILDS",DrownedQuarter=>"THE DROWNED QUARTER",CrimsonFoundry=>"THE CRIMSON FOUNDRY",Hollowwood=>"HOLLOWWOOD",ShatteredObservatory=>"THE SHATTERED OBSERVATORY",BlackCathedral=>"THE BLACK CATHEDRAL",_=>"THE GILDED VAULT"};
         public static string Tagline(string theme)=>theme switch
         {
             GildedRuins=>"A dead kingdom whose systems still run · Seized Wealth",
@@ -27,6 +27,7 @@ namespace GildedFate.Core
             CrimsonFoundry=>"A war factory that never stopped · Heat",
             Hollowwood=>"A forest that grows through everything · Growth",
             ShatteredObservatory=>"A broken tower that reads the future · Prediction",
+            BlackCathedral=>"A cathedral of sentence and ritual · Judgment",
             _=>"The vault's original keepers"
         };
         public static string Roll(int act,int seed)

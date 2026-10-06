@@ -41,10 +41,11 @@ namespace GildedFate.Combat
         // ---------- Gold and card memory ----------
         private void RollRuinsMemory()
         {
+            RollCathedralMemory();
             hadPreviousTurn=turn>0;lastTurnAttackCards=attackCardsThisTurn;lastTurnOtherCards=otherCardsThisTurn;
             attackCardsThisTurn=otherCardsThisTurn=0;
         }
-        private void CountRuinsCard(CardDef card){if(card.kind==CardKind.Attack)attackCardsThisTurn++;else otherCardsThisTurn++;}
+        private void CountRuinsCard(CardDef card){CountCathedralCard(card);if(card.kind==CardKind.Attack)attackCardsThisTurn++;else otherCardsThisTurn++;}
         public int SeizedGoldAt(int index)=>MindAt(index)?.held??0;
         public int TotalSeizedGold{get{var total=0;for(var i=0;i<EnemyCount;i++)total+=SeizedGoldAt(i);return total;}}
         // Extra Gold added to the encounter reward: what the Coin Mimic did not consume, plus the Crown Collector's bonus.
@@ -78,7 +79,7 @@ namespace GildedFate.Combat
         }
         // Called when the fight is won: any Gold still held comes back exactly once.
         public void ReturnAllSeizedGold(){if(!wildCombat||opponents==null)return;for(var i=0;i<opponents.Count;i++)ReturnSeizedGold(i);}
-        private void RuinsOnDeath(int index){ReturnSeizedGold(index);}
+        private void RuinsOnDeath(int index){ReturnSeizedGold(index);CathedralOnDeath(index);}
 
         // ---------- Treasury Reserve ----------
         private void RuinsAttackDamage(CardDef card,int dealt)
@@ -100,6 +101,7 @@ namespace GildedFate.Combat
             m.held=0;
             if(id==GildedRuinsContent.Mimic)m.counter=MimicBonusGold;
             if(id==GildedRuinsContent.Treasury)m.counter=0;
+            ResetCathedralState(m,id);
         }
 
         // ---------- move choice ----------
@@ -186,7 +188,7 @@ namespace GildedFate.Combat
                         default:return Cycle(m,4) switch{0=>"gr_crown_hammer",1=>"gr_final_tribute",2=>"gr_royal_furnace",_=>"gr_end_procession"};
                     }
             }
-            return null;
+            return ChooseCathedralMove(m);
         }
 
         // ---------- moves ----------
@@ -271,7 +273,7 @@ namespace GildedFate.Combat
                 case "gr_royal_furnace":return new[]{P(S,2),P(EnemyActionType.Fortify,1)};
                 case "gr_end_procession":return new[]{P(A,5,5)};
             }
-            return null;
+            return CathedralActions(move,m);
         }
         private static string RuinsName(string move)=>move switch
         {
@@ -306,7 +308,7 @@ namespace GildedFate.Combat
                 case "gr_emergency_reserve":return "EMERGENCY RESERVE";
                 case "gr_first_toll":return LivingAllies(enemyContextIndex,false).Any()?"FIRST TOLL · RALLY":"FIRST TOLL · RALLY ALONE";
             }
-            return RuinsName(move);
+            return move.StartsWith("bc_")?CathedralLabel(move,m):RuinsName(move);
         }
         private static string RuinsHook(string move)=>move switch
         {
@@ -316,7 +318,7 @@ namespace GildedFate.Combat
             "gr_repossess"=>"collector_repossess","gr_foreclosure"=>"collector_foreclosure",
             "gr_asset_release"=>"asset_release","gr_emergency_reserve"=>"emergency_reserve",
             "gr_end_procession"=>"end_of_the_procession",
-            _=>""
+            _=>CathedralHook(move)
         };
 
         // ---------- resolution ----------
@@ -342,7 +344,7 @@ namespace GildedFate.Combat
                 case GildedRuinsContent.Treasury:
                     if(move=="gr_emergency_reserve"){m.flag=true;return true;} // an override: the pattern keeps its place
                     return false;
-                default:return false;
+                default:return BeginCathedralAction(m,move);
             }
         }
         private void ExecuteRuinsAction(PlannedEnemyAction action)
@@ -371,7 +373,7 @@ namespace GildedFate.Combat
                     var target=tied[tied.Length==1?0:NextRandom(tied.Length)];
                     InEnemyContext(target,()=>{enemy.block+=action.amount;Emit(CombatEventKind.Block,action.amount,false);});break;
                 }
-                default:throw new InvalidOperationException("Enemy action has no executor: "+action.type);
+                default:ExecuteCathedralAction(action);break;
             }
         }
 
@@ -380,13 +382,13 @@ namespace GildedFate.Combat
         private bool RuinsReplanOnDeath(int k)
         {
             var id=opponents[k].id;
-            return id is GildedRuinsContent.Keeper or GildedRuinsContent.Collector or GildedRuinsContent.Herald or GildedRuinsContent.Bastion;
+            return id is GildedRuinsContent.Keeper or GildedRuinsContent.Collector or GildedRuinsContent.Herald or GildedRuinsContent.Bastion||CathedralReplanOnDeath(k);
         }
         // The Last Procession: 2/3 of maximum health rounded up (140 at the base 210) and 1/3 rounded down (70).
         private bool CheckRuinsThresholds(int index)
         {
             var o=opponents[index];var m=o.mind;var f=o.fighter;
-            if(GildedRuinsContent.Find(o.id)==null)return false;
+            if(GildedRuinsContent.Find(o.id)==null)return CheckCathedralThresholds(index);
             if(o.id==GildedRuinsContent.Treasury)
             {
                 // Emergency Reserve takes priority the moment it becomes legal, so the player sees the intent change.
@@ -420,7 +422,7 @@ namespace GildedFate.Combat
                     label=hadPreviousTurn?$"LAST TURN: {lastTurnAttackCards} ATTACK · {lastTurnOtherCards} OTHER":"NO PREVIOUS TURN";return true;
                 case GildedRuinsContent.Procession:label=$"PHASE {m.phase} · {ProcessionPhaseName(m.phase)}";return true;
             }
-            return false;
+            return CathedralCounter(index,m,out label,out value,out max);
         }
         public bool RuinsForecast(int index,WildMind m,out string title,out List<string> lines,out string tip)
         {
@@ -449,6 +451,7 @@ namespace GildedFate.Combat
         }
         private void RuinsStateText(int index,WildMind m,List<string> lines)
         {
+            CathedralStateText(index,m,lines);
             switch(EnemyIdAt(index))
             {
                 case GildedRuinsContent.Scavenger:lines.Add("Pocket the Spoils Seizes Gold. Desperate Cut deals 13 instead of 11 while it holds Seized Gold.");break;
@@ -494,7 +497,7 @@ namespace GildedFate.Combat
                 case EnemyActionType.ReserveAll:a.amount=m?.counter??0;a.title="RELEASE RESERVE";return $"Spends all {a.amount} Reserve. Reserve returns to 0.";
                 case EnemyActionType.BlockLowestNonMinion:a.title="INTERPOSE";return $"Its lowest-health non-Minion ally gains {amount} Block. Ties are broken at random.";
             }
-            return "";
+            return DescribeCathedralAction(type,amount,a);
         }
     }
 }

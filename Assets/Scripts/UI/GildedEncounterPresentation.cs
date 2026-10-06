@@ -15,12 +15,23 @@ namespace GildedFate.UI
         private readonly List<(int index,float time)> opponentActions=new();
         private int combatTargetIndex,groupRenderIndex=-1;
         private bool GroupCombat=>combat!=null&&combat.EnemyCount>1;
+        // Bigger creatures get a wider lane, Minions a narrower one, so a boss is never squeezed to its
+        // Minions' size and every hit region follows the body that is actually drawn.
+        private float LaneWeight(int index)
+        {
+            var def=WorldContent.Enemies.FirstOrDefault(e=>e.id==combat.EnemyIdAt(index));
+            return Mathf.Clamp(EnemyBodyScale(def),.75f,1.5f);
+        }
         private Rect GroupCell(int index)
         {
             var count=combat.EnemyCount;var full=CombatWidth*.55f;
-            var width=count>=4?full/count:Mathf.Min(count==2?244:232,full/count);
-            var start=CombatWidth*.695f-width*count*.5f;
-            return new Rect(start+index*width,155,width,373);
+            var order=combat.BattleOrder();var weights=new float[count];var total=0f;
+            for(var slot=0;slot<count;slot++){weights[slot]=LaneWeight(order[slot]);total+=weights[slot];}
+            var mean=total/count;
+            var unit=count>=4?full/count:Mathf.Min(count==2?244:232,full/count);
+            var start=CombatWidth*.695f-unit*count*.5f;var mySlot=combat.BattleSlotOf(index);var x=start;
+            for(var slot=0;slot<mySlot&&slot<count;slot++)x+=unit*weights[slot]/mean;
+            return new Rect(x,155,unit*weights[Mathf.Clamp(mySlot,0,count-1)]/mean,373);
         }
         private Rect GroupPortrait(int index)
         {
@@ -58,8 +69,10 @@ namespace GildedFate.UI
         }
         private void FocusLivingTarget(int direction)
         {
-            for(var n=0;n<combat.EnemyCount;n++)
-            {combatTargetIndex=(combatTargetIndex+direction+combat.EnemyCount)%combat.EnemyCount;if(combat.IsLivingTarget(combatTargetIndex))break;}
+            // Left/right follows the battlefield (front of the formation first), not the internal index.
+            var order=combat.BattleOrder();var slot=Array.IndexOf(order,combatTargetIndex);if(slot<0)slot=0;
+            for(var n=0;n<order.Length;n++)
+            {slot=(slot+direction+order.Length)%order.Length;combatTargetIndex=order[slot];if(combat.IsLivingTarget(combatTargetIndex))break;}
             combatPointer=GroupCombat?GroupDropZone(combatTargetIndex).center:EnemyDropZone.center;cardPreviewCache.Clear();
         }
         private void WithEnemyPresentation(int index,Action draw)
@@ -72,6 +85,7 @@ namespace GildedFate.UI
         {
             opponentVisuals.Clear();opponentActions.Clear();combatTargetIndex=0;groupRenderIndex=-1;
             if(combat==null)return;combatTargetIndex=combat.EnemyContextIndex;
+            if(combat.wildCombat)foreach(var front in combat.BattleOrder())if(combat.IsLivingTarget(front)){combatTargetIndex=front;break;}
             for(var i=0;i<combat.EnemyCount;i++)opponentVisuals.Add(NewOpponentVisual(i,-100));
         }
         // Bodies that were already dead when the roster changed stay hidden instead of replaying their death.

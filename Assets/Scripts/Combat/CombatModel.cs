@@ -380,7 +380,7 @@ namespace GildedFate.Combat
             ShardRetainEnergy();
             if(activeShardId=="duelist"&&activeShardFractured&&shardMemory.attacks==1){ShardPulse();Draw(2,false);}
             if(player.burn>0){LosePlayerHp(player.burn,false);player.burn=Math.Max(0,player.burn-GameContent.BurnDecayPerTrigger);}if(player.weak>0)player.weak--;if(player.frail>0)player.frail--;ForEachLivingEnemy(()=>{if(enemy.vulnerable>0)enemy.vulnerable--;Emit(CombatEventKind.StateSnapshot);});
-            playerEndBlock=player.block; // Canal Stalker reads how the player ended this turn
+            playerEndBlock=player.block;CaptureCathedralEnd(); // Canal Stalker reads how the player ended this turn
             phase=IsOver?CombatPhase.Finished:CombatPhase.Enemy;if(!IsOver)Emit(CombatEventKind.EnemyTurn,turn);
         }
         public void ResolveEnemyTurn()
