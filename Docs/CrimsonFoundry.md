@@ -3,8 +3,8 @@
 An ancient weapons factory that never stopped making war. The combat identity is **Heat**:
 machines grow more dangerous as they are pushed toward their limits, then vent or overload.
 
-Act 2 rolls **The Vault** (the original Act 2 roster, standing in for Shattered Observatory until it
-exists), **The Crimson Foundry** or **Hollowwood** (see `Hollowwood.md`). The map shows the theme under
+Act 2 rolls **The Vault** (the original Act 2 roster), **The Crimson Foundry**, **Hollowwood** (see
+`Hollowwood.md`) or the **Shattered Observatory** (see `ShatteredObservatory.md`). The map shows the theme under
 the summit boss label.
 
 ## Files
@@ -136,8 +136,7 @@ Each hook is emitted as `CombatEventKind.Hook` with the label `HOOK:<name>`, and
 
 ## Future Act 2 themes and neutrals
 
-- **Shattered Observatory:** add a content file, register it in `ThemeRosters` (the way
-  `HollowwoodContent` is), and add the theme to `ActThemes.ForAct(2)`.
+- **Shattered Observatory:** done (`ShatteredObservatoryContent.cs`, `ObservatoryCombat.cs`).
 - **Act 2 neutrals** (Ragged Vanguard, Shifting Husk, Crooked Oracle, The Deepcrawler): give their
   formations the theme `EncounterContent.Neutral` with act 2–2. They then join every Act 2 theme
   automatically.

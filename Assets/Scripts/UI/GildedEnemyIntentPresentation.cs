@@ -75,6 +75,8 @@ namespace GildedFate.UI
                     GUI.Label(new Rect(r.center.x-13,y,48,13),action.destination.ToString().ToUpperInvariant(),new GUIStyle(footerStyle){fontSize=9,alignment=TextAnchor.MiddleLeft,normal={textColor=IntentAccent(action.type)}});
                 }
                 GUI.color=oldColor;
+                // Two possibilities (Twin Prediction / Twin Fate): the enemy uses ONE group, so the groups are divided by "OR".
+                if(action.choice==1&&i>0&&actions[i-1].choice==0){var prev=IntentActionRect(owner,i-1);if(Mathf.Approximately(prev.y,r.y))ShadowLabel(new Rect((prev.xMax+r.x)*.5f-14,r.y+size*.3f,28,18),"OR",new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=12,fontStyle=FontStyle.Bold,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(.72f,.62f,1f)}});}
                 RegisterCombatHudTarget("enemy:"+owner+":intent:"+i,2+owner,r,action.title,action.detail);
                 if(CombatInspectionAllowed&&r.Contains(combatPointer))SetCombatEffectTooltip(action.title,action.detail,r.center);
             }

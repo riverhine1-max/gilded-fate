@@ -10,7 +10,7 @@ namespace GildedFate.Combat
     [Serializable] public sealed class WildMind
     {
         public int uid,ownerUid=-1,step,step2,phase=1,diedTurn=-1,summonedTurn=-1,plannedValue,counter;
-        public string state="",planned="",lastMove="",prior="",lastSeed="";
+        public string state="",planned="",lastMove="",prior="",lastSeed="",queue="",pair="",lastPair="";
         // flag: per-enemy one-shot (Forgemaster Reassemble used, Iron Saint resummon used, must-vent);
         // hold: the planned move is an override that keeps the pattern position.
         public bool minion,dead,mourning,fled,flag,hold;
@@ -95,7 +95,8 @@ namespace GildedFate.Combat
                 var move=ChooseWildMove(m);m.planned=move;
                 var actions=WildActions(move,m);var label=WildMoveLabel(move,m);
                 var attack=actions.FirstOrDefault(a=>a.type==EnemyActionType.Attack);
-                if(actions.Any(a=>a.type==EnemyActionType.Attack))SetIntent(IntentKind.Attack,attack.amount,label,attack.hits);
+                if(move==AstrologerPairMove||move==CuratorPairMove)SetIntent(IntentKind.Buff,0,label); // two possibilities: nothing is promised
+                else if(actions.Any(a=>a.type==EnemyActionType.Attack))SetIntent(IntentKind.Attack,attack.amount,label,attack.hits);
                 else if(actions.All(a=>a.type==EnemyActionType.Block))SetIntent(IntentKind.Defend,actions.Sum(a=>a.amount),label);
                 else SetIntent(IntentKind.Buff,actions.Length>0?actions[0].amount:0,label);
                 RefreshWildMechanicText();
@@ -315,7 +316,7 @@ namespace GildedFate.Combat
             else if(enemyId==AshenWildsContent.Maw){m.state=m.state switch{"HUNGRY"=>"FED","FED"=>"BURNING",_=>"HUNGRY"};EmitHook("hollow_maw_state:"+m.state);}
             else if(!BeginDrownedAction(m,move)&&!BeginFoundryAction(m,move))m.step++;
         }
-        private void EndWildAction(){var m=Mind;if(m==null)return;if(m.minion)m.lastMove=m.planned;m.prior=m.planned;m.planned="";m.hold=false;}
+        private void EndWildAction(){var m=Mind;ReleasePairSink();if(m==null)return;if(m.minion)m.lastMove=m.planned;m.prior=m.planned;m.planned="";m.hold=false;}
         private void EmitHook(string name)=>Emit(CombatEventKind.Hook,0,false,null,"HOOK:"+name);
 
         private void ExecuteWildAction(PlannedEnemyAction action)
@@ -370,7 +371,7 @@ namespace GildedFate.Combat
             var slot=opponents.Count<MaxBattlefieldBodies?-1:ReusableMinionSlot();
             if(slot>=0)opponents[slot]=created;else{opponents.Add(created);slot=opponents.Count-1;}
             created.intent=IntentKind.Unknown;created.intentLabel="SUMMONED";
-            InEnemyContext(slot,()=>{Emit(CombatEventKind.Status,1,false,null,"SUMMONED");if(id==DrownedQuarterContent.Hand)EmitHook("drowned_hand_spawn");else if(id==CrimsonFoundryContent.ScrapDrone)EmitHook("scrap_drone_spawn");else if(id==HollowwoodContent.Sporeling)EmitHook("sporeling_spawn");else if(id==HollowwoodContent.Huskbud)EmitHook("huskbud_spawn");});
+            InEnemyContext(slot,()=>{Emit(CombatEventKind.Status,1,false,null,"SUMMONED");if(id==DrownedQuarterContent.Hand)EmitHook("drowned_hand_spawn");else if(id==CrimsonFoundryContent.ScrapDrone)EmitHook("scrap_drone_spawn");else if(id==HollowwoodContent.Sporeling)EmitHook("sporeling_spawn");else if(id==HollowwoodContent.Huskbud)EmitHook("huskbud_spawn");else if(id==ShatteredObservatoryContent.StarFragment)EmitHook("star_fragment_spawn");});
             rosterVersion++;
         }
         private void WildCommand(int ownerIndex)
@@ -418,7 +419,7 @@ namespace GildedFate.Combat
         private void OnWildDeath(int index)
         {
             var m=MindAt(index);var id=EnemyIdAt(index);
-            if(m.minion)InEnemyContext(index,()=>EmitHook(id==AshenWildsContent.Sapling?"sapling_death":id==DrownedQuarterContent.Hand?"drowned_hand_death":id==HollowwoodContent.Sporeling?"sporeling_death":"minion_death"));
+            if(m.minion)InEnemyContext(index,()=>EmitHook(id==AshenWildsContent.Sapling?"sapling_death":id==DrownedQuarterContent.Hand?"drowned_hand_death":id==HollowwoodContent.Sporeling?"sporeling_death":id==ShatteredObservatoryContent.StarFragment?"star_fragment_death":id is ShatteredObservatoryContent.SunFragment or ShatteredObservatoryContent.MoonFragment?"orrery_fragment_death":"minion_death"));
             // Owner death: every Minion it owns withers immediately (no rewards of their own).
             foreach(var k in Enumerable.Range(0,opponents.Count).Where(k=>opponents[k].fighter.hp>0&&opponents[k].mind?.ownerUid==m.uid).ToArray())
             {opponents[k].fighter.hp=0;InEnemyContext(k,()=>EmitHook("minion_withers"));}

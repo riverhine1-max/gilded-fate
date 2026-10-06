@@ -35,6 +35,7 @@ namespace GildedFate.Combat
                 case HollowwoodContent.RootSnare:m.state="LOOSE";break;
                 case HollowwoodContent.PaleGardener:m.state="";m.lastSeed="";break;
             }
+            ResetObservatoryState(m,id);
         }
         private static string SeedName(string seed)=>seed switch{"THORN"=>"THORN SEED","WARD"=>"WARD SEED","ROT"=>"ROT SEED","BLOOM"=>"BLOOM SEED",_=>""};
 
@@ -116,7 +117,7 @@ namespace GildedFate.Combat
                     if(m.counter>=MaxGrowth){m.hold=true;return "hr_final_bloom";}
                     return Cycle(m,3) switch{0=>"hr_heart_rend",1=>"hr_thornstorm",_=>"hr_predator_bloom"};
             }
-            return null;
+            return ChooseObservatoryMove(m);
         }
         // Allies a Sporekeeper can accelerate: damage-capable Growth users still below 3.
         private IEnumerable<int> GrowthTargets(int self)=>LivingAllies(self,false).Where(i=>
@@ -215,7 +216,7 @@ namespace GildedFate.Combat
                 case "hr_predator_bloom":return new[]{P(A,13),P(S,1),P(G,1)};
                 case "hr_final_bloom":return new[]{P(A,10,3),P(B,10),P(R,0)};
             }
-            return null;
+            return ObservatoryActions(move,m);
         }
         // "+ BLOOM NEXT" style suffix when this action carries the enemy to 3 Growth.
         private string GrowthTail(WildMind m,string next)=>m.counter+1>=MaxGrowth?" · "+next:"";
@@ -242,7 +243,7 @@ namespace GildedFate.Combat
             "hr_parasitic_pull"=>"PARASITIC PULL","hr_spreading_bloom"=>"SPREADING BLOOM",
             "hr_heart_rend"=>"HEART REND"+GrowthTail(m,"FINAL BLOOM NEXT"),"hr_thornstorm"=>"THORNSTORM"+GrowthTail(m,"FINAL BLOOM NEXT"),
             "hr_predator_bloom"=>"PREDATOR BLOOM"+GrowthTail(m,"FINAL BLOOM NEXT"),"hr_final_bloom"=>"FINAL BLOOM",
-            _=>"STRIKE"
+            _=>ObservatoryMoveLabel(move,m)
         };
         // Presentation hook names for future animation / VFX (CombatEventKind.Hook "HOOK:<name>").
         private static string HollowHook(string move)=>move switch
@@ -252,7 +253,7 @@ namespace GildedFate.Combat
             "pod_hatch"=>"brood_pod_hatch","pod_command"=>"brood_pod_command",
             "gm_cultivate"=>"garden_mother_cultivate","gm_grand_bloom"=>"garden_mother_grand_bloom","gm_command"=>"garden_mother_command","gm_replace"=>"garden_mother_huskbud_replacement",
             "hr_heart_bloom"=>"heartroot_heart_bloom","hr_spreading_bloom"=>"heartroot_spreading_bloom","hr_final_bloom"=>"heartroot_final_bloom",
-            _=>""
+            _=>ObservatoryHook(move)
         };
 
         // ---------- resolution ----------
@@ -283,7 +284,7 @@ namespace GildedFate.Combat
                     {EmitHook("pale_gardener_seed_resolved:"+m.state);m.state="";}
                     return false;
             }
-            return HollowwoodContent.Find(enemyId)!=null&&m.hold;
+            return HollowwoodContent.Find(enemyId)!=null?m.hold:BeginObservatoryAction(m,move);
         }
         private void GainGrowth(int index,int amount)
         {
@@ -330,7 +331,7 @@ namespace GildedFate.Combat
                     var m=Mind;var options=new[]{"THORN","WARD","ROT","BLOOM"}.Where(s=>s!=m.lastSeed).ToArray();
                     m.state=options[NextRandom(options.Length)];m.lastSeed=m.state;EmitHook("pale_gardener_seed_planted:"+m.state);break;
                 }
-                default:throw new InvalidOperationException("Enemy action has no executor: "+action.type);
+                default:ExecuteObservatoryAction(action);break;
             }
         }
 
@@ -338,7 +339,7 @@ namespace GildedFate.Combat
         private bool HollowReplanOnDeath(int k)
         {
             var id=opponents[k].id;
-            return id is HollowwoodContent.BroodPod or HollowwoodContent.GardenMother or HollowwoodContent.Sporekeeper;
+            return id is HollowwoodContent.BroodPod or HollowwoodContent.GardenMother or HollowwoodContent.Sporekeeper||ObservatoryReplanOnDeath(k);
         }
         // Heartroot thresholds: 2/3 and 1/3 of maximum health, rounded up (214 and 107 at the base 320).
         // Garden-style stages: Walking Grove 2/3 and 1/3 rounded down (118 and 59 at the base 178).
@@ -391,7 +392,7 @@ namespace GildedFate.Combat
                     return true;
                 }
             }
-            return HollowwoodContent.Find(o.id)!=null;
+            return HollowwoodContent.Find(o.id)!=null||CheckObservatoryThresholds(index);
         }
 
         // ---------- presentation ----------
@@ -412,7 +413,7 @@ namespace GildedFate.Combat
                 case HollowwoodContent.WalkingGrove:label=m.phase==1?"ROOT-WOKEN":m.phase==2?"BRANCH-WOKEN":"CROWN-WOKEN";return true;
                 case HollowwoodContent.PaleGardener:label=string.IsNullOrEmpty(m.state)?"NO SEED":"PLANTED SEED: "+SeedName(m.state);return true;
             }
-            return false;
+            return ObservatoryCounter(index,m,out label,out value,out max);
         }
         private void HollowStateText(int index,WildMind m,List<string> lines)
         {
@@ -446,6 +447,7 @@ namespace GildedFate.Combat
                 case HollowwoodContent.Heartroot:
                     lines.Add($"PHASE {m.phase} · "+(m.phase==1?"The Waking Heart":m.phase==2?"The Spreading Heart":"The Predator Heart")
                         +(m.phase<3?" — tears looser at "+(m.phase==1?"2/3":"1/3")+" health.":" — Final Bloom at 3 Growth."));break;
+                default:ObservatoryStateText(index,m,lines);break;
             }
         }
         private static string SeedText(string seed)=>seed switch
@@ -463,7 +465,7 @@ namespace GildedFate.Combat
                 case EnemyActionType.HealOwner:a.title="FEED OWNER";return $"Its owner heals {amount} HP.";
                 case EnemyActionType.PlantSeed:a.title="PLANT SEED";return "Plants one random Seed (never the same twice in a row). The Seed is shown once planted, resolves on its next action and cannot be cancelled.";
             }
-            return "";
+            return DescribeObservatoryAction(type,amount,a);
         }
     }
 }

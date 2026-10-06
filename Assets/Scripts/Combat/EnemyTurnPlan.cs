@@ -12,7 +12,9 @@ namespace GildedFate.Combat
         // Crimson Foundry.
         Heat, HeatVent, Load, LoadRelease, LoseStrength, BlockLowestAlly, HeatAlly, HealDamagedAlly, StrengthRandomMinion,
         // Hollowwood.
-        Growth, GrowthSet, GrowthAlly, BlockOtherAllies, HealOwner, PlantSeed }
+        Growth, GrowthSet, GrowthAlly, BlockOtherAllies, HealOwner, PlantSeed,
+        // Shattered Observatory.
+        PlateSpend, PlateGain, Momentum, MomentumReset }
     public enum IntentDestination { None, Hand, Draw, Discard, Deck }
     public readonly struct PlannedEnemyAction
     {
@@ -26,6 +28,8 @@ namespace GildedFate.Combat
         public IntentDestination destination;
         public int amount,hits=1;
         public bool prevented;
+        // -1 = ordinary action; 0 / 1 = one of two possibilities the enemy may choose between (never both).
+        public int choice=-1;
         public string title,detail;
         public int TotalDamage=>type==EnemyActionType.Attack?amount*hits:0;
         public int Icon=>type switch
@@ -40,9 +44,10 @@ namespace GildedFate.Combat
             EnemyActionType.Load or EnemyActionType.LoadRelease=>IconLoad,
             EnemyActionType.Growth or EnemyActionType.GrowthSet or EnemyActionType.GrowthAlly or EnemyActionType.PlantSeed=>IconGrowth,EnemyActionType.BlockOtherAllies=>4,EnemyActionType.HealOwner=>6,
             EnemyActionType.BlockLowestAlly=>4,EnemyActionType.HealDamagedAlly=>6,EnemyActionType.StrengthRandomMinion=>5,EnemyActionType.LoseStrength=>5,
+            EnemyActionType.PlateSpend or EnemyActionType.PlateGain=>IconPlate,EnemyActionType.Momentum or EnemyActionType.MomentumReset=>IconMomentum,
             EnemyActionType.Summon=>IconSummon,EnemyActionType.Command=>IconCommand,_=>19
         };
-        public const int IconSummon=100,IconCommand=101,IconHeat=102,IconLoad=103,IconGrowth=104;
+        public const int IconSummon=100,IconCommand=101,IconHeat=102,IconLoad=103,IconGrowth=104,IconPlate=105,IconMomentum=106;
         public static int ThreatIcon(int total)=>total<=15?0:total<=34?1:total<=49?2:3;
         public string ValueText=>type==EnemyActionType.Attack&&hits>1?amount+" × "+hits:amount.ToString();
     }
@@ -113,7 +118,7 @@ namespace GildedFate.Combat
             {
                 foreach(var action in actions)
                 {
-                    if(wildSinkMute==0&&intentPreviewSink!=null&&EnemyContextIndex<intentPreviewSink.Length)
+                    if(wildSinkMute==0&&!pairSinkHeld&&intentPreviewSink!=null&&EnemyContextIndex<intentPreviewSink.Length)
                     {
                         var shown=DescribeEnemyAction(action);
                         // Ashen Wilds: a heal that would restore nothing is left off the intent instead of showing "0".
@@ -140,6 +145,7 @@ namespace GildedFate.Combat
                         case EnemyActionType.Heat:case EnemyActionType.HeatVent:case EnemyActionType.Load:case EnemyActionType.LoadRelease:case EnemyActionType.LoseStrength:
                         case EnemyActionType.BlockLowestAlly:case EnemyActionType.HeatAlly:case EnemyActionType.HealDamagedAlly:case EnemyActionType.StrengthRandomMinion:
                         case EnemyActionType.Growth:case EnemyActionType.GrowthSet:case EnemyActionType.GrowthAlly:case EnemyActionType.BlockOtherAllies:case EnemyActionType.HealOwner:case EnemyActionType.PlantSeed:
+                        case EnemyActionType.PlateSpend:case EnemyActionType.PlateGain:case EnemyActionType.Momentum:case EnemyActionType.MomentumReset:
                             ExecuteWildAction(action);break;
                         default:throw new InvalidOperationException("Enemy action has no executor: "+action.type);
                     }

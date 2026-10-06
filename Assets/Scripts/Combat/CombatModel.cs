@@ -130,7 +130,7 @@ namespace GildedFate.Combat
         public void NextTurn()
         {
             if(pendingPlay!=null||turn>0&&phase!=CombatPhase.EnemyResolved)return;if(IsOver){phase=CombatPhase.Finished;return;}
-            R.turnStartCards=cardsPlayed;
+            R.turnStartCards=cardsPlayed;RollEnergyMemory();
             phase=CombatPhase.Player;turn++;ResetRelicTurn();ResetShardTurn();ResetGildTurn();memory.conquestAttacksThisTurn=0;if(memory.unmovable>0&&player.block>0)ExpansionPowerPulse("unmovable");if(relics.Contains("immortal_plate")&&memory.unmovable==0&&player.block>0&&memory.retainBlock<8)RelicPresentationPulse("immortal_plate");var retained=BlockRetention();player.block=Math.Min(retained,player.block);memory.retainBlock=0;memory.freeThisTurnIds.Clear();ExpireEffects(CombatEffectDuration.NextTurn);memory.blockGainedThisTurn=memory.blockGainsThisTurn=memory.skillsThisTurn=memory.attacksThisTurn=memory.soulsPlayedThisTurn=memory.cardsDrawnThisTurn=0;memory.firstAttackPlayed=memory.firstSkillPlayed=memory.firstBlockPlayed=false;memory.spiritStrengthTriggered=memory.spiritFortifyTriggered=memory.onslaughtUsed=memory.crownedBulwarkUsed=memory.deathsGazeUsed=memory.indomitableUsed=memory.gravekeeperUsed=memory.reapersCallingUsed=false;memory.retaliateTriggeredTurn=memory.burnTriggersThisTurn=memory.debuffApplicationsThisTurn=memory.exhaustsThisTurn=memory.warMachineUses=memory.cycleMask=memory.cycleCompletesThisTurn=0;memory.attackedThisEnemyTurn=false;memory.crownSacrificeDebt=false;
             var opening=nextTurnBlock;nextTurnBlock=0;if(memory.livingArmor>0){if(player.strength>0)PresentationPulse("living_armor");opening+=player.strength;}if(opening>0)GainBlock(opening);
             if(relics.Contains("gilded_heart"))RelicPresentationPulse("gilded_heart");energy=3+(relics.Contains("gilded_heart")?1:0)+memory.retainedEnergy-memory.nextTurnEnergyPenalty;memory.retainedEnergy=memory.nextTurnEnergyPenalty=0;
@@ -141,7 +141,7 @@ namespace GildedFate.Combat
 
         public bool Play(CardDef card)
         {
-            if(!CanPlay(card))return false;var paid=CostFor(card);if(memory.perfectForm>0&&card.cost>0&&(card.kind==CardKind.Attack&&!memory.firstAttackPlayed||card.kind==CardKind.Skill&&!memory.firstSkillPlayed))PresentationPulse("perfect_form");if(relics.Contains("crown_of_sacrifice")&&cardsPlayed==0&&card.cost>0)RelicPresentationPulse("crown_of_sacrifice");if(relics.Contains("crown_of_sacrifice")&&cardsPlayed==0&&card.cost>=2)memory.crownSacrificeDebt=true;energy-=paid;Emit(CombatEventKind.Energy,energy,true);hand.Remove(card);
+            if(!CanPlay(card))return false;var paid=CostFor(card);if(memory.perfectForm>0&&card.cost>0&&(card.kind==CardKind.Attack&&!memory.firstAttackPlayed||card.kind==CardKind.Skill&&!memory.firstSkillPlayed))PresentationPulse("perfect_form");if(relics.Contains("crown_of_sacrifice")&&cardsPlayed==0&&card.cost>0)RelicPresentationPulse("crown_of_sacrifice");if(relics.Contains("crown_of_sacrifice")&&cardsPlayed==0&&card.cost>=2)memory.crownSacrificeDebt=true;energy-=paid;energySpentThisTurn+=paid;Emit(CombatEventKind.Energy,energy,true);hand.Remove(card);
             if(card.kind==CardKind.Attack){memory.nextAttackCostReduction=0;if(memory.battleRushCharges>0)memory.battleRushCharges--;if(card.keywords?.Contains("Heavy")==true)memory.nextHeavyCostReduction=0;}if(card.kind==CardKind.Skill)memory.nextSkillCostReduction=0;memory.nextCardCostPenalty=0;
             if(card.firstDrawFree||card.specialModification=="quickened")memory.specialPlayIds.Add(-card.instanceId);memory.freeThisTurnIds.Remove(card.instanceId);
             // Echo is deliberately activation-only. Activating it arms exactly one
@@ -397,7 +397,7 @@ namespace GildedFate.Combat
                 var wild=IsWildContext;
                 if(wild&&Mind.summonedTurn==turn)return; // summoned this phase: acts from next turn
                 if(!wild)enemy.block=0;Emit(CombatEventKind.EnemyAction,EnemyContextIndex);
-                if(wild){var actions=WildPlannedTurn();BeginWildAction();ExecuteEnemyPlan(actions);EndWildAction();SweepWilds();}
+                if(wild){PreResolveObservatory();var actions=WildPlannedTurn();BeginWildAction();ExecuteEnemyPlan(actions);EndWildAction();SweepWilds();}
                 else ExecuteEnemyPlan(PlannedEnemyTurn());
                 if(enemy.weak>0)enemy.weak--;if(enemy.hp>0&&enemy.burn>0)TriggerBurn(enemy.burn,false);Emit(CombatEventKind.StateSnapshot);
             });

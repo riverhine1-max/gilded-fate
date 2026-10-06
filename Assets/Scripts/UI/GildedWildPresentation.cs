@@ -24,7 +24,7 @@ namespace GildedFate.UI
                 var pm=index>=0?combat.MindAt(index):null;
                 return pm!=null&&pm.state=="EXPOSED"?id+"_phase2":id;
             }
-            if(id!=AshenWildsContent.Alpha&&id!=DrownedQuarterContent.Magistrate&&id!=CrimsonFoundryContent.Saint&&id!=HollowwoodContent.Heartroot||combat==null||screen!=ScreenMode.Combat)return id;
+            if(id!=AshenWildsContent.Alpha&&id!=DrownedQuarterContent.Magistrate&&id!=CrimsonFoundryContent.Saint&&id!=HollowwoodContent.Heartroot&&id!=ShatteredObservatoryContent.Curator||combat==null||screen!=ScreenMode.Combat)return id;
             var boss=combat.WildBossIndex;var phase=boss>=0?combat.MindAt(boss)?.phase??1:1;
             return phase>=3?id+"_phase3":phase==2?id+"_phase2":id;
         }
@@ -45,7 +45,8 @@ namespace GildedFate.UI
                 case "cinder_alpha_phase2":case "cinder_alpha_phase3":
                 case "drowned_magistrate_phase2":case "drowned_magistrate_phase3":
                 case "iron_saint_phase2":case "iron_saint_phase3":
-                case "heartroot_phase2":case "heartroot_phase3":RefreshEnemyArt(fact.enemyIndex);return; // the boss phase cinematic owns the banner
+                case "heartroot_phase2":case "heartroot_phase3":
+                case "astral_curator_phase2":case "astral_curator_phase3":RefreshEnemyArt(fact.enemyIndex);return; // the boss phase cinematic owns the banner
                 // ---- Crimson Foundry ----
                 case "foundry_overheated":text="OVERHEATED";color=new Color(1f,.38f,.16f);break;
                 case "foundry_vent":text="VENT";color=new Color(.85f,.85f,.8f);break;
@@ -82,6 +83,33 @@ namespace GildedFate.UI
                 case "heartroot_heart_bloom":text="HEART BLOOM";color=new Color(.95f,.5f,.8f);break;
                 case "heartroot_spreading_bloom":text="SPREADING BLOOM";color=new Color(.95f,.5f,.8f);break;
                 case "heartroot_final_bloom":text="FINAL BLOOM";color=new Color(1f,.45f,.7f);break;
+                // ---- Shattered Observatory ----
+                case "future_intent_generated":text="FUTURE FORETOLD";color=new Color(.72f,.62f,1f);break;
+                case "future_to_current":case "chronoglyph_future_to_current":text="THE FUTURE ARRIVES";color=new Color(.72f,.62f,1f);break;
+                case "chronoglyph_future_shift":case "blind_seer_queue_shift":text="THE QUEUE SHIFTS";color=new Color(.62f,.8f,1f);break;
+                case "scribe_chart_stars":text="CHARTS THE STARS";color=new Color(.72f,.62f,1f);break;
+                case "scribe_falling_star":text="FALLING STAR";color=new Color(1f,.85f,.5f);break;
+                case "sentinel_plate_launch":text="PLATE LAUNCHED";color=new Color(.9f,.8f,.5f);break;
+                case "sentinel_plate_reassemble":text="ORBIT REASSEMBLES";color=new Color(.62f,.85f,1f);break;
+                case "weaver_form_constellation":text="CONSTELLATION FORMS";color=new Color(.62f,.8f,1f);break;
+                case "star_fragment_spawn":text="STAR FRAGMENT";color=new Color(.8f,.85f,1f);break;
+                case "star_fragment_death":case "orrery_fragment_death":text="SHATTERS";color=new Color(.75f,.75f,.8f);break;
+                case "weaver_command":case "orrery_keeper_command":text="COMMAND";color=new Color(1f,.85f,.45f);break;
+                case "weaver_realign":text="REALIGNED";color=new Color(.6f,.9f,.6f);break;
+                case "gravity_monk_collapse_point":text="COLLAPSE POINT";color=new Color(.8f,.6f,1f);break;
+                case "chronoglyph_future_collapse":text="FUTURE COLLAPSE";color=new Color(.8f,.6f,1f);break;
+                case "astrologer_pair_reveal":case "astral_curator_twin_fate_reveal":text="TWO FATES";color=new Color(.72f,.62f,1f);break;
+                case "astrologer_pair_chosen":case "astral_curator_twin_fate_chosen":text="FATE CHOSEN";color=new Color(1f,.82f,.5f);break;
+                case "orrery_celestial_rotation":text="CELESTIAL ROTATION";color=new Color(1f,.85f,.5f);break;
+                case "orrery_grand_alignment":case "curator_grand_alignment":text="GRAND ALIGNMENT";color=new Color(1f,.8f,.4f);break;
+                case "blind_seer_predicted_ruin":case "curator_predicted_collapse":text="PREDICTED RUIN";color=new Color(.85f,.55f,1f);break;
+                case "curator_collapse_event":text="COLLAPSE EVENT";color=new Color(1f,.5f,.4f);break;
+                case "curator_archive_future":text="ARCHIVES THE FUTURE";color=new Color(.72f,.62f,1f);break;
+                case "fallen_comet_momentum":text="MOMENTUM";color=new Color(.62f,.85f,1f);break;
+                case "fallen_comet_full_momentum":text="FULL MOMENTUM";color=new Color(1f,.7f,.4f);break;
+                case "fallen_comet_impact":text="IMPACT";color=new Color(1f,.5f,.3f);break;
+                case "fallen_comet_cool_orbit":text="COOLS";color=new Color(.7f,.85f,1f);break;
+                case "astral_curator_constellation_transformation":text="THE CONSTELLATION FORMS";color=new Color(.8f,.75f,1f);break;
                 // ---- Drowned Quarter ----
                 case "drowned_lurker_submerge":text="SUBMERGES · SURFACE STRIKE NEXT";color=new Color(.45f,.8f,.85f);break;
                 case "drowned_lurker_surface_strike":text="SURFACES";color=new Color(.55f,.9f,.95f);break;
@@ -118,6 +146,7 @@ namespace GildedFate.UI
                     if(name.StartsWith("pale_gardener_seed_resolved:")){text=SeedLabel(name.Substring(28))+" BLOOMS";color=new Color(.95f,.6f,.5f);break;}
                     if(name.StartsWith("prototype_zero_mode:")){text=name.Substring(20)+" MODE";color=new Color(1f,.6f,.4f);break;}
                     if(name.StartsWith("crucible_knight_state:")){text=name.Substring(22);color=text=="COLD"?new Color(.7f,.8f,.9f):new Color(1f,.5f,.25f);break;}
+                    if(name.StartsWith("lenskeeper_response:")){var band=name.Substring(20);text=band=="UNDER"?"UNDEREXPOSED":band=="OVER"?"OVEREXPOSED":"BALANCED";color=new Color(.9f,.85f,.6f);break;}
                     if(name.StartsWith("hollow_maw_state:")){text=name.Substring(17);color=text=="BURNING"?new Color(1f,.42f,.2f):text=="FED"?new Color(.6f,.9f,.6f):new Color(1f,.85f,.6f);}
                     break;
             }
@@ -158,6 +187,11 @@ namespace GildedFate.UI
                 GUI.Label(icon,"LOAD",new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=11,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(1f,.6f,.25f)}});
                 return true;
             }
+            if(action.Icon==EnemyIntentAction.IconPlate||action.Icon==EnemyIntentAction.IconMomentum)
+            {
+                GUI.Label(icon,action.Icon==EnemyIntentAction.IconPlate?"PLATE":"MOMENTUM",new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=action.Icon==EnemyIntentAction.IconPlate?11:9,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(.72f,.78f,1f)}});
+                return true;
+            }
             if(action.Icon==EnemyIntentAction.IconGrowth)
             {
                 GUI.Label(icon,action.type==EnemyActionType.PlantSeed?"SEED":"GROWTH",new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=10,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(.6f,.95f,.45f)}});
@@ -174,13 +208,13 @@ namespace GildedFate.UI
         {
             if(combat==null||!combat.WildCounter(index,out var label,out var value,out var max))return;
             var heat=label=="HEAT";var mode=label is "ASSAULT" or "DEFENSE" or "OVERDRIVE"||max<=0;
-            var growth=label.EndsWith("GROWTH");
+            var growth=label.EndsWith("GROWTH");var predict=label.StartsWith("LAST TURN")||label.StartsWith("NO PREVIOUS")||label.StartsWith("PHASE ")||label=="ORBIT PLATES"||label=="MOMENTUM";
             var text=mode?label:heat?$"{value}/{max}":$"{label} {value}/{max}";
             var style=new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=13,alignment=TextAnchor.MiddleCenter};
             var width=Mathf.Max(56,style.CalcSize(new GUIContent(text)).x+(heat?34:16));
             var r=new Rect(portrait.xMax-width+6,portrait.y+4,width,26);
-            var full=!mode&&value>=max&&(label is "HEAT" or "LOAD" or "PRESSURE"||growth);
-            var accent=growth||max<=0?new Color(.62f,.9f,.42f):heat?new Color(1f,.45f,.16f):label=="LOAD"?new Color(1f,.62f,.24f):label=="ARMOR"?new Color(.78f,.74f,.68f):mode?new Color(1f,.55f,.35f):new Color(.6f,.85f,.9f);
+            var full=!mode&&value>=max&&(label is "HEAT" or "LOAD" or "PRESSURE" or "MOMENTUM"||growth);
+            var accent=predict?new Color(.72f,.66f,1f):growth||max<=0?new Color(.62f,.9f,.42f):heat?new Color(1f,.45f,.16f):label=="LOAD"?new Color(1f,.62f,.24f):label=="ARMOR"?new Color(.78f,.74f,.68f):mode?new Color(1f,.55f,.35f):new Color(.6f,.85f,.9f);
             var pulse=full&&!profile.reduceMotion?.55f+.45f*Mathf.Sin(Time.unscaledTime*6f):1f;
             Fill(r,new Color(.04f,.025f,.02f,.8f));Outline(r,new Color(accent.r,accent.g,accent.b,full?pulse:.75f),full?2:1);
             var textRect=r;
@@ -198,6 +232,30 @@ namespace GildedFate.UI
                     :combat.WildStateText(index);
                 SetCombatEffectTooltip(title,help,r.center);
             }
+        }
+        // Prediction forecast beside an Observatory enemy: a queued Future Intent, the Chronoglyph's Future, the
+        // Blind Seer's Next / Following, or a pair of Possible Next Actions. Drawn in violet so it never reads as
+        // the Current intent above the creature.
+        private void DrawWildForecast(int index,Rect portrait)
+        {
+            if(combat==null||!combat.wildCombat||!combat.WildForecast(index,out var title,out var lines,out var tip)||lines.Count==0)return;
+            var possible=title.StartsWith("POSSIBLE");var accent=new Color(.72f,.62f,1f);
+            var small=new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=GroupCombat?10:11,alignment=TextAnchor.MiddleCenter,wordWrap=false,clipping=TextClipping.Overflow,normal={textColor=accent}};
+            var line=new GUIStyle(small){fontSize=GroupCombat?11:12,wordWrap=false,clipping=TextClipping.Overflow,normal={textColor=new Color(.95f,.92f,1f)}};
+            var rows=lines.Count+(possible?lines.Count-1:0);var h=16+rows*(possible?14f:17f)+6;
+            var width=Mathf.Clamp(portrait.width+30,200,300);
+            var widest=0f;foreach(var l in lines)widest=Mathf.Max(widest,line.CalcSize(new GUIContent(l)).x);
+            width=Mathf.Clamp(Mathf.Max(width,widest+14),200,420);
+            var r=new Rect(portrait.center.x-width*.5f,portrait.yMax-h-4,width,h);
+            Fill(r,new Color(.06f,.04f,.12f,.86f));Outline(r,new Color(accent.r,accent.g,accent.b,.85f),1);
+            GUI.Label(new Rect(r.x,r.y+1,r.width,15),title,small);
+            var y=r.y+16;
+            for(var i=0;i<lines.Count;i++)
+            {
+                GUI.Label(new Rect(r.x+3,y,r.width-6,possible?14:17),lines[i],line);y+=possible?14:17;
+                if(possible&&i<lines.Count-1){GUI.Label(new Rect(r.x,y,r.width,14),"— OR —",small);y+=14;}
+            }
+            if(CombatInspectionAllowed&&r.Contains(combatPointer))SetCombatEffectTooltip(title,tip,r.center);
         }
         private string WildTooltipSuffix(int index)
         {
@@ -274,6 +332,21 @@ namespace GildedFate.UI
             HollowwoodContent.WalkingGrove=>new(EnemyMotionKind.Colossus,EnemyStrikeStyle.Crush,1.5f,0,.75f,40,new Color(.65f,.9f,.45f)),
             HollowwoodContent.PaleGardener=>new(EnemyMotionKind.Knight,EnemyStrikeStyle.Blade,1.1f,0,1.1f,64,new Color(.85f,.9f,.7f)),
             HollowwoodContent.Heartroot=>new(EnemyMotionKind.Colossus,EnemyStrikeStyle.Crush,1.6f,0,.75f,44,new Color(.95f,.5f,.8f)),
+            ShatteredObservatoryContent.Scribe=>new(EnemyMotionKind.Caster,EnemyStrikeStyle.Bolt,.85f,4,1f,20,new Color(.72f,.62f,1f)),
+            ShatteredObservatoryContent.Sentinel=>new(EnemyMotionKind.Spirit,EnemyStrikeStyle.Slam,1f,6,1.1f,40,new Color(.75f,.8f,1f)),
+            ShatteredObservatoryContent.Attendant=>new(EnemyMotionKind.Spirit,EnemyStrikeStyle.Bolt,.7f,8,1.1f,36,new Color(.85f,.8f,1f)),
+            ShatteredObservatoryContent.Chronoglyph=>new(EnemyMotionKind.Knight,EnemyStrikeStyle.Blade,.8f,3,1.2f,50,new Color(.7f,.7f,1f)),
+            ShatteredObservatoryContent.Lenskeeper=>new(EnemyMotionKind.Brute,EnemyStrikeStyle.Bolt,1.1f,0,.95f,44,new Color(.6f,.8f,1f)),
+            ShatteredObservatoryContent.Weaver=>new(EnemyMotionKind.Caster,EnemyStrikeStyle.Bolt,.9f,6,1f,22,new Color(.65f,.85f,1f)),
+            ShatteredObservatoryContent.StarFragment=>new(EnemyMotionKind.Spirit,EnemyStrikeStyle.Bolt,.5f,8,1.3f,36,new Color(.8f,.85f,1f)),
+            ShatteredObservatoryContent.Monk=>new(EnemyMotionKind.Spirit,EnemyStrikeStyle.Slam,1f,10,.9f,34,new Color(.75f,.65f,1f)),
+            ShatteredObservatoryContent.Astrologer=>new(EnemyMotionKind.Caster,EnemyStrikeStyle.Claw,.9f,2,1f,24,new Color(.8f,.7f,1f)),
+            ShatteredObservatoryContent.OrreryKeeper=>new(EnemyMotionKind.Knight,EnemyStrikeStyle.Slam,1.25f,0,.9f,52,new Color(1f,.85f,.5f)),
+            ShatteredObservatoryContent.SunFragment=>new(EnemyMotionKind.Brute,EnemyStrikeStyle.Slam,.75f,0,1.15f,46,new Color(1f,.75f,.3f)),
+            ShatteredObservatoryContent.MoonFragment=>new(EnemyMotionKind.Spirit,EnemyStrikeStyle.Claw,.6f,6,1.2f,42,new Color(.75f,.85f,1f)),
+            ShatteredObservatoryContent.BlindSeer=>new(EnemyMotionKind.Caster,EnemyStrikeStyle.Bolt,1.1f,6,.95f,30,new Color(.8f,.75f,1f)),
+            ShatteredObservatoryContent.Comet=>new(EnemyMotionKind.Beast,EnemyStrikeStyle.Claw,1.3f,0,1.1f,80,new Color(.55f,.8f,1f)),
+            ShatteredObservatoryContent.Curator=>new(EnemyMotionKind.Colossus,EnemyStrikeStyle.Blade,1.5f,4,.8f,40,new Color(.78f,.7f,1f)),
             _=>new(EnemyMotionKind.Knight,EnemyStrikeStyle.Blade,1f,0,1f,50,new Color(1f,.62f,.36f))
         };
         private static float WildBodyScale(EnemyDef enemy)=>enemy?.id switch
@@ -294,6 +367,10 @@ namespace GildedFate.UI
             HollowwoodContent.BroodPod=>1.05f,HollowwoodContent.Sporeling=>.58f,HollowwoodContent.Bloomfang=>1.05f,HollowwoodContent.Parasite=>1.05f,
             HollowwoodContent.ElderHusk=>1.1f,HollowwoodContent.GardenMother=>1.3f,HollowwoodContent.Thornbud=>.7f,HollowwoodContent.Bloombud=>.68f,
             HollowwoodContent.Huskbud=>.7f,HollowwoodContent.WalkingGrove=>1.45f,HollowwoodContent.PaleGardener=>1.3f,HollowwoodContent.Heartroot=>1.7f,
+            ShatteredObservatoryContent.Scribe=>.95f,ShatteredObservatoryContent.Sentinel=>1.05f,ShatteredObservatoryContent.Attendant=>.98f,ShatteredObservatoryContent.Chronoglyph=>1f,
+            ShatteredObservatoryContent.Lenskeeper=>1.05f,ShatteredObservatoryContent.Weaver=>1f,ShatteredObservatoryContent.StarFragment=>.6f,ShatteredObservatoryContent.Monk=>1.05f,
+            ShatteredObservatoryContent.Astrologer=>1f,ShatteredObservatoryContent.OrreryKeeper=>1.3f,ShatteredObservatoryContent.SunFragment=>.72f,ShatteredObservatoryContent.MoonFragment=>.7f,
+            ShatteredObservatoryContent.BlindSeer=>1.3f,ShatteredObservatoryContent.Comet=>1.3f,ShatteredObservatoryContent.Curator=>1.7f,
             _=>enemy?.boss==true?1.4f:enemy?.elite==true?1.2f:1f
         };
     }

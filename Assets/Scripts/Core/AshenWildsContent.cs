@@ -9,22 +9,23 @@ namespace GildedFate.Core
     public static class ActThemes
     {
         public const string Vault="";
-        public const string AshenWilds="ashen_wilds",DrownedQuarter="drowned_quarter",CrimsonFoundry="crimson_foundry",Hollowwood="hollowwood";
+        public const string AshenWilds="ashen_wilds",DrownedQuarter="drowned_quarter",CrimsonFoundry="crimson_foundry",Hollowwood="hollowwood",ShatteredObservatory="shattered_observatory";
         // Implemented themes per act. The original Vault roster stands in for the themes that
-        // do not exist yet (Gilded Ruins in Act 1; Shattered Observatory in Act 2).
+        // do not exist yet (Gilded Ruins in Act 1). Act 2 rolls the Vault or one of three themes.
         public static string[] ForAct(int act)=>act switch
         {
             1=>new[]{Vault,AshenWilds,DrownedQuarter},
-            2=>new[]{Vault,CrimsonFoundry,Hollowwood},
+            2=>new[]{Vault,CrimsonFoundry,Hollowwood,ShatteredObservatory},
             _=>new[]{Vault}
         };
-        public static string Name(string theme)=>theme switch{AshenWilds=>"ASHEN WILDS",DrownedQuarter=>"THE DROWNED QUARTER",CrimsonFoundry=>"THE CRIMSON FOUNDRY",Hollowwood=>"HOLLOWWOOD",_=>"THE GILDED VAULT"};
+        public static string Name(string theme)=>theme switch{AshenWilds=>"ASHEN WILDS",DrownedQuarter=>"THE DROWNED QUARTER",CrimsonFoundry=>"THE CRIMSON FOUNDRY",Hollowwood=>"HOLLOWWOOD",ShatteredObservatory=>"THE SHATTERED OBSERVATORY",_=>"THE GILDED VAULT"};
         public static string Tagline(string theme)=>theme switch
         {
             AshenWilds=>"A burned wilderness fighting to regrow · Pack Instinct",
             DrownedQuarter=>"A sinking city district · Delayed threats you can see coming",
             CrimsonFoundry=>"A war factory that never stopped · Heat",
             Hollowwood=>"A forest that grows through everything · Growth",
+            ShatteredObservatory=>"A broken tower that reads the future · Prediction",
             _=>"The vault's original keepers"
         };
         public static string Roll(int act,int seed)

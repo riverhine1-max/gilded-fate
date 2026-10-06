@@ -3,8 +3,8 @@
 A forest that grows through everything. The combat identity is **Growth**: creatures that grow
 toward a "Bloom" action, are accelerated by Supports, or transform at fixed health thresholds.
 
-Act 2 rolls The Vault, The Crimson Foundry or Hollowwood (about one third each). Shattered
-Observatory is still to come.
+Act 2 rolls four ways: The Vault, The Crimson Foundry, Hollowwood or the Shattered Observatory
+(about a quarter each). See `ShatteredObservatory.md`.
 
 ## Files
 
