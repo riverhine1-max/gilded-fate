@@ -10,8 +10,10 @@ namespace GildedFate.Combat
     [Serializable] public sealed class WildMind
     {
         public int uid,ownerUid=-1,step,step2,phase=1,diedTurn=-1,summonedTurn=-1,plannedValue,counter;
-        public string state="",planned="",lastMove="";
-        public bool minion,dead,mourning,fled;
+        public string state="",planned="",lastMove="",prior="",lastSeed="";
+        // flag: per-enemy one-shot (Forgemaster Reassemble used, Iron Saint resummon used, must-vent);
+        // hold: the planned move is an override that keeps the pattern position.
+        public bool minion,dead,mourning,fled,flag,hold;
         public WildMind Copy()=>(WildMind)MemberwiseClone();
     }
 
@@ -69,7 +71,7 @@ namespace GildedFate.Combat
             for(var i=0;i<expanded.Count;i++)
             {
                 var (id,owner)=expanded[i];var def=WildDef(id)??Array.Find(WorldContent.Enemies,e=>e.id==id);
-                var hp=def.minion||def.elite||def.boss||!groupedNormals?def.hp:EncounterContent.GroupHp(def.hp);
+                var hp=def.minion||def.elite||def.boss||!groupedNormals?def.hp:EncounterContent.GroupHp(def.hp,ThemeRosters.GroupHpPercent(def));
                 uids[i]=nextWildUid++;
                 var mind=new WildMind{uid=uids[i],ownerUid=owner>=0?uids[owner]:-1,minion=def.minion};
                 ResetWildState(mind,id);
@@ -80,7 +82,7 @@ namespace GildedFate.Combat
         private static void ResetWildState(WildMind m,string id)
         {
             m.state=id switch{AshenWildsContent.Maw=>"HUNGRY",AshenWildsContent.Hart=>"CROWNED",AshenWildsContent.Titan=>"ROOTED",_=>""};
-            ResetDrownedState(m,id);
+            ResetDrownedState(m,id);ResetFoundryState(m,id);
         }
 
         // ---------- planning ----------
@@ -171,11 +173,13 @@ namespace GildedFate.Combat
                 case AshenWildsContent.Whelp:return Cycle(m,2)==0?"cinder_bite":"heated_pounce";
                 case AshenWildsContent.Runner:return Cycle(m,2)==0?"scorching_swipe":"fleet_guard";
             }
-            return ChooseDrownedMove(m)??"strike";
+            m.hold=false;return ChooseDrownedMove(m)??ChooseFoundryMove(m)??"strike";
         }
+        // The Minion type this owner would create right now (the Forgemaster rebuilds whichever Drone is missing).
+        private string SummonTypeAt(int ownerIndex)=>EnemyIdAt(ownerIndex)==CrimsonFoundryContent.Forgemaster?MissingForgemasterDrone(ownerIndex):SummonFor(EnemyIdAt(ownerIndex));
         private bool CanSummon(int ownerIndex)
         {
-            var id=EnemyIdAt(ownerIndex);var type=SummonFor(id);if(string.IsNullOrEmpty(type))return false;
+            var id=EnemyIdAt(ownerIndex);var type=SummonTypeAt(ownerIndex);if(string.IsNullOrEmpty(type))return false;
             if(OwnedMinions(ownerIndex).Count()>=MinionCap(id)||LivingBodies>=MaxBattlefieldBodies)return false;
             return opponents.Count<MaxBattlefieldBodies||ReusableMinionSlot()>=0;
         }
@@ -260,7 +264,7 @@ namespace GildedFate.Combat
                 case "scorching_swipe":return new[]{P(A,5),P(EnemyActionType.Weak,1)};
                 case "fleet_guard":return new[]{P(B,7)};
             }
-            return DrownedActions(move,m)??new[]{P(A,Math.Max(1,enemyBaseDamage))};
+            return DrownedActions(move,m)??FoundryActions(move,m)??new[]{P(A,Math.Max(1,enemyBaseDamage))};
         }
         private string WildMoveLabel(string move,WildMind m)=>move switch
         {
@@ -309,9 +313,9 @@ namespace GildedFate.Combat
             if(move=="mourning_cry"){m.mourning=false;}
             else if(enemyId==AshenWildsContent.Packmother&&(move=="bereaved_fury"||move=="alpha_maul"&&!OwnedMinions(enemyContextIndex).Any()))m.step2++;
             else if(enemyId==AshenWildsContent.Maw){m.state=m.state switch{"HUNGRY"=>"FED","FED"=>"BURNING",_=>"HUNGRY"};EmitHook("hollow_maw_state:"+m.state);}
-            else if(!BeginDrownedAction(m,move))m.step++;
+            else if(!BeginDrownedAction(m,move)&&!BeginFoundryAction(m,move))m.step++;
         }
-        private void EndWildAction(){var m=Mind;if(m!=null&&m.minion)m.lastMove=m.planned;m.planned="";}
+        private void EndWildAction(){var m=Mind;if(m==null)return;if(m.minion)m.lastMove=m.planned;m.prior=m.planned;m.planned="";m.hold=false;}
         private void EmitHook(string name)=>Emit(CombatEventKind.Hook,0,false,null,"HOOK:"+name);
 
         private void ExecuteWildAction(PlannedEnemyAction action)
@@ -358,7 +362,7 @@ namespace GildedFate.Combat
         private void WildSummon(int ownerIndex)
         {
             if(!CanSummon(ownerIndex))return;
-            var ownerMind=MindAt(ownerIndex);var id=SummonFor(EnemyIdAt(ownerIndex));var def=WildDef(id);
+            var ownerMind=MindAt(ownerIndex);var id=SummonTypeAt(ownerIndex);var def=WildDef(id);
             var hp=Math.Max(1,(int)Math.Round(def.hp*summonHpPercent/100.0));
             var created=new CombatOpponent{id=id,baseDamage=def.baseDamage,fighter=new FighterState{hp=hp,maxHp=hp,strength=summonStrength},
                 mind=new WildMind{uid=nextWildUid++,ownerUid=ownerMind.uid,minion=true,summonedTurn=turn}};
@@ -366,7 +370,7 @@ namespace GildedFate.Combat
             var slot=opponents.Count<MaxBattlefieldBodies?-1:ReusableMinionSlot();
             if(slot>=0)opponents[slot]=created;else{opponents.Add(created);slot=opponents.Count-1;}
             created.intent=IntentKind.Unknown;created.intentLabel="SUMMONED";
-            InEnemyContext(slot,()=>{Emit(CombatEventKind.Status,1,false,null,"SUMMONED");if(id==DrownedQuarterContent.Hand)EmitHook("drowned_hand_spawn");});
+            InEnemyContext(slot,()=>{Emit(CombatEventKind.Status,1,false,null,"SUMMONED");if(id==DrownedQuarterContent.Hand)EmitHook("drowned_hand_spawn");else if(id==CrimsonFoundryContent.ScrapDrone)EmitHook("scrap_drone_spawn");else if(id==HollowwoodContent.Sporeling)EmitHook("sporeling_spawn");else if(id==HollowwoodContent.Huskbud)EmitHook("huskbud_spawn");});
             rosterVersion++;
         }
         private void WildCommand(int ownerIndex)
@@ -414,7 +418,7 @@ namespace GildedFate.Combat
         private void OnWildDeath(int index)
         {
             var m=MindAt(index);var id=EnemyIdAt(index);
-            if(m.minion)InEnemyContext(index,()=>EmitHook(id==AshenWildsContent.Sapling?"sapling_death":id==DrownedQuarterContent.Hand?"drowned_hand_death":"minion_death"));
+            if(m.minion)InEnemyContext(index,()=>EmitHook(id==AshenWildsContent.Sapling?"sapling_death":id==DrownedQuarterContent.Hand?"drowned_hand_death":id==HollowwoodContent.Sporeling?"sporeling_death":"minion_death"));
             // Owner death: every Minion it owns withers immediately (no rewards of their own).
             foreach(var k in Enumerable.Range(0,opponents.Count).Where(k=>opponents[k].fighter.hp>0&&opponents[k].mind?.ownerUid==m.uid).ToArray())
             {opponents[k].fighter.hp=0;InEnemyContext(k,()=>EmitHook("minion_withers"));}

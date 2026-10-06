@@ -9,15 +9,22 @@ namespace GildedFate.Core
     public static class ActThemes
     {
         public const string Vault="";
-        public const string AshenWilds="ashen_wilds",DrownedQuarter="drowned_quarter";
-        // Implemented themes per act. Until Gilded Ruins exists, the original Vault roster
-        // stands in for it as Act 1's third theme.
-        public static string[] ForAct(int act)=>act==1?new[]{Vault,AshenWilds,DrownedQuarter}:new[]{Vault};
-        public static string Name(string theme)=>theme switch{AshenWilds=>"ASHEN WILDS",DrownedQuarter=>"THE DROWNED QUARTER",_=>"THE GILDED VAULT"};
+        public const string AshenWilds="ashen_wilds",DrownedQuarter="drowned_quarter",CrimsonFoundry="crimson_foundry",Hollowwood="hollowwood";
+        // Implemented themes per act. The original Vault roster stands in for the themes that
+        // do not exist yet (Gilded Ruins in Act 1; Shattered Observatory in Act 2).
+        public static string[] ForAct(int act)=>act switch
+        {
+            1=>new[]{Vault,AshenWilds,DrownedQuarter},
+            2=>new[]{Vault,CrimsonFoundry,Hollowwood},
+            _=>new[]{Vault}
+        };
+        public static string Name(string theme)=>theme switch{AshenWilds=>"ASHEN WILDS",DrownedQuarter=>"THE DROWNED QUARTER",CrimsonFoundry=>"THE CRIMSON FOUNDRY",Hollowwood=>"HOLLOWWOOD",_=>"THE GILDED VAULT"};
         public static string Tagline(string theme)=>theme switch
         {
             AshenWilds=>"A burned wilderness fighting to regrow · Pack Instinct",
             DrownedQuarter=>"A sinking city district · Delayed threats you can see coming",
+            CrimsonFoundry=>"A war factory that never stopped · Heat",
+            Hollowwood=>"A forest that grows through everything · Growth",
             _=>"The vault's original keepers"
         };
         public static string Roll(int act,int seed)

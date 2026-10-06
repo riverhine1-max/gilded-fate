@@ -1118,7 +1118,7 @@ namespace GildedFate.UI
         private void DrawEnemyIntentAndEffects()
         {
             DrawEnemyIntentGroup(0);
-            var foe=EnemyPortraitRect;
+            var foe=EnemyPortraitRect;if(combat.wildCombat)DrawWildCounter(0,foe);
             if(CombatInspectionAllowed&&foe.Contains(combatPointer))
                 SetCombatEffectTooltip(currentEnemy?.name??"ENEMY",ActorEffectSummary(EnemyEffectChips())+WildTooltipSuffix(0),foe.center);
         }

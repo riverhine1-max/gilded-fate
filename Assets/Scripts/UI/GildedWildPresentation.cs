@@ -16,9 +16,15 @@ namespace GildedFate.UI
         private readonly List<WildCallout> wildCallouts=new();
 
         // Phase bosses' art follows their phase: Art/Enemies/<id>(_phase2|_phase3).
-        private string EnemyArtId(string id)
+        // The Hollow Parasite's exposed form uses <id>_phase2 too (it is looked up by creature index).
+        private string EnemyArtId(string id,int index=-1)
         {
-            if(id!=AshenWildsContent.Alpha&&id!=DrownedQuarterContent.Magistrate||combat==null||screen!=ScreenMode.Combat)return id;
+            if(combat!=null&&screen==ScreenMode.Combat&&id==HollowwoodContent.Parasite)
+            {
+                var pm=index>=0?combat.MindAt(index):null;
+                return pm!=null&&pm.state=="EXPOSED"?id+"_phase2":id;
+            }
+            if(id!=AshenWildsContent.Alpha&&id!=DrownedQuarterContent.Magistrate&&id!=CrimsonFoundryContent.Saint&&id!=HollowwoodContent.Heartroot||combat==null||screen!=ScreenMode.Combat)return id;
             var boss=combat.WildBossIndex;var phase=boss>=0?combat.MindAt(boss)?.phase??1:1;
             return phase>=3?id+"_phase3":phase==2?id+"_phase2":id;
         }
@@ -26,7 +32,7 @@ namespace GildedFate.UI
         {
             if(combat==null||index<0||index>=finalEnemyDefs.Length)return;
             var def=WorldContent.Enemies.FirstOrDefault(e=>e.id==combat.EnemyIdAt(index));
-            finalEnemyDefs[index]=def;finalEnemyTextures[index]=def==null?null:LoadAuthoredArt(GildedArtCatalog.EnemyResource(EnemyArtId(def.id)));
+            finalEnemyDefs[index]=def;finalEnemyTextures[index]=def==null?null:LoadAuthoredArt(GildedArtCatalog.EnemyResource(EnemyArtId(def.id,index)));
         }
 
         // Combat hook receipts (CombatEventKind.Hook). Final animation work attaches here later.
@@ -37,7 +43,45 @@ namespace GildedFate.UI
             switch(name)
             {
                 case "cinder_alpha_phase2":case "cinder_alpha_phase3":
-                case "drowned_magistrate_phase2":case "drowned_magistrate_phase3":RefreshEnemyArt(fact.enemyIndex);return; // the boss phase cinematic owns the banner
+                case "drowned_magistrate_phase2":case "drowned_magistrate_phase3":
+                case "iron_saint_phase2":case "iron_saint_phase3":
+                case "heartroot_phase2":case "heartroot_phase3":RefreshEnemyArt(fact.enemyIndex);return; // the boss phase cinematic owns the banner
+                // ---- Crimson Foundry ----
+                case "foundry_overheated":text="OVERHEATED";color=new Color(1f,.38f,.16f);break;
+                case "foundry_vent":text="VENT";color=new Color(.85f,.85f,.8f);break;
+                case "furnace_hound_redline_pounce":text="REDLINE POUNCE";color=new Color(1f,.5f,.2f);break;
+                case "rivet_priest_stoke":text="STOKED";color=new Color(1f,.6f,.25f);break;
+                case "assembly_master_summon":text="DRONE DEPLOYED";color=new Color(.9f,.8f,.55f);break;
+                case "assembly_master_repair":text="REPAIRED";color=new Color(.6f,.9f,.6f);break;
+                case "assembly_master_command":case "forgemaster_command":text="COMMAND";color=new Color(1f,.85f,.45f);break;
+                case "molten_carrier_spill":text="MOLTEN SPILL";color=new Color(1f,.45f,.15f);break;
+                case "redline_automaton_overdrive":text="OVERDRIVE";color=new Color(1f,.4f,.25f);break;
+                case "forgemaster_overload":text="FORGE OVERLOAD";color=new Color(1f,.42f,.18f);break;
+                case "forgemaster_reassemble":text="REASSEMBLED";color=new Color(.9f,.8f,.55f);break;
+                case "smelter_layer_break":text="ARMOR MELTS";color=new Color(1f,.6f,.3f);break;
+                case "smelter_exposed_core":text="CORE EXPOSED";color=new Color(1f,.4f,.2f);break;
+                case "saint_servitor_destroyed":text="THE SERVITOR FALLS";color=new Color(.75f,.72f,.68f);break;
+                case "iron_saint_redline_judgment":text="REDLINE JUDGMENT";color=new Color(1f,.32f,.15f);break;
+                // ---- Hollowwood ----
+                case "growth_three":text="FULL GROWTH";color=new Color(.6f,.95f,.45f);break;
+                case "sproutling_bloom_burst":text="BLOOM BURST";color=new Color(.85f,.55f,.95f);break;
+                case "hollow_stag_crown_bloom":text="CROWN BLOOM";color=new Color(.85f,.55f,.95f);break;
+                case "sporekeeper_acceleration":text="GROWTH ACCELERATED";color=new Color(.6f,.95f,.45f);break;
+                case "root_snare_tighten":text="ROOTS TIGHTEN";color=new Color(.8f,.65f,.45f);break;
+                case "brood_pod_hatch":text="HATCH";color=new Color(.95f,.9f,.4f);break;
+                case "brood_pod_command":case "garden_mother_command":text="COMMAND";color=new Color(1f,.85f,.45f);break;
+                case "sporeling_spawn":text="SPORELING HATCHES";color=new Color(.7f,.95f,.5f);break;
+                case "huskbud_spawn":case "garden_mother_huskbud_replacement":text="HUSKBUD TAKES ITS PLACE";color=new Color(.85f,.8f,.6f);break;
+                case "sporeling_death":text="WITHERS";color=new Color(.7f,.7f,.66f);break;
+                case "bloomfang_full_bloom":text="FULL BLOOM";color=new Color(.9f,.5f,.95f);break;
+                case "hollow_parasite_host_break":RefreshEnemyArt(fact.enemyIndex);text="THE HOST BREAKS · EXPOSED";color=new Color(.9f,.5f,.4f);break;
+                case "garden_mother_cultivate":text="CULTIVATE";color=new Color(.6f,.95f,.45f);break;
+                case "garden_mother_grand_bloom":text="GRAND BLOOM";color=new Color(.9f,.5f,.95f);break;
+                case "walking_grove_stage2":text="THE BRANCHES WAKE";color=new Color(.65f,.9f,.45f);break;
+                case "walking_grove_stage3":text="THE CROWN WAKES";color=new Color(.8f,.95f,.5f);break;
+                case "heartroot_heart_bloom":text="HEART BLOOM";color=new Color(.95f,.5f,.8f);break;
+                case "heartroot_spreading_bloom":text="SPREADING BLOOM";color=new Color(.95f,.5f,.8f);break;
+                case "heartroot_final_bloom":text="FINAL BLOOM";color=new Color(1f,.45f,.7f);break;
                 // ---- Drowned Quarter ----
                 case "drowned_lurker_submerge":text="SUBMERGES · SURFACE STRIKE NEXT";color=new Color(.45f,.8f,.85f);break;
                 case "drowned_lurker_surface_strike":text="SURFACES";color=new Color(.55f,.9f,.95f);break;
@@ -69,11 +113,17 @@ namespace GildedFate.UI
                 case "root_titan_uproot":text="UPROOTED";color=new Color(1f,.6f,.3f);break;
                 case "root_titan_root":text="ROOTED";color=new Color(.6f,.9f,.55f);break;
                 default:
+                    if(name.StartsWith("elder_husk_state:")){text=name.Substring(17);color=text=="BLOOMING"?new Color(.9f,.55f,.95f):text=="WITHERED"?new Color(.75f,.7f,.55f):new Color(.6f,.85f,.45f);break;}
+                    if(name.StartsWith("pale_gardener_seed_planted:")){text="PLANTED SEED: "+SeedLabel(name.Substring(27));color=new Color(.85f,.9f,.75f);break;}
+                    if(name.StartsWith("pale_gardener_seed_resolved:")){text=SeedLabel(name.Substring(28))+" BLOOMS";color=new Color(.95f,.6f,.5f);break;}
+                    if(name.StartsWith("prototype_zero_mode:")){text=name.Substring(20)+" MODE";color=new Color(1f,.6f,.4f);break;}
+                    if(name.StartsWith("crucible_knight_state:")){text=name.Substring(22);color=text=="COLD"?new Color(.7f,.8f,.9f):new Color(1f,.5f,.25f);break;}
                     if(name.StartsWith("hollow_maw_state:")){text=name.Substring(17);color=text=="BURNING"?new Color(1f,.42f,.2f):text=="FED"?new Color(.6f,.9f,.6f):new Color(1f,.85f,.6f);}
                     break;
             }
             if(text!=null)wildCallouts.Add(new WildCallout{index=fact.enemyIndex,text=text,at=at,color=color});
         }
+        private static string SeedLabel(string seed)=>seed switch{"THORN"=>"THORN SEED","WARD"=>"WARD SEED","ROT"=>"ROT SEED","BLOOM"=>"BLOOM SEED",_=>seed};
         private void DrawWildCallouts()
         {
             if(combat==null||wildCallouts.Count==0)return;var now=Time.unscaledTime;
@@ -103,10 +153,51 @@ namespace GildedFate.UI
         private bool DrawWildIntentIcon(EnemyIntentAction action,Rect icon)
         {
             if(action.Icon<EnemyIntentAction.IconSummon)return false;
-            var art=MetaArt(action.Icon==EnemyIntentAction.IconSummon?"SummonIcon":"MinionIcon");
+            if(action.Icon==EnemyIntentAction.IconLoad)
+            {
+                GUI.Label(icon,"LOAD",new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=11,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(1f,.6f,.25f)}});
+                return true;
+            }
+            if(action.Icon==EnemyIntentAction.IconGrowth)
+            {
+                GUI.Label(icon,action.type==EnemyActionType.PlantSeed?"SEED":"GROWTH",new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=10,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(.6f,.95f,.45f)}});
+                return true;
+            }
+            var art=MetaArt(action.Icon==EnemyIntentAction.IconSummon?"SummonIcon":action.Icon==EnemyIntentAction.IconHeat?"HeatIcon":"MinionIcon");
             if(art)GUI.DrawTexture(new Rect(icon.x+icon.width*.1f,icon.y+icon.height*.08f,icon.width*.8f,icon.height*.84f),art,ScaleMode.ScaleToFit,true);
             else GUI.Label(icon,action.Icon==EnemyIntentAction.IconSummon?"+":"⟳",new GUIStyle(titleStyle){fontSize=22,alignment=TextAnchor.MiddleCenter});
             return true;
+        }
+        // Enemy-specific counter (Heat, Load, Armor, Strings, Pressure or Prototype Zero's mode),
+        // drawn at the top-right of the body instead of cluttering the buff row.
+        private void DrawWildCounter(int index,Rect portrait)
+        {
+            if(combat==null||!combat.WildCounter(index,out var label,out var value,out var max))return;
+            var heat=label=="HEAT";var mode=label is "ASSAULT" or "DEFENSE" or "OVERDRIVE"||max<=0;
+            var growth=label.EndsWith("GROWTH");
+            var text=mode?label:heat?$"{value}/{max}":$"{label} {value}/{max}";
+            var style=new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=13,alignment=TextAnchor.MiddleCenter};
+            var width=Mathf.Max(56,style.CalcSize(new GUIContent(text)).x+(heat?34:16));
+            var r=new Rect(portrait.xMax-width+6,portrait.y+4,width,26);
+            var full=!mode&&value>=max&&(label is "HEAT" or "LOAD" or "PRESSURE"||growth);
+            var accent=growth||max<=0?new Color(.62f,.9f,.42f):heat?new Color(1f,.45f,.16f):label=="LOAD"?new Color(1f,.62f,.24f):label=="ARMOR"?new Color(.78f,.74f,.68f):mode?new Color(1f,.55f,.35f):new Color(.6f,.85f,.9f);
+            var pulse=full&&!profile.reduceMotion?.55f+.45f*Mathf.Sin(Time.unscaledTime*6f):1f;
+            Fill(r,new Color(.04f,.025f,.02f,.8f));Outline(r,new Color(accent.r,accent.g,accent.b,full?pulse:.75f),full?2:1);
+            var textRect=r;
+            if(heat)
+            {
+                var art=MetaArt("HeatIcon");var ic=new Rect(r.x+4,r.y+2,22,22);
+                if(art)GUI.DrawTexture(ic,art,ScaleMode.ScaleToFit,true);else GUI.Label(ic,"♨",style);
+                textRect=new Rect(r.x+24,r.y,r.width-26,r.height);
+            }
+            style.normal.textColor=full?new Color(1f,.5f,.3f):new Color(1f,.92f,.82f);GUI.Label(textRect,text,style);
+            if(CombatInspectionAllowed&&r.Contains(combatPointer))
+            {
+                var title=heat?(value>=max?"HEAT · OVERHEATED":"HEAT"):max<=0?label:mode?"OPERATING MODE":label;
+                var help=heat?$"Heat {value}/{max}. Certain actions increase Heat. High Heat may strengthen this enemy's actions. Some enemies Vent to reduce or reset Heat."
+                    :combat.WildStateText(index);
+                SetCombatEffectTooltip(title,help,r.center);
+            }
         }
         private string WildTooltipSuffix(int index)
         {
@@ -151,6 +242,38 @@ namespace GildedFate.UI
             DrownedQuarterContent.Engine=>new(EnemyMotionKind.Colossus,EnemyStrikeStyle.Crush,1.5f,0,.75f,40,new Color(.45f,.9f,1f)),
             DrownedQuarterContent.Magistrate=>new(EnemyMotionKind.Colossus,EnemyStrikeStyle.Crush,1.5f,0,.75f,44,new Color(.4f,.9f,.85f)),
             DrownedQuarterContent.Bailiff=>new(EnemyMotionKind.Spirit,EnemyStrikeStyle.Spectral,.7f,8,1.2f,40,new Color(.5f,.85f,1f)),
+            CrimsonFoundryContent.Forgehand=>new(EnemyMotionKind.Brute,EnemyStrikeStyle.Slam,1.05f,0,1f,52,new Color(1f,.48f,.18f)),
+            CrimsonFoundryContent.Hound=>new(EnemyMotionKind.Beast,EnemyStrikeStyle.Bite,.8f,0,1.5f,82,new Color(1f,.45f,.15f)),
+            CrimsonFoundryContent.RivetPriest=>new(EnemyMotionKind.Caster,EnemyStrikeStyle.Bolt,.85f,4,1f,20,new Color(1f,.6f,.3f)),
+            CrimsonFoundryContent.ChainWarden=>new(EnemyMotionKind.Knight,EnemyStrikeStyle.Grab,1.05f,0,1f,60,new Color(.95f,.4f,.25f)),
+            CrimsonFoundryContent.AssemblyMaster=>new(EnemyMotionKind.Caster,EnemyStrikeStyle.Blade,.9f,2,1.05f,40,new Color(1f,.7f,.4f)),
+            CrimsonFoundryContent.ScrapDrone=>new(EnemyMotionKind.Crawler,EnemyStrikeStyle.Claw,.5f,0,1.6f,56,new Color(1f,.6f,.3f)),
+            CrimsonFoundryContent.Knight=>new(EnemyMotionKind.Knight,EnemyStrikeStyle.Cleave,1.15f,0,.95f,62,new Color(1f,.45f,.18f)),
+            CrimsonFoundryContent.Carrier=>new(EnemyMotionKind.Brute,EnemyStrikeStyle.Crush,1.3f,0,.85f,46,new Color(1f,.55f,.15f)),
+            CrimsonFoundryContent.Automaton=>new(EnemyMotionKind.Knight,EnemyStrikeStyle.Blade,.75f,0,1.5f,84,new Color(1f,.35f,.2f)),
+            CrimsonFoundryContent.Forgemaster=>new(EnemyMotionKind.Brute,EnemyStrikeStyle.Slam,1.35f,0,.9f,58,new Color(1f,.5f,.2f)),
+            CrimsonFoundryContent.HammerDrone=>new(EnemyMotionKind.Brute,EnemyStrikeStyle.Slam,.75f,0,1.2f,52,new Color(1f,.5f,.2f)),
+            CrimsonFoundryContent.ShieldDrone=>new(EnemyMotionKind.Knight,EnemyStrikeStyle.Slam,.8f,0,1.1f,48,new Color(.95f,.75f,.5f)),
+            CrimsonFoundryContent.Smelter=>new(EnemyMotionKind.Colossus,EnemyStrikeStyle.Crush,1.5f,0,.75f,40,new Color(1f,.45f,.12f)),
+            CrimsonFoundryContent.Prototype=>new(EnemyMotionKind.Knight,EnemyStrikeStyle.Blade,1.1f,0,1.4f,86,new Color(1f,.35f,.25f)),
+            CrimsonFoundryContent.Saint=>new(EnemyMotionKind.Colossus,EnemyStrikeStyle.Crush,1.6f,0,.75f,44,new Color(1f,.5f,.18f)),
+            CrimsonFoundryContent.Servitor=>new(EnemyMotionKind.Caster,EnemyStrikeStyle.Bolt,.8f,4,1.1f,30,new Color(1f,.7f,.4f)),
+            HollowwoodContent.Sproutling=>new(EnemyMotionKind.Crawler,EnemyStrikeStyle.Fang,.6f,0,1.4f,50,new Color(.7f,.95f,.4f)),
+            HollowwoodContent.Stag=>new(EnemyMotionKind.Beast,EnemyStrikeStyle.Cleave,1.15f,0,.95f,66,new Color(.75f,.95f,.7f)),
+            HollowwoodContent.Sporekeeper=>new(EnemyMotionKind.Caster,EnemyStrikeStyle.Bolt,.85f,4,1f,20,new Color(.65f,.95f,.45f)),
+            HollowwoodContent.RootSnare=>new(EnemyMotionKind.Crawler,EnemyStrikeStyle.Grab,1f,0,1.1f,56,new Color(.8f,.65f,.4f)),
+            HollowwoodContent.BroodPod=>new(EnemyMotionKind.Brute,EnemyStrikeStyle.Slam,1.1f,0,.85f,40,new Color(.9f,.9f,.4f)),
+            HollowwoodContent.Sporeling=>new(EnemyMotionKind.Crawler,EnemyStrikeStyle.Chomp,.5f,0,1.5f,46,new Color(.7f,.95f,.5f)),
+            HollowwoodContent.Bloomfang=>new(EnemyMotionKind.Beast,EnemyStrikeStyle.Fang,.9f,0,1.3f,74,new Color(.9f,.5f,.95f)),
+            HollowwoodContent.Parasite=>new(EnemyMotionKind.Beast,EnemyStrikeStyle.Claw,.85f,0,1.3f,64,new Color(.5f,.95f,.9f)),
+            HollowwoodContent.ElderHusk=>new(EnemyMotionKind.Brute,EnemyStrikeStyle.Cleave,1.2f,0,.9f,56,new Color(.7f,.85f,.5f)),
+            HollowwoodContent.GardenMother=>new(EnemyMotionKind.Caster,EnemyStrikeStyle.Grab,1.25f,2,1f,44,new Color(.75f,.55f,.9f)),
+            HollowwoodContent.Thornbud=>new(EnemyMotionKind.Crawler,EnemyStrikeStyle.Claw,.6f,0,1.4f,50,new Color(.75f,.95f,.4f)),
+            HollowwoodContent.Bloombud=>new(EnemyMotionKind.Spirit,EnemyStrikeStyle.Bolt,.5f,6,1.2f,36,new Color(.9f,.6f,.95f)),
+            HollowwoodContent.Huskbud=>new(EnemyMotionKind.Crawler,EnemyStrikeStyle.Slam,.7f,0,1.2f,48,new Color(.85f,.8f,.55f)),
+            HollowwoodContent.WalkingGrove=>new(EnemyMotionKind.Colossus,EnemyStrikeStyle.Crush,1.5f,0,.75f,40,new Color(.65f,.9f,.45f)),
+            HollowwoodContent.PaleGardener=>new(EnemyMotionKind.Knight,EnemyStrikeStyle.Blade,1.1f,0,1.1f,64,new Color(.85f,.9f,.7f)),
+            HollowwoodContent.Heartroot=>new(EnemyMotionKind.Colossus,EnemyStrikeStyle.Crush,1.6f,0,.75f,44,new Color(.95f,.5f,.8f)),
             _=>new(EnemyMotionKind.Knight,EnemyStrikeStyle.Blade,1f,0,1f,50,new Color(1f,.62f,.36f))
         };
         private static float WildBodyScale(EnemyDef enemy)=>enemy?.id switch
@@ -163,6 +286,14 @@ namespace GildedFate.UI
             DrownedQuarterContent.CanalStalker=>.95f,DrownedQuarterContent.Tidecaller=>1.02f,DrownedQuarterContent.Hand=>.55f,DrownedQuarterContent.Hulk=>1.15f,
             DrownedQuarterContent.Marionette=>1f,DrownedQuarterContent.Ferryman=>1.25f,DrownedQuarterContent.Bellkeeper=>1.2f,DrownedQuarterContent.TollThrall=>.66f,
             DrownedQuarterContent.SinkerThrall=>.7f,DrownedQuarterContent.Engine=>1.4f,DrownedQuarterContent.Magistrate=>1.65f,DrownedQuarterContent.Bailiff=>.72f,
+            CrimsonFoundryContent.Forgehand=>1f,CrimsonFoundryContent.Hound=>1.05f,CrimsonFoundryContent.RivetPriest=>1f,CrimsonFoundryContent.ChainWarden=>1.02f,
+            CrimsonFoundryContent.AssemblyMaster=>1f,CrimsonFoundryContent.ScrapDrone=>.6f,CrimsonFoundryContent.Knight=>1.08f,CrimsonFoundryContent.Carrier=>1.12f,
+            CrimsonFoundryContent.Automaton=>1.05f,CrimsonFoundryContent.Forgemaster=>1.3f,CrimsonFoundryContent.HammerDrone=>.72f,CrimsonFoundryContent.ShieldDrone=>.75f,
+            CrimsonFoundryContent.Smelter=>1.4f,CrimsonFoundryContent.Prototype=>1.3f,CrimsonFoundryContent.Saint=>1.7f,CrimsonFoundryContent.Servitor=>.8f,
+            HollowwoodContent.Sproutling=>.9f,HollowwoodContent.Stag=>1.15f,HollowwoodContent.Sporekeeper=>1.05f,HollowwoodContent.RootSnare=>1.05f,
+            HollowwoodContent.BroodPod=>1.05f,HollowwoodContent.Sporeling=>.58f,HollowwoodContent.Bloomfang=>1.05f,HollowwoodContent.Parasite=>1.05f,
+            HollowwoodContent.ElderHusk=>1.1f,HollowwoodContent.GardenMother=>1.3f,HollowwoodContent.Thornbud=>.7f,HollowwoodContent.Bloombud=>.68f,
+            HollowwoodContent.Huskbud=>.7f,HollowwoodContent.WalkingGrove=>1.45f,HollowwoodContent.PaleGardener=>1.3f,HollowwoodContent.Heartroot=>1.7f,
             _=>enemy?.boss==true?1.4f:enemy?.elite==true?1.2f:1f
         };
     }

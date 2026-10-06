@@ -207,7 +207,7 @@ namespace GildedFate.Combat
             "crushing_appeal"=>"CRUSHING APPEAL",
             "execution_gavel"=>"EXECUTION GAVEL","drowning_judgment"=>"DROWNING JUDGMENT","relentless_verdict"=>"RELENTLESS VERDICT","final_sentence"=>"FINAL SENTENCE",
             "bailiff_strike"=>"BAILIFF STRIKE","hold_court"=>"HOLD COURT",
-            _=>"STRIKE"
+            _=>FoundryMoveLabel(move,m)
         };
         // Presentation hook names for future animation / VFX (CombatEventKind.Hook "HOOK:<name>").
         private static string DrownedHook(string move)=>move switch
@@ -219,7 +219,7 @@ namespace GildedFate.Combat
             "grand_toll" or "final_ring"=>"bellkeeper_toll","bk_command"=>"bellkeeper_command",
             "intake" or "compress"=>"sunken_engine_pressure","burst_valve"=>"sunken_engine_burst_valve","vent"=>"sunken_engine_vent",
             "bailiffs_order"=>"drowned_magistrate_summon","drowned_order"=>"drowned_magistrate_order","final_sentence"=>"drowned_magistrate_final_sentence",
-            _=>""
+            _=>FoundryHook(move)
         };
 
         // ---------- resolution ----------
@@ -257,7 +257,7 @@ namespace GildedFate.Combat
                 case EnemyActionType.StrengthRandomAlly:
                 {
                     var allies=LivingAllies(self,false).Where(i=>DamageCapable(EnemyIdAt(i))).ToArray();if(allies.Length==0)break;
-                    var target=allies[NextRandom(allies.Length)];
+                    var target=allies[NextRandom(allies.Length)];wildTarget=target;
                     InEnemyContext(target,()=>{var gain=EnemyBuffAfterWither(action.amount);enemy.strength+=gain;Emit(CombatEventKind.Status,gain,false,null,"STRENGTH");});break;
                 }
                 case EnemyActionType.Pressure:
@@ -266,7 +266,7 @@ namespace GildedFate.Combat
                     if(m.counter>before)Emit(CombatEventKind.Status,m.counter-before,false,null,"PRESSURE");break;
                 }
                 case EnemyActionType.PressureRelease:{var m=Mind;if(m.counter>0)Emit(CombatEventKind.Status,-m.counter,false,null,"PRESSURE");m.counter=0;break;}
-                default:throw new InvalidOperationException("Enemy action has no executor: "+action.type);
+                default:ExecuteFoundryAction(action);break;
             }
         }
 
@@ -275,11 +275,12 @@ namespace GildedFate.Combat
         {
             var mk=opponents[k].mind;
             return mk.planned is "deep_command" or "restore_the_drowned" or "bk_command" or "drowned_chorus" or "patchwork_blessing"
-                ||mk.planned=="drowned_order"&&mk.plannedValue==1;
+                ||mk.planned=="drowned_order"&&mk.plannedValue==1||FoundryReplanOnDeath(k);
         }
         private void CheckDrownedThresholds(int index)
         {
             var o=opponents[index];var m=o.mind;var f=o.fighter;
+            if(CheckFoundryThresholds(index))return;
             if(o.id==DrownedQuarterContent.Hulk)
             {
                 if(m.state=="SHELLED"&&f.hp<=30)
@@ -339,6 +340,7 @@ namespace GildedFate.Combat
                 case DrownedQuarterContent.Magistrate:
                     lines.Add($"PHASE {m.phase} · "+(m.phase==1?"Bound Magistrate":m.phase==2?"Partially Freed Magistrate":"Freed Magistrate")
                         +(m.phase<3?" — tears further free at "+(m.phase==1?"2/3":"1/3")+" health.":""));break;
+                default:FoundryStateText(index,m,lines);break;
             }
         }
         private string DescribeDrownedAction(EnemyActionType type,int amount,EnemyIntentAction a)
@@ -350,7 +352,7 @@ namespace GildedFate.Combat
                 case EnemyActionType.Pressure:a.title="PRESSURE";return $"Gains {amount} Pressure (maximum 4). Pressure Strike deals 2 more damage per Pressure.";
                 case EnemyActionType.PressureRelease:a.title="RELEASE";return $"Its {amount} Pressure resets to 0.";
             }
-            return "";
+            return DescribeFoundryAction(type,amount,a);
         }
     }
 }

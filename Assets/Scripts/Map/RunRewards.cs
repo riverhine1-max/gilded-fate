@@ -49,12 +49,12 @@ namespace GildedFate.Map
         public void RollEncounterRewards(NodeKind kind)
         {
             if(encounterRewards?.receipt==RoomReceipt){EnsureBossRelicOffers();return;}
-            var random=new Random(RoomSeed(83443));var cards=RewardRules.Cards(hero,kind,random);
-            var relic=RewardRules.Relic(kind,random,relics);
-            var shard=RewardRules.DropsShard(kind,random.Next(100))?WorldContent.FateShards[random.Next(WorldContent.FateShards.Length)].id:"";
+            var random=new Random(RoomSeed(83443));var cards=RewardRules.Cards(hero,kind,random,act);
+            var relic=RewardRules.Relic(kind,random,relics,act);
+            var shard=RewardRules.DropsShard(kind,random.Next(100),act)?WorldContent.FateShards[random.Next(WorldContent.FateShards.Length)].id:"";
             encounterRewards=new EncounterRewards{receipt=RoomReceipt,kind=kind,cards=cards.Select(c=>c.id).ToList(),relicId=relic?.id??"",shardId=shard};
             encounterRewards.unboundDeck=relics.Contains("unbound_deck");
-            if(encounterRewards.unboundDeck)encounterRewards.cards=RewardRules.UnboundCards(kind,new Random(RoomSeed(52457))).Select(c=>c.id).ToList();
+            if(encounterRewards.unboundDeck)encounterRewards.cards=RewardRules.UnboundCards(kind,new Random(RoomSeed(52457)),4,null,act).Select(c=>c.id).ToList();
             EnsureBossRelicOffers();
         }
         private void EnsureBossRelicOffers()
@@ -93,10 +93,10 @@ namespace GildedFate.Map
             {
                 if(encounterRewards.unboundDeck)
                 {
-                    var card=RewardRules.UnboundCards(encounterRewards.kind,random,1,encounterRewards.cards)[0];
+                    var card=RewardRules.UnboundCards(encounterRewards.kind,random,1,encounterRewards.cards,act)[0];
                     encounterRewards.cards.Add(card.id);encounterRewards.extraChoices++;continue;
                 }
-                var rarity=RewardRules.CardRarity(encounterRewards.kind,random.Next(100));
+                var rarity=RewardRules.CardRarity(encounterRewards.kind,random.Next(100),act);
                 var eligible=pool.Where(c=>c.rarity==rarity&&!encounterRewards.cards.Contains(c.id)).ToArray();
                 if(eligible.Length==0)eligible=pool.Where(c=>!encounterRewards.cards.Contains(c.id)).ToArray();
                 if(eligible.Length==0)break;encounterRewards.cards.Add(eligible[random.Next(eligible.Length)].id);encounterRewards.extraChoices++;
@@ -107,8 +107,8 @@ namespace GildedFate.Map
             encounterRewards.bonusIndex++;encounterRewards.extraChoices=0;encounterRewards.cardClaimed=false;
             encounterRewards.unboundDeck=relics.Contains("unbound_deck");
             encounterRewards.cards=(encounterRewards.unboundDeck
-                ?RewardRules.UnboundCards(encounterRewards.kind,new Random(RoomSeed(52457)^encounterRewards.bonusIndex*48611))
-                :RewardRules.Cards(hero,encounterRewards.kind,new Random(RoomSeed(83443)^encounterRewards.bonusIndex*48611))).Select(c=>c.id).ToList();
+                ?RewardRules.UnboundCards(encounterRewards.kind,new Random(RoomSeed(52457)^encounterRewards.bonusIndex*48611),4,null,act)
+                :RewardRules.Cards(hero,encounterRewards.kind,new Random(RoomSeed(83443)^encounterRewards.bonusIndex*48611),act)).Select(c=>c.id).ToList();
         }
         public bool ClaimEncounterCard(string id)
         {

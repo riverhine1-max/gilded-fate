@@ -62,7 +62,7 @@ namespace GildedFate.UI
             {
                 var id=combat.EnemyIdAt(i);EnemyDef def=null;
                 foreach(var enemy in WorldContent.Enemies)if(enemy.id==id){def=enemy;break;}
-                finalEnemyDefs[i]=def;finalEnemyTextures[i]=def==null?null:LoadAuthoredArt(GildedArtCatalog.EnemyResource(EnemyArtId(def.id)));
+                finalEnemyDefs[i]=def;finalEnemyTextures[i]=def==null?null:LoadAuthoredArt(GildedArtCatalog.EnemyResource(EnemyArtId(def.id,i)));
                 finalDeathSpawned[i]=combat.EnemyAt(i).hp<=0; // restored checkpoints never replay old deaths
                 EnemyAnimFor(i,def);
             }
@@ -72,7 +72,7 @@ namespace GildedFate.UI
         {
             if(combat==null||i<0||i>=finalEnemyDefs.Length)return;
             var id=combat.EnemyIdAt(i);var def=WorldContent.Enemies.FirstOrDefault(e=>e.id==id);
-            finalEnemyDefs[i]=def;finalEnemyTextures[i]=def==null?null:LoadAuthoredArt(GildedArtCatalog.EnemyResource(EnemyArtId(def.id)));
+            finalEnemyDefs[i]=def;finalEnemyTextures[i]=def==null?null:LoadAuthoredArt(GildedArtCatalog.EnemyResource(EnemyArtId(def.id,i)));
             finalDeathSpawned[i]=combat.EnemyAt(i).hp<=0;enemyAnims[i].Clear();EnemyAnimFor(i,def);
         }
         // End of UpdateCombatPresentation (outside OnGUI).
@@ -115,6 +115,8 @@ namespace GildedFate.UI
             "vault_mother"=>lastBossPhase>=3?"THE VAULTBLOOM HARDENS · SHE GROWS STRONGER":"THE VAULTBLOOM HARDENS · HEAVY BLOCK",
             "last_dealer"=>lastBossPhase>=3?"THE BLACK HAND · CURSES DEALT · ENERGY TAXED":"THE DECK IS STACKED · CURSES DEALT",
             AshenWildsContent.Alpha=>lastBossPhase>=3?"ITS HIDE TEARS AWAY · THE PACK FLEES · A PURE DIRECT FIGHT":"THE ALPHA IGNITES · +1 STRENGTH",
+            CrimsonFoundryContent.Saint=>lastBossPhase>=3?"ITS ARMOR TEARS AWAY · OVERHEATED · HEAT 4":"THE CHAINS SNAP · THE SERVITOR FALLS · HEAT 1",
+            HollowwoodContent.Heartroot=>lastBossPhase>=3?"THE PREDATOR HEART · GROWTH RESETS TO 0":"THE HEART SPREADS · GROWTH RESETS TO 1",
             DrownedQuarterContent.Magistrate=>lastBossPhase>=3?"IT TEARS FREE OF THE COURT · THE BAILIFF SINKS":"THE COURT FLOODS · THE MAGISTRATE PULLS PARTLY FREE",
             _=>"THE VAULT REWRITES ITS COMMAND"
         };

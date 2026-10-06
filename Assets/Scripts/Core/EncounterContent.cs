@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace GildedFate.Core
 {
-    public enum EncounterTier { Opening, Early, Mid, Late, Easy, Standard, Dangerous }
+    public enum EncounterTier { Opening, Early, Mid, Late, Easy, Standard, Dangerous, Advanced }
     [Serializable] public sealed class EncounterDef
     {
         public string id;public string[] enemies;public int minimumAct,maximumAct;public EncounterTier tier;
@@ -49,7 +49,8 @@ namespace GildedFate.Core
             new("last_procession",EncounterTier.Late,3,3,"broken_knight","rune_mage","chained_brute","golden_wisp"),
             new("vault_coven",EncounterTier.Late,3,3,"masked_acolyte","ash_hound","rune_mage","broken_knight")
         };
-        public static int GroupHp(int baseHp)=>Math.Max(1,(int)Math.Round(baseHp*.9,MidpointRounding.AwayFromZero));
+        public static int GroupHp(int baseHp)=>GroupHp(baseHp,90);
+        public static int GroupHp(int baseHp,int percent)=>Math.Max(1,(int)Math.Round(baseHp*percent/100.0,MidpointRounding.AwayFromZero));
         public static EncounterTier TierFor(int act,int floor,int combatsCompleted)
             =>act==1&&combatsCompleted==0?EncounterTier.Opening:floor<=4?EncounterTier.Early:floor<=10?EncounterTier.Mid:EncounterTier.Late;
         public static EncounterDef Choose(int act,int floor,int combatsCompleted,int seed)=>Choose(act,floor,combatsCompleted,seed,ActThemes.Vault,"");
@@ -63,11 +64,20 @@ namespace GildedFate.Core
             var dangerChance=floor<=6?0:floor<=11?40:70;
             return new Random(seed^0x5DEECE).Next(100)<dangerChance?EncounterTier.Dangerous:EncounterTier.Standard;
         }
+        // Act 2 themes: no protected opening fights. Standard is common early, Advanced through
+        // the middle and Dangerous deeper into the act.
+        public static EncounterTier Act2Tier(int floor,int seed)
+        {
+            var (standard,advanced)=floor<=5?(70,25):floor<=11?(35,45):(15,40);
+            var roll=new Random(seed^0x5DEECE).Next(100);
+            return roll<standard?EncounterTier.Standard:roll<standard+advanced?EncounterTier.Advanced:EncounterTier.Dangerous;
+        }
+        public static EncounterTier ThemedTier(int act,int floor,int combatsCompleted,int seed)=>act==2?Act2Tier(floor,seed):ThemedTier(floor,combatsCompleted,seed);
         public static EncounterDef Choose(int act,int floor,int combatsCompleted,int seed,string theme,string previousId)
         {
             if(!string.IsNullOrEmpty(theme))
             {
-                var tier=ThemedTier(floor,combatsCompleted,seed);
+                var tier=ThemedTier(act,floor,combatsCompleted,seed);
                 var themed=Themed.Where(e=>(e.theme==theme||e.theme==Neutral)&&e.minimumAct<=act&&e.maximumAct>=act&&e.tier==tier).ToArray();
                 // Never the exact same formation twice in a row when alternatives exist.
                 var fresh=themed.Where(e=>e.id!=previousId).ToArray();if(fresh.Length>0)themed=fresh;

@@ -8,7 +8,11 @@ namespace GildedFate.Combat
         // Owner / Minion and ally-support actions (themed enemies).
         Summon, Command, BlockAllies, BlockPack, BlockMinions, BlockOwner, StrengthAlly, StrengthMinions, HealAlly, HealMinion, BlockTarget,
         // Drowned Quarter.
-        HealArmored, StrengthRandomAlly, Pressure, PressureRelease }
+        HealArmored, StrengthRandomAlly, Pressure, PressureRelease,
+        // Crimson Foundry.
+        Heat, HeatVent, Load, LoadRelease, LoseStrength, BlockLowestAlly, HeatAlly, HealDamagedAlly, StrengthRandomMinion,
+        // Hollowwood.
+        Growth, GrowthSet, GrowthAlly, BlockOtherAllies, HealOwner, PlantSeed }
     public enum IntentDestination { None, Hand, Draw, Discard, Deck }
     public readonly struct PlannedEnemyAction
     {
@@ -32,9 +36,13 @@ namespace GildedFate.Combat
             EnemyActionType.BlockAllies or EnemyActionType.BlockPack or EnemyActionType.BlockMinions or EnemyActionType.BlockOwner or EnemyActionType.BlockTarget=>4,
             EnemyActionType.StrengthAlly or EnemyActionType.StrengthMinions or EnemyActionType.StrengthRandomAlly or EnemyActionType.Pressure or EnemyActionType.PressureRelease=>5,EnemyActionType.HealAlly or EnemyActionType.HealMinion or EnemyActionType.HealArmored=>6,
             // Summon and Command use their own artwork (IconSummon / IconCommand), not the atlas.
+            EnemyActionType.Heat or EnemyActionType.HeatVent or EnemyActionType.HeatAlly=>IconHeat,
+            EnemyActionType.Load or EnemyActionType.LoadRelease=>IconLoad,
+            EnemyActionType.Growth or EnemyActionType.GrowthSet or EnemyActionType.GrowthAlly or EnemyActionType.PlantSeed=>IconGrowth,EnemyActionType.BlockOtherAllies=>4,EnemyActionType.HealOwner=>6,
+            EnemyActionType.BlockLowestAlly=>4,EnemyActionType.HealDamagedAlly=>6,EnemyActionType.StrengthRandomMinion=>5,EnemyActionType.LoseStrength=>5,
             EnemyActionType.Summon=>IconSummon,EnemyActionType.Command=>IconCommand,_=>19
         };
-        public const int IconSummon=100,IconCommand=101;
+        public const int IconSummon=100,IconCommand=101,IconHeat=102,IconLoad=103,IconGrowth=104;
         public static int ThreatIcon(int total)=>total<=15?0:total<=34?1:total<=49?2:3;
         public string ValueText=>type==EnemyActionType.Attack&&hits>1?amount+" × "+hits:amount.ToString();
     }
@@ -109,7 +117,7 @@ namespace GildedFate.Combat
                     {
                         var shown=DescribeEnemyAction(action);
                         // Ashen Wilds: a heal that would restore nothing is left off the intent instead of showing "0".
-                        var idleHeal=wildCombat&&shown.amount<=0&&(action.type==EnemyActionType.Heal||action.type==EnemyActionType.HealAlly||action.type==EnemyActionType.HealMinion||action.type==EnemyActionType.HealArmored);
+                        var idleHeal=wildCombat&&shown.amount<=0&&(action.type==EnemyActionType.Heal||action.type==EnemyActionType.HealAlly||action.type==EnemyActionType.HealMinion||action.type==EnemyActionType.HealArmored||action.type==EnemyActionType.HealDamagedAlly||action.type==EnemyActionType.HealOwner);
                         if(!idleHeal)intentPreviewSink[EnemyContextIndex].Add(shown);
                     }
                     switch(action.type)
@@ -129,6 +137,9 @@ namespace GildedFate.Combat
                         case EnemyActionType.Summon:case EnemyActionType.Command:case EnemyActionType.BlockAllies:case EnemyActionType.BlockPack:case EnemyActionType.BlockMinions:
                         case EnemyActionType.BlockOwner:case EnemyActionType.StrengthAlly:case EnemyActionType.StrengthMinions:case EnemyActionType.HealAlly:case EnemyActionType.HealMinion:case EnemyActionType.BlockTarget:
                         case EnemyActionType.HealArmored:case EnemyActionType.StrengthRandomAlly:case EnemyActionType.Pressure:case EnemyActionType.PressureRelease:
+                        case EnemyActionType.Heat:case EnemyActionType.HeatVent:case EnemyActionType.Load:case EnemyActionType.LoadRelease:case EnemyActionType.LoseStrength:
+                        case EnemyActionType.BlockLowestAlly:case EnemyActionType.HeatAlly:case EnemyActionType.HealDamagedAlly:case EnemyActionType.StrengthRandomMinion:
+                        case EnemyActionType.Growth:case EnemyActionType.GrowthSet:case EnemyActionType.GrowthAlly:case EnemyActionType.BlockOtherAllies:case EnemyActionType.HealOwner:case EnemyActionType.PlantSeed:
                             ExecuteWildAction(action);break;
                         default:throw new InvalidOperationException("Enemy action has no executor: "+action.type);
                     }

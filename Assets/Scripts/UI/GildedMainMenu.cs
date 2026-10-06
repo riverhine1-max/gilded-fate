@@ -1038,7 +1038,7 @@ namespace GildedFate.UI
             if(!combat.AnyEnemyAlive&&combat.player.hp>0)
             {
                 run.hp=combat.player.hp;run.gold=Mathf.Max(0,run.gold-combat.goldLost);
-                var gain=currentNode.kind==NodeKind.Boss?100:currentNode.kind==NodeKind.Elite?34:18;if(currentEnemy?.id=="collector")gain+=combat.stolenGold+10;if(run.relics.Contains("lucky_coin"))gain=Mathf.CeilToInt(gain*1.15f);gain=FateDebtGold(gain);run.pendingCombatGold=gain;run.combatGoldClaimed=false;
+                var gain=RewardRules.BaseGold(currentNode.kind,run.act);if(currentEnemy?.id=="collector")gain+=combat.stolenGold+10;if(run.relics.Contains("lucky_coin"))gain=Mathf.CeilToInt(gain*1.15f);gain=FateDebtGold(gain);run.pendingCombatGold=gain;run.combatGoldClaimed=false;
                 run.RollEncounterRewards(currentNode.kind);
                 if(newResult){profile.enemiesDefeated+=combat.NonMinionTotal;if(currentNode.kind==NodeKind.Combat)run.normalCombatsCompleted++;if(currentNode.kind==NodeKind.Elite)profile.elitesDefeated++;if(currentNode.kind==NodeKind.Boss)profile.bossesDefeated++;}
                 TrackCombatMeta(true);
