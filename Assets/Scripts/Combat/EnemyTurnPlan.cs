@@ -41,6 +41,8 @@ namespace GildedFate.Combat
         // -1 = ordinary action; 0 / 1 = one of two possibilities the enemy may choose between (never both).
         public int choice=-1;
         public string title,detail;
+        // Enemy icon (Art/UI/EnemyIcons) that replaces the ordinary intent artwork for this action, if any.
+        public string iconKey;
         public int TotalDamage=>type==EnemyActionType.Attack?amount*hits:0;
         public int Icon=>type switch
         {
@@ -60,7 +62,7 @@ namespace GildedFate.Combat
         };
         public const int IconSummon=100,IconCommand=101,IconHeat=102,IconLoad=103,IconGrowth=104,IconPlate=105,IconMomentum=106,IconReserve=107,IconFortify=108,IconBonus=109;
         public static int ThreatIcon(int total)=>total<=15?0:total<=34?1:total<=49?2:3;
-        public string ValueText=>type==EnemyActionType.Attack&&hits>1?amount+" × "+hits:amount.ToString();
+        public string ValueText=>type==EnemyActionType.Attack&&hits>1?amount+" × "+hits:type is EnemyActionType.HeatAlly?"+"+amount:amount.ToString();
     }
     public sealed partial class CombatState
     {
@@ -181,6 +183,7 @@ namespace GildedFate.Combat
                 if(copy.phase==CombatPhase.Finished||copy.EnemyAt(i).hp<=0)
                     foreach(var action in result[i]){action.prevented=true;action.detail+="\nExpected to be prevented by the known end-of-turn effects."; }
             }
+            for(var i=0;i<result.Length;i++)AssignIntentIcons(i,result[i]);
             return result;
         }
     }

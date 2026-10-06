@@ -104,9 +104,11 @@ namespace GildedFate.UI
         private void DrawPlaygroundCombatHud(float w)
         {
             if(!playgroundActive||screen!=ScreenMode.Combat)return;
-            var r=new Rect(64,50,560,40);Fill(r,new Color(.04f,.01f,.02f,.88f));Outline(r,new Color(1f,.4f,.3f),1);
+            var r=new Rect(64,50,646,40);Fill(r,new Color(.04f,.01f,.02f,.88f));Outline(r,new Color(1f,.4f,.3f),1);
             GUI.Label(new Rect(r.x+12,r.y,370,r.height),$"PLAYGROUND   DMG THIS TURN {pgTurnDamage} · TOTAL {pgTotalDamage} · BIGGEST HIT {pgBiggestHit}",new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=12,fontStyle=FontStyle.Bold,alignment=TextAnchor.MiddleLeft,normal={textColor=new Color(1f,.8f,.6f)}});
-            var restart=new Rect(r.xMax-176,r.y+5,82,30);var exit=new Rect(r.xMax-88,r.y+5,80,30);
+            var restart=new Rect(r.xMax-176,r.y+5,82,30);var exit=new Rect(r.xMax-88,r.y+5,80,30);var icons=new Rect(r.xMax-262,r.y+5,80,30);
+            DrawButtonFrame(icons,icons.Contains(PointerPosition),false);if(GUI.Button(icons,"ICONS",new GUIStyle(buttonStyle){fontSize=11}))pgIconLegend=!pgIconLegend;
+            DrawEnemyIconLegend();
             DrawButtonFrame(restart,restart.Contains(PointerPosition),false);DrawButtonFrame(exit,exit.Contains(PointerPosition),false);
             if(GUI.Button(restart,"RESTART",new GUIStyle(buttonStyle){fontSize=11})){StopAllCombatRoutines();StartPlaygroundFight();}
             if(GUI.Button(exit,"SETUP",new GUIStyle(buttonStyle){fontSize=11})){StopAllCombatRoutines();pgResult="";screen=ScreenMode.Playground;}

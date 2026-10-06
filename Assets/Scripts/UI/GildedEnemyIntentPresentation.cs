@@ -51,7 +51,7 @@ namespace GildedFate.UI
                 if(string.IsNullOrEmpty(action.title)&&(Debug.isDebugBuild||Application.isEditor)&&warnedIntentTypes.Add(action.type))Debug.LogWarning("Enemy action '"+action.type+"' has no Intent presentation.");
                 var r=IntentActionRect(owner,i);var size=r.width-10;
                 var icon=new Rect(r.center.x-size*.5f,r.y,size,size);var key=owner+":"+i;
-                var signature=action.type+":"+action.ValueText+":"+action.Icon+":"+action.prevented;
+                var signature=action.type+":"+action.ValueText+":"+action.Icon+":"+action.prevented+":"+action.iconKey;
                 if(!intentIconMotions.TryGetValue(key,out var motion)){motion=new IntentIconMotion{signature=signature,oldIcon=action.Icon,changedAt=-10};intentIconMotions[key]=motion;}
                 if(motion.signature!=signature){var previous=motion.signature.Split(':');motion.oldIcon=previous.Length>2&&int.TryParse(previous[2],out var old)?old:action.Icon;motion.signature=signature;motion.changedAt=Time.unscaledTime;}
                 var age=Time.unscaledTime-motion.changedAt;var changing=age>=0&&age<.23f;

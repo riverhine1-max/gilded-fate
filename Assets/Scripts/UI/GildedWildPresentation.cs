@@ -278,6 +278,7 @@ namespace GildedFate.UI
         // Summon and Command intents use their own artwork instead of the intent atlas.
         private bool DrawWildIntentIcon(EnemyIntentAction action,Rect icon)
         {
+            if(!string.IsNullOrEmpty(action.iconKey)&&DrawEnemyIconFit(icon,action.iconKey,IntentIconProminent(action.iconKey)))return true;
             if(action.Icon<EnemyIntentAction.IconSummon)return false;
             if(action.Icon==EnemyIntentAction.IconLoad)
             {
@@ -319,12 +320,16 @@ namespace GildedFate.UI
         private void DrawSeizedGoldPill(int index,Rect portrait)
         {
             var held=combat.SeizedGoldAt(index);if(held<=0)return;
-            var text="HOLDS "+held+" GOLD";
+            var text="SEIZED GOLD · "+held;var seizedTex=EnemyIconArt(EnemyIconRules.SeizedGold);
             var style=new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=12,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(1f,.9f,.5f)}};
-            var width=style.CalcSize(new GUIContent(text)).x+16;
+            var iconSpace=seizedTex?24f:0f;var width=style.CalcSize(new GUIContent(text)).x+16+iconSpace;
             var r=new Rect(portrait.xMax-width+6,portrait.y+34,width,22);
-            Fill(r,new Color(.12f,.08f,.02f,.88f));Outline(r,new Color(1f,.82f,.3f,.9f),1);GUI.Label(r,text,style);
-            if(CombatInspectionAllowed&&r.Contains(combatPointer))SetCombatEffectTooltip("SEIZED GOLD",$"This enemy is holding {held} of your Gold. Defeat it and the Gold comes back. It is never lost permanently and cannot take more than you have.",r.center);
+            Fill(r,new Color(.12f,.08f,.02f,.88f));Outline(r,new Color(1f,.82f,.3f,.9f),1);
+            if(seizedTex)DrawEnemyIconFit(new Rect(r.x+3,r.y+1,20,20),EnemyIconRules.SeizedGold,false);
+            GUI.Label(new Rect(r.x+iconSpace,r.y,r.width-iconSpace,r.height),text,style);
+            var seizedHelp=$"This enemy is holding {held} of your Gold. Defeat it and the Gold comes back. It is never lost permanently and cannot take more than you have.";
+            RegisterCombatHudTarget("enemy:"+index+":seized",2+index,r,"SEIZED GOLD",seizedHelp);
+            if(CombatInspectionAllowed&&r.Contains(combatPointer))SetCombatEffectTooltip("SEIZED GOLD",seizedHelp,r.center);
         }
         // Enemy-specific counter (Heat, Load, Armor, Strings, Pressure or Prototype Zero's mode),
         // drawn at the top-right of the body instead of cluttering the buff row.
@@ -337,7 +342,8 @@ namespace GildedFate.UI
             var growth=label.EndsWith("GROWTH");var predict=label.StartsWith("LAST TURN")||label.StartsWith("NO PREVIOUS")||label.StartsWith("PHASE ")||label.StartsWith("CHARGE")||label.StartsWith("BURROWED")||label=="SURFACE"||label=="ARMORED"||label=="EXPOSED"||label.StartsWith("LAST TURN")||label=="SENTENCE PREPARED"||label.StartsWith("SIEGE")||label.StartsWith("STANCE")||label.StartsWith("ROYAL")||label.StartsWith("GUARDS")||label.StartsWith("RESERVE")||label=="ROYAL COUNTERSTANCE"||label=="PIERCING ADVANCE"||label=="PERFECT MEASURE"||label.StartsWith("PENDING")||label.StartsWith("LOOP")||label.StartsWith("FORM")||label.StartsWith("STAGE")||label.StartsWith("FRAGMENTS")||label.StartsWith("COPIE")||label.StartsWith("PREVIOUS")||label=="REPEAT NEXT"||label=="NO ECHO"||label.StartsWith("SPLIT")||label.StartsWith("JUDG")||label=="ORBIT PLATES"||label=="MOMENTUM";
             var text=mode?label:heat?$"{value}/{max}":$"{label} {value}/{max}";
             var style=new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=text.Length>24?11:13,alignment=TextAnchor.MiddleCenter};
-            var width=Mathf.Max(56,style.CalcSize(new GUIContent(text)).x+(heat?34:16));
+            var counterIcon=heat?null:combat.CounterIcon(index);var counterTex=counterIcon!=null?EnemyIconArt(counterIcon):null;
+            var width=Mathf.Max(56,style.CalcSize(new GUIContent(text)).x+(heat?34:counterTex?34:16));
             var r=new Rect(portrait.xMax-width+6,portrait.y+4,width,26);
             var full=!mode&&value>=max&&(label is "HEAT" or "LOAD" or "PRESSURE" or "MOMENTUM"||growth);
             var accent=predict?new Color(.72f,.66f,1f):growth||max<=0?new Color(.62f,.9f,.42f):heat?new Color(1f,.45f,.16f):label=="LOAD"?new Color(1f,.62f,.24f):label=="ARMOR"?new Color(.78f,.74f,.68f):label.StartsWith("BONUS GOLD")||label=="RESERVE"||label.StartsWith("STATE")?new Color(1f,.84f,.4f):label.StartsWith("SENTENCE")||label=="TOLL"?new Color(1f,.45f,.32f):mode?new Color(1f,.55f,.35f):new Color(.6f,.85f,.9f);
@@ -350,13 +356,15 @@ namespace GildedFate.UI
                 if(art)GUI.DrawTexture(ic,art,ScaleMode.ScaleToFit,true);else GUI.Label(ic,"♨",style);
                 textRect=new Rect(r.x+24,r.y,r.width-26,r.height);
             }
+            if(counterTex){DrawEnemyIconFit(new Rect(r.x+3,r.y+1,26,24),counterIcon,false);textRect=new Rect(r.x+28,r.y,r.width-30,r.height);}
             style.normal.textColor=full?new Color(1f,.5f,.3f):new Color(1f,.92f,.82f);GUI.Label(textRect,text,style);
-            if(CombatInspectionAllowed&&r.Contains(combatPointer))
             {
                 var title=heat?(value>=max?"HEAT · OVERHEATED":"HEAT"):max<=0?label:mode?"OPERATING MODE":label;
                 var help=heat?$"Heat {value}/{max}. Certain actions increase Heat. High Heat may strengthen this enemy's actions. Some enemies Vent to reduce or reset Heat."
                     :combat.WildStateText(index);
-                SetCombatEffectTooltip(title,help,r.center);
+                if(counterIcon!=null){var tip=EnemyIconRules.Tip(counterIcon);if(!string.IsNullOrEmpty(tip))help=tip+(string.IsNullOrEmpty(help)?"":"\n\n"+help);}
+                RegisterCombatHudTarget("enemy:"+index+":counter",2+index,r,title,help);
+                if(CombatInspectionAllowed&&r.Contains(combatPointer))SetCombatEffectTooltip(title,help,r.center);
             }
         }
         // Prediction forecast beside an Observatory enemy: a queued Future Intent, the Chronoglyph's Future, the
@@ -374,6 +382,12 @@ namespace GildedFate.UI
             width=Mathf.Clamp(Mathf.Max(width,widest+14),200,420);
             var r=new Rect(portrait.center.x-width*.5f,portrait.yMax-h-4,width,h);
             Fill(r,new Color(.06f,.04f,.12f,.86f));Outline(r,new Color(accent.r,accent.g,accent.b,.85f),1);
+            var forecastIcon=combat.ForecastIcon(index);
+            if(forecastIcon!=null&&EnemyIconArt(forecastIcon)!=null)
+            {
+                var headWidth=small.CalcSize(new GUIContent(title)).x;
+                DrawEnemyIconFit(new Rect(r.center.x-headWidth*.5f-19,r.y+1,16,16),forecastIcon,false);
+            }
             GUI.Label(new Rect(r.x,r.y+1,r.width,15),title,small);
             var y=r.y+16;
             for(var i=0;i<lines.Count;i++)
@@ -381,7 +395,9 @@ namespace GildedFate.UI
                 GUI.Label(new Rect(r.x+3,y,r.width-6,possible?14:17),lines[i],line);y+=possible?14:17;
                 if(possible&&i<lines.Count-1){GUI.Label(new Rect(r.x,y,r.width,14),"— OR —",small);y+=14;}
             }
-            if(CombatInspectionAllowed&&r.Contains(combatPointer))SetCombatEffectTooltip(title,tip,r.center);
+            var forecastTip=forecastIcon!=null&&EnemyIconRules.Tip(forecastIcon)!=null?EnemyIconRules.Tip(forecastIcon)+"\n\n"+tip:tip;
+            RegisterCombatHudTarget("enemy:"+index+":forecast",2+index,r,title,forecastTip);
+            if(CombatInspectionAllowed&&r.Contains(combatPointer))SetCombatEffectTooltip(title,forecastTip,r.center);
         }
         private string WildTooltipSuffix(int index)
         {

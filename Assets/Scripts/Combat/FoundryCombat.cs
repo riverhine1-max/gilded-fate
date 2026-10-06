@@ -444,7 +444,7 @@ namespace GildedFate.Combat
             {
                 case EnemyActionType.Heat:a.title="HEAT";return $"Gains {amount} Heat (maximum 4). "+HeatHelp;
                 case EnemyActionType.HeatVent:a.title="VENT";return "Resets its Heat to 0.";
-                case EnemyActionType.HeatAlly:a.title="STOKE";return $"Its hottest ally below 4 Heat gains {amount} Heat.";
+                case EnemyActionType.HeatAlly:a.title="STOKE FURNACE";return $"Gives +{amount} Heat to its hottest Heat-using ally below 4 Heat.";
                 case EnemyActionType.Load:a.title="LOAD";return $"Gains {amount} Load (maximum 3). At 3 Load its next action is Molten Spill.";
                 case EnemyActionType.LoadRelease:a.title="SPILL";return "Its Load resets to 0.";
                 case EnemyActionType.LoseStrength:a.title="COOL";return $"Loses {amount} Strength (never below 0).";
