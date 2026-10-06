@@ -88,6 +88,8 @@ namespace GildedFate.Core
                 var themed=Themed.Where(e=>(e.theme==theme||e.theme==Neutral)&&e.minimumAct<=act&&e.maximumAct>=act&&e.tier==tier).ToArray();
                 // Never the exact same formation twice in a row when alternatives exist.
                 var fresh=themed.Where(e=>e.id!=previousId).ToArray();if(fresh.Length>0)themed=fresh;
+                // Act 3 pools are the largest, so half of the neutral-bearing formations get a second ticket to keep neutrals at roughly a quarter to a third of normal fights.
+                if(act==3)themed=themed.Concat(themed.Where(e=>e.enemies.Any(NeutralContent.IsNeutral)&&((e.id[e.id.Length-1]-'0')&1)==1)).ToArray();
                 if(themed.Length>0)return themed[new Random(seed).Next(themed.Length)];
             }
             return ChooseVault(act,floor,combatsCompleted,seed);

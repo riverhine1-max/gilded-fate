@@ -78,10 +78,11 @@ namespace GildedFate.Core
     // instead of a specific theme, so new themes (and Act 1 neutrals) only register here.
     public static class ThemeRosters
     {
-        public static EnemyDef Find(string id)=>AshenWildsContent.Find(id)??DrownedQuarterContent.Find(id)??CrimsonFoundryContent.Find(id)??HollowwoodContent.Find(id)??ShatteredObservatoryContent.Find(id)??GildedRuinsContent.Find(id)??BlackCathedralContent.Find(id)??FracturedRealmContent.Find(id)??GildedThroneContent.Find(id);
-        public static EnemyDef[] AllEnemies=>AshenWildsContent.Enemies.Concat(DrownedQuarterContent.Enemies).Concat(CrimsonFoundryContent.Enemies).Concat(HollowwoodContent.Enemies).Concat(ShatteredObservatoryContent.Enemies).Concat(GildedRuinsContent.Enemies).Concat(BlackCathedralContent.Enemies).Concat(FracturedRealmContent.Enemies).Concat(GildedThroneContent.Enemies).ToArray();
-        public static EncounterDef[] Formations=>AshenWildsContent.Formations.Concat(DrownedQuarterContent.Formations).Concat(CrimsonFoundryContent.Formations).Concat(HollowwoodContent.Formations).Concat(ShatteredObservatoryContent.Formations).Concat(GildedRuinsContent.Formations).Concat(BlackCathedralContent.Formations).Concat(FracturedRealmContent.Formations).Concat(GildedThroneContent.Formations).ToArray();
-        public static string[] Elites(string theme)=>theme switch
+        public static EnemyDef Find(string id)=>AshenWildsContent.Find(id)??DrownedQuarterContent.Find(id)??CrimsonFoundryContent.Find(id)??HollowwoodContent.Find(id)??ShatteredObservatoryContent.Find(id)??GildedRuinsContent.Find(id)??BlackCathedralContent.Find(id)??FracturedRealmContent.Find(id)??GildedThroneContent.Find(id)??NeutralContent.Find(id);
+        public static EnemyDef[] AllEnemies=>AshenWildsContent.Enemies.Concat(DrownedQuarterContent.Enemies).Concat(CrimsonFoundryContent.Enemies).Concat(HollowwoodContent.Enemies).Concat(ShatteredObservatoryContent.Enemies).Concat(GildedRuinsContent.Enemies).Concat(BlackCathedralContent.Enemies).Concat(FracturedRealmContent.Enemies).Concat(GildedThroneContent.Enemies).Concat(NeutralContent.Enemies).ToArray();
+        public static EncounterDef[] Formations=>AshenWildsContent.Formations.Concat(DrownedQuarterContent.Formations).Concat(CrimsonFoundryContent.Formations).Concat(HollowwoodContent.Formations).Concat(ShatteredObservatoryContent.Formations).Concat(GildedRuinsContent.Formations).Concat(BlackCathedralContent.Formations).Concat(FracturedRealmContent.Formations).Concat(GildedThroneContent.Formations).Concat(NeutralContent.Formations).ToArray();
+        public static string[] Elites(string theme){var own=ThemeElites(theme);var act=NeutralContent.ActOfTheme(theme);return act==0||own.Length==0?own:own.Append(NeutralContent.EliteForAct(act)).ToArray();}
+        private static string[] ThemeElites(string theme)=>theme switch
         {
             ActThemes.AshenWilds=>AshenWildsContent.Elites,ActThemes.DrownedQuarter=>DrownedQuarterContent.Elites,ActThemes.CrimsonFoundry=>CrimsonFoundryContent.Elites,ActThemes.Hollowwood=>HollowwoodContent.Elites,ActThemes.ShatteredObservatory=>ShatteredObservatoryContent.Elites,ActThemes.BlackCathedral=>BlackCathedralContent.Elites,ActThemes.FracturedRealm=>FracturedRealmContent.Elites,ActThemes.GildedThrone=>GildedThroneContent.Elites,ActThemes.GildedRuins=>GildedRuinsContent.Elites,_=>Array.Empty<string>()
         };
@@ -121,7 +122,7 @@ namespace GildedFate.Core
         };
         public static int MinionCap(string ownerId)=>ownerId is DrownedQuarterContent.Magistrate or CrimsonFoundryContent.Saint?1:2;
         // Group HP for normal enemies that start beside another non-Minion: ~90% in Act 1, ~92% in Act 2.
-        public static int GroupHpPercent(EnemyDef def)=>def?.theme is ActThemes.CrimsonFoundry or ActThemes.Hollowwood or ActThemes.ShatteredObservatory?92:def?.theme is ActThemes.BlackCathedral or ActThemes.FracturedRealm or ActThemes.GildedThrone?94:90;
+        public static int GroupHpPercent(EnemyDef def)=>def?.theme==NeutralContent.Theme?(NeutralContent.ActOf(def.id)==3?94:NeutralContent.ActOf(def.id)==2?92:90):def?.theme is ActThemes.CrimsonFoundry or ActThemes.Hollowwood or ActThemes.ShatteredObservatory?92:def?.theme is ActThemes.BlackCathedral or ActThemes.FracturedRealm or ActThemes.GildedThrone?94:90;
         public static bool IsMinion(string id)=>Find(id)?.minion==true;
         // True when this owner may start a fight with (or later summon) this Minion.
         public static bool CanOwn(string ownerId,string minionId)=>SummonType(ownerId)==minionId||StartingMinions(ownerId).Contains(minionId);

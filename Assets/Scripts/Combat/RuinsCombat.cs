@@ -308,7 +308,7 @@ namespace GildedFate.Combat
                 case "gr_emergency_reserve":return "EMERGENCY RESERVE";
                 case "gr_first_toll":return LivingAllies(enemyContextIndex,false).Any()?"FIRST TOLL · RALLY":"FIRST TOLL · RALLY ALONE";
             }
-            return move.StartsWith("bc_")?CathedralLabel(move,m):move.StartsWith("fr_")?FractureLabel(move,m):move.StartsWith("gt_")?ThroneLabel(move,m):RuinsName(move);
+            return move.StartsWith("bc_")?CathedralLabel(move,m):move.StartsWith("fr_")?FractureLabel(move,m):move.StartsWith("gt_")?ThroneLabel(move,m):move.StartsWith("nt_")?NeutralLabel(move,m):RuinsName(move);
         }
         private static string RuinsHook(string move)=>move switch
         {

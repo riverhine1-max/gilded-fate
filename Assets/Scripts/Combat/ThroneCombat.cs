@@ -25,6 +25,7 @@ namespace GildedFate.Combat
         {
             if(id==GildedThroneContent.Beast||id==GildedThroneContent.Warden)m.counter=2;
             else if(id==GildedThroneContent.Sovereign)m.phase=1;
+            ResetNeutralState(m,id);
         }
         private static int ReserveCap(string id)=>id==GildedThroneContent.Warden?6:4;
 
@@ -134,7 +135,7 @@ namespace GildedFate.Combat
                         default:return Cycle(m,5) switch{0=>"gt_sov_edge",1=>"gt_sov_dominion",2=>"gt_sov_barrage",3=>"gt_sov_final_authority",_=>"gt_sov_end"};
                     }
             }
-            return null;
+            return ChooseNeutralMove(m);
         }
         // A Royal Guard must actually have fallen before the General may reinforce.
         private bool OwnedGuardDied(int self)
@@ -235,7 +236,7 @@ namespace GildedFate.Combat
                 case "gt_sov_final_authority":return new[]{P(A,20),P(W,1),P(V,1)};
                 case "gt_sov_end":return new[]{P(A,12,3)};
             }
-            return null;
+            return NeutralActions(move,m);
         }
 
         private static string ThroneName(string move)=>move switch
@@ -291,7 +292,7 @@ namespace GildedFate.Combat
             "gt_charge"=>"thronebreaker_charge",
             "gt_gen_formation"=>"royal_general_formation","gt_gen_reinforce"=>"royal_general_reinforcement",
             "gt_sov_end"=>"end_of_the_crown",
-            _=>""
+            _=>NeutralHook(move)
         };
 
         // ---------- resolution ----------
@@ -317,7 +318,7 @@ namespace GildedFate.Combat
                     var s=Cycle(m,6);if(s%2==0&&!string.IsNullOrEmpty(m.prior))EmitHook("crown_duelmaster_stance:"+DuelStanceName(s/2));
                     return false;
                 }
-                default:return false;
+                default:return BeginNeutralAction(m,move);
             }
         }
         private void ExecuteThroneAction(PlannedEnemyAction action)
@@ -347,7 +348,7 @@ namespace GildedFate.Combat
                 case EnemyActionType.StrengthTarget:
                     if(wildTarget>=0&&IsLivingTarget(wildTarget))InEnemyContext(wildTarget,()=>{var g=EnemyBuffAfterWither(action.amount);enemy.strength+=g;Emit(CombatEventKind.Status,g,false,null,"STRENGTH");});
                     break;
-                default:throw new InvalidOperationException("Enemy action has no executor: "+action.type);
+                default:ExecuteNeutralAction(action);break;
             }
         }
 
@@ -365,7 +366,7 @@ namespace GildedFate.Combat
         private bool CheckThroneThresholds(int index)
         {
             var o=opponents[index];var m=o.mind;var f=o.fighter;
-            if(GildedThroneContent.Find(o.id)==null)return false;
+            if(GildedThroneContent.Find(o.id)==null)return CheckNeutralThresholds(index);
             if(o.id==GildedThroneContent.Warden)
             {
                 // Emergency Treasury takes priority the moment it becomes legal, so the player sees the intent change.
@@ -414,7 +415,7 @@ namespace GildedFate.Combat
                 case GildedThroneContent.Commander:label=$"ROYAL GUARDS {OwnedMinions(index).Count()}/2";return true;
                 case GildedThroneContent.Sovereign:label=$"PHASE {m.phase} · {SovereignPhaseName(m.phase)}";return true;
             }
-            return false;
+            return NeutralCounter(index,m,out label,out value,out max);
         }
         private void ThroneStateText(int index,WildMind m,List<string> lines)
         {
@@ -438,6 +439,7 @@ namespace GildedFate.Combat
                     lines.Add(m.phase==1?"Seated: it commands a Royal Blade and a Royal Shield. They withdraw when it rises, and it gains nothing from them.":m.phase==2?"Rising: it fights directly. No Minions.":"Standing free of the throne. No Minions.");break;
                 case GildedThroneContent.Blade:lines.Add("Sovereign's Blade → Piercing Order (Vulnerable). Withdraws when the Sovereign rises.");break;
                 case GildedThroneContent.Shield:lines.Add("Shield Bash → Guard the Throne (Block to the Sovereign). Withdraws when the Sovereign rises.");break;
+                default:NeutralStateText(index,m,lines);break;
             }
         }
         private string DescribeThroneAction(EnemyActionType type,int amount,EnemyIntentAction a)
@@ -450,7 +452,7 @@ namespace GildedFate.Combat
                 case EnemyActionType.PickLowestDmgAlly:a.title="CHOOSES ALLY";return "Chooses its lowest-health living ally that can deal damage.";
                 case EnemyActionType.StrengthTarget:a.title="EMPOWER ALLY";return $"The chosen ally gains {amount} Strength.";
             }
-            return "";
+            return DescribeNeutralAction(type,amount,a);
         }
     }
 }

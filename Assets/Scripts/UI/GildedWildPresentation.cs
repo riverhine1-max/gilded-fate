@@ -19,6 +19,12 @@ namespace GildedFate.UI
         // The Hollow Parasite's exposed form uses <id>_phase2 too (it is looked up by creature index).
         private string EnemyArtId(string id,int index=-1)
         {
+            // Act-specific neutrals: one gameplay definition, one existing picture per theme of the act.
+            if(NeutralContent.IsNeutral(id))
+            {
+                var variant=NeutralContent.VariantArtId(id,run?.CurrentTheme);
+                return variant!=id&&Resources.Load<Texture2D>(GildedArtCatalog.EnemyResource(variant))!=null?variant:id;
+            }
             if(combat!=null&&screen==ScreenMode.Combat&&id==HollowwoodContent.Parasite)
             {
                 var pm=index>=0?combat.MindAt(index):null;
@@ -204,7 +210,21 @@ namespace GildedFate.UI
                 case "royal_general_reinforcement":text="REINFORCEMENTS";color=new Color(1f,.84f,.4f);break;
                 case "end_of_the_crown":text="END OF THE CROWN";color=new Color(1f,.35f,.2f);break;
                 case "royal_minion_withdrawn":text="WITHDRAWS";color=new Color(.8f,.78f,.7f);break;
+                // ---- Act-specific neutrals ----
+                case "unbound_blade_gather_nerve":text="GATHERS NERVE";color=new Color(1f,.8f,.5f);break;
+                case "stray_idol_gather_fortune":text="GATHERS FORTUNE";color=new Color(1f,.84f,.4f);break;
+                case "stray_idol_unstable_release":text="UNSTABLE RELEASE";color=new Color(1f,.5f,.3f);break;
+                case "shifting_husk_shell_break":text="SHELL BREAKS";color=new Color(1f,.6f,.3f);break;
+                case "deepcrawler_burrow":text="BURROWS · ERUPTION NEXT";color=new Color(.8f,.7f,.5f);break;
+                case "deepcrawler_eruption":text="ERUPTION";color=new Color(1f,.45f,.25f);break;
+                case "nameless_seer_readied_fate":text="FATE READIED · SENTENCE NEXT";color=new Color(.85f,.7f,1f);break;
+                case "worldbreaker_gather":text="GATHERS THE WORLD · 1/2";color=new Color(1f,.7f,.35f);break;
+                case "worldbreaker_overload":text="OVERLOAD · WORLD BREAK NEXT";color=new Color(1f,.5f,.25f);break;
+                case "worldbreaker_world_break":text="WORLD BREAK";color=new Color(1f,.3f,.2f);break;
+                case "worldbreaker_aftershock":text="AFTERSHOCK";color=new Color(.9f,.7f,.5f);break;
                 default:
+                    if(name.StartsWith("wayfarer_stance:")||name.StartsWith("pale_chimera_stance:")){text=name.Substring(name.IndexOf(':')+1)+" STANCE";color=new Color(.95f,.8f,.5f);break;}
+                    if(name.StartsWith("crooked_oracle_response:")){var r=name.Substring(24);text=r=="nt_full_measure"?"FULL MEASURE":r=="nt_quiet_omen"?"QUIET OMEN":"LEFT UNSPENT";color=new Color(.85f,.7f,1f);break;}
                     if(name.StartsWith("duelist_response:")){var r=name.Substring(17);text=r=="gt_counterstance"?"ROYAL COUNTERSTANCE":r=="gt_piercing"?"PIERCING ADVANCE":"PERFECT MEASURE";color=new Color(1f,.84f,.4f);break;}
                     if(name.StartsWith("thronebreaker_siege:")){text="SIEGE "+name.Substring(20);color=new Color(1f,.6f,.3f);break;}
                     if(name.StartsWith("crown_duelmaster_stance:")){text=name.Substring(24);color=new Color(1f,.84f,.4f);break;}
@@ -314,7 +334,7 @@ namespace GildedFate.UI
             DrawSeizedGoldPill(index,portrait);
             if(!combat.WildCounter(index,out var label,out var value,out var max))return;
             var heat=label=="HEAT";var mode=label is "ASSAULT" or "DEFENSE" or "OVERDRIVE"||max<=0;
-            var growth=label.EndsWith("GROWTH");var predict=label.StartsWith("LAST TURN")||label.StartsWith("NO PREVIOUS")||label.StartsWith("PHASE ")||label.StartsWith("SIEGE")||label.StartsWith("STANCE")||label.StartsWith("ROYAL")||label.StartsWith("GUARDS")||label.StartsWith("RESERVE")||label=="ROYAL COUNTERSTANCE"||label=="PIERCING ADVANCE"||label=="PERFECT MEASURE"||label.StartsWith("PENDING")||label.StartsWith("LOOP")||label.StartsWith("FORM")||label.StartsWith("STAGE")||label.StartsWith("FRAGMENTS")||label.StartsWith("COPIE")||label.StartsWith("PREVIOUS")||label=="REPEAT NEXT"||label=="NO ECHO"||label.StartsWith("SPLIT")||label.StartsWith("JUDG")||label=="ORBIT PLATES"||label=="MOMENTUM";
+            var growth=label.EndsWith("GROWTH");var predict=label.StartsWith("LAST TURN")||label.StartsWith("NO PREVIOUS")||label.StartsWith("PHASE ")||label.StartsWith("CHARGE")||label.StartsWith("BURROWED")||label=="SURFACE"||label=="ARMORED"||label=="EXPOSED"||label.StartsWith("LAST TURN")||label=="SENTENCE PREPARED"||label.StartsWith("SIEGE")||label.StartsWith("STANCE")||label.StartsWith("ROYAL")||label.StartsWith("GUARDS")||label.StartsWith("RESERVE")||label=="ROYAL COUNTERSTANCE"||label=="PIERCING ADVANCE"||label=="PERFECT MEASURE"||label.StartsWith("PENDING")||label.StartsWith("LOOP")||label.StartsWith("FORM")||label.StartsWith("STAGE")||label.StartsWith("FRAGMENTS")||label.StartsWith("COPIE")||label.StartsWith("PREVIOUS")||label=="REPEAT NEXT"||label=="NO ECHO"||label.StartsWith("SPLIT")||label.StartsWith("JUDG")||label=="ORBIT PLATES"||label=="MOMENTUM";
             var text=mode?label:heat?$"{value}/{max}":$"{label} {value}/{max}";
             var style=new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=text.Length>24?11:13,alignment=TextAnchor.MiddleCenter};
             var width=Mathf.Max(56,style.CalcSize(new GUIContent(text)).x+(heat?34:16));
@@ -513,6 +533,18 @@ namespace GildedFate.UI
             GildedThroneContent.Blade=>new(EnemyMotionKind.Caster,EnemyStrikeStyle.Blade,.7f,3,1.2f,36,new Color(.9f,.4f,.35f)),
             GildedThroneContent.Shield=>new(EnemyMotionKind.Knight,EnemyStrikeStyle.Slam,.75f,0,.9f,40,new Color(.95f,.85f,.55f)),
             GildedThroneContent.Sovereign=>new(EnemyMotionKind.Colossus,EnemyStrikeStyle.Blade,1.6f,3,.8f,44,new Color(1f,.85f,.45f)),
+            NeutralContent.UnboundBlade=>new(EnemyMotionKind.Knight,EnemyStrikeStyle.Blade,.95f,0,1.05f,50,new Color(.95f,.85f,.6f)),
+            NeutralContent.Fateworn=>new(EnemyMotionKind.Knight,EnemyStrikeStyle.Blade,1f,0,.95f,48,new Color(.9f,.8f,.7f)),
+            NeutralContent.StrayIdol=>new(EnemyMotionKind.Colossus,EnemyStrikeStyle.Slam,1f,2,.85f,36,new Color(1f,.84f,.45f)),
+            NeutralContent.Wayfarer=>new(EnemyMotionKind.Knight,EnemyStrikeStyle.Blade,1.3f,0,1f,50,new Color(.95f,.85f,.6f)),
+            NeutralContent.RaggedVanguard=>new(EnemyMotionKind.Knight,EnemyStrikeStyle.Blade,1.05f,0,.95f,50,new Color(.9f,.8f,.7f)),
+            NeutralContent.ShiftingHusk=>new(EnemyMotionKind.Brute,EnemyStrikeStyle.Slam,1.05f,0,.9f,44,new Color(.85f,.8f,.7f)),
+            NeutralContent.CrookedOracle=>new(EnemyMotionKind.Caster,EnemyStrikeStyle.Bolt,.95f,2,1f,30,new Color(.85f,.75f,1f)),
+            NeutralContent.Deepcrawler=>new(EnemyMotionKind.Colossus,EnemyStrikeStyle.Crush,1.45f,2,.8f,40,new Color(.85f,.7f,.5f)),
+            NeutralContent.IronWanderer=>new(EnemyMotionKind.Colossus,EnemyStrikeStyle.Slam,1.1f,1,.85f,44,new Color(.8f,.8f,.85f)),
+            NeutralContent.PaleChimera=>new(EnemyMotionKind.Beast,EnemyStrikeStyle.Claw,1.1f,1,1.05f,50,new Color(.95f,.92f,.85f)),
+            NeutralContent.NamelessSeer=>new(EnemyMotionKind.Caster,EnemyStrikeStyle.Bolt,1f,2,1f,30,new Color(.8f,.75f,1f)),
+            NeutralContent.Worldbreaker=>new(EnemyMotionKind.Colossus,EnemyStrikeStyle.Crush,1.6f,3,.75f,44,new Color(1f,.55f,.3f)),
             _=>new(EnemyMotionKind.Knight,EnemyStrikeStyle.Blade,1f,0,1f,50,new Color(1f,.62f,.36f))
         };
         private static float WildBodyScale(EnemyDef enemy)=>enemy?.id switch
@@ -547,6 +579,7 @@ namespace GildedFate.UI
             FracturedRealmContent.Binder=>.95f,FracturedRealmContent.Colossus=>1.3f,
             GildedThroneContent.Guard=>.66f,GildedThroneContent.Blade=>.66f,GildedThroneContent.Shield=>.7f,GildedThroneContent.Sovereign=>1.8f,
             GildedThroneContent.Strategist=>.95f,GildedThroneContent.Thronebreaker=>1.3f,GildedThroneContent.Crownshield=>1.1f,
+            NeutralContent.Wayfarer=>1.25f,NeutralContent.Deepcrawler=>1.55f,NeutralContent.Worldbreaker=>1.7f,NeutralContent.UnboundBlade=>.95f,NeutralContent.IronWanderer=>1.1f,NeutralContent.PaleChimera=>1.05f,
             _=>enemy?.boss==true?1.4f:enemy?.elite==true?1.2f:1f
         };
     }

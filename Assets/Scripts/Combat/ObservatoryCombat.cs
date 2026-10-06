@@ -318,7 +318,7 @@ namespace GildedFate.Combat
                 case AstrologerPairMove:case CuratorPairMove:
                     return "POSSIBLE: "+string.Join(" / ",(m.pair??"").Split(new[]{'|'},StringSplitOptions.RemoveEmptyEntries).Select(ObservatoryName));
             }
-            return move.StartsWith("gr_")||move.StartsWith("bc_")||move.StartsWith("fr_")||move.StartsWith("gt_")?RuinsMoveLabel(move,m):ObservatoryName(move);
+            return move.StartsWith("gr_")||move.StartsWith("bc_")||move.StartsWith("fr_")||move.StartsWith("gt_")||move.StartsWith("nt_")?RuinsMoveLabel(move,m):ObservatoryName(move);
         }
         private static string ObservatoryHook(string move)=>move switch
         {

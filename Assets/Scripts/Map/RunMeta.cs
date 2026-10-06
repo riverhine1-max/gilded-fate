@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using GildedFate.Core;
 
 namespace GildedFate.Map
@@ -21,7 +22,16 @@ namespace GildedFate.Map
         // Themed elite for a map node (stable for the node) and the theme's boss.
         public string ThemedEliteFor(int nodeFloor,int nodeLane)
         {
-            var pool=ThemeRosters.Elites(CurrentTheme);if(pool.Length==0)return "";var hash=unchecked((uint)seed*2654435761u^(uint)(act*7349+nodeFloor*397+nodeLane*71));hash^=hash>>16;
+            var pool=ThemeRosters.Elites(CurrentTheme);if(pool.Length==0)return "";
+            // Elites of one act do not repeat until every available Elite has appeared (the pool order is a stable shuffle of the run seed).
+            var elites=nodes?.Where(n=>n.kind==NodeKind.Elite).OrderBy(n=>n.floor).ThenBy(n=>n.lane).ToList();
+            var rank=elites==null?-1:elites.FindIndex(n=>n.floor==nodeFloor&&n.lane==nodeLane);
+            if(rank>=0)
+            {
+                var order=pool.ToArray();var rng=new System.Random(unchecked(seed*486187739^act*7349+13));
+                for(var i=order.Length-1;i>0;i--){var j=rng.Next(i+1);(order[i],order[j])=(order[j],order[i]);}
+                return order[rank%order.Length];
+            }var hash=unchecked((uint)seed*2654435761u^(uint)(act*7349+nodeFloor*397+nodeLane*71));hash^=hash>>16;
             return pool[hash%(uint)pool.Length];
         }
         public string ThemedBoss=>ThemeRosters.Boss(CurrentTheme);
