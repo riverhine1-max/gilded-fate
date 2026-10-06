@@ -9,16 +9,16 @@ namespace GildedFate.Core
     public static class ActThemes
     {
         public const string Vault="";
-        public const string GildedRuins="gilded_ruins",AshenWilds="ashen_wilds",DrownedQuarter="drowned_quarter",CrimsonFoundry="crimson_foundry",Hollowwood="hollowwood",ShatteredObservatory="shattered_observatory",BlackCathedral="black_cathedral",FracturedRealm="fractured_realm";
+        public const string GildedRuins="gilded_ruins",AshenWilds="ashen_wilds",DrownedQuarter="drowned_quarter",CrimsonFoundry="crimson_foundry",Hollowwood="hollowwood",ShatteredObservatory="shattered_observatory",BlackCathedral="black_cathedral",FracturedRealm="fractured_realm",GildedThrone="gilded_throne";
         // Implemented themes per act. Gilded Ruins is Act 1's first theme; the original Vault roster
         // still serves Acts 2 and 3 until their themes exist. Act 2 rolls the Vault or one of three themes.
         public static string[] ForAct(int act)=>act switch
         {
             1=>new[]{GildedRuins,AshenWilds,DrownedQuarter},
             2=>new[]{Vault,CrimsonFoundry,Hollowwood,ShatteredObservatory},
-            _=>new[]{Vault,BlackCathedral,FracturedRealm}
+            _=>new[]{Vault,BlackCathedral,FracturedRealm,GildedThrone}
         };
-        public static string Name(string theme)=>theme switch{GildedRuins=>"THE GILDED RUINS",AshenWilds=>"ASHEN WILDS",DrownedQuarter=>"THE DROWNED QUARTER",CrimsonFoundry=>"THE CRIMSON FOUNDRY",Hollowwood=>"HOLLOWWOOD",ShatteredObservatory=>"THE SHATTERED OBSERVATORY",BlackCathedral=>"THE BLACK CATHEDRAL",FracturedRealm=>"THE FRACTURED REALM",_=>"THE GILDED VAULT"};
+        public static string Name(string theme)=>theme switch{GildedRuins=>"THE GILDED RUINS",AshenWilds=>"ASHEN WILDS",DrownedQuarter=>"THE DROWNED QUARTER",CrimsonFoundry=>"THE CRIMSON FOUNDRY",Hollowwood=>"HOLLOWWOOD",ShatteredObservatory=>"THE SHATTERED OBSERVATORY",BlackCathedral=>"THE BLACK CATHEDRAL",FracturedRealm=>"THE FRACTURED REALM",GildedThrone=>"THE GILDED THRONE",_=>"THE GILDED VAULT"};
         public static string Tagline(string theme)=>theme switch
         {
             GildedRuins=>"A dead kingdom whose systems still run · Seized Wealth",
@@ -29,6 +29,7 @@ namespace GildedFate.Core
             ShatteredObservatory=>"A broken tower that reads the future · Prediction",
             BlackCathedral=>"A cathedral of sentence and ritual · Judgment",
             FracturedRealm=>"Reality repeating, splitting and delaying · Fracture",
+            GildedThrone=>"A perfected royal army · Royal Order",
             _=>"The vault's original keepers"
         };
         public static string Roll(int act,int seed)

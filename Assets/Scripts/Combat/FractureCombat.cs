@@ -56,6 +56,7 @@ namespace GildedFate.Combat
         // ---------- setup ----------
         private static void ResetFractureState(WildMind m,string id)
         {
+            ResetThroneState(m,id);
             if(id==FracturedRealmContent.Beast)m.state="SOLID";
             else if(id==FracturedRealmContent.Splitling||id==FracturedRealmContent.Unmade||id==FracturedRealmContent.Colossus)m.phase=1;
         }
@@ -174,7 +175,7 @@ namespace GildedFate.Combat
                             return FracturePairMove;
                     }
             }
-            return null;
+            return ChooseThroneMove(m);
         }
 
         // ---------- moves ----------
@@ -267,7 +268,7 @@ namespace GildedFate.Combat
                 case "fr_um_collapse_wave":return new[]{P(A,17),P(V,1)};
                 case "fr_um_surge":return new[]{P(S,2),P(B,12)};
             }
-            return null;
+            return ThroneActions(move,m);
         }
         // Display form of a possibility pair, one line per possibility.
         private PlannedEnemyAction[] FractureActionsOf(string move,WildMind m)=>FractureActions(move,m)??Array.Empty<PlannedEnemyAction>();
@@ -326,7 +327,7 @@ namespace GildedFate.Combat
             "fr_fractured_command" or "fr_sov_command"=>"fracture_command",
             "fr_binder_dup_strength" or "fr_binder_dup_guard"=>"rift_binder_duplicate",
             "fr_um_memory"=>"fractured_memory_recorded",
-            _=>""
+            _=>ThroneHook(move)
         };
 
         // ---------- resolution ----------
@@ -356,7 +357,7 @@ namespace GildedFate.Combat
                         m.lastPair=m.pair;m.pair=PickPair(UnmadePool,m.lastPair);EmitHook("unmade_pair_reveal");return true;
                     }
                     return false;
-                default:return false;
+                default:return BeginThroneAction(m,move);
             }
         }
         private void ExecuteFractureAction(PlannedEnemyAction action)
@@ -381,7 +382,7 @@ namespace GildedFate.Combat
                     var gain=Math.Min(action.amount,EnemyAt(src).block);if(gain<=0)break;
                     InEnemyContext(tgt,()=>{enemy.block+=gain;Emit(CombatEventKind.Block,gain,false);});break;
                 }
-                default:throw new InvalidOperationException("Enemy action has no executor: "+action.type);
+                default:ExecuteThroneAction(action);break;
             }
         }
 
@@ -389,13 +390,14 @@ namespace GildedFate.Combat
         private bool FractureReplanOnDeath(int k)
         {
             var id=opponents[k].id;
-            return id is FracturedRealmContent.Binder or FracturedRealmContent.Splitling or FracturedRealmContent.Sovereign;
+            return id is FracturedRealmContent.Binder or FracturedRealmContent.Splitling or FracturedRealmContent.Sovereign||ThroneReplanOnDeath(k);
         }
         private void FractureOnDeath(int index)
         {
             var id=opponents[index].id;
             if(id==FracturedRealmContent.SplitEcho)InEnemyContext(index,()=>EmitHook("split_echo_death"));
             else if(id is FracturedRealmContent.BladeFragment or FracturedRealmContent.WardFragment)InEnemyContext(index,()=>EmitHook("fragment_death"));
+            else ThroneOnDeath(index);
         }
         // Splitling at half health, Rift Colossus at 69/104 and 34/104, Split Sovereign at 130/190 and 70/190,
         // The Unmade at 274/410 and 137/410 (all proportional to the creature's actual maximum health).
@@ -403,7 +405,7 @@ namespace GildedFate.Combat
         private bool CheckFractureThresholds(int index)
         {
             var o=opponents[index];var m=o.mind;var f=o.fighter;
-            if(FracturedRealmContent.Find(o.id)==null)return false;
+            if(FracturedRealmContent.Find(o.id)==null)return CheckThroneThresholds(index);
             switch(o.id)
             {
                 case FracturedRealmContent.Splitling:
@@ -496,7 +498,7 @@ namespace GildedFate.Combat
                 case FracturedRealmContent.Unmade:
                     label=m.phase==2&&m.counter>0?$"PHASE 2 · PENDING ECHO: {m.counter}":$"PHASE {m.phase} · {UnmadePhaseName(m.phase)}";return true;
             }
-            return false;
+            return ThroneCounter(index,m,out label,out value,out max);
         }
         public bool FractureForecast(int index,WildMind m,out string title,out List<string> lines,out string tip)
         {
@@ -561,6 +563,7 @@ namespace GildedFate.Combat
                     else if(m.phase==2)lines.Add("Composite Rend leaves an Echo of 10 that Resolve Echo lands. Only one Echo at a time.");
                     else lines.Add("Shows exactly two possible next actions. One is chosen when it acts.");
                     break;
+                default:ThroneStateText(index,m,lines);break;
             }
         }
         private string DescribeFractureAction(EnemyActionType type,int amount,EnemyIntentAction a)
@@ -572,7 +575,7 @@ namespace GildedFate.Combat
                 case EnemyActionType.DuplicateStrength:a.title="DUPLICATE STRENGTH";return $"Copies half of one ally's positive Strength (rounded up, maximum +{amount}) onto a different damage-dealing ally.";
                 case EnemyActionType.DuplicateGuard:a.title="DUPLICATE GUARD";return $"Copies up to {amount} of one ally's Block onto a different ally. The source keeps its Block.";
             }
-            return "";
+            return DescribeThroneAction(type,amount,a);
         }
     }
 }
