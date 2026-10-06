@@ -145,6 +145,7 @@ namespace GildedFate.UI
                         SetCombatEffectTooltip(currentEnemy.name,ActorEffectSummary(EnemyEffectChips(index))+WildTooltipSuffix(index),portrait.center);
                 });
             }
+            DrawSeizedGoldHud();
         }
         private void RecordShardShatter()
         {

@@ -118,6 +118,7 @@ namespace GildedFate.UI
             CrimsonFoundryContent.Saint=>lastBossPhase>=3?"ITS ARMOR TEARS AWAY · OVERHEATED · HEAT 4":"THE CHAINS SNAP · THE SERVITOR FALLS · HEAT 1",
             HollowwoodContent.Heartroot=>lastBossPhase>=3?"THE PREDATOR HEART · GROWTH RESETS TO 0":"THE HEART SPREADS · GROWTH RESETS TO 1",
             ShatteredObservatoryContent.Curator=>lastBossPhase>=3?"THE CONSTELLATION FORMS · TWIN FATE":"THE ARCHIVE FRACTURES · NEW FUTURES",
+            GildedRuinsContent.Procession=>lastBossPhase>=3?"THE CROWN ENGINE · THE PROCESSION SEIZES MORE":"THE PARADE BREAKS · THE RAM ADVANCES",
             DrownedQuarterContent.Magistrate=>lastBossPhase>=3?"IT TEARS FREE OF THE COURT · THE BAILIFF SINKS":"THE COURT FLOODS · THE MAGISTRATE PULLS PARTLY FREE",
             _=>"THE VAULT REWRITES ITS COMMAND"
         };

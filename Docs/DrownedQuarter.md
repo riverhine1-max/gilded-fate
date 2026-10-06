@@ -6,7 +6,7 @@ next, either in the intent or in the enemy's state text.
 
 Each run rolls one theme per act, and Act 1 rolls one of three:
 
-- The Vault, which stands in for Gilded Ruins
+- The Gilded Ruins (see `GildedRuins.md`; it replaced the Vault as the third Act 1 option)
 - Ashen Wilds
 - The Drowned Quarter
 

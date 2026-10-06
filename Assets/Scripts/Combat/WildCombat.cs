@@ -9,7 +9,7 @@ namespace GildedFate.Combat
     // Stored on each CombatOpponent so it saves with the combat checkpoint.
     [Serializable] public sealed class WildMind
     {
-        public int uid,ownerUid=-1,step,step2,phase=1,diedTurn=-1,summonedTurn=-1,plannedValue,counter;
+        public int uid,ownerUid=-1,step,step2,phase=1,diedTurn=-1,summonedTurn=-1,plannedValue,counter,held;
         public string state="",planned="",lastMove="",prior="",lastSeed="",queue="",pair="",lastPair="";
         // flag: per-enemy one-shot (Forgemaster Reassemble used, Iron Saint resummon used, must-vent);
         // hold: the planned move is an override that keeps the pattern position.
@@ -371,7 +371,7 @@ namespace GildedFate.Combat
             var slot=opponents.Count<MaxBattlefieldBodies?-1:ReusableMinionSlot();
             if(slot>=0)opponents[slot]=created;else{opponents.Add(created);slot=opponents.Count-1;}
             created.intent=IntentKind.Unknown;created.intentLabel="SUMMONED";
-            InEnemyContext(slot,()=>{Emit(CombatEventKind.Status,1,false,null,"SUMMONED");if(id==DrownedQuarterContent.Hand)EmitHook("drowned_hand_spawn");else if(id==CrimsonFoundryContent.ScrapDrone)EmitHook("scrap_drone_spawn");else if(id==HollowwoodContent.Sporeling)EmitHook("sporeling_spawn");else if(id==HollowwoodContent.Huskbud)EmitHook("huskbud_spawn");else if(id==ShatteredObservatoryContent.StarFragment)EmitHook("star_fragment_spawn");});
+            InEnemyContext(slot,()=>{Emit(CombatEventKind.Status,1,false,null,"SUMMONED");if(id==DrownedQuarterContent.Hand)EmitHook("drowned_hand_spawn");else if(id==CrimsonFoundryContent.ScrapDrone)EmitHook("scrap_drone_spawn");else if(id==HollowwoodContent.Sporeling)EmitHook("sporeling_spawn");else if(id==HollowwoodContent.Huskbud)EmitHook("huskbud_spawn");else if(id==ShatteredObservatoryContent.StarFragment)EmitHook("star_fragment_spawn");else if(id==GildedRuinsContent.Servitor)EmitHook("servitor_spawn");else if(id==GildedRuinsContent.Guard)EmitHook("coinbound_guard_spawn");});
             rosterVersion++;
         }
         private void WildCommand(int ownerIndex)
@@ -419,7 +419,8 @@ namespace GildedFate.Combat
         private void OnWildDeath(int index)
         {
             var m=MindAt(index);var id=EnemyIdAt(index);
-            if(m.minion)InEnemyContext(index,()=>EmitHook(id==AshenWildsContent.Sapling?"sapling_death":id==DrownedQuarterContent.Hand?"drowned_hand_death":id==HollowwoodContent.Sporeling?"sporeling_death":id==ShatteredObservatoryContent.StarFragment?"star_fragment_death":id is ShatteredObservatoryContent.SunFragment or ShatteredObservatoryContent.MoonFragment?"orrery_fragment_death":"minion_death"));
+            RuinsOnDeath(index);
+            if(m.minion)InEnemyContext(index,()=>EmitHook(id==AshenWildsContent.Sapling?"sapling_death":id==DrownedQuarterContent.Hand?"drowned_hand_death":id==HollowwoodContent.Sporeling?"sporeling_death":id==ShatteredObservatoryContent.StarFragment?"star_fragment_death":id is ShatteredObservatoryContent.SunFragment or ShatteredObservatoryContent.MoonFragment?"orrery_fragment_death":id==GildedRuinsContent.Servitor?"servitor_death":id==GildedRuinsContent.Guard?"coinbound_guard_death":"minion_death"));
             // Owner death: every Minion it owns withers immediately (no rewards of their own).
             foreach(var k in Enumerable.Range(0,opponents.Count).Where(k=>opponents[k].fighter.hp>0&&opponents[k].mind?.ownerUid==m.uid).ToArray())
             {opponents[k].fighter.hp=0;InEnemyContext(k,()=>EmitHook("minion_withers"));}
@@ -481,6 +482,7 @@ namespace GildedFate.Combat
             var m=MindAt(index);if(m==null)return "";var id=EnemyIdAt(index);
             var lines=new List<string>();
             if(m.minion){var owner=OwnerIndexOf(index);var ownerName=owner>=0?WildDef(EnemyIdAt(owner))?.name??"its owner":"its owner";lines.Add($"MINION · Owned by {Title(ownerName)}. Dies when its owner dies. No reward of its own.");}
+            RuinsHeldText(m,lines);
             switch(id)
             {
                 case AshenWildsContent.Maw:lines.Add("STATE · "+m.state+" — Hungry → Fed → Burning → Hungry.");break;

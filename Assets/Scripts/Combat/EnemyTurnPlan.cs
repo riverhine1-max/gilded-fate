@@ -14,7 +14,9 @@ namespace GildedFate.Combat
         // Hollowwood.
         Growth, GrowthSet, GrowthAlly, BlockOtherAllies, HealOwner, PlantSeed,
         // Shattered Observatory.
-        PlateSpend, PlateGain, Momentum, MomentumReset }
+        PlateSpend, PlateGain, Momentum, MomentumReset,
+        // Gilded Ruins.
+        SeizeGold, BonusConsume, Fortify, ReserveSpend, ReserveAll, BlockLowestNonMinion }
     public enum IntentDestination { None, Hand, Draw, Discard, Deck }
     public readonly struct PlannedEnemyAction
     {
@@ -44,10 +46,11 @@ namespace GildedFate.Combat
             EnemyActionType.Load or EnemyActionType.LoadRelease=>IconLoad,
             EnemyActionType.Growth or EnemyActionType.GrowthSet or EnemyActionType.GrowthAlly or EnemyActionType.PlantSeed=>IconGrowth,EnemyActionType.BlockOtherAllies=>4,EnemyActionType.HealOwner=>6,
             EnemyActionType.BlockLowestAlly=>4,EnemyActionType.HealDamagedAlly=>6,EnemyActionType.StrengthRandomMinion=>5,EnemyActionType.LoseStrength=>5,
-            EnemyActionType.PlateSpend or EnemyActionType.PlateGain=>IconPlate,EnemyActionType.Momentum or EnemyActionType.MomentumReset=>IconMomentum,
+            EnemyActionType.PlateSpend or EnemyActionType.PlateGain=>IconPlate,
+            EnemyActionType.SeizeGold=>13,EnemyActionType.BonusConsume=>IconBonus,EnemyActionType.Fortify=>IconFortify,EnemyActionType.ReserveSpend or EnemyActionType.ReserveAll=>IconReserve,EnemyActionType.BlockLowestNonMinion=>4,EnemyActionType.Momentum or EnemyActionType.MomentumReset=>IconMomentum,
             EnemyActionType.Summon=>IconSummon,EnemyActionType.Command=>IconCommand,_=>19
         };
-        public const int IconSummon=100,IconCommand=101,IconHeat=102,IconLoad=103,IconGrowth=104,IconPlate=105,IconMomentum=106;
+        public const int IconSummon=100,IconCommand=101,IconHeat=102,IconLoad=103,IconGrowth=104,IconPlate=105,IconMomentum=106,IconReserve=107,IconFortify=108,IconBonus=109;
         public static int ThreatIcon(int total)=>total<=15?0:total<=34?1:total<=49?2:3;
         public string ValueText=>type==EnemyActionType.Attack&&hits>1?amount+" × "+hits:amount.ToString();
     }
@@ -94,7 +97,7 @@ namespace GildedFate.Combat
                     if(enemy.weak>0)a.detail+="\nEnemy Weak: 25% less attack damage.";
                     if(player.vulnerable>0)a.detail+="\nYour Vulnerable: 50% more attack damage received.";
                     break;
-                case EnemyActionType.Block:a.title="BLOCK";a.detail=$"Gain {a.amount} Block.\nBlock absorbs incoming damage.";break;
+                case EnemyActionType.Block:a.amount=plan.amount+(plan.amount>0?enemy.fortify:0);a.title="BLOCK";a.detail=$"Gain {a.amount} Block.\nBlock absorbs incoming damage."+(enemy.fortify>0&&plan.amount>0?$"\nEnemy Fortify: +{enemy.fortify} Block from each Block it gains.":"");break;
                 case EnemyActionType.Strength:a.amount=Math.Max(0,plan.amount-EffectValue(enemy,"wither"));a.title="STRENGTH";a.detail=$"Gain {a.amount} Strength."+(a.amount<plan.amount?" Wither reduces this gain.":"")+"\nEach point increases attack damage by 1 per hit.";break;
                 case EnemyActionType.Weak:a.title="WEAK";a.detail=$"Apply {a.amount} Weak to you.\nYour Attacks deal 25% less damage while Weak lasts.";break;
                 case EnemyActionType.Vulnerable:a.title="VULNERABLE";a.detail=$"Apply {a.amount} Vulnerable to you.\nYou receive 50% more attack damage while Vulnerable lasts.";break;
@@ -130,7 +133,7 @@ namespace GildedFate.Combat
                         case EnemyActionType.Attack:
                             for(var hit=0;hit<action.hits&&!IsOver&&enemy.hp>0;hit++)DamagePlayer(action.amount+enemy.strength);
                             break;
-                        case EnemyActionType.Block:enemy.block+=action.amount;Emit(CombatEventKind.Block,action.amount,false);break;
+                        case EnemyActionType.Block:{var gained=action.amount+(action.amount>0?enemy.fortify:0);enemy.block+=gained;Emit(CombatEventKind.Block,gained,false);break;}
                         case EnemyActionType.Strength:var gain=EnemyBuffAfterWither(action.amount);enemy.strength+=gain;Emit(CombatEventKind.Status,gain,false,null,"STRENGTH");break;
                         case EnemyActionType.Weak:ApplyPlayerDebuff(Core.EffectKind.Weak,action.amount);break;
                         case EnemyActionType.Vulnerable:ApplyPlayerDebuff(Core.EffectKind.Vulnerable,action.amount);break;
@@ -146,6 +149,7 @@ namespace GildedFate.Combat
                         case EnemyActionType.BlockLowestAlly:case EnemyActionType.HeatAlly:case EnemyActionType.HealDamagedAlly:case EnemyActionType.StrengthRandomMinion:
                         case EnemyActionType.Growth:case EnemyActionType.GrowthSet:case EnemyActionType.GrowthAlly:case EnemyActionType.BlockOtherAllies:case EnemyActionType.HealOwner:case EnemyActionType.PlantSeed:
                         case EnemyActionType.PlateSpend:case EnemyActionType.PlateGain:case EnemyActionType.Momentum:case EnemyActionType.MomentumReset:
+                        case EnemyActionType.SeizeGold:case EnemyActionType.BonusConsume:case EnemyActionType.Fortify:case EnemyActionType.ReserveSpend:case EnemyActionType.ReserveAll:case EnemyActionType.BlockLowestNonMinion:
                             ExecuteWildAction(action);break;
                         default:throw new InvalidOperationException("Enemy action has no executor: "+action.type);
                     }

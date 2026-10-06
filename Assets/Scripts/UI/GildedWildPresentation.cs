@@ -24,7 +24,7 @@ namespace GildedFate.UI
                 var pm=index>=0?combat.MindAt(index):null;
                 return pm!=null&&pm.state=="EXPOSED"?id+"_phase2":id;
             }
-            if(id!=AshenWildsContent.Alpha&&id!=DrownedQuarterContent.Magistrate&&id!=CrimsonFoundryContent.Saint&&id!=HollowwoodContent.Heartroot&&id!=ShatteredObservatoryContent.Curator||combat==null||screen!=ScreenMode.Combat)return id;
+            if(id!=AshenWildsContent.Alpha&&id!=DrownedQuarterContent.Magistrate&&id!=CrimsonFoundryContent.Saint&&id!=HollowwoodContent.Heartroot&&id!=ShatteredObservatoryContent.Curator&&id!=GildedRuinsContent.Procession||combat==null||screen!=ScreenMode.Combat)return id;
             var boss=combat.WildBossIndex;var phase=boss>=0?combat.MindAt(boss)?.phase??1:1;
             return phase>=3?id+"_phase3":phase==2?id+"_phase2":id;
         }
@@ -83,6 +83,27 @@ namespace GildedFate.UI
                 case "heartroot_heart_bloom":text="HEART BLOOM";color=new Color(.95f,.5f,.8f);break;
                 case "heartroot_spreading_bloom":text="SPREADING BLOOM";color=new Color(.95f,.5f,.8f);break;
                 case "heartroot_final_bloom":text="FINAL BLOOM";color=new Color(1f,.45f,.7f);break;
+                // ---- Gilded Ruins ----
+                case "last_procession_phase_1_to_2":case "last_procession_phase_2_to_3":RefreshEnemyArt(fact.enemyIndex);return; // the boss phase cinematic owns the banner
+                case "seize_gold":text="GOLD SEIZED";color=new Color(1f,.82f,.3f);break;
+                case "gold_returned":text="GOLD RETURNED";color=new Color(.95f,.9f,.5f);break;
+                case "chorister_support":text="THE CHORUS RISES";color=new Color(1f,.85f,.5f);break;
+                case "bell_toll_1":text="FIRST TOLL";color=new Color(.95f,.85f,.55f);break;
+                case "bell_toll_2":text="SECOND TOLL";color=new Color(1f,.78f,.4f);break;
+                case "bell_toll_3":text="THIRD TOLL";color=new Color(1f,.6f,.3f);break;
+                case "servitor_awaken":case "servitor_spawn":text="SERVITOR AWAKENS";color=new Color(.95f,.85f,.55f);break;
+                case "servitor_death":case "coinbound_guard_death":text="CRUMBLES";color=new Color(.72f,.7f,.64f);break;
+                case "coinbound_guard_spawn":text="GUARD TAKES ITS PLACE";color=new Color(1f,.85f,.45f);break;
+                case "ruins_command":text="COMMAND";color=new Color(1f,.85f,.45f);break;
+                case "collector_repossess":text="REPOSSESSED";color=new Color(1f,.75f,.35f);break;
+                case "collector_foreclosure":text="FORECLOSURE";color=new Color(1f,.45f,.3f);break;
+                case "auction_lot_announced":text="LOT ANNOUNCED";color=new Color(1f,.85f,.45f);break;
+                case "auction_lot_resolved":text="SOLD";color=new Color(1f,.7f,.3f);break;
+                case "reserve_gain":text="RESERVE +1";color=new Color(.95f,.8f,.4f);break;
+                case "asset_release":text="ASSET RELEASE";color=new Color(1f,.55f,.25f);break;
+                case "emergency_reserve":text="EMERGENCY RESERVE";color=new Color(.7f,.95f,.6f);break;
+                case "bonus_gold_consumed":text="BONUS GOLD SPENT";color=new Color(1f,.8f,.35f);break;
+                case "end_of_the_procession":text="THE END OF THE PROCESSION";color=new Color(1f,.4f,.25f);break;
                 // ---- Shattered Observatory ----
                 case "future_intent_generated":text="FUTURE FORETOLD";color=new Color(.72f,.62f,1f);break;
                 case "future_to_current":case "chronoglyph_future_to_current":text="THE FUTURE ARRIVES";color=new Color(.72f,.62f,1f);break;
@@ -147,6 +168,7 @@ namespace GildedFate.UI
                     if(name.StartsWith("prototype_zero_mode:")){text=name.Substring(20)+" MODE";color=new Color(1f,.6f,.4f);break;}
                     if(name.StartsWith("crucible_knight_state:")){text=name.Substring(22);color=text=="COLD"?new Color(.7f,.8f,.9f):new Color(1f,.5f,.25f);break;}
                     if(name.StartsWith("lenskeeper_response:")){var band=name.Substring(20);text=band=="UNDER"?"UNDEREXPOSED":band=="OVER"?"OVEREXPOSED":"BALANCED";color=new Color(.9f,.85f,.6f);break;}
+                    if(name.StartsWith("duelist_response:")){var band=name.Substring(17);text=band=="ATTACKS"?"PUNISHES ATTACKS":band=="SKILLS"?"PRESSES THE ADVANTAGE":"MEASURES YOU";color=new Color(.95f,.8f,.5f);break;}
                     if(name.StartsWith("hollow_maw_state:")){text=name.Substring(17);color=text=="BURNING"?new Color(1f,.42f,.2f):text=="FED"?new Color(.6f,.9f,.6f):new Color(1f,.85f,.6f);}
                     break;
             }
@@ -197,16 +219,45 @@ namespace GildedFate.UI
                 GUI.Label(icon,action.type==EnemyActionType.PlantSeed?"SEED":"GROWTH",new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=10,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(.6f,.95f,.45f)}});
                 return true;
             }
+            if(action.Icon==EnemyIntentAction.IconReserve||action.Icon==EnemyIntentAction.IconFortify||action.Icon==EnemyIntentAction.IconBonus)
+            {
+                var word=action.Icon==EnemyIntentAction.IconReserve?"RESERVE":action.Icon==EnemyIntentAction.IconFortify?"FORTIFY":"BONUS";
+                GUI.Label(icon,word,new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=word=="RESERVE"?9:10,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(1f,.84f,.4f)}});
+                return true;
+            }
             var art=MetaArt(action.Icon==EnemyIntentAction.IconSummon?"SummonIcon":action.Icon==EnemyIntentAction.IconHeat?"HeatIcon":"MinionIcon");
             if(art)GUI.DrawTexture(new Rect(icon.x+icon.width*.1f,icon.y+icon.height*.08f,icon.width*.8f,icon.height*.84f),art,ScaleMode.ScaleToFit,true);
             else GUI.Label(icon,action.Icon==EnemyIntentAction.IconSummon?"+":"⟳",new GUIStyle(titleStyle){fontSize=22,alignment=TextAnchor.MiddleCenter});
             return true;
         }
+        // Shown only while an enemy holds some of the player's Gold.
+        private void DrawSeizedGoldHud()
+        {
+            if(combat==null||!combat.wildCombat||combat.TotalSeizedGold<=0)return;
+            var hero=HeroPortraitRect;var text=$"GOLD {combat.playerGold} · {combat.TotalSeizedGold} SEIZED";
+            var style=new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=13,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(1f,.9f,.5f)}};
+            var width=style.CalcSize(new GUIContent(text)).x+18;var r=new Rect(hero.center.x-width*.5f,hero.y-26,width,24);
+            Fill(r,new Color(.12f,.08f,.02f,.88f));Outline(r,new Color(1f,.82f,.3f,.9f),1);GUI.Label(r,text,style);
+            if(CombatInspectionAllowed&&r.Contains(combatPointer))SetCombatEffectTooltip("SEIZED GOLD",$"You hold {combat.playerGold} Gold. Enemies are holding {combat.TotalSeizedGold} more. Defeat the holder to get it back; whatever is still held when you win is returned.",r.center);
+        }
+        // Gold an enemy is holding (Seized Gold). Returned when it dies and when the fight is won.
+        private void DrawSeizedGoldPill(int index,Rect portrait)
+        {
+            var held=combat.SeizedGoldAt(index);if(held<=0)return;
+            var text="HOLDS "+held+" GOLD";
+            var style=new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=12,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(1f,.9f,.5f)}};
+            var width=style.CalcSize(new GUIContent(text)).x+16;
+            var r=new Rect(portrait.xMax-width+6,portrait.y+34,width,22);
+            Fill(r,new Color(.12f,.08f,.02f,.88f));Outline(r,new Color(1f,.82f,.3f,.9f),1);GUI.Label(r,text,style);
+            if(CombatInspectionAllowed&&r.Contains(combatPointer))SetCombatEffectTooltip("SEIZED GOLD",$"This enemy is holding {held} of your Gold. Defeat it and the Gold comes back. It is never lost permanently and cannot take more than you have.",r.center);
+        }
         // Enemy-specific counter (Heat, Load, Armor, Strings, Pressure or Prototype Zero's mode),
         // drawn at the top-right of the body instead of cluttering the buff row.
         private void DrawWildCounter(int index,Rect portrait)
         {
-            if(combat==null||!combat.WildCounter(index,out var label,out var value,out var max))return;
+            if(combat==null)return;
+            DrawSeizedGoldPill(index,portrait);
+            if(!combat.WildCounter(index,out var label,out var value,out var max))return;
             var heat=label=="HEAT";var mode=label is "ASSAULT" or "DEFENSE" or "OVERDRIVE"||max<=0;
             var growth=label.EndsWith("GROWTH");var predict=label.StartsWith("LAST TURN")||label.StartsWith("NO PREVIOUS")||label.StartsWith("PHASE ")||label=="ORBIT PLATES"||label=="MOMENTUM";
             var text=mode?label:heat?$"{value}/{max}":$"{label} {value}/{max}";
@@ -214,7 +265,7 @@ namespace GildedFate.UI
             var width=Mathf.Max(56,style.CalcSize(new GUIContent(text)).x+(heat?34:16));
             var r=new Rect(portrait.xMax-width+6,portrait.y+4,width,26);
             var full=!mode&&value>=max&&(label is "HEAT" or "LOAD" or "PRESSURE" or "MOMENTUM"||growth);
-            var accent=predict?new Color(.72f,.66f,1f):growth||max<=0?new Color(.62f,.9f,.42f):heat?new Color(1f,.45f,.16f):label=="LOAD"?new Color(1f,.62f,.24f):label=="ARMOR"?new Color(.78f,.74f,.68f):mode?new Color(1f,.55f,.35f):new Color(.6f,.85f,.9f);
+            var accent=predict?new Color(.72f,.66f,1f):growth||max<=0?new Color(.62f,.9f,.42f):heat?new Color(1f,.45f,.16f):label=="LOAD"?new Color(1f,.62f,.24f):label=="ARMOR"?new Color(.78f,.74f,.68f):label.StartsWith("BONUS GOLD")||label=="RESERVE"?new Color(1f,.84f,.4f):mode?new Color(1f,.55f,.35f):new Color(.6f,.85f,.9f);
             var pulse=full&&!profile.reduceMotion?.55f+.45f*Mathf.Sin(Time.unscaledTime*6f):1f;
             Fill(r,new Color(.04f,.025f,.02f,.8f));Outline(r,new Color(accent.r,accent.g,accent.b,full?pulse:.75f),full?2:1);
             var textRect=r;
@@ -346,6 +397,20 @@ namespace GildedFate.UI
             ShatteredObservatoryContent.MoonFragment=>new(EnemyMotionKind.Spirit,EnemyStrikeStyle.Claw,.6f,6,1.2f,42,new Color(.75f,.85f,1f)),
             ShatteredObservatoryContent.BlindSeer=>new(EnemyMotionKind.Caster,EnemyStrikeStyle.Bolt,1.1f,6,.95f,30,new Color(.8f,.75f,1f)),
             ShatteredObservatoryContent.Comet=>new(EnemyMotionKind.Beast,EnemyStrikeStyle.Claw,1.3f,0,1.1f,80,new Color(.55f,.8f,1f)),
+            GildedRuinsContent.Scavenger=>new(EnemyMotionKind.Knight,EnemyStrikeStyle.Blade,.9f,0,1.15f,50,new Color(1f,.8f,.4f)),
+            GildedRuinsContent.Bastion=>new(EnemyMotionKind.Knight,EnemyStrikeStyle.Slam,1.15f,0,.9f,54,new Color(1f,.8f,.4f)),
+            GildedRuinsContent.Chorister=>new(EnemyMotionKind.Caster,EnemyStrikeStyle.Bolt,.85f,3,1f,20,new Color(1f,.88f,.55f)),
+            GildedRuinsContent.Appraiser=>new(EnemyMotionKind.Caster,EnemyStrikeStyle.Claw,.9f,2,1f,24,new Color(1f,.82f,.4f)),
+            GildedRuinsContent.Keeper=>new(EnemyMotionKind.Caster,EnemyStrikeStyle.Slam,1.1f,2,.95f,36,new Color(1f,.85f,.5f)),
+            GildedRuinsContent.Servitor=>new(EnemyMotionKind.Crawler,EnemyStrikeStyle.Claw,.65f,0,1.35f,46,new Color(.9f,.8f,.5f)),
+            GildedRuinsContent.Mimic=>new(EnemyMotionKind.Brute,EnemyStrikeStyle.Chomp,1.05f,0,1.2f,60,new Color(1f,.82f,.3f)),
+            GildedRuinsContent.Herald=>new(EnemyMotionKind.Beast,EnemyStrikeStyle.Slam,1.1f,0,1f,56,new Color(1f,.8f,.45f)),
+            GildedRuinsContent.Duelist=>new(EnemyMotionKind.Knight,EnemyStrikeStyle.Blade,1f,0,1.25f,56,new Color(1f,.7f,.35f)),
+            GildedRuinsContent.Collector=>new(EnemyMotionKind.Knight,EnemyStrikeStyle.Blade,1.25f,0,.95f,52,new Color(1f,.82f,.35f)),
+            GildedRuinsContent.Guard=>new(EnemyMotionKind.Knight,EnemyStrikeStyle.Slam,.8f,0,1.1f,44,new Color(.95f,.8f,.45f)),
+            GildedRuinsContent.Auctioneer=>new(EnemyMotionKind.Caster,EnemyStrikeStyle.Bolt,1.1f,2,.95f,32,new Color(1f,.85f,.45f)),
+            GildedRuinsContent.Treasury=>new(EnemyMotionKind.Colossus,EnemyStrikeStyle.Crush,1.4f,0,.8f,40,new Color(1f,.8f,.3f)),
+            GildedRuinsContent.Procession=>new(EnemyMotionKind.Colossus,EnemyStrikeStyle.Blade,1.55f,3,.8f,42,new Color(1f,.82f,.4f)),
             ShatteredObservatoryContent.Curator=>new(EnemyMotionKind.Colossus,EnemyStrikeStyle.Blade,1.5f,4,.8f,40,new Color(.78f,.7f,1f)),
             _=>new(EnemyMotionKind.Knight,EnemyStrikeStyle.Blade,1f,0,1f,50,new Color(1f,.62f,.36f))
         };
@@ -367,6 +432,8 @@ namespace GildedFate.UI
             HollowwoodContent.BroodPod=>1.05f,HollowwoodContent.Sporeling=>.58f,HollowwoodContent.Bloomfang=>1.05f,HollowwoodContent.Parasite=>1.05f,
             HollowwoodContent.ElderHusk=>1.1f,HollowwoodContent.GardenMother=>1.3f,HollowwoodContent.Thornbud=>.7f,HollowwoodContent.Bloombud=>.68f,
             HollowwoodContent.Huskbud=>.7f,HollowwoodContent.WalkingGrove=>1.45f,HollowwoodContent.PaleGardener=>1.3f,HollowwoodContent.Heartroot=>1.7f,
+            GildedRuinsContent.Scavenger=>.95f,GildedRuinsContent.Bastion=>1.1f,GildedRuinsContent.Chorister=>1f,GildedRuinsContent.Appraiser=>1f,GildedRuinsContent.Keeper=>1.2f,GildedRuinsContent.Servitor=>.62f,GildedRuinsContent.Mimic=>1.05f,GildedRuinsContent.Herald=>1.1f,
+            GildedRuinsContent.Duelist=>1.05f,GildedRuinsContent.Collector=>1.3f,GildedRuinsContent.Guard=>.75f,GildedRuinsContent.Auctioneer=>1.3f,GildedRuinsContent.Treasury=>1.45f,GildedRuinsContent.Procession=>1.75f,
             ShatteredObservatoryContent.Scribe=>.95f,ShatteredObservatoryContent.Sentinel=>1.05f,ShatteredObservatoryContent.Attendant=>.98f,ShatteredObservatoryContent.Chronoglyph=>1f,
             ShatteredObservatoryContent.Lenskeeper=>1.05f,ShatteredObservatoryContent.Weaver=>1f,ShatteredObservatoryContent.StarFragment=>.6f,ShatteredObservatoryContent.Monk=>1.05f,
             ShatteredObservatoryContent.Astrologer=>1f,ShatteredObservatoryContent.OrreryKeeper=>1.3f,ShatteredObservatoryContent.SunFragment=>.72f,ShatteredObservatoryContent.MoonFragment=>.7f,

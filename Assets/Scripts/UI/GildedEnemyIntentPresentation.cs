@@ -24,7 +24,7 @@ namespace GildedFate.UI
         private Color IntentAccent(EnemyActionType type)=>type switch
         {
             EnemyActionType.Attack=>new Color(1,.43f,.34f),EnemyActionType.Block=>new Color(.37f,.77f,1),
-            EnemyActionType.Strength or EnemyActionType.StealGold or EnemyActionType.SummonWeapon or EnemyActionType.Summon or EnemyActionType.Command or EnemyActionType.StrengthAlly or EnemyActionType.StrengthMinions=>Gold,
+            EnemyActionType.Strength or EnemyActionType.StealGold or EnemyActionType.SeizeGold or EnemyActionType.BonusConsume or EnemyActionType.Fortify or EnemyActionType.ReserveSpend or EnemyActionType.ReserveAll or EnemyActionType.SummonWeapon or EnemyActionType.Summon or EnemyActionType.Command or EnemyActionType.StrengthAlly or EnemyActionType.StrengthMinions=>Gold,
             EnemyActionType.BlockAllies or EnemyActionType.BlockPack or EnemyActionType.BlockMinions or EnemyActionType.BlockOwner or EnemyActionType.BlockTarget=>new Color(.37f,.77f,1),
             EnemyActionType.HealAlly or EnemyActionType.HealMinion=>new Color(.43f,.92f,.58f),
             EnemyActionType.Heal=>new Color(.43f,.92f,.58f),_=>new Color(.83f,.61f,1)

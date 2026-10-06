@@ -9,18 +9,19 @@ namespace GildedFate.Core
     public static class ActThemes
     {
         public const string Vault="";
-        public const string AshenWilds="ashen_wilds",DrownedQuarter="drowned_quarter",CrimsonFoundry="crimson_foundry",Hollowwood="hollowwood",ShatteredObservatory="shattered_observatory";
-        // Implemented themes per act. The original Vault roster stands in for the themes that
-        // do not exist yet (Gilded Ruins in Act 1). Act 2 rolls the Vault or one of three themes.
+        public const string GildedRuins="gilded_ruins",AshenWilds="ashen_wilds",DrownedQuarter="drowned_quarter",CrimsonFoundry="crimson_foundry",Hollowwood="hollowwood",ShatteredObservatory="shattered_observatory";
+        // Implemented themes per act. Gilded Ruins is Act 1's first theme; the original Vault roster
+        // still serves Acts 2 and 3 until their themes exist. Act 2 rolls the Vault or one of three themes.
         public static string[] ForAct(int act)=>act switch
         {
-            1=>new[]{Vault,AshenWilds,DrownedQuarter},
+            1=>new[]{GildedRuins,AshenWilds,DrownedQuarter},
             2=>new[]{Vault,CrimsonFoundry,Hollowwood,ShatteredObservatory},
             _=>new[]{Vault}
         };
-        public static string Name(string theme)=>theme switch{AshenWilds=>"ASHEN WILDS",DrownedQuarter=>"THE DROWNED QUARTER",CrimsonFoundry=>"THE CRIMSON FOUNDRY",Hollowwood=>"HOLLOWWOOD",ShatteredObservatory=>"THE SHATTERED OBSERVATORY",_=>"THE GILDED VAULT"};
+        public static string Name(string theme)=>theme switch{GildedRuins=>"THE GILDED RUINS",AshenWilds=>"ASHEN WILDS",DrownedQuarter=>"THE DROWNED QUARTER",CrimsonFoundry=>"THE CRIMSON FOUNDRY",Hollowwood=>"HOLLOWWOOD",ShatteredObservatory=>"THE SHATTERED OBSERVATORY",_=>"THE GILDED VAULT"};
         public static string Tagline(string theme)=>theme switch
         {
+            GildedRuins=>"A dead kingdom whose systems still run · Seized Wealth",
             AshenWilds=>"A burned wilderness fighting to regrow · Pack Instinct",
             DrownedQuarter=>"A sinking city district · Delayed threats you can see coming",
             CrimsonFoundry=>"A war factory that never stopped · Heat",

@@ -33,7 +33,7 @@ namespace GildedFate.Combat
         // Energy spent in the current / immediately previous player turn (Lenskeeper reads the previous one only).
         // lastTurnEnergySpent is -1 before there is a previous player turn.
         public int energySpentThisTurn,lastTurnEnergySpent=-1;
-        internal void RollEnergyMemory(){lastTurnEnergySpent=turn>0?energySpentThisTurn:-1;energySpentThisTurn=0;}
+        internal void RollEnergyMemory(){lastTurnEnergySpent=turn>0?energySpentThisTurn:-1;energySpentThisTurn=0;RollRuinsMemory();}
 
         private static readonly string[] AstrologerPool={"so_starfall","so_astral_guard","so_falling_omen","so_celestial_surge"};
         private static readonly string[] ChronoPool={"so_time_cut","so_delay_ward","so_temporal_fracture","so_future_collapse"};
@@ -46,6 +46,7 @@ namespace GildedFate.Combat
             if(id==ShatteredObservatoryContent.Sentinel)m.counter=MaxPlates;
             if(id==ShatteredObservatoryContent.Comet)m.counter=0;
             if(id==ShatteredObservatoryContent.Lenskeeper)m.plannedValue=-1;
+            ResetRuinsState(m,id);
         }
 
         // ---------- queue / pair helpers (all RNG here) ----------
@@ -165,7 +166,7 @@ namespace GildedFate.Combat
                         return move;
                     }
             }
-            return null;
+            return ChooseRuinsMove(m);
         }
         private static string CuratorMoveAt(int phase,int pos)
         {
@@ -262,7 +263,7 @@ namespace GildedFate.Combat
                 case "so_cur_gravity_sentence":return new[]{P(A,13),P(V,1)};
                 case "so_cur_astral_surge":return new[]{P(S,2),P(B,8)};
             }
-            return null;
+            return RuinsActions(move,m);
         }
         private static string ObservatoryName(string move)=>move switch
         {
@@ -317,7 +318,7 @@ namespace GildedFate.Combat
                 case AstrologerPairMove:case CuratorPairMove:
                     return "POSSIBLE: "+string.Join(" / ",(m.pair??"").Split(new[]{'|'},StringSplitOptions.RemoveEmptyEntries).Select(ObservatoryName));
             }
-            return ObservatoryName(move);
+            return move.StartsWith("gr_")?RuinsMoveLabel(move,m):ObservatoryName(move);
         }
         private static string ObservatoryHook(string move)=>move switch
         {
@@ -330,7 +331,7 @@ namespace GildedFate.Combat
             "so_cur_archive"=>"curator_archive_future","so_cur_predicted_collapse"=>"curator_predicted_collapse","so_cur_collapse_event"=>"curator_collapse_event",
             "so_cur_grand_alignment"=>"curator_grand_alignment",
             "so_cur_stellar_execution" or "so_cur_constellation_barrage" or "so_cur_celestial_fortress" or "so_cur_gravity_sentence" or "so_cur_astral_surge"=>"curator_twin_fate_resolved",
-            _=>""
+            _=>RuinsHook(move)
         };
 
         // ---------- resolution ----------
@@ -405,7 +406,7 @@ namespace GildedFate.Combat
                     if(move is "so_cur_grand_alignment" or "so_cur_collapse_event")EmitHook("future_to_current");
                     if(!(move is "so_cur_archive" or "so_cur_predicted_collapse"))m.queue=""; // the queue stays until the queued action is chosen
                     return false;
-                default:return false;
+                default:return BeginRuinsAction(m,move);
             }
         }
 
@@ -432,7 +433,7 @@ namespace GildedFate.Combat
                 case EnemyActionType.PlateGain:PlateChange(self,action.amount);break;
                 case EnemyActionType.Momentum:MomentumChange(self,action.amount);break;
                 case EnemyActionType.MomentumReset:MomentumChange(self,-MaxMomentum);break;
-                default:throw new InvalidOperationException("Enemy action has no executor: "+action.type);
+                default:ExecuteRuinsAction(action);break;
             }
         }
 
@@ -441,13 +442,13 @@ namespace GildedFate.Combat
         private bool ObservatoryReplanOnDeath(int k)
         {
             var id=opponents[k].id;
-            return id is ShatteredObservatoryContent.OrreryKeeper or ShatteredObservatoryContent.Weaver or ShatteredObservatoryContent.Attendant;
+            return id is ShatteredObservatoryContent.OrreryKeeper or ShatteredObservatoryContent.Weaver or ShatteredObservatoryContent.Attendant||RuinsReplanOnDeath(k);
         }
         // Astral Curator: 2/3 of maximum health rounded up (207 at the base 310) and 1/3 rounded down (103).
         private bool CheckObservatoryThresholds(int index)
         {
             var o=opponents[index];var m=o.mind;var f=o.fighter;
-            if(ShatteredObservatoryContent.Find(o.id)==null)return false;
+            if(ShatteredObservatoryContent.Find(o.id)==null)return CheckRuinsThresholds(index);
             if(o.id!=ShatteredObservatoryContent.Curator)return true;
             var t1=(f.maxHp*2+2)/3;var t2=f.maxHp/3;
             var target=f.hp<=t2?3:f.hp<=t1?2:1;
@@ -479,7 +480,7 @@ namespace GildedFate.Combat
                     label=m.plannedValue<0?"NO PREVIOUS TURN":"LAST TURN: "+m.plannedValue+" ENERGY";return true;
                 case ShatteredObservatoryContent.Curator:label=m.phase==1?"PHASE 1 · ARCHIVE":m.phase==2?"PHASE 2 · FRACTURED":"PHASE 3 · TWIN FATE";return true;
             }
-            return false;
+            return RuinsCounter(index,m,out label,out value,out max);
         }
         // The forecast panel next to an Observatory enemy. The first line is a title; later lines are the shown future.
         // Returns false when this enemy shows nothing beyond its current intent.
@@ -518,7 +519,7 @@ namespace GildedFate.Combat
                         tip=!string.IsNullOrEmpty(m.queue)?"Queued: this will be its next action. It cannot change.":"Its next action after the Current one. It does not change unless its form does.";return true;
                     }
             }
-            return false;
+            return RuinsForecast(index,m,out title,out lines,out tip);
         }
         private void ObservatoryStateText(int index,WildMind m,List<string> lines)
         {
@@ -544,6 +545,7 @@ namespace GildedFate.Combat
                 case ShatteredObservatoryContent.SunFragment:lines.Add("Solar Flare → Radiant Surge (gains Strength).");break;
                 case ShatteredObservatoryContent.MoonFragment:lines.Add("Lunar Guard (shields its Keeper) → Crescent Strike.");break;
             }
+            RuinsStateText(index,m,lines);
         }
         private string DescribeObservatoryAction(EnemyActionType type,int amount,EnemyIntentAction a)
         {
@@ -554,7 +556,7 @@ namespace GildedFate.Combat
                 case EnemyActionType.Momentum:a.title="MOMENTUM";return $"Gains {amount} Momentum (maximum 4). "+MomentumHelp;
                 case EnemyActionType.MomentumReset:a.title="IMPACT";return "Its Momentum resets to 0.";
             }
-            return "";
+            return DescribeRuinsAction(type,amount,a);
         }
     }
 }

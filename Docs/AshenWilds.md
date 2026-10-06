@@ -1,8 +1,8 @@
 # Act 1 · Theme 2 — Ashen Wilds
 
-Each run rolls one theme per act when it starts (`RunModel.actThemes`). Act 1 can roll **The Vault**
-(the original roster, standing in for Gilded Ruins), **Ashen Wilds** or **The Drowned Quarter**
-(see `DrownedQuarter.md`). Acts 2 and 3 only have The Vault for now. Saves made before
+Each run rolls one theme per act when it starts (`RunModel.actThemes`). Act 1 rolls **The Gilded Ruins**
+(see `GildedRuins.md`, which replaced The Vault as the Act 1 default), **Ashen Wilds** or **The Drowned Quarter**
+(see `DrownedQuarter.md`). Act 3 only has The Vault for now. Saves made before
 this update have no themes, so they keep playing The Vault.
 
 The map shows the act's theme under the summit boss label. Hover it to see the tagline.

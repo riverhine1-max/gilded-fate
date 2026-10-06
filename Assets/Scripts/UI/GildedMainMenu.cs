@@ -882,7 +882,7 @@ namespace GildedFate.UI
             return candidates[hash%(uint)candidates.Length];
         }
 
-        private void BeginCombat(EnemyDef enemy,int difficulty,float intro=0){currentEnemy=enemy;combat=new CombatState();var shard=run.shards.FirstOrDefault(s=>s.active);var actScale=Mathf.Max(0,run.act-1);var enemyHp=enemy.hp;var enemyDamage=enemy.baseDamage;combat.Begin(run.hero,BuildCombatDeck(),enemyHp,difficulty+actScale,run.hp,run.maxHp,run.relics,enemy.id,enemyDamage,run.seed^(run.act*104729)^(run.floor*397),run.immortalThreadUsed,shard?.id??"",shard?.activeFractured??false,run.activeEncounterEnemies?.ToArray(),run.TemporaryCombatCards().Count());ApplyFateDebtToCombat(enemy);var eventBlock=run.TemporaryEventValue("start_block");if(eventBlock>0)combat.player.block+=eventBlock;lastBossPhase=1;bossIntroTime=intro;screen=ScreenMode.Combat;ResetCombatPresentation();SaveCombatCheckpoint();}
+        private void BeginCombat(EnemyDef enemy,int difficulty,float intro=0){currentEnemy=enemy;combat=new CombatState();var shard=run.shards.FirstOrDefault(s=>s.active);var actScale=Mathf.Max(0,run.act-1);var enemyHp=enemy.hp;var enemyDamage=enemy.baseDamage;combat.playerGold=run.gold;combat.Begin(run.hero,BuildCombatDeck(),enemyHp,difficulty+actScale,run.hp,run.maxHp,run.relics,enemy.id,enemyDamage,run.seed^(run.act*104729)^(run.floor*397),run.immortalThreadUsed,shard?.id??"",shard?.activeFractured??false,run.activeEncounterEnemies?.ToArray(),run.TemporaryCombatCards().Count());ApplyFateDebtToCombat(enemy);var eventBlock=run.TemporaryEventValue("start_block");if(eventBlock>0)combat.player.block+=eventBlock;lastBossPhase=1;bossIntroTime=intro;screen=ScreenMode.Combat;ResetCombatPresentation();SaveCombatCheckpoint();}
 
         private IEnumerable<CardDef> BuildCombatDeck()
         {
@@ -1037,8 +1037,8 @@ namespace GildedFate.UI
             run.SyncPerfectedGrowth(combat);run.ClearCombatCheckpoint();run.FinishActiveShard();run.ConsumeTemporaryCombatStatuses();run.ConsumeTemporaryEventEffects();
             if(!combat.AnyEnemyAlive&&combat.player.hp>0)
             {
-                run.hp=combat.player.hp;run.gold=Mathf.Max(0,run.gold-combat.goldLost);
-                var gain=RewardRules.BaseGold(currentNode.kind,run.act);if(currentEnemy?.id=="collector")gain+=combat.stolenGold+10;if(run.relics.Contains("lucky_coin"))gain=Mathf.CeilToInt(gain*1.15f);gain=FateDebtGold(gain);run.pendingCombatGold=gain;run.combatGoldClaimed=false;
+                combat.ReturnAllSeizedGold();run.hp=combat.player.hp;run.gold=Mathf.Max(0,run.gold-combat.goldLost);
+                var gain=RewardRules.BaseGold(currentNode.kind,run.act);if(currentEnemy?.id=="collector")gain+=combat.stolenGold+10;gain+=combat.RuinsRewardBonus;if(run.relics.Contains("lucky_coin"))gain=Mathf.CeilToInt(gain*1.15f);gain=FateDebtGold(gain);run.pendingCombatGold=gain;run.combatGoldClaimed=false;
                 run.RollEncounterRewards(currentNode.kind);
                 if(newResult){profile.enemiesDefeated+=combat.NonMinionTotal;if(currentNode.kind==NodeKind.Combat)run.normalCombatsCompleted++;if(currentNode.kind==NodeKind.Elite)profile.elitesDefeated++;if(currentNode.kind==NodeKind.Boss)profile.bossesDefeated++;}
                 TrackCombatMeta(true);
