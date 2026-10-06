@@ -476,6 +476,7 @@ namespace GildedFate.UI
                 case "hollowwoodTheme":run.actThemes=new System.Collections.Generic.List<string>{ActThemes.Vault,ActThemes.Hollowwood,ActThemes.Vault};run.act=2;return;
                 case "ruinsTheme":run.actThemes=new System.Collections.Generic.List<string>{ActThemes.GildedRuins,ActThemes.Vault,ActThemes.Vault};return;
                 case "cathedralTheme":run.actThemes=new System.Collections.Generic.List<string>{ActThemes.Vault,ActThemes.Vault,ActThemes.BlackCathedral};run.act=3;return;
+                case "fracturedTheme":run.actThemes=new System.Collections.Generic.List<string>{ActThemes.Vault,ActThemes.Vault,ActThemes.FracturedRealm};run.act=3;return;
                 case "observatoryTheme":run.actThemes=new System.Collections.Generic.List<string>{ActThemes.Vault,ActThemes.ShatteredObservatory,ActThemes.Vault};run.act=2;return;
                 case "drownedTheme":run.actThemes=new System.Collections.Generic.List<string>{ActThemes.DrownedQuarter,ActThemes.Vault,ActThemes.Vault};return;
                 case "settingsPage":settingsReturnScreen=ScreenMode.Menu;screen=ScreenMode.Settings;settingsOverview=false;settingsPage=v;settingsFocusIndex=0;return;

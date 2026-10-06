@@ -119,6 +119,7 @@ namespace GildedFate.UI
             HollowwoodContent.Heartroot=>lastBossPhase>=3?"THE PREDATOR HEART · GROWTH RESETS TO 0":"THE HEART SPREADS · GROWTH RESETS TO 1",
             ShatteredObservatoryContent.Curator=>lastBossPhase>=3?"THE CONSTELLATION FORMS · TWIN FATE":"THE ARCHIVE FRACTURES · NEW FUTURES",
             BlackCathedralContent.Bishop=>lastBossPhase>=3?"THE FINAL BISHOP · NO JUDGMENT LEFT · THE CATHEDRAL COLLAPSES":"THE VOICES FALL SILENT · THE BISHOP JUDGES YOU",
+            FracturedRealmContent.Unmade=>lastBossPhase>=3?"THE UNMADE · TWO FUTURES · REALITY COLLAPSES":"THE WORLD FRACTURES · THE UNMADE COMPOSES ITSELF",
             GildedRuinsContent.Procession=>lastBossPhase>=3?"THE CROWN ENGINE · THE PROCESSION SEIZES MORE":"THE PARADE BREAKS · THE RAM ADVANCES",
             DrownedQuarterContent.Magistrate=>lastBossPhase>=3?"IT TEARS FREE OF THE COURT · THE BAILIFF SINKS":"THE COURT FLOODS · THE MAGISTRATE PULLS PARTLY FREE",
             _=>"THE VAULT REWRITES ITS COMMAND"

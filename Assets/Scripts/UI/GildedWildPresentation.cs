@@ -24,7 +24,7 @@ namespace GildedFate.UI
                 var pm=index>=0?combat.MindAt(index):null;
                 return pm!=null&&pm.state=="EXPOSED"?id+"_phase2":id;
             }
-            if(id!=AshenWildsContent.Alpha&&id!=DrownedQuarterContent.Magistrate&&id!=CrimsonFoundryContent.Saint&&id!=HollowwoodContent.Heartroot&&id!=ShatteredObservatoryContent.Curator&&id!=GildedRuinsContent.Procession&&id!=BlackCathedralContent.Bishop||combat==null||screen!=ScreenMode.Combat)return id;
+            if(id!=AshenWildsContent.Alpha&&id!=DrownedQuarterContent.Magistrate&&id!=CrimsonFoundryContent.Saint&&id!=HollowwoodContent.Heartroot&&id!=ShatteredObservatoryContent.Curator&&id!=GildedRuinsContent.Procession&&id!=BlackCathedralContent.Bishop&&id!=FracturedRealmContent.Unmade||combat==null||screen!=ScreenMode.Combat)return id;
             var boss=combat.WildBossIndex;var phase=boss>=0?combat.MindAt(boss)?.phase??1:1;
             return phase>=3?id+"_phase3":phase==2?id+"_phase2":id;
         }
@@ -46,7 +46,7 @@ namespace GildedFate.UI
                 case "drowned_magistrate_phase2":case "drowned_magistrate_phase3":
                 case "iron_saint_phase2":case "iron_saint_phase3":
                 case "heartroot_phase2":case "heartroot_phase3":
-                case "astral_curator_phase2":case "astral_curator_phase3":RefreshEnemyArt(fact.enemyIndex);return; // the boss phase cinematic owns the banner
+                case "astral_curator_phase2":case "astral_curator_phase3":case "the_unmade_phase_1_to_2":case "the_unmade_phase_2_to_3":RefreshEnemyArt(fact.enemyIndex);return; // the boss phase cinematic owns the banner
                 // ---- Crimson Foundry ----
                 case "foundry_overheated":text="OVERHEATED";color=new Color(1f,.38f,.16f);break;
                 case "foundry_vent":text="VENT";color=new Color(.85f,.85f,.8f);break;
@@ -95,6 +95,21 @@ namespace GildedFate.UI
                 case "bell_sentence":text="THE BELL PASSES SENTENCE";color=new Color(1f,.4f,.3f);break;
                 case "final_judgment":text="LAST JUDGMENT";color=new Color(1f,.55f,.3f);break;
                 case "cathedral_collapse":text="CATHEDRAL COLLAPSE";color=new Color(1f,.4f,.25f);break;
+                // ---- Fractured Realm ----
+                case "echo_created":text="ECHO";color=new Color(.78f,.6f,1f);break;
+                case "echo_resolved":text="ECHO RESOLVES";color=new Color(.85f,.7f,1f);break;
+                case "action_repeated":text="REPEATED";color=new Color(.7f,.85f,1f);break;
+                case "splitling_split":text="SPLIT";color=new Color(.8f,.6f,1f);break;
+                case "split_echo_spawn":text="SPLIT ECHO";color=new Color(.8f,.65f,1f);break;
+                case "split_echo_death":case "fragment_death":text="SHATTERED";color=new Color(.7f,.7f,.85f);break;
+                case "fragment_spawn":text="FRAGMENT BREAKS FREE";color=new Color(.8f,.6f,1f);break;
+                case "mirror_buff_copied":text="BUFF COPIED";color=new Color(.7f,.9f,1f);break;
+                case "rift_binder_duplicate":text="DUPLICATED";color=new Color(.78f,.6f,1f);break;
+                case "oracle_pair_reveal":case "unmade_pair_reveal":text="TWO FUTURES";color=new Color(.85f,.55f,1f);break;
+                case "fracture_command":text="FRACTURED COMMAND";color=new Color(1f,.85f,.45f);break;
+                case "fractured_memory_recorded":text="MEMORY RECORDED";color=new Color(.75f,.7f,1f);break;
+                case "loopkeeper_replay_start":text="LOOP REPLAY ACTIVE";color=new Color(.7f,.85f,1f);break;
+                case "loopkeeper_replay_finish":text="LOOP ENDS";color=new Color(.75f,.75f,.9f);break;
                 // ---- Gilded Ruins ----
                 case "last_procession_phase_1_to_2":case "last_procession_phase_2_to_3":RefreshEnemyArt(fact.enemyIndex);return; // the boss phase cinematic owns the banner
                 case "seize_gold":text="GOLD SEIZED";color=new Color(1f,.82f,.3f);break;
@@ -174,6 +189,9 @@ namespace GildedFate.UI
                 case "root_titan_uproot":text="UPROOTED";color=new Color(1f,.6f,.3f);break;
                 case "root_titan_root":text="ROOTED";color=new Color(.6f,.9f,.55f);break;
                 default:
+                    if(name.StartsWith("phase_beast_form:")){text=name.Substring(17).ToUpperInvariant()+" FORM";color=new Color(.75f,.65f,1f);break;}
+                    if(name.StartsWith("rift_colossus_stage:")){text="STAGE "+name.Substring(20);color=new Color(1f,.7f,.4f);break;}
+                    if(name.StartsWith("split_sovereign_threshold:")){text="THE SOVEREIGN SPLITS";color=new Color(.85f,.6f,1f);break;}
                     if(name.StartsWith("herald_sentence:")){var n=name.Substring(16);text=n=="1"?"SENTENCE 1":"SENTENCE "+n;color=new Color(1f,.5f,.35f);break;}
                     if(name.StartsWith("bell_toll_count:")){text="TOLL "+name.Substring(16)+"/4";color=new Color(.95f,.85f,.6f);break;}
                     if(name.StartsWith("living_icon_state:")){text=name.Substring(18);color=text=="MERCY"?new Color(.7f,.95f,.7f):text=="WRATH"?new Color(1f,.4f,.3f):new Color(1f,.85f,.5f);break;}
@@ -277,7 +295,7 @@ namespace GildedFate.UI
             DrawSeizedGoldPill(index,portrait);
             if(!combat.WildCounter(index,out var label,out var value,out var max))return;
             var heat=label=="HEAT";var mode=label is "ASSAULT" or "DEFENSE" or "OVERDRIVE"||max<=0;
-            var growth=label.EndsWith("GROWTH");var predict=label.StartsWith("LAST TURN")||label.StartsWith("NO PREVIOUS")||label.StartsWith("PHASE ")||label.StartsWith("JUDG")||label=="ORBIT PLATES"||label=="MOMENTUM";
+            var growth=label.EndsWith("GROWTH");var predict=label.StartsWith("LAST TURN")||label.StartsWith("NO PREVIOUS")||label.StartsWith("PHASE ")||label.StartsWith("PENDING")||label.StartsWith("LOOP")||label.StartsWith("FORM")||label.StartsWith("STAGE")||label.StartsWith("FRAGMENTS")||label.StartsWith("COPIE")||label.StartsWith("PREVIOUS")||label=="REPEAT NEXT"||label=="NO ECHO"||label.StartsWith("SPLIT")||label.StartsWith("JUDG")||label=="ORBIT PLATES"||label=="MOMENTUM";
             var text=mode?label:heat?$"{value}/{max}":$"{label} {value}/{max}";
             var style=new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=text.Length>24?11:13,alignment=TextAnchor.MiddleCenter};
             var width=Mathf.Max(56,style.CalcSize(new GUIContent(text)).x+(heat?34:16));
@@ -446,6 +464,21 @@ namespace GildedFate.UI
             BlackCathedralContent.Bell=>new(EnemyMotionKind.Colossus,EnemyStrikeStyle.Crush,1.5f,2,.75f,36,new Color(1f,.8f,.4f)),
             BlackCathedralContent.Bishop=>new(EnemyMotionKind.Colossus,EnemyStrikeStyle.Blade,1.6f,3,.8f,44,new Color(.95f,.8f,.55f)),
             ShatteredObservatoryContent.Curator=>new(EnemyMotionKind.Colossus,EnemyStrikeStyle.Blade,1.5f,4,.8f,40,new Color(.78f,.7f,1f)),
+            FracturedRealmContent.Soldier=>new(EnemyMotionKind.Knight,EnemyStrikeStyle.Blade,1f,0,.95f,50,new Color(.8f,.65f,1f)),
+            FracturedRealmContent.Splitling=>new(EnemyMotionKind.Beast,EnemyStrikeStyle.Claw,.9f,2,1.1f,36,new Color(.8f,.6f,1f)),
+            FracturedRealmContent.SplitEcho=>new(EnemyMotionKind.Beast,EnemyStrikeStyle.Claw,.7f,3,1.2f,30,new Color(.85f,.7f,1f)),
+            FracturedRealmContent.Husk=>new(EnemyMotionKind.Knight,EnemyStrikeStyle.Slam,1.05f,0,.9f,48,new Color(.7f,.9f,1f)),
+            FracturedRealmContent.Binder=>new(EnemyMotionKind.Caster,EnemyStrikeStyle.Bolt,.9f,3,1f,24,new Color(.8f,.65f,1f)),
+            FracturedRealmContent.Shear=>new(EnemyMotionKind.Caster,EnemyStrikeStyle.Blade,.95f,2,1.1f,36,new Color(.7f,.85f,1f)),
+            FracturedRealmContent.Beast=>new(EnemyMotionKind.Beast,EnemyStrikeStyle.Claw,1.05f,1,1f,44,new Color(.6f,.75f,1f)),
+            FracturedRealmContent.Oracle=>new(EnemyMotionKind.Caster,EnemyStrikeStyle.Bolt,1f,2,1f,30,new Color(.85f,.6f,1f)),
+            FracturedRealmContent.Colossus=>new(EnemyMotionKind.Colossus,EnemyStrikeStyle.Slam,1.3f,2,.85f,36,new Color(.8f,.7f,1f)),
+            FracturedRealmContent.Duplicate=>new(EnemyMotionKind.Knight,EnemyStrikeStyle.Blade,1.35f,0,1f,50,new Color(.8f,.65f,1f)),
+            FracturedRealmContent.Sovereign=>new(EnemyMotionKind.Caster,EnemyStrikeStyle.Blade,1.4f,2,.9f,40,new Color(.9f,.75f,1f)),
+            FracturedRealmContent.BladeFragment=>new(EnemyMotionKind.Beast,EnemyStrikeStyle.Blade,.7f,3,1.2f,36,new Color(.85f,.6f,1f)),
+            FracturedRealmContent.WardFragment=>new(EnemyMotionKind.Knight,EnemyStrikeStyle.Slam,.7f,0,1f,30,new Color(.7f,.9f,1f)),
+            FracturedRealmContent.Loopkeeper=>new(EnemyMotionKind.Caster,EnemyStrikeStyle.Blade,1.4f,2,.9f,36,new Color(.7f,.85f,1f)),
+            FracturedRealmContent.Unmade=>new(EnemyMotionKind.Colossus,EnemyStrikeStyle.Blade,1.6f,3,.8f,44,new Color(.85f,.7f,1f)),
             _=>new(EnemyMotionKind.Knight,EnemyStrikeStyle.Blade,1f,0,1f,50,new Color(1f,.62f,.36f))
         };
         private static float WildBodyScale(EnemyDef enemy)=>enemy?.id switch
@@ -476,6 +509,8 @@ namespace GildedFate.UI
             BlackCathedralContent.Effigy=>.7f,BlackCathedralContent.Herald=>1.12f,BlackCathedralContent.Priest=>1.02f,BlackCathedralContent.Icon=>1.25f,
             BlackCathedralContent.HighConfessor=>1.4f,BlackCathedralContent.ChoirEternal=>1.45f,BlackCathedralContent.Bell=>1.55f,
             BlackCathedralContent.VoiceBlade=>.68f,BlackCathedralContent.VoiceMercy=>.66f,BlackCathedralContent.VoiceVigil=>.7f,BlackCathedralContent.Bishop=>1.75f,
+            FracturedRealmContent.SplitEcho=>.66f,FracturedRealmContent.BladeFragment=>.68f,FracturedRealmContent.WardFragment=>.68f,FracturedRealmContent.Unmade=>1.8f,
+            FracturedRealmContent.Binder=>.95f,FracturedRealmContent.Colossus=>1.3f,
             _=>enemy?.boss==true?1.4f:enemy?.elite==true?1.2f:1f
         };
     }

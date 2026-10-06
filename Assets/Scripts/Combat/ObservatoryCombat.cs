@@ -318,7 +318,7 @@ namespace GildedFate.Combat
                 case AstrologerPairMove:case CuratorPairMove:
                     return "POSSIBLE: "+string.Join(" / ",(m.pair??"").Split(new[]{'|'},StringSplitOptions.RemoveEmptyEntries).Select(ObservatoryName));
             }
-            return move.StartsWith("gr_")||move.StartsWith("bc_")?RuinsMoveLabel(move,m):ObservatoryName(move);
+            return move.StartsWith("gr_")||move.StartsWith("bc_")||move.StartsWith("fr_")?RuinsMoveLabel(move,m):ObservatoryName(move);
         }
         private static string ObservatoryHook(string move)=>move switch
         {
@@ -340,14 +340,14 @@ namespace GildedFate.Combat
         internal void PreResolveObservatory()
         {
             var m=Mind;if(m==null||!IsWildContext)return;
-            if(string.IsNullOrEmpty(m.planned)&&(enemyId==ShatteredObservatoryContent.Astrologer||enemyId==ShatteredObservatoryContent.Curator))PlanWildIntent();
-            if(m.planned!=AstrologerPairMove&&m.planned!=CuratorPairMove)return;
+            if(string.IsNullOrEmpty(m.planned)&&(enemyId==ShatteredObservatoryContent.Astrologer||enemyId==ShatteredObservatoryContent.Curator||enemyId==FracturedRealmContent.Oracle||enemyId==FracturedRealmContent.Unmade))PlanWildIntent();
+            if(m.planned!=AstrologerPairMove&&m.planned!=CuratorPairMove&&m.planned!=FracturePairMove)return;
             var parts=(m.pair??"").Split(new[]{'|'},StringSplitOptions.RemoveEmptyEntries);
             if(parts.Length!=2)throw new InvalidOperationException("A possibility pair must hold exactly two actions.");
             if(intentPreviewSink!=null&&wildSinkMute==0&&EnemyContextIndex<intentPreviewSink.Length)
             {
                 for(var g=0;g<2;g++)
-                    foreach(var action in ObservatoryActions(parts[g],m))
+                    foreach(var action in parts[g].StartsWith("fr_")?FractureActionsOf(parts[g],m):ObservatoryActions(parts[g],m))
                     {
                         var shown=DescribeEnemyAction(action);shown.choice=g;shown.detail+="\nOne of two possible actions. Only one is chosen, when this creature acts.";
                         if(shown.amount<=0&&action.type==EnemyActionType.HealDamagedAlly)continue;
@@ -356,7 +356,7 @@ namespace GildedFate.Combat
                 pairSinkHeld=true;
             }
             var pick=parts[NextRandom(2)];m.planned=pick;
-            EmitHook(enemyId==ShatteredObservatoryContent.Curator?"astral_curator_twin_fate_chosen":"astrologer_pair_chosen");
+            EmitHook(enemyId==ShatteredObservatoryContent.Curator?"astral_curator_twin_fate_chosen":m.planned.StartsWith("fr_")?"fracture_pair_chosen":"astrologer_pair_chosen");
         }
         [NonSerialized] private bool pairSinkHeld;
         private void ReleasePairSink()=>pairSinkHeld=false;

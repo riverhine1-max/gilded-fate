@@ -18,7 +18,9 @@ namespace GildedFate.Combat
         // Gilded Ruins.
         SeizeGold, BonusConsume, Fortify, ReserveSpend, ReserveAll, BlockLowestNonMinion,
         // Black Cathedral.
-        BlockSiblings }
+        BlockSiblings,
+        // Fractured Realm.
+        EchoCreate, Memory, DuplicateStrength, DuplicateGuard }
     public enum IntentDestination { None, Hand, Draw, Discard, Deck }
     public readonly struct PlannedEnemyAction
     {
@@ -49,7 +51,7 @@ namespace GildedFate.Combat
             EnemyActionType.Growth or EnemyActionType.GrowthSet or EnemyActionType.GrowthAlly or EnemyActionType.PlantSeed=>IconGrowth,EnemyActionType.BlockOtherAllies=>4,EnemyActionType.HealOwner=>6,
             EnemyActionType.BlockLowestAlly=>4,EnemyActionType.HealDamagedAlly=>6,EnemyActionType.StrengthRandomMinion=>5,EnemyActionType.LoseStrength=>5,
             EnemyActionType.PlateSpend or EnemyActionType.PlateGain=>IconPlate,
-            EnemyActionType.SeizeGold=>13,EnemyActionType.BonusConsume=>IconBonus,EnemyActionType.Fortify=>IconFortify,EnemyActionType.ReserveSpend or EnemyActionType.ReserveAll=>IconReserve,EnemyActionType.BlockLowestNonMinion=>4,EnemyActionType.BlockSiblings=>4,EnemyActionType.Momentum or EnemyActionType.MomentumReset=>IconMomentum,
+            EnemyActionType.SeizeGold=>13,EnemyActionType.BonusConsume=>IconBonus,EnemyActionType.Fortify=>IconFortify,EnemyActionType.ReserveSpend or EnemyActionType.ReserveAll=>IconReserve,EnemyActionType.BlockLowestNonMinion=>4,EnemyActionType.BlockSiblings=>4,EnemyActionType.DuplicateStrength=>5,EnemyActionType.DuplicateGuard=>4,EnemyActionType.Momentum or EnemyActionType.MomentumReset=>IconMomentum,
             EnemyActionType.Summon=>IconSummon,EnemyActionType.Command=>IconCommand,_=>19
         };
         public const int IconSummon=100,IconCommand=101,IconHeat=102,IconLoad=103,IconGrowth=104,IconPlate=105,IconMomentum=106,IconReserve=107,IconFortify=108,IconBonus=109;
@@ -151,7 +153,7 @@ namespace GildedFate.Combat
                         case EnemyActionType.BlockLowestAlly:case EnemyActionType.HeatAlly:case EnemyActionType.HealDamagedAlly:case EnemyActionType.StrengthRandomMinion:
                         case EnemyActionType.Growth:case EnemyActionType.GrowthSet:case EnemyActionType.GrowthAlly:case EnemyActionType.BlockOtherAllies:case EnemyActionType.HealOwner:case EnemyActionType.PlantSeed:
                         case EnemyActionType.PlateSpend:case EnemyActionType.PlateGain:case EnemyActionType.Momentum:case EnemyActionType.MomentumReset:
-                        case EnemyActionType.SeizeGold:case EnemyActionType.BonusConsume:case EnemyActionType.Fortify:case EnemyActionType.ReserveSpend:case EnemyActionType.ReserveAll:case EnemyActionType.BlockLowestNonMinion:case EnemyActionType.BlockSiblings:
+                        case EnemyActionType.SeizeGold:case EnemyActionType.BonusConsume:case EnemyActionType.Fortify:case EnemyActionType.ReserveSpend:case EnemyActionType.ReserveAll:case EnemyActionType.BlockLowestNonMinion:case EnemyActionType.BlockSiblings:case EnemyActionType.EchoCreate:case EnemyActionType.Memory:case EnemyActionType.DuplicateStrength:case EnemyActionType.DuplicateGuard:
                             ExecuteWildAction(action);break;
                         default:throw new InvalidOperationException("Enemy action has no executor: "+action.type);
                     }

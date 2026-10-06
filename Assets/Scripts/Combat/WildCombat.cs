@@ -95,7 +95,7 @@ namespace GildedFate.Combat
                 var move=ChooseWildMove(m);m.planned=move;
                 var actions=WildActions(move,m);var label=WildMoveLabel(move,m);
                 var attack=actions.FirstOrDefault(a=>a.type==EnemyActionType.Attack);
-                if(move==AstrologerPairMove||move==CuratorPairMove)SetIntent(IntentKind.Buff,0,label); // two possibilities: nothing is promised
+                if(move==AstrologerPairMove||move==CuratorPairMove||move==FracturePairMove)SetIntent(IntentKind.Buff,0,label); // two possibilities: nothing is promised
                 else if(actions.Any(a=>a.type==EnemyActionType.Attack))SetIntent(IntentKind.Attack,attack.amount,label,attack.hits);
                 else if(actions.All(a=>a.type==EnemyActionType.Block))SetIntent(IntentKind.Defend,actions.Sum(a=>a.amount),label);
                 else SetIntent(IntentKind.Buff,actions.Length>0?actions[0].amount:0,label);
@@ -177,7 +177,7 @@ namespace GildedFate.Combat
             m.hold=false;return ChooseDrownedMove(m)??ChooseFoundryMove(m)??"strike";
         }
         // The Minion type this owner would create right now (the Forgemaster rebuilds whichever Drone is missing).
-        private string SummonTypeAt(int ownerIndex)=>EnemyIdAt(ownerIndex)==CrimsonFoundryContent.Forgemaster?MissingForgemasterDrone(ownerIndex):SummonFor(EnemyIdAt(ownerIndex));
+        private string SummonTypeAt(int ownerIndex)=>EnemyIdAt(ownerIndex)==CrimsonFoundryContent.Forgemaster?MissingForgemasterDrone(ownerIndex):EnemyIdAt(ownerIndex)==FracturedRealmContent.Sovereign?(MindAt(ownerIndex)?.state=="WARD"?FracturedRealmContent.WardFragment:FracturedRealmContent.BladeFragment):SummonFor(EnemyIdAt(ownerIndex));
         private bool CanSummon(int ownerIndex)
         {
             var id=EnemyIdAt(ownerIndex);var type=SummonTypeAt(ownerIndex);if(string.IsNullOrEmpty(type))return false;
@@ -371,7 +371,7 @@ namespace GildedFate.Combat
             var slot=opponents.Count<MaxBattlefieldBodies?-1:ReusableMinionSlot();
             if(slot>=0)opponents[slot]=created;else{opponents.Add(created);slot=opponents.Count-1;}
             created.intent=IntentKind.Unknown;created.intentLabel="SUMMONED";
-            InEnemyContext(slot,()=>{Emit(CombatEventKind.Status,1,false,null,"SUMMONED");if(id==DrownedQuarterContent.Hand)EmitHook("drowned_hand_spawn");else if(id==CrimsonFoundryContent.ScrapDrone)EmitHook("scrap_drone_spawn");else if(id==HollowwoodContent.Sporeling)EmitHook("sporeling_spawn");else if(id==HollowwoodContent.Huskbud)EmitHook("huskbud_spawn");else if(id==ShatteredObservatoryContent.StarFragment)EmitHook("star_fragment_spawn");else if(id==GildedRuinsContent.Servitor)EmitHook("servitor_spawn");else if(id==GildedRuinsContent.Guard)EmitHook("coinbound_guard_spawn");});
+            InEnemyContext(slot,()=>{Emit(CombatEventKind.Status,1,false,null,"SUMMONED");if(id==DrownedQuarterContent.Hand)EmitHook("drowned_hand_spawn");else if(id==CrimsonFoundryContent.ScrapDrone)EmitHook("scrap_drone_spawn");else if(id==HollowwoodContent.Sporeling)EmitHook("sporeling_spawn");else if(id==HollowwoodContent.Huskbud)EmitHook("huskbud_spawn");else if(id==ShatteredObservatoryContent.StarFragment)EmitHook("star_fragment_spawn");else if(id==GildedRuinsContent.Servitor)EmitHook("servitor_spawn");else if(id==GildedRuinsContent.Guard)EmitHook("coinbound_guard_spawn");else if(id==FracturedRealmContent.SplitEcho)EmitHook("split_echo_spawn");else if(id is FracturedRealmContent.BladeFragment or FracturedRealmContent.WardFragment)EmitHook("fragment_spawn");});
             rosterVersion++;
         }
         private void WildCommand(int ownerIndex)

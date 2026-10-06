@@ -38,6 +38,7 @@ namespace GildedFate.Combat
             judgeLastAttacks=judgeThisAttacks;judgeLastSkills=judgeThisSkills;judgeLastPowers=judgeThisPowers;judgeLastTotal=judgeThisTotal;
             if(!judgeHadPreviousTurn){judgeLastUnusedEnergy=0;judgeLastEndBlock=0;}
             judgeThisAttacks=judgeThisSkills=judgeThisPowers=judgeThisTotal=0;
+            RollFractureMemory();
         }
         private void CountCathedralCard(CardDef card)
         {
@@ -45,7 +46,7 @@ namespace GildedFate.Combat
             if(card.kind==CardKind.Attack)judgeThisAttacks++;else if(card.kind==CardKind.Skill)judgeThisSkills++;else if(card.kind==CardKind.Power)judgeThisPowers++;
         }
         // Called as the player's turn ends: how the turn ENDED.
-        private void CaptureCathedralEnd(){judgeLastUnusedEnergy=Math.Max(0,energy);judgeLastEndBlock=Math.Max(0,player.block);}
+        private void CaptureCathedralEnd(){judgeLastUnusedEnergy=Math.Max(0,energy);judgeLastEndBlock=Math.Max(0,player.block);CaptureFractureEnd();}
 
         // ---------- Judgment (pure rules, easy to test) ----------
         // Confessor: Attack count.
@@ -93,6 +94,7 @@ namespace GildedFate.Combat
             if(id==BlackCathedralContent.Herald)m.counter=3;
             else if(id==BlackCathedralContent.Bell)m.counter=0;
             else if(id==BlackCathedralContent.Icon)m.state="MERCY";
+            ResetFractureState(m,id);
         }
 
         // ---------- move choice ----------
@@ -175,7 +177,7 @@ namespace GildedFate.Combat
                         default:return Cycle(m,5) switch{0=>"bc_final_decree",1=>"bc_black_benediction",2=>"bc_shattered_gospel",3=>"bc_last_judgment",_=>"bc_cathedral_collapse"};
                     }
             }
-            return null;
+            return ChooseFractureMove(m);
         }
         private bool DamagedAlliesAny(int self)=>DamagedAllies(self).Any();
 
@@ -264,7 +266,7 @@ namespace GildedFate.Combat
                 case "bc_last_judgment":return new[]{P(A,28),P(V,1)};
                 case "bc_cathedral_collapse":return new[]{P(A,8,4)};
             }
-            return null;
+            return FractureActions(move,m);
         }
         private static string CathedralName(string move)=>move switch
         {
@@ -338,7 +340,7 @@ namespace GildedFate.Combat
             "bc_sentence_of_the_bell"=>"bell_sentence",
             "bc_punitive_strike" or "bc_shatter_devotion" or "bc_demand_obedience" or "bc_bishops_measure"=>"bishop_judgment",
             "bc_last_judgment"=>"final_judgment","bc_cathedral_collapse"=>"cathedral_collapse",
-            _=>""
+            _=>FractureHook(move)
         };
 
         // ---------- resolution ----------
@@ -374,7 +376,7 @@ namespace GildedFate.Combat
                 case BlackCathedralContent.Bishop:
                     if(m.phase==2)EmitHook("bishop_judgment:"+m.state);
                     return false;
-                default:return false;
+                default:return BeginFractureAction(m,move);
             }
         }
         private void ExecuteCathedralAction(PlannedEnemyAction action)
@@ -390,7 +392,7 @@ namespace GildedFate.Combat
                         InEnemyContext(i,()=>{enemy.block+=action.amount;Emit(CombatEventKind.Block,action.amount,false);});
                     break;
                 }
-                default:throw new InvalidOperationException("Enemy action has no executor: "+action.type);
+                default:ExecuteFractureAction(action);break;
             }
         }
 
@@ -398,19 +400,20 @@ namespace GildedFate.Combat
         private bool CathedralReplanOnDeath(int k)
         {
             var id=opponents[k].id;
-            return id is BlackCathedralContent.Saint or BlackCathedralContent.ChoirEternal or BlackCathedralContent.Warden or BlackCathedralContent.Bishop;
+            return id is BlackCathedralContent.Saint or BlackCathedralContent.ChoirEternal or BlackCathedralContent.Warden or BlackCathedralContent.Bishop||FractureReplanOnDeath(k);
         }
         private void CathedralOnDeath(int index)
         {
             var id=opponents[index].id;
             if(id==BlackCathedralContent.Effigy)InEnemyContext(index,()=>EmitHook("chapel_effigy_death"));
             else if(id is BlackCathedralContent.VoiceBlade or BlackCathedralContent.VoiceMercy or BlackCathedralContent.VoiceVigil)InEnemyContext(index,()=>EmitHook("voice_death"));
+            else FractureOnDeath(index);
         }
         // The Final Bishop: 2/3 of maximum health rounded up (260 at the base 390) and 1/3 rounded down (130).
         private bool CheckCathedralThresholds(int index)
         {
             var o=opponents[index];var m=o.mind;var f=o.fighter;
-            if(BlackCathedralContent.Find(o.id)==null)return false;
+            if(BlackCathedralContent.Find(o.id)==null)return CheckFractureThresholds(index);
             if(o.id!=BlackCathedralContent.Bishop)return true;
             var t1=(f.maxHp*2+2)/3;var t2=f.maxHp/3;
             var target=f.hp<=t2?3:f.hp<=t1?2:1;
@@ -451,10 +454,11 @@ namespace GildedFate.Combat
                 case BlackCathedralContent.Bishop:
                     label=m.phase==2?$"PHASE 2 · JUDGMENT: {(string.IsNullOrEmpty(m.state)?BishopCategory():m.state)}":$"PHASE {m.phase} · {BishopPhaseName(m.phase)}";return true;
             }
-            return false;
+            return FractureCounter(index,m,out label,out value,out max);
         }
         private void CathedralStateText(int index,WildMind m,List<string> lines)
         {
+            FractureStateText(index,m,lines);
             switch(EnemyIdAt(index))
             {
                 case BlackCathedralContent.Guard:lines.Add("Penitent Strike → Kneel Behind Steel → Punishing Advance → Sacred Discipline. No Judgment.");break;
@@ -489,7 +493,7 @@ namespace GildedFate.Combat
         private string DescribeCathedralAction(EnemyActionType type,int amount,EnemyIntentAction a)
         {
             if(type==EnemyActionType.BlockSiblings){a.title="SHIELD VOICES";return $"Every other Minion owned by the same Owner gains {amount} Block.";}
-            return "";
+            return DescribeFractureAction(type,amount,a);
         }
         public int OwnedMinionsAlive(int ownerIndex)=>OwnedMinions(ownerIndex).Count();
         public bool EligibleCommandTargetsPublic(int ownerIndex)=>EligibleCommandTargets(ownerIndex).Any();

@@ -308,7 +308,7 @@ namespace GildedFate.Combat
                 case "gr_emergency_reserve":return "EMERGENCY RESERVE";
                 case "gr_first_toll":return LivingAllies(enemyContextIndex,false).Any()?"FIRST TOLL · RALLY":"FIRST TOLL · RALLY ALONE";
             }
-            return move.StartsWith("bc_")?CathedralLabel(move,m):RuinsName(move);
+            return move.StartsWith("bc_")?CathedralLabel(move,m):move.StartsWith("fr_")?FractureLabel(move,m):RuinsName(move);
         }
         private static string RuinsHook(string move)=>move switch
         {
@@ -432,7 +432,7 @@ namespace GildedFate.Combat
                 title="UPCOMING LOT";lines.Add(RuinsName(m.state)+" · "+RuinsSummary(m.state,m));
                 tip="Announced at Open Bidding. It resolves after Open Bidding and cannot be canceled, only prepared for. It never changes.";return true;
             }
-            return false;
+            return FractureForecast(index,m,out title,out lines,out tip);
         }
         private string RuinsSummary(string move,WildMind m)
         {
