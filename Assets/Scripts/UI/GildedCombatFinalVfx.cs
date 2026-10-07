@@ -247,7 +247,7 @@ namespace GildedFate.UI
             if(blocked){QueueFinalVfx(FinalVfxKind.Deflect,0,point,FinalEnemyRect(attacker).center,now,.45f,strength,new Color(.52f,.82f,1f),hitSeed);return;}
             playerVfxIndex=FinalStrikeAtlas(enemy);
             QueueFinalVfx(FinalVfxKind.EnemyStrike,(byte)enemy.motion.strike,point,FinalEnemyRect(attacker).center,now,enemy.motion.strike is EnemyStrikeStyle.Cleave or EnemyStrikeStyle.Crush or EnemyStrikeStyle.Slam?.7f:.5f,strength,enemy.motion.accent,hitSeed,0,enemy.boss);
-            if(enemy.boss&&(fact.amount>=15||enemy.threat>=2)){finalVignetteAt=now;finalVignettePower=Mathf.Clamp01(fact.amount/40f)*.6f+.4f;}
+            PulseHurtVignette(fact.amount,enemy.boss&&(fact.amount>=15||enemy.threat>=2));
         }
         // Existing shake saturated at 23 damage; this keeps small hits quiet and lets
         // large, 100+ and boss hits read as clearly heavier.
@@ -369,6 +369,7 @@ namespace GildedFate.UI
         {
             if(!CardVfxRepaint||combat==null)return;
             var now=Time.unscaledTime;
+            DrawLowHealthWarning(now);
             if(finalVfx.Count==0&&now-finalVignetteAt>.5f)return;
             EnsureFinalVfxTextures();var old=GUI.color;
             DrawFinalVignette(now);
@@ -843,7 +844,7 @@ namespace GildedFate.UI
                     break;
             }
         }
-        // Boss heavy hits: a brief dark-red edge pulse around the arena (under UI).
+        // Hits on the hero: a brief dark-red edge pulse around the arena (under UI); heavier for boss blows.
         private void DrawFinalVignette(float now)
         {
             var t=(now-finalVignetteAt)/.45f;if(t<0||t>=1)return;

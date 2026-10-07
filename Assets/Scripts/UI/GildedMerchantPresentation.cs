@@ -32,7 +32,7 @@ namespace GildedFate.UI
             DrawGoldIcon(new Rect(r.x,r.y+3,23,23));
             GUI.Label(new Rect(r.x+26,r.y,r.width-26,r.height),price.ToString(),new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=hot?18:16,fontStyle=FontStyle.Bold,alignment=TextAnchor.MiddleLeft,normal={textColor=rejection>0?new Color(1,.43f,.34f):affordable?new Color(1,.85f,.49f):new Color(.62f,.56f,.43f)}});
         }
-        private void RejectShopPrice(string key){rejectedShopItem=key;rejectedShopUntil=Time.unscaledTime+.45f;}
+        private void RejectShopPrice(string key){rejectedShopItem=key;rejectedShopUntil=Time.unscaledTime+.45f;Sfx(SoundCue.UiDenied);}
         private void RefreshMerchantPurchase()
         {merchantSold.Clear();foreach(var id in run.merchantSold)merchantSold.Add(id);SaveMerchantState();}
         private void BuyShopCard(int slot)
@@ -102,7 +102,7 @@ namespace GildedFate.UI
             if(controllerNavigation?screenControllerIndex==11:heal.Contains(pointer)){Outline(new Rect(heal.x-4,heal.y-4,heal.width+8,heal.height+8),Gold,2);SetRunHudTooltip(WithPriceBand(heal),"RESTORE 18 HP","Recover up to 18 HP for 35 Gold. Once per visit."+(run.hp>=run.maxHp?"\n\nAlready at full health — no purchase needed.":""));}
             if(!MerchantBusy&&GUI.Button(heal,"",GUIStyle.none))BuyShopHeal();
             GUI.Label(new Rect(178,h-68,w-430,30),"CLICK AN ITEM TO BUY · RIGHT CLICK / I / R3 TO INSPECT CARDS",new GUIStyle(footerStyle){fontSize=12,normal={textColor=new Color(.84f,.78f,.66f)}});
-            var leave=new Rect(w-220,h-67,190,43);DrawButtonFrame(leave,ScreenChoiceHot(leave,12),MerchantBusy);if(!MerchantBusy&&GUI.Button(leave,"LEAVE SHOP",buttonStyle))Advance();
+            var leave=new Rect(w-220,h-67,190,43);DrawButtonFrame(leave,ScreenChoiceHot(leave,12),MerchantBusy);if(!MerchantBusy&&GUI.Button(leave,"LEAVE SHOP",buttonStyle)){Sfx(SoundCue.UiConfirm);Advance();}
         }
         private void BuyShopShard()
         {if(MerchantBusy||string.IsNullOrEmpty(run.merchantShardId)||run.merchantSold.Contains("shard:"+run.merchantShardId))return;if(run.OfferShard(run.merchantShardId,45))SaveService.Save(run);else RejectShopPrice("shard:"+run.merchantShardId);}

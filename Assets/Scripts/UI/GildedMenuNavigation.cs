@@ -86,11 +86,12 @@ namespace GildedFate.UI
             return false;
         }
         private bool runPauseOpen;
-        private void ResumePauseMenu(){combatPauseOpen=false;mapPauseOpen=false;runPauseOpen=false;pauseMenuIndex=0;}
+        private void ClosePauseState(){combatPauseOpen=false;mapPauseOpen=false;runPauseOpen=false;pauseMenuIndex=0;}
+        private void ResumePauseMenu(){ClosePauseState();Sfx(SoundCue.UiBack);}
         private void ActivatePauseMenu(int index)
         {
             if(index==0){ResumePauseMenu();return;}
-            if(index==1){settingsReturnScreen=screen;settingsPage=settingsFocusIndex=0;settingsOverview=true;screen=ScreenMode.Settings;return;}
+            if(index==1){settingsReturnScreen=screen;settingsPage=settingsFocusIndex=0;settingsOverview=true;screen=ScreenMode.Settings;Sfx(SoundCue.UiConfirm);return;}
             if(screen==ScreenMode.Combat)
             {
                 if(index==2){SaveCombatAndReturnToMenu();return;}
@@ -98,7 +99,7 @@ namespace GildedFate.UI
             }
             else if(!SaveService.Save(run)){banner=SaveService.LastError;return;}
             if(index==3){Application.Quit();return;}
-            ResumePauseMenu();screen=ScreenMode.Menu;
+            ClosePauseState();Sfx(SoundCue.UiConfirm);screen=ScreenMode.Menu;
         }
         private void DrawUnifiedPauseMenu(float w,float h,bool inCombat)
         {

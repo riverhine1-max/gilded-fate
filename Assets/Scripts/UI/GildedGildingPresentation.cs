@@ -12,16 +12,15 @@ namespace GildedFate.UI
     {
         private float gildBurstAt=-10f,gildResolvedAt=-10f;
         private int gildBurstCost;
-        private const float GildBurstSeconds=.9f,GildFlipSeconds=.42f,GildSplitSeconds=.62f,GildCoinDiameter=86f;
+        private const float GildBurstSeconds=.9f,GildFlipSeconds=.42f,GildSplitSeconds=.62f,GildCoinDiameter=88f;
         private Vector2 gildResolvedPoint;
-        // Left of the hand fan, above the Deck pile and beside the Energy meter. The
-        // fan's leftmost card (7+ cards, rotated) never reaches x<112, so the medallion
-        // is never under a resting or raised card and never competes with card picking.
-        // The coin sits above the Deck pile (y>=H-104) and its ribbon ends above/left of
-        // the Energy orb (x>=103, y>=H-112); the second Shard socket label ends above it.
-        private Vector2 GildCoinCenter=>new Vector2(61,CombatHeight-170);
-        private Rect GildRibbonRect=>new Rect(19,CombatHeight-133,84,19);
-        private Rect GildButtonRect=>new Rect(17,CombatHeight-213,88,100);
+        // Under End Turn, in the right-hand column beside the Dissipate/Discard piles: the control every turn passes through.
+        // The hand reserves HandLayout.SideReserve (200) on both sides, so the badge (x >= CombatWidth-203) never sits under
+        // a resting or raised card. The bezel is centred 137 px above the bottom edge; the nameplate hangs beneath it and ends
+        // above the Discard pile's baseline; both clear End Turn (which ends 204 px above the bottom edge).
+        private Vector2 GildCoinCenter=>new Vector2(CombatWidth-147,CombatHeight-137);
+        private Rect GildPlateRect=>new Rect(CombatWidth-198,CombatHeight-90,102,54);
+        private Rect GildButtonRect=>new Rect(CombatWidth-203,CombatHeight-196,112,160);
         private bool GildShortcutPressed=>Keyboard.current?.gKey.wasPressedThisFrame==true||Gamepad.current?.leftTrigger.wasPressedThisFrame==true;
         private string GildKeyLabel=>controllerNavigation&&menuUsesGamepad?"LT":"G";
 
@@ -72,41 +71,11 @@ namespace GildedFate.UI
             var now=Time.unscaledTime;var r=GildButtonRect;var armed=combat.gildArmed;var cost=combat.GildCost;
             var blocked=GildBlockedHint();var ready=blocked==null;var hot=!controllerNavigation&&dragView==null&&r.Contains(combatPointer);
             var used=!armed&&combat.gildUsedThisTurn;var poor=!armed&&!used&&combat.GildReady&&!combat.CanGild(run.gold);
-            var motion=!profile.reduceMotion;var flashes=!profile.reduceFlashing;var rich=!profile.reducedVfx;
             DrawGildHandAura(now);
             if(armed)DrawGildThread(now);
-            var rest=GildCoinCenter;var center=rest;const float d=GildCoinDiameter;
-            if(ready&&hot)center.y-=4;
-            // Face and turn: the flip to "×2" right after a Gild, or the idle half-turns when ready.
-            var flip=now-gildBurstAt;var turn=1f;var doubled=armed;
-            if(motion&&armed&&flip>=0&&flip<GildFlipSeconds){var p=flip/GildFlipSeconds;turn=Mathf.Cos(p*Mathf.PI);doubled=p>=.5f;}
-            else if(motion&&ready){var cycle=Mathf.Repeat(now,4.6f);if(cycle<.9f)turn=Mathf.Cos(cycle/.9f*Mathf.PI*2f);}
-            var tint=armed?Color.white:ready?(hot?Color.white:new Color(.93f,.91f,.86f)):used?new Color(.70f,.50f,.36f):poor?new Color(.72f,.66f,.54f):new Color(.52f,.50f,.47f,.80f);
-            var wave=motion?.5f+.5f*Mathf.Sin(now*(armed?4.2f:1.9f)):.5f;
-            // Drop shadow, then the warm (ready) or molten (armed) glow behind the coin.
-            DrawGildSprite(GildCoinGlow,rest+new Vector2(2,6),d*1.12f,d*1.02f,new Color(0,0,0,ready||armed?.62f:.45f));
-            if(armed)DrawGildSprite(GildCoinGlow,center,d*1.75f,d*1.75f,new Color(1f,.52f,.12f,(flashes?.40f:.28f)+.14f*wave));
-            else if(ready)DrawGildSprite(GildCoinGlow,center,d*1.55f,d*1.55f,new Color(1f,.70f,.24f,(hot?.40f:.22f)+.08f*wave));
-            if(armed)DrawGildMoltenRing(now,center,d*.5f,motion,rich,flashes,false);
-            DrawGildCoin(center,d,turn,doubled,tint);
-            if(ready&&hot)DrawGildSprite(GildCoinGlow,center,d*.95f*Mathf.Max(.05f,Mathf.Abs(turn)),d*.95f,new Color(1f,.96f,.80f,.18f));
-            if(armed)DrawGildMoltenRing(now,center,d*.5f,motion,rich,flashes,true);
-            // Specular glint: a streak swept across the face, clipped to the coin's chord.
-            if(motion&&(ready||armed)&&Mathf.Abs(turn)>.985f)
-            {
-                var period=armed?2.4f:4.6f;var cycle=Mathf.Repeat(now,period);var start=armed?.5f:2.3f;var p=(cycle-start)/.75f;
-                if(p>0&&p<1)
-                {
-                    var radius=d*.5f;var s=Mathf.Lerp(-radius*.92f,radius*.92f,p);var dir=new Vector2(.82f,.57f);var chord=2f*Mathf.Sqrt(Mathf.Max(0,radius*radius-s*s))*.9f;
-                    var a=Mathf.Sin(p*Mathf.PI)*(flashes?.55f:.30f);
-                    DrawGildSprite(GildCoinGlow,center+dir*s,11,chord,new Color(1f,.97f,.86f,a),35f);
-                    DrawGildSprite(GildCoinGlow,center+dir*s,4,chord*.8f,new Color(1f,1f,.96f,a),35f);
-                }
-            }
-            DrawGildFlipSparks(now,center,d*.5f,motion,rich,flashes);
-            DrawGildRibbon(GildRibbonRect,armed,ready,used,poor,cost);
-            DrawGildSplitFlourish(now,rest);
-            DrawGildCoinBurst(now,rest);
+            DrawGildBadge(now,armed,ready,used,poor,hot,cost); // GildedGildBadge.cs
+            DrawGildSplitFlourish(now,GildCoinCenter);
+            DrawGildCoinBurst(now,GildCoinCenter);
             var detail=$"Spend {cost} gold. Your next card plays twice. Once per turn; the price rises each time this combat.\n\n"+
                 (armed?"ARMED · the next playable card you play resolves twice. Curses and Statuses never spend it.":ready?$"READY · click, or press {GildKeyLabel}. You have {run.gold} gold.":blocked);
             RegisterCombatHudTarget("gild",6,r,"GILD",detail);
@@ -141,7 +110,7 @@ namespace GildedFate.UI
         // Faint gold thread from the armed coin into the hand, swaying slowly.
         private void DrawGildThread(float now)
         {
-            var from=GildCoinCenter+new Vector2(28,-24);var sum=Vector2.zero;var count=0;
+            var from=GildCoinCenter+new Vector2(-36,-30);var sum=Vector2.zero;var count=0;
             foreach(var card in combat.hand)
             {
                 if(card.instanceId==movingCard||!handViews.TryGetValue(card.instanceId,out var view)||now<view.readyAt||!combat.WillGild(card))continue;
@@ -175,31 +144,6 @@ namespace GildedFate.UI
                 var size=3f+6f*(1-p);var a=(1-p)*(flashes?.95f:.55f);
                 DrawGildSprite(GildCoinGlow,at,size*2.2f,size*2.2f,new Color(1f,.60f,.16f,a*.6f));DrawGildSprite(GildCoinGlow,at,size,size,new Color(1f,.96f,.80f,a));
             }
-        }
-
-        // Price and key banner under the coin; its words change with the Gild state.
-        private void DrawGildRibbon(Rect r,bool armed,bool ready,bool used,bool poor,int cost)
-        {
-            var body=armed?new Color(.46f,.13f,.035f,.97f):ready?new Color(.40f,.07f,.07f,.96f):used?new Color(.22f,.13f,.08f,.94f):poor?new Color(.22f,.09f,.08f,.94f):new Color(.12f,.11f,.11f,.90f);
-            var trim=armed?new Color(1f,.84f,.44f):ready?new Color(1f,.76f,.33f):used?new Color(.58f,.40f,.24f):poor?new Color(.52f,.44f,.34f):new Color(.36f,.34f,.31f);
-            var tail=new Color(body.r*.62f,body.g*.62f,body.b*.62f,body.a);
-            Fill(new Rect(r.x-5,r.y+4,11,r.height-1),tail);Fill(new Rect(r.xMax-6,r.y+4,11,r.height-1),tail);
-            Fill(new Rect(r.x-5,r.yMax+2,3,1),tail);Fill(new Rect(r.xMax+2,r.yMax+2,3,1),tail);
-            Fill(r,body);Fill(new Rect(r.x,r.y,r.width,1),trim);Fill(new Rect(r.x,r.yMax-1,r.width,1),new Color(trim.r*.7f,trim.g*.6f,trim.b*.5f));
-            Fill(new Rect(r.x,r.y+2,r.width,1),new Color(1f,1f,1f,.06f));
-            var font=labelFont?labelFont:bodyFont;
-            if(armed){GildRibbonText(new Rect(r.x,r.y,r.width,r.height),"×2 ARMED",11,new Color(1f,.93f,.66f),TextAnchor.MiddleCenter,font);return;}
-            if(used){GildRibbonText(new Rect(r.x,r.y,r.width,r.height),"NEXT TURN",10,new Color(.82f,.64f,.48f),TextAnchor.MiddleCenter,font);return;}
-            // Price and coin glyph; the key cap (G / LT) sits on the right unless Gold is short.
-            var textColor=ready?new Color(1f,.92f,.66f):poor?new Color(1f,.46f,.36f):new Color(.62f,.60f,.56f);
-            var x=r.x+(poor?7:11);
-            if(poor)x+=GildRibbonText(new Rect(x,r.y,40,r.height),"NEED",9,new Color(.88f,.68f,.60f),TextAnchor.MiddleLeft,font)+4;
-            x+=GildRibbonText(new Rect(x,r.y-1,40,r.height+2),cost.ToString(),13,textColor,TextAnchor.MiddleLeft,font);
-            DrawGildCoin(new Vector2(x+8,r.center.y),12,1f,false,ready?Color.white:poor?new Color(.85f,.72f,.60f):new Color(.60f,.58f,.54f,.85f));
-            if(poor)return;
-            var key=new Rect(r.xMax-23,r.y+3,20,r.height-6);
-            Fill(key,new Color(0,0,0,.45f));Outline(key,new Color(trim.r,trim.g,trim.b,.75f),1);
-            GildRibbonText(key,GildKeyLabel,GildKeyLabel.Length>1?8:10,ready?Color.white:new Color(.66f,.64f,.60f),TextAnchor.MiddleCenter,font);
         }
 
         // Shadowed ribbon label; returns the drawn text width for inline layout.
@@ -271,8 +215,8 @@ namespace GildedFate.UI
             var fade=1-elapsed/GildBurstSeconds;var from=RunGoldIconRect.center;
             GUI.Label(new Rect(from.x+4,58+(profile.reduceMotion?0:elapsed*14),96,26),"−"+gildBurstCost,new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=18,alignment=TextAnchor.MiddleLeft,normal={textColor=new Color(1f,.64f,.36f,fade)}});
             if(profile.reduceMotion){DrawGildSprite(GildCoinGlow,to,GildCoinDiameter*1.5f,GildCoinDiameter*1.5f,new Color(1f,.84f,.44f,.35f*fade));return;}
-            // Bow toward the hero side so the flight stays clear of the Shard shrine and the hand fan.
-            var control=new Vector2(from.x+90,(from.y+to.y)*.5f);var coins=profile.reducedVfx?3:6;
+            // The badge is in the right-hand column: the coins run along the top bar, then drop down the right edge, clear of the hand fan.
+            var control=new Vector2(to.x-30,from.y+50);var coins=profile.reducedVfx?3:6;
             for(var i=0;i<coins;i++)
             {
                 var p=Mathf.Clamp01((elapsed-i*.06f)/.55f);if(p<=0||p>=1)continue;

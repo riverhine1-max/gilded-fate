@@ -44,6 +44,7 @@ namespace GildedFate.UI
             CombatCheck(AttackSound(GameContent.Find("strike"))==SoundCue.AttackSteel&&AttackSound(GameContent.Find("hex"))==SoundCue.AttackArcane&&AttackSound(GameContent.Find("soul_call"))==SoundCue.AttackReaper,"Three characters have distinct attack identities");
             CombatCheck(TriggerSound("TRIGGER:SIGIL EMBER")==SoundCue.Burn&&TriggerSound("TRIGGER:SIGIL RUIN")==SoundCue.HitArcane&&TriggerSound("TRIGGER:RETALIATE")==SoundCue.HitSteel,"Sigil and Retaliate source cues have distinct identities");
             CombatCheck(StatusFeedbackCue(new CombatEvent(CombatEventKind.Status,2,true,null,"STRENGTH"))==SoundCue.Energy&&StatusFeedbackCue(new CombatEvent(CombatEventKind.Status,2,false,null,"WEAK"))==SoundCue.Debuff,"Routine buffs, debuffs and Power activations use separate feedback families");
+            CombatCheck(StatusFeedbackCue(new CombatEvent(CombatEventKind.Status,2,true,null,"WEAK"))==SoundCue.Debuff&&StatusFeedbackCue(new CombatEvent(CombatEventKind.Status,1,true,null,"VULNERABLE"))==SoundCue.Debuff&&StatusFeedbackCue(new CombatEvent(CombatEventKind.Status,1,true,null,"CURSE"))==SoundCue.Debuff,"Debuffs and clutter you receive never play the buff chime");
             CombatCheck(SoundCatalog.Get(SoundCue.Resonance).limit==2,"Repeated resonance is voice-limited");
             var before=GameAudio.PlayedCount;Sfx(SoundCue.GainBlock);var take=GameAudio.LastVariation;
             yield return new WaitForSecondsRealtime(.07f);Sfx(SoundCue.GainBlock);

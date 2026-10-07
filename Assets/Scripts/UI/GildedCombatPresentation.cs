@@ -28,6 +28,8 @@ namespace GildedFate.UI
             public Vector2 from,to;
             public float start,duration,fromScale,toScale,fromAngle,toAngle;
             public bool exhaust,back,absorb;
+            // play: the flight of a card the player just played (eased out). settle: the short hold on the impact point.
+            public bool play,settle;
         }
         private sealed class CombatEffectChip
         {
@@ -146,7 +148,9 @@ namespace GildedFate.UI
         private Rect PileRect(int pile)=>pile==0?new Rect(18,CombatHeight-104,72,82):pile==1?
             new Rect(CombatWidth-86,CombatHeight-104,68,78):new Rect(CombatWidth-86,CombatHeight-190,68,78);
         private Rect EnergyMeterRect=>new Rect(103,CombatHeight-112,96,96);
-        private Rect EndTurnRect=>new Rect(CombatWidth-286,CombatHeight-155,182,54);
+        // End Turn sits in the right-hand column above the Dissipate pile so the hand fan never has to pass under it.
+        // The hand reserves the same margins on both sides (see HandLayout.SideReserve).
+        private Rect EndTurnRect=>new Rect(CombatWidth-HandLayout.SideReserve,CombatHeight-258,182,54);
         private Vector2 PilePoint(int pile)=>PileRect(pile).center;
         private Vector2 CardImpactPoint(CardDef card)=>combat!=null&&card!=null&&combat.RequiresEnemyTarget(card)?
             new Vector2(EnemyVisualCenterX,CombatHeight*.34f):card?.kind==CardKind.Power?
@@ -160,14 +164,14 @@ namespace GildedFate.UI
             GameAudio.ClearCombat();
             ResetPlayerStatusPlayback();
             if(combatSequence!=null)StopCoroutine(combatSequence);
-            handViews.Clear();cardMotions.Clear();combatNumbers.Clear();hoverView=dragView=selectedView=null;
+            handViews.Clear();cardMotions.Clear();combatNumbers.Clear();ResetNumberLanes();PrewarmCombatTextures();hoverView=dragView=selectedView=null;
             cardPreviewCache.Clear();effectValueCache.Clear();effectPulseUntil.Clear();combatHistory.Clear();combatHistoryOpen=false;
             combatBusy=cardDragging=controllerTargeting=false;movingCard=pileOpen=controllerHandIndex=controllerFocusedCardId=-1;pilePage=controllerShardIndex=0;pileScroll=0;
             combatHudInspectActive=false;combatNavigationInput=default;
             choicePresented=combatPauseOpen=false;choiceSelected=choicePressed=null;
             heroDeath=foeDeath=heroVictory=heroHit=foeHit=playerAction=enemyAction=0;
             displayResonance=0;resonancePulse=powerBadgePulse=0;inputHint="";
-            energyPulse=targetLockPulse=0;identityLastEnergy=-1;
+            energyPulse=targetLockPulse=0;identityLastEnergy=-1;ResetTargetingFeel();ResetGildBadge();
             inspectedCard=null;ResetVitalsPlayback();
             trackedPlayerHp=combat?.player.hp??0;trackedEnemyHp=combat?.enemy.hp??0;playerHealthTrail=trackedPlayerHp;enemyHealthTrail=trackedEnemyHp;playerHealthTrailHold=enemyHealthTrailHold=0;
             handReadyAt=Time.unscaledTime+ConsumeCombatEvents(combat.TakeEvents());
@@ -202,6 +206,7 @@ namespace GildedFate.UI
                 HandleCombatController();
             }
             ReconcileCombatHandFocus();
+            UpdateTargetingFeel(dt);
             var visible=combat.hand.Where(c=>c.instanceId!=movingCard).ToArray();
             for(var i=0;i<visible.Length;i++)
             {
@@ -217,15 +222,18 @@ namespace GildedFate.UI
                     // Track the pointer directly; smoothing here introduces noticeable input lag.
                     view.position=combatPointer-grabOffset;view.angle=Mathf.Lerp(view.angle,0,1-Mathf.Exp(-28*dt));view.scale=Mathf.Lerp(view.scale,1.1f,1-Mathf.Exp(-24*dt));continue;
                 }
+                var aiming=false;
                 if(view==dragView&&cardDragging&&combat.RequiresEnemyTarget(view.card))
                 {
-                    // Targeted cards have weight: they snap forward from their exact
-                    // hand slot instead of sticking to the cursor pixel-for-pixel.
-                    var pull=Mathf.Clamp01((pressPoint.y-combatPointer.y-24)/105f);var forward=new Vector2(Mathf.Lerp(slot.x,CombatWidth*.49f,.38f),CombatHeight*.57f);
-                    target=Vector2.Lerp(new Vector2(slot.x,slot.y),forward,Mathf.SmoothStep(0,1,pull));angle=Mathf.Lerp(slot.angle,0,pull);scale=Mathf.Lerp(1f,1.16f,pull);
-                    if(pull>.34f&&TargetAt(combatPointer)>=0)targetLockPulse=1;
+                    // Targeted cards have weight: they travel forward from their exact hand slot as the pull grows instead of
+                    // sticking to the cursor pixel-for-pixel. aimPull is the eased pull (GildedTargetingFeel.cs), so a quick
+                    // flick of the mouse never makes the card or the guide jump.
+                    var pull=aimPull;var forward=new Vector2(Mathf.Lerp(slot.x,CombatWidth*.49f,.38f),CombatHeight*.57f);
+                    target=Vector2.Lerp(new Vector2(slot.x,slot.y),forward,Mathf.SmoothStep(0,1,pull));angle=Mathf.Lerp(slot.angle,0,pull);scale=Mathf.Lerp(1f,1.16f,pull);aiming=true;
                 }
                 if(view==hoverView||view==selectedView){target.y-=profile.reduceMotion?104:144;angle=0;scale=1.18f;target.x=Mathf.Clamp(target.x,HandLayout.CardWidth*scale*.5f+24,CombatWidth-HandLayout.CardWidth*scale*.5f-24);}
+                // The aimed card leans toward the cursor and drifts a little with it, so aiming feels attached to the hand.
+                if(aiming&&!profile.reduceMotion){var lean=Mathf.Clamp((combatPointer.x-target.x)/(CombatWidth*.5f),-1f,1f)*aimPull;target.x+=lean*30f;angle+=lean*5f;}
                 else if(!profile.reduceMotion)
                 {
                     var raised=hoverView??selectedView;
@@ -255,12 +263,12 @@ namespace GildedFate.UI
             var left=input.x<0;var right=input.x>0;var accept=input.accept;var cancel=input.back;
             if(input.Any){if(!controllerNavigation){inputHint="";hintUntil=0;}controllerNavigation=true;if(dragView!=null){dragView=null;cardDragging=false;}ReconcileCombatHandFocus();}
             if(inspectedCard!=null){PrepareCardInspection(inspectedCard);if(cancel)inspectedCard=inspectionSource=null;else if(left||right||accept)SelectInspectionVersion(!inspectionShowUpgrade);return;}
-            if(pause){controllerTargeting=false;selectedView=null;combatHudInspectActive=false;combatPauseOpen=!combatPauseOpen;return;}
+            if(pause){controllerTargeting=false;selectedView=null;combatHudInspectActive=false;combatPauseOpen=!combatPauseOpen;PauseCue(combatPauseOpen);return;}
             if(combatPauseOpen){if(cancel||accept)combatPauseOpen=false;return;}
             if(combatHistoryOpen){if(cancel||accept)combatHistoryOpen=false;return;}
             if(choicePresented)
             {
-                if(escape){combatPauseOpen=true;return;}
+                if(escape){combatPauseOpen=true;PauseCue(true);return;}
                 var count=combat.ChoiceOptions.Count>0?combat.ChoiceOptions.Count:combat.ChoiceCards.Count;
                 if(count<=0)return;
                 var step=input.x+input.y*(combat.ChoiceOptions.Count>0?1:6);
@@ -279,7 +287,7 @@ namespace GildedFate.UI
                 else if(accept&&selectedView!=null){controllerTargeting=false;QueueCardPlay(selectedView);}return;
             }
             if(HandleCombatHudNavigation(input))return;
-            if(cancel){if(pileOpen>=0)pileOpen=-1;else if(escape)combatPauseOpen=true;else{controllerFocusedCardId=controllerHandIndex=-1;hoverView=null;}dragView=selectedView=null;cardDragging=false;return;}
+            if(cancel){if(pileOpen>=0)pileOpen=-1;else if(escape){combatPauseOpen=true;PauseCue(true);}else{controllerFocusedCardId=controllerHandIndex=-1;hoverView=null;}dragView=selectedView=null;cardDragging=false;return;}
             if(!CanAcceptCombatInput||pileOpen>=0||combatHistoryOpen)return;
             if(input.category&&menuUsesGamepad){QueueEndTurn();return;}
             var cards=combat.hand.Where(c=>c.instanceId!=movingCard).ToArray();if(cards.Length==0)return;
@@ -344,7 +352,8 @@ namespace GildedFate.UI
             if(combatHudInspectActive)return;
             if(controllerTargeting&&!down&&!held&&!up)return;if(controllerTargeting){controllerTargeting=false;selectedView=hoverView=null;}
             combatPointer=point;
-            var hoveredEnemy=TargetAt(point);if(hoveredEnemy>=0&&combatTargetIndex!=hoveredEnemy){combatTargetIndex=hoveredEnemy;cardPreviewCache.Clear();}
+            var targetedDrag=dragView!=null&&cardDragging&&combat!=null&&combat.RequiresEnemyTarget(dragView.card);
+            var hoveredEnemy=AimTargetAt(point,targetedDrag);if(hoveredEnemy>=0&&combatTargetIndex!=hoveredEnemy){combatTargetIndex=hoveredEnemy;cardPreviewCache.Clear();}
             if(choicePresented){HandleChoicePointer(point,down,up);return;}
             if(combatHistoryOpen){hoverView=null;return;}
             if(!CanAcceptCombatInput||pileOpen>=0){hoverView=null;return;}
@@ -371,10 +380,13 @@ namespace GildedFate.UI
             if(dragView!=null&&held&&Vector2.Distance(pressPoint,point)>8)cardDragging=true;
             if(dragView!=null&&up)
             {
-                var released=dragView;var wasDrag=cardDragging;dragView=null;cardDragging=false;
+                // The aimed target is read while the drag is still live, so a target the pointer is still locked on (a few
+                // pixels outside its edge) is the one that plays, exactly as the guide showed.
+                var released=dragView;var wasDrag=cardDragging;var aimed=wasDrag&&combat.RequiresEnemyTarget(released.card)?AimTargetAt(point,true):-1;
+                dragView=null;cardDragging=false;stickyTarget=-1;
                 if(wasDrag)
                 {
-                    if(IsValidCardDrop(released.card,point))QueueCardPlay(released);
+                    if(IsValidCardDrop(released.card,point,aimed))QueueCardPlay(released,aimed);
                     else{Sfx(SoundCue.CardReturn);hoverView=null;selectedView=null;ShowInputHint("Card returned · no Energy spent");}
                 }
                 else {selectedView=null;hoverView=released;ShowInputHint(combat.RequiresEnemyTarget(released.card)?"Drag this card onto the enemy":"Drag this card into the battlefield");}
@@ -397,12 +409,12 @@ namespace GildedFate.UI
             return null;
         }
 
-        private bool IsValidCardDrop(CardDef card,Vector2 point)=>combat.CanPlay(card)&&(combat.RequiresEnemyTarget(card)?TargetAt(point)>=0:SkillDropZone.Contains(point));
+        private bool IsValidCardDrop(CardDef card,Vector2 point,int aimed=-1)=>combat.CanPlay(card)&&(combat.RequiresEnemyTarget(card)?aimed>=0||TargetAt(point)>=0:SkillDropZone.Contains(point));
         private void ShowInputHint(string message){inputHint=message;hintUntil=Time.unscaledTime+2.4f;}
-        private void QueueCardPlay(HandView view)
+        private void QueueCardPlay(HandView view,int aimed=-1)
         {
             if(!CanAcceptCombatInput||view==null||!combat.CanPlay(view.card))return;
-            if(combat.RequiresEnemyTarget(view.card)){var target=TargetAt(combatPointer);if(target<0)return;combatTargetIndex=target;}
+            if(combat.RequiresEnemyTarget(view.card)){var target=aimed>=0&&combat.IsLivingTarget(aimed)?aimed:TargetAt(combatPointer);if(target<0)return;combatTargetIndex=target;}
             combatBusy=true;movingCard=view.card.instanceId;hoverView=dragView=selectedView=null;cardDragging=false;
             combatSequence=StartCoroutine(AnimateCardPlay(view));
         }
@@ -413,7 +425,7 @@ namespace GildedFate.UI
             var power=card.kind==CardKind.Power;var important=gilded||card.rarity==Rarity.Rare||power;
             var travel=AnimationSeconds(profile.reduceMotion?.09f:important?.32f:.23f);
             var impact=CardImpactPoint(card);
-            MoveCard(card,view.position,impact,travel,view.scale,power?.85f:.91f,view.angle,0);
+            MoveCard(card,view.position,impact,travel,view.scale,power?.85f:.91f,view.angle,0,play:true);
             PlayHexerCard(card,travel);PlayVanguardCard(card,travel);PlayReaperCard(card,travel);
             playerActionKind=card.effect;playerAction=1;Sfx(combat.RequiresEnemyTarget(card)?AttackSound(card):SoundCue.CardPickup,combatSound:true);
             yield return new WaitForSecondsRealtime(travel);
@@ -425,7 +437,7 @@ namespace GildedFate.UI
             {
                 handViews.Remove(card.instanceId);
                 var facts=combat.TakeEvents();
-                if(!power)MoveCard(card,impact,impact,important?.16f:.08f,.91f,.91f);
+                if(!power)MoveCard(card,impact,impact,important?.16f:.08f,.91f,.91f,settle:true);
                 else{powerBadgePulse=1;heroBuff=1;playerVfxIndex=4;playerVfxTime=.48f;}
                 var settling=ConsumeCombatEvents(facts,card,important?.16f:.08f);
                 if(power)settling=Mathf.Max(settling,SchedulePowerArrival(card,impact,hadPowerIcon));
@@ -484,16 +496,16 @@ namespace GildedFate.UI
         {
             while(vitalBeats.Count>0)yield return null;
             if(!combat.IsOver)yield break;
-            RecordShardShatter();if(combat.player.hp<=0)heroDeath=Time.unscaledTime;else{foeDeath=Time.unscaledTime;heroVictory=Time.unscaledTime;}
+            RecordShardShatter();if(combat.player.hp<=0)heroDeath=Time.unscaledTime;else{foeDeath=Time.unscaledTime;heroVictory=Time.unscaledTime;if(!GroupCombat)PlayEnemyDeathSound(.24f);}
             Sfx(combat.player.hp<=0?SoundCue.Defeat:SoundCue.Victory);
             turnBanner=combat.player.hp<=0?"FATE SHATTERED":"VICTORY";turnBannerUntil=Time.unscaledTime+1.2f;
             // Bosses and elites hold a little longer so their death reads (presentation only).
             yield return new WaitForSecondsRealtime(AnimationSeconds(FinalDeathHold()));
             CheckCombat();
         }
-        private void MoveCard(CardDef card,Vector2 from,Vector2 to,float duration,float fromScale=1,float toScale=.24f,float fromAngle=0,float toAngle=0,float delay=0,bool exhaust=false,bool back=false,bool absorb=false)
+        private void MoveCard(CardDef card,Vector2 from,Vector2 to,float duration,float fromScale=1,float toScale=.24f,float fromAngle=0,float toAngle=0,float delay=0,bool exhaust=false,bool back=false,bool absorb=false,bool play=false,bool settle=false)
         {
-            cardMotions.Add(new CardMotion{card=card,from=from,to=to,start=Time.unscaledTime+delay,duration=duration,fromScale=fromScale,toScale=toScale,fromAngle=fromAngle,toAngle=toAngle,exhaust=exhaust,back=back,absorb=absorb});
+            cardMotions.Add(new CardMotion{card=card,from=from,to=to,start=Time.unscaledTime+delay,duration=duration,fromScale=fromScale,toScale=toScale,fromAngle=fromAngle,toAngle=toAngle,exhaust=exhaust,back=back,absorb=absorb,play=play,settle=settle});
         }
         private float ConsumeCombatEvents(CombatEvent[] facts,CardDef played=null,float destinationDelay=0)
         {
@@ -501,7 +513,7 @@ namespace GildedFate.UI
             var arrivalTimes=new Dictionary<int,float>();var arrivalPoints=new Dictionary<int,Vector2>();
             var arrivalGap=AnimationSeconds(CombatHitTiming.CardStagger(facts.Count(f=>f.card!=null&&(f.generatedCard||f.kind==CombatEventKind.Draw))));
             var exitGap=AnimationSeconds(CombatHitTiming.CardStagger(facts.Count(f=>f.kind is CombatEventKind.Discard or CombatEventKind.Exhaust),.025f));
-            var finish=0f;var startupCardsReady=0f;var drawDelay=0f;var discardDelay=0f;var numberDelay=0f;var now=Time.unscaledTime;var playerNumbers=0;var enemyNumbers=0;
+            var finish=0f;var startupCardsReady=0f;var drawDelay=0f;var discardDelay=0f;var numberDelay=0f;var now=Time.unscaledTime;
             var vanguardAttack=run.hero==HeroId.Vanguard&&played?.kind==CardKind.Attack;
             var vanguardHits=vanguardAttack?facts.Where(f=>!f.playerSide&&f.hitId>0&&f.card?.instanceId==played.instanceId&&f.kind is CombatEventKind.Damage or CombatEventKind.Block).Select(f=>f.hitId).Distinct().Count():0;
             var hitGap=Mathf.Max(.09f,AnimationSeconds(vanguardHits>1?.46f:CombatHitTiming.DefaultHitGap));var hitOffsets=CombatHitTiming.PresentationOffsets(facts,hitGap);
@@ -576,7 +588,7 @@ namespace GildedFate.UI
                     var trigger=fact.kind==CombatEventKind.Status&&fact.label?.StartsWith("TRIGGER:")==true;var triggerTitle=trigger?PowerIconCatalog.Title(fact.label.Substring(8)):"";
                     var text=damage?"−"+fact.amount:block?(fact.label=="BLOCKED"?"BLOCKED ":"+")+fact.amount+(fact.label=="BLOCKED"?"":" BLOCK"):heal?"+"+fact.amount+" HP":trigger?triggerTitle+"!":fact.label+(fact.amount>0?" +"+fact.amount:"");
                     var color=damage?(fact.playerSide?new Color(1,.4f,.32f):Gold):block?new Color(.48f,.86f,1f):heal?new Color(.52f,1,.68f):new Color(.85f,.67f,1f);
-                    var lane=fact.playerSide?playerNumbers++:enemyNumbers++;
+                    var lane=NextNumberLane(fact.playerSide,now+hitTime);
                     var health=CombatHitTiming.IsHealthFact(fact);var delay=hitTime;
                     var sourceOnly=trigger||fact.sigilSlot>=0&&fact.label.EndsWith(" ACTIVATE");
                     CombatNumber number=null;
@@ -723,9 +735,20 @@ namespace GildedFate.UI
             }
             GUI.color=old;GUI.matrix=matrix;
         }
+        // Formatting a card's rules text runs a regex and several allocations, and every card on screen asks for it every
+        // frame. The result only depends on the text and on how the card frame is lit, so it is cached.
+        private static readonly System.Collections.Generic.Dictionary<string,string> ruleFormatCache=new();
         private static string FormatCardRules(string text,CardDef card=null)
         {
             if(string.IsNullOrEmpty(text))return text;
+            var key=(card==null?'n':CardUsesDarkRules(card)?'d':'l')+text;
+            if(ruleFormatCache.TryGetValue(key,out var cached))return cached;
+            var formatted=FormatCardRulesUncached(text,card);
+            if(ruleFormatCache.Count>4096)ruleFormatCache.Clear();
+            ruleFormatCache[key]=formatted;return formatted;
+        }
+        private static string FormatCardRulesUncached(string text,CardDef card)
+        {
             // Match once, longest mechanic first, outside existing color spans. Dynamic
             // green/red values and upgrade-diff markup must never be recolored.
             var output=new System.Text.StringBuilder();var colored=0;
@@ -795,13 +818,13 @@ namespace GildedFate.UI
             foreach(var motion in cardMotions)
             {
                 var t=(Time.unscaledTime-motion.start)/motion.duration;if(t<0||t>1)continue;
-                var eased=t*t*(3-2*t);var destination=motion.absorb&&motion.card!=null?PowerHudTarget(motion.card).center:motion.to;var p=Vector2.Lerp(motion.from,destination,eased);
-                if(!profile.reduceMotion)p.y-=Mathf.Sin(t*Mathf.PI)*(motion.back?65:38);
+                var eased=CardMotionEase(motion,t);var destination=motion.absorb&&motion.card!=null?PowerHudTarget(motion.card).center:motion.to;var p=Vector2.Lerp(motion.from,destination,eased);
+                if(!profile.reduceMotion)p.y-=CardMotionLift(motion,t,eased);
                 if(DrawCardMotionVfx(motion,t,eased,p))continue; // Dissipate burn, draw flip, play/absorb trails (GildedCardVfx.cs)
                 if(motion.exhaust)p=motion.from+new Vector2(0,profile.reduceMotion?0:-Mathf.SmoothStep(.22f,1f,t)*18);
                 // A readable resolve beat precedes the calm purple essence fade.
                 var alpha=motion.exhaust?1-Mathf.SmoothStep(.22f,1f,t):motion.absorb?1-Mathf.SmoothStep(.12f,.72f,t):1;
-                DrawMovingCard(motion.card,p,motion.exhaust?motion.fromAngle:Mathf.Lerp(motion.fromAngle,motion.toAngle,eased),motion.exhaust?motion.fromScale*(1-.08f*eased):Mathf.Lerp(motion.fromScale,motion.toScale,eased),false,alpha,motion.back);
+                DrawMovingCard(motion.card,p,motion.exhaust?motion.fromAngle:Mathf.Lerp(motion.fromAngle,motion.toAngle,eased),(motion.exhaust?motion.fromScale*(1-.08f*eased):Mathf.Lerp(motion.fromScale,motion.toScale,eased))*(motion.settle&&!profile.reduceMotion?1f+.06f*Mathf.Sin(t*Mathf.PI):1f),false,alpha,motion.back);
                 if(motion.exhaust&&!profile.reduceMotion&&!profile.reducedVfx&&t>.22f)for(var i=0;i<6;i++){var drift=(t-.22f)/.78f;var x=(i-2.5f)*9+Mathf.Sin(i+drift*2)*4;Fill(new Rect(p.x+x,p.y-drift*(22+i*4),2,3),new Color(.80f,.59f,.94f,Mathf.Sin(drift*Mathf.PI)*.6f));}
                 if(motion.absorb)
                 {
@@ -821,45 +844,6 @@ namespace GildedFate.UI
             DrawCardVfxLayer();
         }
 
-        private void DrawTargetGuide()
-        {
-            var active=dragView??selectedView;if(active==null)return;
-            var enemy=combat.RequiresEnemyTarget(active.card);var target=enemy?EnemyDropZone:SkillDropZone;var valid=enemy?TargetAt(combatPointer)>=0:target.Contains(combatPointer);
-            var pull=dragView==null||!cardDragging?1f:Mathf.Clamp01((pressPoint.y-combatPointer.y-24)/105f);
-            if(enemy&&pull<.34f)
-            {
-                GUI.Label(new Rect(active.position.x-150,active.position.y-HandLayout.CardHeight*.72f,300,28),"PULL UP TO TARGET",new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=13,normal={textColor=new Color(.92f,.82f,.58f)}});return;
-            }
-            var color=valid?Gold:enemy?new Color(1,.42f,.3f):new Color(.46f,.81f,1);
-            if(enemy)
-            {
-                // Recede everything except the valid target without placing an
-                // opaque panel over the enemy itself.
-                Fill(new Rect(0,66,target.x,CombatHeight-66),new Color(0,0,0,.20f));Fill(new Rect(target.xMax,66,CombatWidth-target.xMax,CombatHeight-66),new Color(0,0,0,.20f));Fill(new Rect(target.x,66,target.width,Mathf.Max(0,target.y-66)),new Color(0,0,0,.13f));Fill(new Rect(target.x,target.yMax,target.width,CombatHeight-target.yMax),new Color(0,0,0,.13f));
-            }
-            // Brackets identify the target without covering the illustration in a solid box.
-            foreach(var corner in new[]{new Vector2(target.x,target.y),new Vector2(target.xMax,target.y),new Vector2(target.x,target.yMax),new Vector2(target.xMax,target.yMax)})
-            {var dx=corner.x==target.x?1:-1;var dy=corner.y==target.y?1:-1;DrawLine(corner,corner+new Vector2(24*dx,0),color,valid?4:2);DrawLine(corner,corner+new Vector2(0,24*dy),color,valid?4:2);}
-            GUI.Label(new Rect(target.x,target.y-28,target.width,25),valid?"RELEASE TO PLAY":enemy?"TARGET ENEMY":"PLAY IN THE BATTLEFIELD",new GUIStyle(footerStyle){fontSize=16,normal={textColor=color}});
-            if(enemy)
-            {
-                // Slay-the-Spire-style targeting: the attack remains anchored in the
-                // hand and the arrowhead follows the cursor. The previous version drew
-                // this backwards, which made valid targets feel badly offset.
-                var start=new Vector2(active.position.x,active.position.y-HandLayout.CardHeight*active.scale*.43f);
-                var end=combatPointer;var previous=start;
-                if(Vector2.Distance(start,end)>8)
-                {
-                    for(var i=1;i<=22;i++){var t=i/22f;var next=Vector2.Lerp(start,end,t)-Vector2.up*Mathf.Sin(t*Mathf.PI)*42;DrawLine(previous,next,new Color(color.r,color.g,color.b,.85f),3);previous=next;}
-                    var direction=(end-previous).normalized;var perpendicular=new Vector2(-direction.y,direction.x);
-                    DrawLine(end,end-direction*18+perpendicular*9,color,3);DrawLine(end,end-direction*18-perpendicular*9,color,3);
-                }
-                var preview=CardPreview(active.card);var shownEnemy=combat.EnemyAt(Mathf.Clamp(combatTargetIndex,0,combat.EnemyCount-1));var damage=preview.DamageExpression;if(preview.triggeredDamage>0)damage+=" + "+preview.triggeredDamage+" TRIGGERED";var absorbed=Mathf.Min(shownEnemy.block,preview.blockedByTarget);var lost=preview.hpDamage;var result=new Rect(target.center.x-160,target.yMax+8,320,42);
-                Fill(result,new Color(.008f,.012f,.019f,.96f));Outline(result,color,2);GUI.Label(result,$"{damage} DAMAGE   ·   BLOCK {shownEnemy.block}→{Mathf.Max(0,shownEnemy.block-absorbed)}   ·   HP {shownEnemy.hp}→{Mathf.Max(0,shownEnemy.hp-lost)}",new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=12,alignment=TextAnchor.MiddleCenter,normal={textColor=color}});
-                if(valid&&targetLockPulse>0)Outline(new Rect(target.x-5,target.y-5,target.width+10,target.height+10),new Color(1f,.88f,.52f,targetLockPulse),4);
-            }
-        }
-
         private void DrawCombatRunBar(float w)
         {
             DrawPersistentRunBar(w,true);
@@ -869,7 +853,7 @@ namespace GildedFate.UI
         {
             Fill(new Rect(0,66,w,h-66),new Color(0,0,0,.38f));var panel=new Rect(w-430,82,400,h-172);Fill(panel,new Color(.006f,.011f,.019f,.985f));Outline(panel,new Color(.76f,.61f,.34f),2);
             GUI.Label(new Rect(panel.x+24,panel.y+18,panel.width-48,34),"COMBAT HISTORY",new GUIStyle(titleStyle){fontSize=23,alignment=TextAnchor.MiddleLeft,normal={textColor=Gold}});
-            GUI.Label(new Rect(panel.x+24,panel.y+52,panel.width-48,22),"MOST RECENT EVENTS · WHY NUMBERS CHANGED",new GUIStyle(footerStyle){fontSize=10,alignment=TextAnchor.MiddleLeft,normal={textColor=new Color(.69f,.68f,.65f)}});
+            GUI.Label(new Rect(panel.x+24,panel.y+52,panel.width-48,22),"MOST RECENT EVENTS · WHY NUMBERS CHANGED",new GUIStyle(footerStyle){fontSize=12,alignment=TextAnchor.MiddleLeft,normal={textColor=new Color(.69f,.68f,.65f)}});
             var shown=combatHistory.Skip(Mathf.Max(0,combatHistory.Count-13)).Reverse().ToArray();for(var i=0;i<shown.Length;i++){var row=new Rect(panel.x+22,panel.y+86+i*36,panel.width-44,31);if(i%2==0)Fill(row,new Color(1f,1f,1f,.025f));GUI.Label(new Rect(row.x+9,row.y,row.width-18,row.height),shown[i],new GUIStyle(footerStyle){fontSize=12,alignment=TextAnchor.MiddleLeft,clipping=TextClipping.Clip,normal={textColor=i==0?new Color(1f,.9f,.65f):new Color(.88f,.86f,.8f)}});}
             if(shown.Length==0)GUI.Label(new Rect(panel.x+25,panel.y+104,panel.width-50,40),"Actions will appear here as combat resolves.",new GUIStyle(footerStyle){fontSize=13,alignment=TextAnchor.MiddleLeft});
             var close=new Rect(panel.x+95,panel.yMax-55,panel.width-190,36);DrawButtonFrame(close,close.Contains(combatPointer),false);if(GUI.Button(close,"CLOSE · B / ESC",new GUIStyle(buttonStyle){fontSize=12}))combatHistoryOpen=false;
@@ -883,7 +867,7 @@ namespace GildedFate.UI
                 var r=PileRect(i);var hovered=r.Contains(combatPointer);var icon=new Rect(r.center.x-27,r.y+19,54,54);
                 if(hovered&&!profile.reduceMotion){var old=GUI.color;GUI.color=new Color(1f,.78f,.32f,.25f);DrawAtlasIcon(combatReadabilityAtlas,icons[i],8,8,new Rect(icon.x-5,icon.y-5,icon.width+10,icon.height+10));GUI.color=old;}
                 DrawAtlasIcon(combatReadabilityAtlas,icons[i],8,8,icon);
-                GUI.Label(new Rect(r.x-8,r.y,r.width+16,17),names[i],new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=9,fontStyle=FontStyle.Bold,normal={textColor=hovered?Color.white:Gold}});
+                GUI.Label(new Rect(r.x-8,r.y,r.width+16,17),names[i],new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=12,fontStyle=FontStyle.Bold,normal={textColor=hovered?Color.white:Gold}});
                 GUI.Label(new Rect(icon.xMax-15,icon.yMax-25,34,26),counts[i].ToString(),new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=18,alignment=TextAnchor.MiddleCenter,normal={textColor=Color.white}});
                 if(hovered)SetCombatEffectTooltip(names[i]+" · "+counts[i],i==0?"Cards waiting to be drawn. Click to inspect them alphabetically without revealing draw order.":i==1?"Played and discarded cards wait here. When the Draw pile empties, this pile is shuffled back in.":"Cards removed for the rest of this combat. Click to inspect them.",r.center);
                 if(GUI.Button(r,"",GUIStyle.none)&&!combatBusy){pileOpen=i;pilePage=0;pileScroll=0;selectedView=dragView=hoverView=null;Sfx(SoundCue.UiHover);}
@@ -906,7 +890,7 @@ namespace GildedFate.UI
             DrawIdentityEnergyReaction(seal,color,reaction);
             DrawEnergyOrbVfx(seal,color);
             GUI.Label(seal,$"{combat.energy}<size=15>/{baseEnergy}</size>",new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=31,richText=true,alignment=TextAnchor.MiddleCenter,normal={textColor=Color.white}});
-            GUI.Label(new Rect(r.x-4,r.yMax-14,r.width+8,16),"ENERGY",new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=8,normal={textColor=Color.Lerp(color,Color.white,.28f)}});
+            GUI.Label(new Rect(r.x-4,r.yMax-14,r.width+8,16),"ENERGY",new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=12,normal={textColor=Color.Lerp(color,Color.white,.28f)}});
             if(r.Contains(combatPointer))SetCombatEffectTooltip("ENERGY",$"{combat.energy} available now. Your normal turn begins with {baseEnergy}. Cards spend the value shown in their Energy vessel.",r.center);
         }
 
@@ -919,7 +903,7 @@ namespace GildedFate.UI
             var cards=pileOpen==0?pile.OrderBy(c=>c.name).ThenBy(c=>c.instanceId).ToArray():pile.ToArray();
             Heading(w,(pileOpen==0?"DRAW PILE":pileOpen==1?"DISCARD PILE":"DISSIPATE PILE")+"  ·  "+cards.Length,pileOpen==0?"CONTENTS SHOWN ALPHABETICALLY · DRAW ORDER HIDDEN":pileOpen==2?"REMOVED FOR THE REST OF THIS COMBAT":"RETURNS TO DRAW WHEN THE DECK IS EMPTY");
             const int columns=6;const float gap=12f;var viewport=new Rect(34,150,w-68,h-228);var cardW=Mathf.Min(186f,(viewport.width-34-gap*(columns-1))/columns);var cardH=cardW*1.48f;var rowStep=cardH+17;var totalW=columns*cardW+(columns-1)*gap;var start=(viewport.width-totalW)*.5f;var rows=Mathf.CeilToInt(cards.Length/(float)columns);var contentHeight=Mathf.Max(viewport.height,rows*rowStep+8);if(!modal)UpdateScrollArea(viewport,ref pileScroll,contentHeight);
-            GUI.BeginGroup(viewport);for(var index=0;index<cards.Length;index++){var row=index/columns;var col=index%columns;var r=new Rect(start+col*(cardW+gap),row*rowStep+4-pileScroll,cardW,cardH);if(r.yMax<0||r.y>viewport.height)continue;DrawCard(r,cards[index]);if(!modal){RegisterCardKeywordHelp(new Rect(viewport.x+r.x,viewport.y+r.y,r.width,r.height),cards[index]);if(GUI.Button(r,"",GUIStyle.none)){inspectedCard=cards[index];Sfx(SoundCue.UiConfirm);}}}GUI.EndGroup();DrawScrollRail(viewport,pileScroll,contentHeight,cards.Length+" CARDS  ·  SCROLL");
+            GUI.BeginGroup(viewport);for(var index=0;index<cards.Length;index++){var row=index/columns;var col=index%columns;var r=new Rect(start+col*(cardW+gap),row*rowStep+4-pileScroll,cardW,cardH);if(r.yMax<0||r.y>viewport.height)continue;DrawCard(r,cards[index]);if(!modal){RegisterCardKeywordHelp(new Rect(viewport.x+r.x,viewport.y+r.y,r.width,r.height),cards[index]);if(GUI.Button(r,"",GUIStyle.none)){inspectedCard=cards[index];Sfx(SoundCue.UiConfirm);}}}GUI.EndGroup();DrawScrollRail(viewport,ref pileScroll,contentHeight,cards.Length+" CARDS  ·  SCROLL");
             if(cards.Length==0)GUI.Label(new Rect(0,300,w,60),"This pile is empty.",subtitleStyle);
             if(modal)return;
             var close=new Rect(w*.5f-90,h-62,180,40);DrawButtonFrame(close,close.Contains(combatPointer),false);if(GUI.Button(close,"CLOSE",buttonStyle)){pileOpen=-1;Sfx(SoundCue.UiHover);}
@@ -1085,7 +1069,7 @@ namespace GildedFate.UI
                     DrawLine(from,to,new Color(accent.r,accent.g,accent.b,shatter),2);
                 }
                 GUI.Label(new Rect(r.x-5,r.yMax+1,r.width+10,14),filled?kind.ToString().ToUpperInvariant():(i+1).ToString(),
-                    new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=10,normal={textColor=accent}});
+                    new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=12,normal={textColor=accent}});
                 GUI.color=old;
                 RegisterCombatHudTarget("sigil:"+i,7,r,filled?kind.ToString().ToUpperInvariant()+" SIGIL":"EMPTY SIGIL SLOT "+(i+1),filled?SigilDescription(kind):"Create a Sigil here. Slots resolve from left to right.");
                 if(CombatInspectionAllowed&&r.Contains(combatPointer))
@@ -1140,7 +1124,7 @@ namespace GildedFate.UI
                 if(pulse>0&&!expansion&&!profile.reduceFlashing)Fill(new Rect(rect.x+3,rect.y+3,rect.width-6,rect.height-6),new Color(chip.color.r,chip.color.g,chip.color.b,pulse*.12f));
                 if(hidden)GUI.Label(rect,"+"+(chips.Count-shown+1),new GUIStyle(titleStyle){fontSize=21,normal={textColor=Gold}});else if(!DrawMajorEffectIcon(iconRect,chip.title)&&(!expansion||!DrawExpansionPowerIcon(iconRect,chip.title,chip.title=="GILDED WARLORD"&&!combat.WarlordReady&&pulse<=.01f)))DrawAtlasIcon(combatReadabilityAtlas,CombatReadabilityIcon(chip),8,8,iconRect);
                 if(!hidden&&chip.value>0){var label=string.IsNullOrEmpty(chip.counter)?chip.value.ToString():chip.counter;var width=string.IsNullOrEmpty(chip.counter)?21f:36f;var number=new Rect(rect.xMax-width+3,rect.yMax-19,width,21);Fill(number,new Color(.005f,.008f,.012f,.96f));Outline(number,chip.color,1);GUI.Label(number,label,new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=string.IsNullOrEmpty(chip.counter)?12:9,alignment=TextAnchor.MiddleCenter,normal={textColor=Color.white}});}
-                if(profile.colorblindStatus&&!hidden)GUI.Label(new Rect(rect.x-3,rect.yMax-10,rect.width+6,14),chip.code,new GUIStyle(footerStyle){fontSize=8,alignment=TextAnchor.MiddleCenter,normal={textColor=chip.color}});
+                if(profile.colorblindStatus&&!hidden)GUI.Label(new Rect(rect.x-3,rect.yMax-13,rect.width+6,16),chip.code,new GUIStyle(footerStyle){fontSize=11,alignment=TextAnchor.MiddleCenter,normal={textColor=chip.color}});
                 GUI.color=iconTint;
                 if(CombatInspectionAllowed&&rect.Contains(combatPointer))SetCombatEffectTooltip(hidden?"MORE ACTIVE EFFECTS":chip.title,hidden?string.Join("\n\n",chips.Skip(i).Select(c=>c.title+" — "+c.detail)):chip.detail,rect.center);
             }
@@ -1164,16 +1148,6 @@ namespace GildedFate.UI
             const float width=340;var measure=new GUIStyle(footerStyle){fontSize=15,wordWrap=true};var height=Mathf.Clamp(measure.CalcHeight(new GUIContent(combatEffectTooltipDetail??""),width-30)+58,106,260);
             var x=combatEffectTooltipAnchor.x+28;if(x+width>w-18)x=combatEffectTooltipAnchor.x-width-28;if(x<18)x=18;var y=Mathf.Clamp(combatEffectTooltipAnchor.y-height*.46f,72,h-height-18);
             DrawTooltip(new Rect(x,y,width,height),combatEffectTooltipTitle,combatEffectTooltipDetail);
-        }
-        private void DrawCombatRelics()
-        {
-            var shown=Mathf.Min(6,run.relics.Count);for(var i=0;i<shown;i++)
-            {
-                var id=run.relics[i];var index=System.Array.FindIndex(GameContent.Relics,relic=>relic.id==id);var r=new Rect(520+i*48,9,42,42);
-                DrawRelicArt(r,index>=0?index:0);if(powerBadgePulse>0)Outline(new Rect(r.x-2,r.y-2,r.width+4,r.height+4),new Color(1f,.78f,.3f,powerBadgePulse),2);
-                if(r.Contains(combatPointer)){var relic=index>=0?GameContent.Relics[index]:null;DrawTooltip(new Rect(Mathf.Clamp(r.x-80,18,CombatWidth-318),72,300,70),relic?.name??"UNKNOWN RELIC",relic?.text??"This legacy relic is no longer part of the replacement catalog.");}
-            }
-            if(run.relics.Count>shown)GUI.Label(new Rect(520+shown*48,11,40,38),"+"+(run.relics.Count-shown),new GUIStyle(footerStyle){fontSize=12,normal={textColor=Gold}});
         }
         private void DrawCombatAtmosphere(float w,float h)
         {

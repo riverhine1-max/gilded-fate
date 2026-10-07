@@ -72,7 +72,7 @@ namespace GildedFate.UI
                 {
                     var activate=new Rect(r.xMax+15,r.center.y-20,124,40);var enabled=GUI.enabled;GUI.enabled=enabled&&CanAcceptCombatInput&&owned.CanActivate;
                     DrawButtonFrame(activate,activate.Contains(PointerPosition),!GUI.enabled);
-                    if(GUI.Button(activate,"ACTIVATE",buttonStyle)){selectedShrineSlot=-1;QueueShard(def,owned,run.shards.IndexOf(owned));}GUI.enabled=enabled;
+                    if(GUI.Button(activate,"ACTIVATE",buttonStyle)){selectedShrineSlot=-1;QueueShard(def,owned,run.shards.IndexOf(owned));}DeniedPress(activate,!owned.CanActivate);GUI.enabled=enabled;
                 }
             }
         }
@@ -143,7 +143,7 @@ namespace GildedFate.UI
         }
         private void TakeShardDiscovery(int index,FateShardDef shard)
         {
-            if(!run.TakeDiscoveredShard(index))return;
+            if(!run.TakeDiscoveredShard(index)){Sfx(SoundCue.UiDenied);return;}
             merchantSold.Clear();foreach(var id in run.merchantSold)merchantSold.Add(id);
             SaveService.Save(run);BeginShardAcquisition(shard,()=>{});
         }
@@ -155,7 +155,7 @@ namespace GildedFate.UI
             GUI.Label(new Rect(r.x+104,r.y+12,186,72),shard.name+"\nRARE FATE SHARD",new GUIStyle(footerStyle){fontSize=15,wordWrap=true,normal={textColor=Gold}});
             var buy=new Rect(r.x,r.yMax-45,r.width,42);DrawButtonFrame(buy,buy.Contains(pointer),sold||run.gold<45);
             if(r.Contains(pointer))SetRunHudTooltip(r,shard.name,shard.stableText+"\n\nFRACTURED: "+shard.fracturedText);
-            if(GUI.Button(buy,sold?"SOLD":"DISCOVER · 45 GOLD",buttonStyle)&&!sold&&run.OfferShard(shard.id,45))SaveService.Save(run);
+            if(GUI.Button(buy,sold?"SOLD":"DISCOVER · 45 GOLD",buttonStyle)&&!sold){if(run.OfferShard(shard.id,45))SaveService.Save(run);else Sfx(SoundCue.UiDenied);}
         }
         private bool DrawRolledCombatExtras(float w,float h)
         {

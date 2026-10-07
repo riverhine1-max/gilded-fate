@@ -75,7 +75,7 @@ namespace GildedFate.UI
             if(r.height>=176){var flavor=availability.available?EventChoiceAction(choice):availability.reason;GUI.Label(new Rect(r.x+58,r.y+133,r.width-80,r.height-146),flavor,new GUIStyle(footerStyle){fontSize=14,wordWrap=true,alignment=TextAnchor.UpperLeft,normal={textColor=availability.available?new Color(.68f,.71f,.71f):new Color(1f,.64f,.48f)}});}
             if(hot)SetRunHudTooltip(rect,choice.title,EventDecisionSentence(choice)+(availability.available?"":"\n\n"+availability.reason));
             var enabled=GUI.enabled;GUI.enabled=enabled&&availability.available&&!acquisitionActive;
-            if(GUI.Button(rect,"",GUIStyle.none))BeginEventChoice(choice);GUI.enabled=enabled;
+            if(GUI.Button(rect,"",GUIStyle.none))BeginEventChoice(choice);GUI.enabled=enabled;DeniedPress(rect,!availability.available&&!acquisitionActive);
         }
         private static Rect FittedServiceIcon(Rect r,float size)=>new(r.center.x-size*.5f,r.y+8,size,size);
         private void DrawRemovalServiceIcon(Rect r)

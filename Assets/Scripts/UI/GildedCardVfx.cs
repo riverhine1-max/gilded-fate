@@ -419,8 +419,8 @@ namespace GildedFate.UI
         // ---------- card motions (hook inside DrawCombatMotions) ----------
         private Vector2 CardVfxMotionPoint(CardMotion m,Vector2 destination,float t)
         {
-            t=Mathf.Clamp01(t);var eased=t*t*(3-2*t);var p=Vector2.Lerp(m.from,destination,eased);
-            if(CardVfxMotionAllowed)p.y-=Mathf.Sin(t*Mathf.PI)*(m.back?65:38);return p;
+            t=Mathf.Clamp01(t);var eased=CardMotionEase(m,t);var p=Vector2.Lerp(m.from,destination,eased);
+            if(CardVfxMotionAllowed)p.y-=CardMotionLift(m,t,eased);return p;
         }
         private bool CardVfxIsPileDraw(CardMotion m)=>!m.back&&!m.absorb&&!m.exhaust&&m.fromScale<.3f&&m.toScale>.99f&&(m.from-PilePoint(0)).sqrMagnitude<4&&combat.hand.Contains(m.card);
         // Returns true when the motion was fully drawn here (the caller then skips it).

@@ -43,7 +43,7 @@ Baseline before any change: native harness PASS 107,484 / FAIL 0, compile checks
 | ID | Sev | Finding | Status |
 |----|-----|---------|--------|
 | UI-1 | High | The **End Turn button and energy orb cover the edge cards** of a hand of 6 or more at 1440x810 and up to 16:10 (fixed rects, `HandLayout` ignores them). | Confirmed |
-| UI-2 | High | The enemy status strip's second row hides behind the hand; icons are lost in 4-enemy fights. | Sweep |
+| UI-2 | High | The enemy status strip's second row hides behind the hand; icons are lost in 4-enemy fights. | Re-checked: not a defect. Rows end at y 529 against a resting hand top of 539 (1440x810), more room at taller aspect ratios, and overflow already collapses into a "+N" chip. |
 | UI-3 | Med | Shop and shrine hover tooltips cover the price of the item being hovered. | Sweep |
 | UI-4 | Med | Key numbers use 8 to 12 px fonts (floor, energy, piles, incoming damage, status stacks, colorblind codes). | Sweep |
 | UI-5 | Med | Relic row collides with page headings from about 12 relics. | Sweep |
@@ -70,6 +70,8 @@ Baseline before any change: native harness PASS 107,484 / FAIL 0, compile checks
 | J-2 | Med | Procedural textures are built on first use inside a draw frame (possible hitch on first Dissipate or Gild). Estimate from code, not profiled. | Sweep |
 | J-14 | Med | Gold and HP numbers snap instead of counting. | Sweep |
 | J-16/17 | Low | Some shake/flicker paths ignore the screen-shake or reduce-flashing settings. | Sweep |
+| J-18 | High | (Your request) Aiming an Attack and playing a card felt rough: the guide popped in, the arrow was a stiff line, target edges flickered, and a played card hung for a moment after release. | Fixed |
+| J-19 | High | (Your request) The Gild coin was small and tucked in the bottom-left corner, easy to forget. | Fixed |
 
 ## Batch 5: Balance (after the rule fixes, because R-1 distorts every Act 3 number)
 
@@ -138,3 +140,45 @@ All of F-1 to F-11 are addressed. New file: `UI/GildedPolishFlow.cs` (shared UI 
 
 Also: one shared `UiScale` formula (menus, combat and the meta overlay each had their own copy), and a dead duplicate Merchant controller branch was removed.
 
+
+---
+
+## Batch 3 fix log (UI layout and readability)
+
+**Honest limit (same as Batch 2):** UI code is compile-checked in both configurations and checked by reading; the native harness cannot draw. The one piece of layout that is pure code (the hand fan) has harness tests (`b3.cs`: hands of 1 to 12 cards at four canvas widths clear the energy orb and the End Turn button) and a matching in-Unity verification. Everything else needs a look in Unity. Positions below are in the 1440 x 810 authoring canvas.
+
+| Finding | Fix |
+|---------|-----|
+| UI-1 | **End Turn moved** from beside the Discard pile (where large hands slid under it) to the right-hand column above the Dissipate pile. The hand fan now reserves 200 px on each side (`HandLayout.SideReserve`), so hands of 6 or more cards are slightly tighter (span 806 px at 1440 instead of up to 980) but no card is ever covered by the energy orb or the End Turn button. Hands of 5 or fewer are unchanged. |
+| UI-3 | Shop tooltips (cards, relics, shard, Sever a Thread, Restore HP) anchor to the item plus its price tag, so they open below the price or flip above the item and never cover it. |
+| UI-4 | 40 hard-coded 8 to 11 px fonts raised to 11 or 12 px: FLOOR / ACT labels, deck count, pile names, ENERGY, RESONANCE, End Turn "incoming" line, colorblind status codes, enemy intent destination, map and archive captions, achievement toasts, Fate Debt text, tier labels. Rects were adjusted where a label was tight. Card text and fonts computed at run time were not touched. |
+| UI-5 | **Relics now live inside the top bar** (between the ACT badge and the map button, 14 slots at 1440, "+N" chip beyond that) instead of a second row at y 67 that ran under page headings from about the 9th relic. The old second row is gone; every page heading is clear of it. |
+| UI-6 | `DrawButtonFrame` has a real **disabled** look (dimmed frame, no hover light, the stray 50 px line is gone) and a separate **selected** state. The NORMAL / UPGRADE PREVIEW tabs now use "selected" instead of misusing "disabled". |
+| UI-7 | TAKE RELIC is a framed button inside a proper panel (the panel was an unframed area and the button hung below it). |
+| UI-8 | The scroll rail is now **draggable** (grab the thumb or click the track; 24 px wide hit area) on every scrolling list. Settings sliders have a 32 px tall hit area (was 20). Fate Debt arrows are 44 x 36 (was 36 x 30). |
+| UI-9 | SELECT / DISCARD / DISSIPATE labels in the choose-a-card grid sit under the card instead of over its rules text. The upgrade comparison panel shrinks its text to fit instead of overflowing. Two unused methods (`DrawCombatRelics`, `DrawPageControls`) deleted. |
+
+---
+
+## Batch 4 fix log (feedback and juice, plus card feel and the Gild badge)
+
+**Honest limit:** every change here is compile-checked in both configurations (default and DEVELOPMENT_BUILD) and the native harness still passes (107,862 checks, 0 failures), but the harness cannot draw or play sound. The sound, motion and layout changes need a look and a listen in Unity. **No new audio was made:** every new sound reuses an existing cue (the enemy death sound is the card-exhaust and block-break cues layered).
+
+| Finding | Fix |
+|---------|-----|
+| J-3 | Refused actions now play the denied sound: an unaffordable shop price, a shard you cannot take or buy, an event choice you cannot afford, a shard that cannot activate, and End Turn while it is disabled. (`DeniedPress` in GildedPolishFlow.cs; it stays silent during the first 0.2 s after a screen change so a double-click is not punished.) |
+| J-4 | Settings has sound: a hover tick when focus moves between rows, a confirm on toggles and page changes, a back sound on BACK, and a short preview when a volume slider changes (Effects previews a hit, Master and UI preview the confirm). The music no longer ducks while you are on the Audio page adjusting it. |
+| J-5 | Combat numbers share persistent lanes (a 0.9 s memory), so numbers from different cards no longer start in the same slot and overlap. |
+| J-6 | Every `DrawButtonFrame` button gets one hover tick when the pointer arrives and a pressed look (deeper bronze fill, no outer glow) while the mouse button is down. |
+| J-7 | The player's own debuffs (Weak, Vulnerable, Frail, Marked, Curse, Status cards and similar) play the debuff cue instead of the Energy chime. A new check in the audio verification covers it. |
+| J-8 | Enemies now have a death sound, layered from existing cues, for single enemies and for every enemy in a group. |
+| J-9 | The hurt vignette now flashes for any hit on the player (bigger for heavy hits), not only boss hits. |
+| J-10 | Below 30% HP the screen edge pulses red (steady under Reduce Motion, half strength under Reduce Flashing) and the top-bar HP number turns red. |
+| J-11 | Enemy hits of 20 or more from Reaper and Arcane cards layer the heavy-hit sound under their own. |
+| J-12 | Pause open and close, settings from the pause menu, save and quit, opening the deck, LEAVE SHOP, reward SKIP, the quit confirmation (QUIT and STAY), and controller back presses all have a sound. Leaving the pause menu no longer plays two sounds at once. |
+| J-13 | Card rules text formatting (a regex per card per frame) is cached. **Other per-frame allocations (map, enemy art lookups, GUIStyle) were not profiled and are untouched.** |
+| J-14 | Gold and HP in the top bar count to their new value instead of snapping (instant under Reduce Motion and at the start of a run). |
+| J-16/17 | The enemy hit jitter obeys Reduce Motion. Only this one path was changed; other shake and flicker paths were not audited further. |
+| J-2 | The combat textures (final VFX, energy orb, boss polish) are built when combat starts, not on the first frame that needs them. |
+| J-18 | **Card aiming and play.** (1) The pull that carries an Attack out of the hand is eased, so a quick flick never makes the card or the guide jump; the card also leans slightly toward the cursor. (2) The target guide no longer appears the moment you press a card: it fades in as you pull, the four brackets close onto the target as it locks, and the dim, labels and damage preview ease in and out (the guide also fades after a release instead of vanishing). (3) The aim arrow is a soft dotted curve that flows toward the target, with a diamond head and a ring that tightens and brightens on lock; its tip glides onto the target instead of snapping. (4) A target you are locked on to holds for 22 px outside its edge while dragging, and the same rule decides the drop, so releasing where the guide says "RELEASE TO PLAY" always plays. A different enemy under the pointer still wins immediately. (5) A soft tick plays when a target locks. (6) A played card leaves your hand at speed and settles onto its impact point (it used to ease in slowly and seem to hang); its arc follows distance travelled; it gives a small pulse as it lands. Draws, discards and Dissipate motions are unchanged. Rules, targets and costs are unchanged. Code: GildedTargetingFeel.cs. New in-Unity checks cover the lock hold, the lock release, the exact edge without a drag and the flight curve. |
+| J-19 | **Gild badge.** It moved from the bottom-left corner (under the shard sockets) to the right-hand column directly under End Turn, beside the Dissipate pile, so it sits where every turn ends. It is a minted coin set in a forged bezel on a nameplate that matches the End Turn plate: READY shows "GILD", the price and its key; ARMED shows "GILDED · NEXT CARD x2" with a molten ring; spent shows "NEXT TURN"; short of gold shows "NEED" with the price in red; during the enemy turn or a resolving card it dims but keeps its layout. State changes fade instead of flipping. While ready, the coin turns now and then and a warm ring pulses outward; at the start of each turn where Gild is affordable the bezel and plate flash once. Reduce Motion and Reduce Flashing are respected. The coin art, the price, the shortcut (G or LT) and the rules are unchanged. The coin-burst from the gold counter and the armed thread to the hand were re-aimed for the new position. Code: GildedGildBadge.cs; a new in-Unity check confirms the badge clears End Turn, all three piles, the energy orb and every hand size from 1 to 12. |

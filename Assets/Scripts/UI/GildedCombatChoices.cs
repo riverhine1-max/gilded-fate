@@ -139,7 +139,7 @@ namespace GildedFate.UI
                 if(GUI.Button(r,"",GUIStyle.none)&&choiceOptionSelected==null){choiceOptionSelected=option;Sfx(SoundCue.UiConfirm);}
             }
             GUI.Label(new Rect(w*.2f,h*.69f,w*.6f,48),combat.ChoiceKind==CardChoiceKind.BuffToGain?$"Gain {combat.pendingPlay.choiceFollowupValue} stacks of one buff you already have.":combat.ChoiceKind==CardChoiceKind.BuffToDouble?"Only active, stackable combat buffs are eligible.":"The same card can answer offense or defense.",new GUIStyle(subtitleStyle){fontSize=18,wordWrap=true});
-            var pause=new Rect(w-212,26,180,42);DrawButtonFrame(pause,pause.Contains(combatPointer),false);if(GUI.Button(pause,"PAUSE · ESC",buttonStyle))combatPauseOpen=true;
+            var pause=new Rect(w-212,26,180,42);DrawButtonFrame(pause,pause.Contains(combatPointer),false);if(GUI.Button(pause,"PAUSE · ESC",buttonStyle)){combatPauseOpen=true;PauseCue(true);}
         }
         private void DrawCombatPause(float w,float h)=>DrawUnifiedPauseMenu(w,h,true);
     }

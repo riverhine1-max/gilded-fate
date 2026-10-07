@@ -43,7 +43,7 @@ namespace GildedFate.UI
         {
             var r=GroupPortrait(index);if(profile.reduceMotion||index>=opponentVisuals.Count)return r;
             var visual=opponentVisuals[index];r.x-=Mathf.Sin((1-visual.action)*Mathf.PI)*visual.action*26;
-            r.x+=Mathf.Sin(shimmer*58)*visual.hit*5;return r;
+            if(!profile.reduceMotion)r.x+=Mathf.Sin(shimmer*58)*visual.hit*5;return r;
         }
     }
 }

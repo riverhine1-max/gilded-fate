@@ -109,6 +109,17 @@ namespace GildedFate.UI
         private void KeepDisplaySettings(){displayConfirmOpen=false;ProfileService.Save(profile);Sfx(SoundCue.UiConfirm);}
         private void RevertDisplaySettings(){displayConfirmOpen=false;profile.windowMode=displayRevertMode;profile.resolutionWidth=displayRevertWidth;profile.resolutionHeight=displayRevertHeight;ApplySettings();ProfileService.Save(profile);ShowSettingsNotice("DISPLAY SETTINGS RESTORED");}
         private void ShowSettingsNotice(string text){settingsNotice=text;settingsNoticeUntil=Time.unscaledTime+2.4f;}
+        // Settings used to be silent. Volume sliders preview the bus they control (Music is audible by itself because the
+        // score is no longer ducked on this page), other sliders tick, toggles and option cycles confirm.
+        private float settingsPreviewAt;
+        private int settingsHoverRow=-1;
+        private bool SettingsPreviewingMusic=>screen==ScreenMode.Settings&&!settingsOverview&&settingsPage==1;
+        private void PreviewSettingSound(SettingRow row)
+        {
+            if(Time.unscaledTime<settingsPreviewAt)return;settingsPreviewAt=Time.unscaledTime+.14f;
+            if(row.name=="MUSIC")return;
+            Sfx(row.name=="EFFECTS"?SoundCue.HitSteel:row.name is "MASTER VOLUME" or "UI"?SoundCue.UiConfirm:SoundCue.UiHover);
+        }
         private void ChangeSetting(SettingRow row,int direction)
         {
             var before=row.get();if(row.display)CaptureDisplayRevert();
@@ -116,6 +127,7 @@ namespace GildedFate.UI
             else if(row.slider)row.set(Mathf.Clamp(Mathf.Round((row.get()+direction*row.step)*100)/100,row.minimum,row.maximum));
             else{var index=Mathf.Max(0,Array.IndexOf(row.values,Mathf.RoundToInt(row.get())));row.set(row.values[(index+direction+row.values.Length)%row.values.Length]);}
             ApplySettings();AudioListener.volume=profile.master;
+            if(row.slider)PreviewSettingSound(row);else Sfx(SoundCue.UiConfirm);
             if(row.display&&!Mathf.Approximately(before,row.get()))OpenDisplayConfirm();
         }
         private void ResetSettingsPage()
@@ -126,11 +138,17 @@ namespace GildedFate.UI
             ShowSettingsNotice(SettingsPageNames[Mathf.Clamp(settingsPage,0,SettingsPageCount-1)]+" RESTORED TO DEFAULTS");
             if(displayChanged)OpenDisplayConfirm();
         }
-        private void ChangeSettingsPage(int page){settingsPage=(page+SettingsPageCount)%SettingsPageCount;settingsFocusIndex=0;settingsOverview=false;}
+        private void ChangeSettingsPage(int page){settingsPage=(page+SettingsPageCount)%SettingsPageCount;settingsFocusIndex=0;settingsOverview=false;Sfx(SoundCue.UiConfirm);}
         private void CloseSettings(){if(displayConfirmOpen)KeepDisplaySettings();ProfileService.Save(profile);settingsOverview=false;screen=settingsReturnScreen;}
-        private void BackFromSettings(){if(!settingsOverview){settingsOverview=true;settingsFocusIndex=settingsPage;ProfileService.Save(profile);}else CloseSettings();}
+        private void BackFromSettings(){Sfx(SoundCue.UiBack);if(!settingsOverview){settingsOverview=true;settingsFocusIndex=settingsPage;ProfileService.Save(profile);}else CloseSettings();}
         // Focus order on a page: every row, then BACK (rows.Length), then RESET (rows.Length+1).
         private void HandleSettingsNavigation(MenuNavigation input)
+        {
+            var focusBefore=settingsFocusIndex;var pageBefore=settingsPage;var overviewBefore=settingsOverview;
+            HandleSettingsNavigationCore(input);
+            if(settingsFocusIndex!=focusBefore&&settingsPage==pageBefore&&settingsOverview==overviewBefore)Sfx(SoundCue.UiHover);
+        }
+        private void HandleSettingsNavigationCore(MenuNavigation input)
         {
             if(displayConfirmOpen){if(input.accept)KeepDisplaySettings();else if(input.back)RevertDisplaySettings();return;}
             if(input.back){BackFromSettings();return;}
@@ -158,7 +176,7 @@ namespace GildedFate.UI
             var twoColumns=SettingsTwoColumns(rows.Length);
             for(var i=0;i<rows.Length;i++)
             {
-                var row=rows[i];var r=SettingsRowRect(w,i,twoColumns);var hot=controllerNavigation?settingsFocusIndex==i:r.Contains(PointerPosition);
+                var row=rows[i];var r=SettingsRowRect(w,i,twoColumns);var hot=controllerNavigation?settingsFocusIndex==i:r.Contains(PointerPosition);if(!controllerNavigation&&!captureMode&&Event.current.type==EventType.Repaint&&GUI.enabled){if(hot&&settingsHoverRow!=i){settingsHoverRow=i;Sfx(SoundCue.UiHover);}else if(!hot&&settingsHoverRow==i)settingsHoverRow=-1;}
                 Fill(r,hot?new Color(.085f,.066f,.035f,.97f):new Color(.014f,.022f,.031f,.95f));Outline(r,hot?Gold:new Color(.28f,.30f,.31f),hot?2:1);
                 if(hot)Fill(new Rect(r.x,r.y+8,3,r.height-16),Gold);
                 var style=new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=15,fontStyle=FontStyle.Bold,alignment=TextAnchor.MiddleLeft,normal={textColor=new Color(.94f,.91f,.83f)}};
@@ -174,7 +192,7 @@ namespace GildedFate.UI
                     if(row.minimum<1&&row.maximum>1){var mark=track.x+9+(track.width-18)*Mathf.InverseLerp(row.minimum,row.maximum,1);Fill(new Rect(mark-1,r.center.y-6,2,12),new Color(.55f,.52f,.45f));}
                     var knob=new Rect(track.x+(track.width-18)*fraction+3,r.center.y-8,12,16);Fill(knob,new Color(.96f,.83f,.57f));Outline(knob,new Color(.32f,.22f,.09f),1);
                     var value=GUI.HorizontalSlider(track,row.get(),row.minimum,row.maximum,GUIStyle.none,new GUIStyle(GUIStyle.none){fixedWidth=18,fixedHeight=32});
-                    if(!Mathf.Approximately(value,row.get())){row.set(Mathf.Round(value/row.step)*row.step);ApplySettings();AudioListener.volume=profile.master;}
+                    if(!Mathf.Approximately(value,row.get())){row.set(Mathf.Round(value/row.step)*row.step);ApplySettings();AudioListener.volume=profile.master;PreviewSettingSound(row);}
                 }
                 else if(!row.toggle&&hot)
                 {

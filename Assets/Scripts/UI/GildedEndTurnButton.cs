@@ -82,6 +82,7 @@ namespace GildedFate.UI
             GUI.color=old;
             if(ShowPadGlyphs)DrawPadGlyph(new Vector2(shown.x+20,shown.center.y),"Y",enabled); // Y ends the turn
             if(enabled&&GUI.Button(r,"",GUIStyle.none)){endTurnPressedAt=now;return true;}
+            DeniedPress(r,!enabled&&combat!=null&&!combat.IsOver&&pileOpen<0&&!combatPauseOpen&&inspectedCard==null&&inspectedRelic==null);
             return false;
         }
     }

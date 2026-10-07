@@ -28,6 +28,14 @@ namespace GildedFate.UI
             if(type==EventType.MouseDown||type==EventType.MouseUp)Event.current.Use();
         }
 
+        // A press on a control that is drawn but unavailable (an event choice you cannot afford, a shard that cannot fire)
+        // gets the refused sound instead of silence. GUI.enabled=false swallows the click, but the event still arrives.
+        private void DeniedPress(Rect rect,bool refused=true)
+        {
+            if(!refused||captureMode||!ScreenInputReady)return;var e=Event.current;
+            if(e.type==EventType.MouseDown&&e.button==0&&rect.Contains(e.mousePosition))Sfx(SoundCue.UiDenied);
+        }
+
         // ---------- replace-run confirmation ----------
         private bool replaceRunConfirmOpen;
         private Action replaceRunAction;

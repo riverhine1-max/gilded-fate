@@ -12,7 +12,7 @@ namespace GildedFate.Combat
     public static class HandLayout
     {
         public const float CardWidth=194,CardHeight=264;
-        // Width kept clear on each side of the hand for the energy orb / Gild button (left) and the End Turn button
+        // Width kept clear on each side of the hand for the energy orb (left) and the End Turn button + Gild badge
         // (right), plus room for the outermost card's tilt. The fan is narrowed instead of sliding under them.
         public const float SideReserve=200,CardEdgeAllowance=112;
         public static HandSlot Slot(int index,int count,float width,float height)

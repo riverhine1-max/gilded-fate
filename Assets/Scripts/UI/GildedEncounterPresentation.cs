@@ -119,7 +119,7 @@ namespace GildedFate.UI
             {
                 var v=opponentVisuals[i];UpdateHealthTrail(v.hp,combat.EnemyAt(i).maxHp,ref v.tracked,ref v.trail,ref v.hold,dt);
                 v.hit=Mathf.MoveTowards(v.hit,0,dt*3.5f);v.action=Mathf.MoveTowards(v.action,0,dt*2.4f);
-                if(v.hp<=0&&v.death<0)v.death=Time.unscaledTime;
+                if(v.hp<=0&&v.death<0){v.death=Time.unscaledTime;PlayEnemyDeathSound(.24f);}
             }
             foreach(var action in opponentActions.Where(a=>a.time<=Time.unscaledTime).ToArray())
             {if(action.index<opponentVisuals.Count)opponentVisuals[action.index].action=1;opponentActions.Remove(action);}

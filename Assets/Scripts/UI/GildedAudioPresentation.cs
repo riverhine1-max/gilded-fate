@@ -30,7 +30,7 @@ namespace GildedFate.UI
             if(wasCombatAudio&&!context)GameAudio.ClearCombat();wasCombatAudio=context;
             GameAudio.SetCombatPaused(context&&(combatPauseOpen||screen!=ScreenMode.Combat));
             AdaptiveMusicDirector.SetMood(MoodForScreen(),profile.music);
-            AdaptiveMusicDirector.SetPaused(combatPauseOpen||screen==ScreenMode.Settings);
+            AdaptiveMusicDirector.SetPaused((combatPauseOpen||screen==ScreenMode.Settings)&&!SettingsPreviewingMusic);
             if(!audioReady||audioRunId!=run.runId)ResetGoldAudio();
             else if(audioGold!=run.gold){Sfx(run.gold>audioGold?SoundCue.GoldCollect:SoundCue.GoldSpend,pan:-.25f);audioGold=run.gold;}
             if(audioReady&&screen!=audioScreen)
@@ -57,7 +57,10 @@ namespace GildedFate.UI
         private void PlayVitalSound(CombatEvent fact,CardDef card)
         {
             if(fact.amount<=0)return;
-            Sfx(VitalSound(fact,card),fact.playerSide?-.24f:.24f,Mathf.Lerp(.8f,1.05f,Mathf.Clamp01(fact.amount/24f)),true);
+            var cue=VitalSound(fact,card);var pan=fact.playerSide?-.24f:.24f;
+            Sfx(cue,pan,Mathf.Lerp(.8f,1.05f,Mathf.Clamp01(fact.amount/24f)),true);
+            // HitHeavy used to be reachable only for steel cards. Big Reaper and Arcane hits now get the heavy thud under their own sound.
+            if(!fact.playerSide&&fact.kind==CombatEventKind.Damage&&fact.amount>=20&&cue is SoundCue.HitReaper or SoundCue.HitArcane)Sfx(SoundCue.HitHeavy,pan,.55f,true);
         }
         private void PlayStatusSound(CombatEvent fact,float delay)
         {
@@ -67,7 +70,9 @@ namespace GildedFate.UI
                 Sfx(TriggerSound(fact.label),pan:fact.playerSide?-.15f:.15f,intensity:.5f,combatSound:true,delay:delay);
             else Sfx(StatusFeedbackCue(fact),fact.playerSide?-.2f:.2f,.45f,true,delay);
         }
-        private static SoundCue StatusFeedbackCue(CombatEvent fact)=>fact.label=="BURN"?SoundCue.Burn:fact.playerSide&&fact.amount>0?SoundCue.Energy:SoundCue.Debuff;
+        // A buff you gain chimes; a debuff or clutter card you receive (Weak, Vulnerable, Frail, curses, status cards) does not.
+        private static readonly System.Collections.Generic.HashSet<string> HarmfulPlayerStatuses=new(){"WEAK","VULNERABLE","FRAIL","MARKED","CURSE","STATUS","OPENING STATUS","SEIZED GOLD"};
+        private static SoundCue StatusFeedbackCue(CombatEvent fact)=>fact.label=="BURN"?SoundCue.Burn:fact.playerSide&&fact.amount>0&&!HarmfulPlayerStatuses.Contains(fact.label??"")?SoundCue.Energy:SoundCue.Debuff;
         private static SoundCue TriggerSound(string label)=>label switch
         {
             "TRIGGER:SIGIL EMBER"=>SoundCue.Burn,

@@ -92,7 +92,11 @@ namespace GildedFate.UI
                 var first=HandLayout.Slot(0,handSize,CombatWidth,CombatHeight);var last=HandLayout.Slot(handSize-1,handSize,CombatWidth,CombatHeight);
                 CombatCheck(first.x-HandLayout.CardEdgeAllowance>=EnergyMeterRect.xMax&&last.x+HandLayout.CardEdgeAllowance<=EndTurnRect.x,"Hand of "+handSize+" clears the energy orb and End Turn");
                 CombatCheck(!EndTurnRect.Overlaps(PileRect(1))&&!EndTurnRect.Overlaps(PileRect(2))&&!EndTurnRect.Overlaps(EnergyMeterRect),"End Turn does not overlap the piles or the energy orb");
+                CombatCheck(last.x+HandLayout.CardEdgeAllowance<=GildButtonRect.x,"Hand of "+handSize+" clears the Gild badge");
             }
+            // Polish: the Gild badge sits under End Turn, clear of every other control, and its plate stays on screen.
+            CombatCheck(!GildButtonRect.Overlaps(EndTurnRect)&&!GildButtonRect.Overlaps(PileRect(0))&&!GildButtonRect.Overlaps(PileRect(1))&&!GildButtonRect.Overlaps(PileRect(2))&&!GildButtonRect.Overlaps(EnergyMeterRect),"Gild badge does not overlap End Turn, the piles or the energy orb");
+            CombatCheck(GildButtonRect.xMax<=CombatWidth&&GildButtonRect.yMax<=CombatHeight-20&&GildButtonRect.y>EndTurnRect.yMax&&GildPlateRect.yMax<=PileRect(1).yMax&&GildButtonRect.Contains(GildCoinCenter)&&GildButtonRect.Contains(GildPlateRect.center),"Gild badge sits under End Turn with its coin and plate inside the clickable area");
             var scaledCenter=CanvasPointFromPhysical(new Vector2(1440,810),1620,2);
             CombatCheck(Vector2.Distance(scaledCenter,new Vector2(720,405))<.01f,"Physical pointer converts to the same virtual-canvas point at scaled resolutions");
             var markedText=GameContent.Cards.First(c=>c.id=="hex").text;
@@ -102,6 +106,15 @@ namespace GildedFate.UI
             foreach(var targetPoint in new[]{visualTarget.center,new Vector2(visualTarget.x+8,visualTarget.center.y),new Vector2(visualTarget.xMax-8,visualTarget.center.y),new Vector2(visualTarget.center.x,visualTarget.y+8),new Vector2(visualTarget.center.x,visualTarget.yMax-8)})
                 CombatCheck(IsValidCardDrop(targetingCard,targetPoint),"Attack accepts the full visible enemy target at "+targetPoint);
             CombatCheck(!IsValidCardDrop(targetingCard,new Vector2(visualTarget.x-14,visualTarget.center.y)),"Attack rejects space clearly outside the enemy target");
+            // Polish: aiming. A locked target holds across its soft edge; a plain pointer move keeps the exact edge.
+            var lockedOn=AimTargetAt(visualTarget.center,true);
+            CombatCheck(lockedOn>=0&&AimTargetAt(new Vector2(visualTarget.x-12,visualTarget.center.y),true)==lockedOn,"A locked target holds while the pointer drifts a few pixels outside it");
+            CombatCheck(AimTargetAt(new Vector2(visualTarget.x-StickyTargetMargin-12,visualTarget.center.y),true)==-1,"The lock releases once the pointer clearly leaves the target");
+            CombatCheck(AimTargetAt(new Vector2(visualTarget.x-12,visualTarget.center.y),false)==-1&&stickyTarget==-1,"Without a drag the target edge stays exact");
+            var playFlight=new CardMotion{play=true,from=Vector2.zero,to=new Vector2(300,-200)};var easeOk=Mathf.Abs(CardMotionEase(playFlight,0))<.0001f&&Mathf.Abs(CardMotionEase(playFlight,1)-1)<.0001f;
+            for(var step=1;step<=20;step++)easeOk&=CardMotionEase(playFlight,step/20f)>=CardMotionEase(playFlight,(step-1)/20f);
+            CombatCheck(easeOk&&CardMotionEase(playFlight,.5f)>CardMotionEase(null,.5f),"A played card's flight leaves quickly, never moves backwards and lands exactly on its impact point");
+            CombatCheck(Mathf.Abs(CardMotionLift(playFlight,0,0))<.0001f&&Mathf.Abs(CardMotionLift(playFlight,1,1))<.01f,"A played card's arc starts and ends flat");
             var strikeImpact=CardImpactPoint(targetingCard);
             CombatCheck(visualTarget.Contains(strikeImpact)&&Mathf.Abs(strikeImpact.x-EnemyVisualCenterX)<1,"Attack animation lands on the visible enemy center");
             foreach(var count in new[]{3,5,8,10})
