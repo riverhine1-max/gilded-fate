@@ -6,7 +6,7 @@
 
 **A combat-long power, earned through card play and spent across the run.** Fate Shards occupy the two-slot reliquary. They change how your existing deck works: amplify Strength, convert Block into damage, repeat cards, reward Exhaust, or turn a ritual into an engine.
 
-This guide documents the current implementation under `Assets/`. It replaces the old batch-1/batch-2 ZIP installation note. **There is no separate overhaul ZIP to install for this checkout.** Root upload variants are preserved in [Archive/RootUploads](Archive/RootUploads); the live Unity files are the source of truth.
+This guide documents the current implementation under `Assets/`. It replaces the old batch-1/batch-2 ZIP installation note. **There is no separate overhaul ZIP to install for this checkout.** Root upload variants remain in place during the ongoing transfer; see the [upload inventory](Archive/README.md). The live Unity files are the source of truth.
 
 ## The rules at a glance
 
