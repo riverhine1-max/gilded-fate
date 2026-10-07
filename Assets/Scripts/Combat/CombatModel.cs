@@ -143,7 +143,7 @@ namespace GildedFate.Combat
 
         public bool Play(CardDef card)
         {
-            if(!CanPlay(card))return false;var paid=CostFor(card);if(memory.perfectForm>0&&card.cost>0&&(card.kind==CardKind.Attack&&!memory.firstAttackPlayed||card.kind==CardKind.Skill&&!memory.firstSkillPlayed))PresentationPulse("perfect_form");if(relics.Contains("crown_of_sacrifice")&&CardsThisTurn==0&&card.cost>0)RelicPresentationPulse("crown_of_sacrifice");if(relics.Contains("crown_of_sacrifice")&&CardsThisTurn==0&&card.cost>=2)memory.crownSacrificeDebt=true;energy-=paid;energySpentThisTurn+=paid;CountRuinsCard(card);Emit(CombatEventKind.Energy,energy,true);hand.Remove(card);
+            if(!CanPlay(card))return false;var paid=CostFor(card);GainShardCharge(card);if(memory.perfectForm>0&&card.cost>0&&(card.kind==CardKind.Attack&&!memory.firstAttackPlayed||card.kind==CardKind.Skill&&!memory.firstSkillPlayed))PresentationPulse("perfect_form");if(relics.Contains("crown_of_sacrifice")&&CardsThisTurn==0&&card.cost>0)RelicPresentationPulse("crown_of_sacrifice");if(relics.Contains("crown_of_sacrifice")&&CardsThisTurn==0&&card.cost>=2)memory.crownSacrificeDebt=true;energy-=paid;energySpentThisTurn+=paid;CountRuinsCard(card);Emit(CombatEventKind.Energy,energy,true);hand.Remove(card);
             if(card.kind==CardKind.Attack){memory.nextAttackCostReduction=0;if(memory.battleRushCharges>0)memory.battleRushCharges--;if(card.keywords?.Contains("Heavy")==true)memory.nextHeavyCostReduction=0;}if(card.kind==CardKind.Skill)memory.nextSkillCostReduction=0;memory.nextCardCostPenalty=0;
             if(card.firstDrawFree||card.specialModification=="quickened")memory.specialPlayIds.Add(-card.instanceId);memory.freeThisTurnIds.Remove(card.instanceId);
             // Echo is deliberately activation-only. Activating it arms exactly one
@@ -669,7 +669,7 @@ namespace GildedFate.Combat
 
         public bool ActivateShard(FateShardDef shard,bool fractured)
         {
-            if(shard==null||pendingPlay!=null||IsOver||phase!=CombatPhase.Player||!string.IsNullOrEmpty(activeShardId))return false;activeShardId=shard.id;activeShardFractured=fractured;shardMemory=new();ShardPulse();ShardStartup(true);return true;
+            if(shard==null||pendingPlay!=null||IsOver||phase!=CombatPhase.Player||!string.IsNullOrEmpty(activeShardId)||!CanActivateChargedShard(shard.id))return false;activeShardId=shard.id;activeShardFractured=fractured;shardMemory=new();ShardPulse();ShardStartup(true);return true;
         }
 
         private string SpecialIntentDetail(){if(enemyId=="vault_rat")return $"Deals {IntentDisplayValue} damage and steals 4 Gold.";if(enemyId=="rune_mage")return $"Deals {IntentDisplayValue} damage and applies Vulnerable.";if(enemyId=="executioner")return $"Deals {IntentDisplayValue} damage, then gains 1 Strength (maximum 3).";if(enemyId=="mirror_witch")return memory.lastCardWasAttack?$"Reflects at least {IntentDisplayValue} damage.":"Copies your Skill as Block and gains Strength.";if(enemyId=="collector")return $"Deals {IntentDisplayValue} damage and seizes Gold.";if(enemyId=="hollow_king")return $"Summons a weapon and gains {IntentDisplayValue} Block.";if(enemyId=="vault_mother")return $"Gains {IntentDisplayValue} Block and restores {3+bossPhase*2} HP.";if(enemyId=="last_dealer")return $"Deals {IntentDisplayValue} damage and adds a Curse.";return $"A special action with power {IntentDisplayValue}.";}

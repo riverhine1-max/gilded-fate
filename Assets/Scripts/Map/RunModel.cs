@@ -65,6 +65,7 @@ namespace GildedFate.Map
         // migration bridge for version-2 saves and are synchronized on save.
         public List<RunCard> cards=new();
         public List<FateShardState> shards=new();
+        public string lastAttunedShardId=""; // remembered Attune choice; empty = Hold or none
         public List<string> fateweaveSelections=new(),temporaryMultiCombatStatuses=new(),fateweaveOffers=new(),bindingOffers=new(),pendingCardOfferIds=new(),pendingSelectedCardIds=new();
         public List<string> seenEventIds=new(),pendingEventOfferIds=new(),pendingEventSelectionIds=new(),pendingEventShardDecisions=new();
         public List<TemporaryEventEffect> temporaryEventEffects=new();

@@ -58,7 +58,7 @@ namespace GildedFate.Combat
             if(activeShardId=="hourglass"&&activeShardFractured)
             {ShardPulse(amount:2);energy+=2;Emit(CombatEventKind.Energy,energy,true);}
             if(!activation)return;
-            if(activeShardId=="silvermind"&&(turn==1||activeShardFractured))
+            if(activeShardId=="silvermind")
             {
                 // This guaranteed mid-turn draw bypasses Hourglass as before, but
                 // is not the automatically dealt opening hand for Death Spiral.
@@ -70,7 +70,7 @@ namespace GildedFate.Combat
         {
             var extra=shardMemory.nextTurnDraw;shardMemory.nextTurnDraw=0;
             energy+=shardMemory.nextTurnEnergy;shardMemory.nextTurnEnergy=0;
-            if(activeShardId=="silvermind"&&(activeShardFractured||turn==1)){extra+=2;ShardPulse(amount:2);}
+            if(activeShardId=="silvermind"&&activeShardFractured){extra+=2;ShardPulse(amount:2);}
             return extra;
         }
         private int ShardBeginPlay(CardDef card,PendingCardPlay play)

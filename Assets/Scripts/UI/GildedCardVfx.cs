@@ -300,6 +300,7 @@ namespace GildedFate.UI
             if(card.unplayable)DrawCardVfxLock(r);
             if(card.specialModification=="fateful")DrawCardVfxFatefulPips(r,card);
             if(card.IsModified&&card.specialModification is not ("golden_echo" or "perfected_edge" or "perfected_guard"))DrawCardVfxCornerGlint(r,seed);
+            DrawShardCardGlint(r,view,focus); // shard-boosted cards and +2 charge sigils (GildedShardVfx.cs)
             if(motion)
             {
                 var count=profile.reducedVfx?4:10;

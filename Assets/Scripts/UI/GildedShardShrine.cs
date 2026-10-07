@@ -21,6 +21,8 @@ namespace GildedFate.UI
             ||EventShardPresentation||acquisitionActive&&acquisitionKind==AcquisitionKind.Shard||ShardDiscoveryOpen);
         private Rect ShrineSocket(int index)
         {
+            // Combat: the reliquary above the draw pile and Energy orb, near the hand.
+            if(ReliquaryLayout){var bottom=CombatHeight-268;return new Rect(56,bottom-(1-Mathf.Clamp(index,0,1))*158,ReliquarySocketSize,ReliquarySocketSize);}
             const float size=84,step=124;var top=Mathf.Clamp(CombatHeight*.43f,160,Mathf.Max(160,CombatHeight-370));
             return new Rect(10,top+index*step,size,size);
         }
@@ -29,9 +31,13 @@ namespace GildedFate.UI
         {
             run.EnsureShardSlots();
             var first=ShrineSocket(0);var last=ShrineSocket(1);var gold=new Color(.68f,.51f,.25f,.86f);
-            // A narrow edge-mounted metal spine, not a rectangular inventory panel.
-            DrawLine(new Vector2(0,first.y-28),new Vector2(0,last.yMax+28),new Color(.025f,.03f,.045f,.96f),12);
-            DrawLine(new Vector2(3,first.y-28),new Vector2(3,last.yMax+28),gold,2);
+            if(ReliquaryLayout){TrackShardCharge();DrawReliquaryFrame(first,last,gold);}
+            else
+            {
+                // A narrow edge-mounted metal spine, not a rectangular inventory panel.
+                DrawLine(new Vector2(0,first.y-28),new Vector2(0,last.yMax+28),new Color(.025f,.03f,.045f,.96f),12);
+                DrawLine(new Vector2(3,first.y-28),new Vector2(3,last.yMax+28),gold,2);
+            }
             for(var i=0;i<2;i++)
             {
                 var r=ShrineSocket(i);var owned=run.shards.FirstOrDefault(s=>s.slot==i);
@@ -43,11 +49,11 @@ namespace GildedFate.UI
                 if(active)accent=Color.Lerp(accent,Gold,.6f);var edge=Color.Lerp(gold,accent,active?.65f:.12f);
                 var c=r.center;var points=new[]{new Vector2(c.x,r.y-5),new Vector2(r.xMax+2,c.y),new Vector2(c.x,r.yMax+5),new Vector2(r.x-2,c.y)};
                 for(var side=0;side<4;side++){DrawLine(points[side],points[(side+1)%4],new Color(.025f,.028f,.045f,.98f),7);DrawLine(points[side],points[(side+1)%4],edge,1.4f+pulse);}
-                DrawLine(new Vector2(3,c.y),new Vector2(r.x+12,c.y),gold,2);
+                if(ReliquaryLayout)DrawShardChargeRing(r,owned,active,dim);else DrawLine(new Vector2(3,c.y),new Vector2(r.x+12,c.y),gold,2);
                 var old=GUI.color;GUI.color=dim?new Color(.48f,.48f,.55f,.64f):Color.white;
                 if(def!=null)
                 {
-                    var artCenter=c+Vector2.up*(profile.reduceMotion?0:Mathf.Sin(shimmer*1.35f+i*1.7f)*3.5f);var hovered=r.Contains(PointerPosition);
+                    var artCenter=c+Vector2.up*(profile.reduceMotion?0:Mathf.Sin(shimmer*1.35f+i*1.7f)*3.5f)+(ReliquaryLayout&&ShardReady(owned,active)?Vector2.down*5:Vector2.zero);var hovered=r.Contains(PointerPosition);
                     if((hovered||active)&&!profile.reduceFlashing)Fill(new Rect(artCenter.x-35,artCenter.y-35,70,70),new Color(accent.r,accent.g,accent.b,hovered ? .18f : .09f));
                     var scale=1+pulse*.14f+(fracture&&!profile.reduceMotion?Mathf.Sin(shimmer*2.6f)*.022f:0);
                     DrawFateShardArt(new Rect(artCenter.x-r.width*.47f*scale,artCenter.y-r.height*.47f*scale,r.width*.94f*scale,r.height*.94f*scale),def);
@@ -61,18 +67,18 @@ namespace GildedFate.UI
                 else
                 {DrawLine(c+Vector2.up*17,c+Vector2.down*17,new Color(.58f,.52f,.39f,.46f),1);DrawLine(c+Vector2.left*17,c+Vector2.right*17,new Color(.58f,.52f,.39f,.46f),1);}
                 GUI.color=old;
-                RegisterCombatHudTarget("shard:"+i,8,r,def?.name??"EMPTY SHARD SOCKET",def==null?"An empty socket for a Fate Shard.":(active?"ACTIVE\n":fracture?"FRACTURED\n":"STABLE\n")+(fracture?def.fracturedText:def.stableText)+"\n\nA: awaken this shard. Only one can be active each combat.",def==null?0:4,owned==null?-1:run.shards.IndexOf(owned));
+                RegisterCombatHudTarget("shard:"+i,8,r,def?.name??"EMPTY SHARD SOCKET",def==null?"An empty socket for a Fate Shard.":(active?"ACTIVE\n":fracture?"FRACTURED\n":"STABLE\n")+(fracture?def.fracturedText:def.stableText)+"\n\nA: awaken this shard once its charge is full. Only one can be active each combat.",def==null?0:4,owned==null?-1:run.shards.IndexOf(owned));
                 var state=def==null?"EMPTY":fracture?"FRACTURED":owned.uses==(active?1:0)?"STABLE I":"STABLE II";
-                var stateStyle=ReadableStyle(11,true);stateStyle.normal.textColor=def==null?gold:accent;
+                if(ReliquaryLayout&&def!=null)state=ReliquaryStateText(owned,active,state);
+                var stateStyle=ReadableStyle(11,true);stateStyle.normal.textColor=def==null?gold:state=="READY"?Gold:accent;
                 GUI.Label(ShrineStateLabel(i),state,stateStyle);
+                if(ReliquaryLayout&&owned!=null)DrawShardUsePips(i,owned,active,accent);
                 if(r.Contains(PointerPosition)&&!ShardDiscoveryOpen)
-                    SetRunHudTooltip(r,def?.name??"FATE SHARD SHRINE",def==null?"An empty socket. Rare Fate Shards can alter three combats. Carry two; awaken one per combat.":state+" · "+owned.uses+" / 3 ACTIVATIONS\n\nSTABLE\n"+def.stableText+"\n\nFRACTURED\n"+def.fracturedText);
+                    SetRunHudTooltip(r,def?.name??"FATE SHARD SHRINE",def==null?"An empty socket. Rare Fate Shards can alter three combats. Carry two; awaken one per combat.":state+" · "+owned.uses+" / 3 ACTIVATIONS"+(ReliquaryLayout?ShardChargeTooltip(owned,def):"")+"\n\nSTABLE\n"+def.stableText+"\n\nFRACTURED\n"+def.fracturedText);
                 if(screen==ScreenMode.Combat&&def!=null&&GUI.Button(r,"",GUIStyle.none)&&CanAcceptCombatInput&&!dim&&!active)selectedShrineSlot=selectedShrineSlot==i?-1:i;
                 if(selectedShrineSlot==i&&def!=null&&screen==ScreenMode.Combat&&!active&&!dim)
                 {
-                    var activate=new Rect(r.xMax+15,r.center.y-20,124,40);var enabled=GUI.enabled;GUI.enabled=enabled&&CanAcceptCombatInput&&owned.CanActivate;
-                    DrawButtonFrame(activate,activate.Contains(PointerPosition),!GUI.enabled);
-                    if(GUI.Button(activate,"ACTIVATE",buttonStyle)){selectedShrineSlot=-1;QueueShard(def,owned,run.shards.IndexOf(owned));}DeniedPress(activate,!owned.CanActivate);GUI.enabled=enabled;
+                    DrawReliquaryShardActions(r,def,owned);
                 }
             }
         }
@@ -195,6 +201,7 @@ namespace GildedFate.UI
                 if(elapsed>.04f&&elapsed<.20f){var p=(elapsed-.04f)/.16f;var end=Vector2.Lerp(f.from,f.to,p);DrawLine(Vector2.Lerp(f.from,f.to,Mathf.Max(0,p-.17f)),end,new Color(1f,.82f,.4f,.8f),2.5f);}
             }
             DrawShardFractureBursts(); // Fractured activation crystals (GildedCardVfx.cs)
+            DrawShardCinematics(); // awakening / shatter cinematics and charge comets (GildedShardVfx.cs)
         }
     }
 }

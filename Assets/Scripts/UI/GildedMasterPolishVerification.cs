@@ -27,7 +27,7 @@ namespace GildedFate.UI
             run.AddShard("bloodstone");var shard=run.shards.First(s=>s.id=="bloodstone");
             shard.active=true;shard.uses=mode.Contains("fractured")?3:mode.Contains("stable")?1:2;
             shard.activeFractured=shard.uses==3;
-            combat.ActivateShard(WorldContent.FateShards.First(s=>s.id==shard.id),shard.activeFractured);
+            combat.shardCharge=combat.ShardChargeTarget;combat.ActivateShard(WorldContent.FateShards.First(s=>s.id==shard.id),shard.activeFractured);
             combat.player.hp=44;combat.player.block=12;combat.energy=1;
             var ids=run.hero==HeroId.Hexer?new[]{"hex_strike","ward","perfect_ritual","beyond_the_veil_hexer","first_ritual"}:new[]{"strike","stand_firm","executioners_cleave","unbreakable_spirit","defend"};
             for(var i=0;i<5;i++){var card=GameContent.Find(ids[i]).Copy();card.instanceId=combat.hand[i].instanceId;combat.hand[i]=card;}

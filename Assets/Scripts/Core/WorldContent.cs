@@ -52,12 +52,12 @@ namespace GildedFate.Core
             F("perfected_edge","PERFECTED EDGE",3,"Choose 1 Attack. Increase base damage permanently by 50%, rounded up."),F("perfected_guard","PERFECTED GUARD",3,"Choose 1 Block Skill. Increase base Block permanently by 50%, rounded up."),F("golden_echo","GOLDEN ECHO",3,"Choose an Attack or Skill costing 2 or less. Its first play each combat plays twice."),F("unbound_thread","UNBOUND THREAD",3,"Choose 2 cards costing 2+. Their first draw each combat costs 0 that turn."),F("stolen_destiny","STOLEN DESTINY",3,"Reveal one Knight Rare, one Arcane Rare, and one Wanderer Rare. Choose 1."),F("fortunes_burden","FORTUNE'S BURDEN",3,"Gain 1 random Rare Relic. Add 1 Strike, 1 Defend, and 1 random Curse.")
         };
         public static readonly FateShardDef[] FateShards={
-            S("bloodstone","BLOODSTONE","Strength",1,2,"Whenever you gain Strength, gain 1 additional Strength.","Start combat with 3 Strength. Whenever you gain Strength, gain 2 additional Strength."),
+            S("bloodstone","BLOODSTONE","Strength",1,2,"Whenever you gain Strength, gain 1 additional Strength.","On activation, gain 3 Strength. Whenever you gain Strength, gain 2 additional Strength."),
             S("ironheart","IRONHEART","Block",50,100,"Whenever a card gives 10+ Block, gain 50% of that Block again.","Whenever a card gives Block, gain that amount again."),
             S("quickglass","QUICKGLASS","Cost",1,2,"The first card drawn each turn with an original cost of 2+ costs 0 that turn.","The first 2 cards drawn each turn with an original cost of 2+ cost 0 that turn."),
             S("crooked","CROOKED","Cost",4,3,"Every 4th card played each turn costs 0 before being played.","Every 3rd card played each turn costs 0 and draws 1 after resolving."),
-            S("hourglass","HOURGLASS","Energy",2,0,"Retain unused Energy between turns, up to 2.","Retain ALL unused Energy. Start combat with +2 Energy."),
-            S("silvermind","SILVERMIND","Draw",2,2,"Draw 2 additional cards on turn one. Your first extra draw each turn draws 1 more.","Draw 2 additional cards EVERY turn."),
+            S("hourglass","HOURGLASS","Energy",2,0,"Retain unused Energy between turns, up to 2.","Retain ALL unused Energy. On activation, gain 2 Energy."),
+            S("silvermind","SILVERMIND","Draw",2,2,"On activation, draw 2 cards. Your first extra draw each turn draws 1 more.","On activation, draw 2 cards. Draw 2 additional cards EVERY turn."),
             S("golden_shield","GOLDEN SHIELD","Block",1,2,"The first Block gain each turn is gained again.","The first 2 Block gains each turn are gained again."),
             S("execution","EXECUTION","Attack",50,100,"Attacks deal 50% more damage to enemies below 30% HP.","Attacks deal DOUBLE damage to enemies below 50% HP."),
             S("firstblood","FIRSTBLOOD","Attack",50,2,"Your first Attack each turn deals 50% more damage.","Your first Attack each turn plays twice."),

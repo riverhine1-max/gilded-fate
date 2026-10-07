@@ -74,9 +74,9 @@ namespace GildedFate.UI
             QueueCardPlay(handViews[combat.hand[0].instanceId]);combatPauseOpen=true;SaveCombatAndReturnToMenu();CopyRun(SaveService.Load());RestoreRunStage();
             PersistenceCheck(combat.energy==originalEnergy&&combat.hand.Select(c=>c.instanceId).SequenceEqual(originalCards)&&combat.cardsPlayed==0,"Saving during card anticipation preserves the unspent card and Energy");
             run.AddShard("bloodstone");var savedShard=run.shards[0];var shard=WorldContent.FateShards.First(p=>p.id=="bloodstone");
-            QueueShard(shard,savedShard,0);combatPauseOpen=true;SaveCombatAndReturnToMenu();CopyRun(SaveService.Load());RestoreRunStage();
+            FillShardChargeForVerification();QueueShard(shard,savedShard,0);combatPauseOpen=true;SaveCombatAndReturnToMenu();CopyRun(SaveService.Load());RestoreRunStage();
             PersistenceCheck(string.IsNullOrEmpty(combat.activeShardId)&&run.shards[0].uses==0,"Saving during Fate Shard anticipation preserves it until activation commits");
-            savedShard=run.shards[0];QueueShard(shard,savedShard,0);yield return WaitForCombatQueue();
+            savedShard=run.shards[0];FillShardChargeForVerification();QueueShard(shard,savedShard,0);yield return WaitForCombatQueue();
             PersistenceCheck(combat.activeShardId=="bloodstone"&&combat.player.strength==0&&run.shards[0].uses==1,"Normal Bloodstone activates once; bonus waits for an actual Strength gain");
             loaded=SaveService.Load();PersistenceCheck(loaded?.combatCheckpoint?.state.activeShardId=="bloodstone"&&loaded.shards[0].uses==1,"Fate Shard inventory and applied effect share one checkpoint");
 

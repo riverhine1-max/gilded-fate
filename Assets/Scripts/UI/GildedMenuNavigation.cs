@@ -55,6 +55,7 @@ namespace GildedFate.UI
             if(menuNavigationContext!=context){menuNavigationContext=context;pauseMenuIndex=shardDiscoveryIndex=0;hudNavigationIndex=-1;}
             if(acquisitionActive){menuInputConsumed=input.Any;return true;}
             if(ShardDiscoveryOpen){if(input.Any){controllerNavigation=true;HandleShardDiscoveryNavigation(input);}menuInputConsumed=true;return true;}
+            if(ShardAttuneOpen){if(input.Any){controllerNavigation=true;HandleShardAttuneNavigation(input);}menuInputConsumed=true;return true;}
             if(screen==ScreenMode.Settings){if(input.Any){controllerNavigation=true;HandleSettingsNavigation(input);}menuInputConsumed=true;return true;}
             if(screen==ScreenMode.Combat&&combatPauseOpen||screen==ScreenMode.Map&&mapPauseOpen||runPauseOpen)
             {

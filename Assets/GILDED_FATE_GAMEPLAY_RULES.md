@@ -39,3 +39,14 @@ Threshold effects such as Crowned Bulwark and Counterweight read the actual fina
 ## Engine-scope interpretations
 
 Current encounters have one enemy combatant. Text that affects all enemies therefore affects that combatant. Everlasting Ember has no second living target in the current encounter architecture and safely does nothing when the only enemy dies. The post-Act III Fateweave is treated as the final fate seal before victory; Acts I and II proceed to a newly generated map after their Fateweave.
+
+## Fate Shard charging
+
+Fate Shards must be charged before they can be activated. Each combat has one charge meter, which resets when the combat ends.
+
+1. Before a combat, the Attune screen picks the shard to charge. One usable shard attunes automatically; two open the screen, which also offers Hold (both shards charge toward a larger meter).
+2. Every natural card play adds 1 charge. A card matching an attuned shard's archetype adds 2 (`CombatState.MatchesArchetype`).
+3. The meter fills at 9 charge, 7 for archetypes with no matching card type, and 12 under Hold. Replays and copies do not add charge.
+4. A full meter allows one activation per combat as before: activating spends one use, and the third use is Fractured.
+5. Shatter early: with a full meter, holding the shatter control gives the Fractured power immediately and destroys the shard regardless of remaining uses.
+6. Charge and attunement are saved in the combat checkpoint. Older checkpoints with no attunement charge at the base rate and allow either shard.
