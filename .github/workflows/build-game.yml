@@ -131,8 +131,24 @@ jobs:
         run: |
           cd Builds/Windows && rm -rf *_BurstDebugInformation_DoNotShip *_BackUpThisFolder_ButDontShipItWithYourGame && zip -qr ../../GildedFate-Windows.zip . && cd ../..
           ls -lh GildedFate-Windows.zip
-          gh release delete playtest --cleanup-tag --yes || true
-          gh release create playtest GildedFate-Windows.zip --prerelease --title "Gilded Fate — Windows playtest" \
+          # Keep the release in place; a failed delete must not block publishing.
+          retry() {
+            for attempt in 1 2 3 4; do
+              if "$@"; then return 0; fi
+              if [ "$attempt" -lt 4 ]; then
+                echo "GitHub request failed; retrying in $((attempt * 5)) seconds."
+                sleep "$((attempt * 5))"
+              fi
+            done
+            return 1
+          }
+          ensure_release() {
+            gh release view playtest >/dev/null 2>&1 ||
+              gh release create playtest --prerelease --title "Gilded Fate — Windows playtest" --target "$GITHUB_SHA"
+          }
+          retry ensure_release
+          retry gh release upload playtest GildedFate-Windows.zip --clobber
+          retry gh release edit playtest --prerelease --title "Gilded Fate — Windows playtest" \
             --notes "Built from ${GITHUB_SHA::7}. Download the zip, unzip it, and run GildedFate.exe. No Unity install needed."
 
       # ---------- WebGL: hand the site to the Pages deploy job ----------
@@ -159,4 +175,5 @@ jobs:
           git add . && git commit -qm "Trailer player from ${GITHUB_SHA::7}"
           git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" trailer-player
           ls -lh
+
 
