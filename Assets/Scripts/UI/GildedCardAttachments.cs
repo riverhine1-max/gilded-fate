@@ -21,7 +21,7 @@ namespace GildedFate.UI
             if(cardAttachmentCache.TryGetValue(card,out var known))return known;
             var result=new List<CardAttachment>();cardAttachmentCache[card]=result;
             void Add(string title,string effect,string source,string duration,string resource,int tile,int columns,int rows,bool binding=false)
-                =>result.Add(new CardAttachment{title=title,detail=effect+"\nSource: "+source+"\nDuration: "+duration,resource=resource,tile=tile,columns=columns,rows=rows,binding=binding});
+                =>result.Add(new CardAttachment{title=title,detail=effect+"\n<color=#9A968B>Source: "+source+" · Duration: "+duration+"</color>",resource=resource,tile=tile,columns=columns,rows=rows,binding=binding});
             const string relic="Art/Powers/MajorRelicEffects",remaining="Art/Powers/RemainingExpansion";
             if(card.IsModified)
             {

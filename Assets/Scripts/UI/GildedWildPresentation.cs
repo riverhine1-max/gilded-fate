@@ -273,7 +273,7 @@ namespace GildedFate.UI
             Fill(new Rect(r.x+3,r.y+3,r.width-6,r.height-6),new Color(.04f,.03f,.02f,.72f));Outline(new Rect(r.x+3,r.y+3,r.width-6,r.height-6),new Color(.95f,.75f,.36f,.85f),1);
             if(art)GUI.DrawTexture(new Rect(r.x+4,r.y+4,r.width-8,r.height-8),art,ScaleMode.ScaleToFit,true);
             else GUI.Label(r,"M",new GUIStyle(titleStyle){fontSize=16,alignment=TextAnchor.MiddleCenter});
-            if(CombatInspectionAllowed&&r.Contains(combatPointer))SetCombatEffectTooltip("MINION","Owned creature. Dies when its Owner dies. Gives no reward of its own.",r.center);
+            if(CombatInspectionAllowed&&r.Contains(combatPointer))SetCombatEffectTooltip("MINION","Owned creature. Dies with its Owner. No reward of its own.",r.center);
         }
         // Summon and Command intents use their own artwork instead of the intent atlas.
         private bool DrawWildIntentIcon(EnemyIntentAction action,Rect icon)
@@ -314,7 +314,7 @@ namespace GildedFate.UI
             var style=new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=13,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(1f,.9f,.5f)}};
             var width=style.CalcSize(new GUIContent(text)).x+18;var r=new Rect(hero.center.x-width*.5f,hero.y-26,width,24);
             Fill(r,new Color(.12f,.08f,.02f,.88f));Outline(r,new Color(1f,.82f,.3f,.9f),1);GUI.Label(r,text,style);
-            if(CombatInspectionAllowed&&r.Contains(combatPointer))SetCombatEffectTooltip("SEIZED GOLD",$"You hold {combat.playerGold} Gold. Enemies are holding {combat.TotalSeizedGold} more. Defeat the holder to get it back; whatever is still held when you win is returned.",r.center);
+            if(CombatInspectionAllowed&&r.Contains(combatPointer))SetCombatEffectTooltip("SEIZED GOLD",$"You hold {combat.playerGold} Gold. Enemies hold {combat.TotalSeizedGold} more. Defeat the holder to get it back.",r.center);
         }
         // Gold an enemy is holding (Seized Gold). Returned when it dies and when the fight is won.
         private void DrawSeizedGoldPill(int index,Rect portrait)
@@ -327,7 +327,7 @@ namespace GildedFate.UI
             Fill(r,new Color(.12f,.08f,.02f,.88f));Outline(r,new Color(1f,.82f,.3f,.9f),1);
             if(seizedTex)DrawEnemyIconFit(new Rect(r.x+3,r.y+1,20,20),EnemyIconRules.SeizedGold,false);
             GUI.Label(new Rect(r.x+iconSpace,r.y,r.width-iconSpace,r.height),text,style);
-            var seizedHelp=$"This enemy is holding {held} of your Gold. Defeat it and the Gold comes back. It is never lost permanently and cannot take more than you have.";
+            var seizedHelp=$"Holding {held} of your Gold. Defeat it to get it back.";
             RegisterCombatHudTarget("enemy:"+index+":seized",2+index,r,"SEIZED GOLD",seizedHelp);
             if(CombatInspectionAllowed&&r.Contains(combatPointer))SetCombatEffectTooltip("SEIZED GOLD",seizedHelp,r.center);
         }
@@ -360,9 +360,9 @@ namespace GildedFate.UI
             style.normal.textColor=full?new Color(1f,.5f,.3f):new Color(1f,.92f,.82f);GUI.Label(textRect,text,style);
             {
                 var title=heat?(value>=max?"HEAT · OVERHEATED":"HEAT"):max<=0?label:mode?"OPERATING MODE":label;
-                var help=heat?$"Heat {value}/{max}. Certain actions increase Heat. High Heat may strengthen this enemy's actions. Some enemies Vent to reduce or reset Heat."
+                var help=heat?$"Heat {value}/{max}. Builds with certain actions; high Heat strengthens it. Some enemies Vent to cool down."
                     :combat.WildStateText(index);
-                if(counterIcon!=null){var tip=EnemyIconRules.Tip(counterIcon);if(!string.IsNullOrEmpty(tip))help=tip+(string.IsNullOrEmpty(help)?"":"\n\n"+help);}
+                if(counterIcon!=null){var tip=EnemyIconRules.Tip(counterIcon);if(!string.IsNullOrEmpty(tip))help=tip+(string.IsNullOrEmpty(help)?"":"\n"+help);}
                 RegisterCombatHudTarget("enemy:"+index+":counter",2+index,r,title,help);
                 if(CombatInspectionAllowed&&r.Contains(combatPointer))SetCombatEffectTooltip(title,help,r.center);
             }
@@ -395,14 +395,14 @@ namespace GildedFate.UI
                 GUI.Label(new Rect(r.x+3,y,r.width-6,possible?14:17),lines[i],line);y+=possible?14:17;
                 if(possible&&i<lines.Count-1){GUI.Label(new Rect(r.x,y,r.width,14),"— OR —",small);y+=14;}
             }
-            var forecastTip=forecastIcon!=null&&EnemyIconRules.Tip(forecastIcon)!=null?EnemyIconRules.Tip(forecastIcon)+"\n\n"+tip:tip;
+            var forecastTip=forecastIcon!=null&&EnemyIconRules.Tip(forecastIcon)!=null?EnemyIconRules.Tip(forecastIcon)+"\n"+tip:tip;
             RegisterCombatHudTarget("enemy:"+index+":forecast",2+index,r,title,forecastTip);
             if(CombatInspectionAllowed&&r.Contains(combatPointer))SetCombatEffectTooltip(title,forecastTip,r.center);
         }
         private string WildTooltipSuffix(int index)
         {
             if(combat==null||!combat.wildCombat)return "";var text=combat.WildStateText(index);
-            return string.IsNullOrEmpty(text)?"":"\n\n"+text;
+            return string.IsNullOrEmpty(text)?"":"\n"+text;
         }
 
         // Themed (Ashen Wilds, Drowned Quarter) motion reuses the existing animation archetypes until bespoke

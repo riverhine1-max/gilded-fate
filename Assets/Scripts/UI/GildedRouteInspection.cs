@@ -44,7 +44,7 @@ namespace GildedFate.UI
             DrawLine(a+down,b+down,color,2);DrawLine(b+down,c+down,color,2);DrawLine(c+down,d+down,color,2);
             foreach(var point in new[]{a,b,c,d})DrawLine(point,point+down,color,1.5f);
             DrawLine(a+new Vector2(4,19),b+new Vector2(5,10),color,2);DrawLine(b+new Vector2(5,10),d+new Vector2(-5,12),color,2);
-            if(r.Contains(pointer))SetRunHudTooltip(r,routeInspectionOpen?"CLOSE MAP":"ACT MAP","Inspect your current route. Rooms cannot be entered from this view; return to exactly where you were.");
+            if(r.Contains(pointer))SetRunHudTooltip(r,routeInspectionOpen?"CLOSE MAP":"ACT MAP","Inspect your route. Rooms can't be entered from here.");
             var enabled=GUI.enabled;GUI.enabled=enabled&&(routeInspectionOpen||CanInspectRoute);
             if(GUI.Button(r,"",GUIStyle.none)){if(routeInspectionOpen)CloseRouteInspection();else OpenRouteInspection();}
             GUI.enabled=enabled;

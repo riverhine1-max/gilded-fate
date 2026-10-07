@@ -36,8 +36,8 @@ namespace GildedFate.UI
                 _=>effect.id.StartsWith("imprint_")?$"IMPRINTED COST {effect.id.Substring(8)}: playing this printed Energy cost deals {value} damage to a random living enemy.":effect.id
             });
             var source=GameContent.Find(effect.source)?.name??System.Array.Find(GameContent.Relics,r=>r.id==effect.source)?.name??effect.source;
-            var duration=effect.duration==CombatEffectDuration.TurnEnd?"Until the end of this turn or consumed.":effect.duration==CombatEffectDuration.NextTurn?"Until your next turn or consumed.":"For this combat, until consumed.";
-            return description+"\nSource: "+source+"\n"+duration;
+            var duration=effect.duration==CombatEffectDuration.TurnEnd?"until end of turn":effect.duration==CombatEffectDuration.NextTurn?"until your next turn":"this combat";
+            return description+"\n<color=#9A968B>"+source+" · "+duration+" or until used</color>";
         }
         private Rect GroupPresentedPortrait(int index)
         {

@@ -428,7 +428,7 @@ namespace GildedFate.Combat
                 case GildedThroneContent.Commander:lines.Add($"ROYAL ORDER · Deploys up to 2 Royal Guards ({OwnedMinions(index).Count()}/2). Command makes one repeat its previous action. Drill gives them Strength and Block.");break;
                 case GildedThroneContent.Guard:lines.Add("Royal Spear → Shield Formation (Block to its Owner). Withdraws when its Owner dies.");break;
                 case GildedThroneContent.Beast:lines.Add($"RESERVE {m.counter}/4 · The palace's own resource. It is NOT your Gold and never touches it. Treasury Maw deals 13 +2 per Reserve (not consumed). At 4 it unleashes Golden Stampede (2×12) and resets to 1.");break;
-                case GildedThroneContent.Duelist:lines.Add("RESPONSE · Judges your previous turn: 3+ Attack cards → Royal Counterstance; else ending with 20+ Block → Piercing Advance; else Perfect Measure. Resolved on its own turn, never as an interrupt.");
+                case GildedThroneContent.Duelist:lines.Add("RESPONSE · By your last turn: 3+ Attacks → Royal Counterstance; ended with 20+ Block → Piercing Advance; else Perfect Measure.");
                     lines.Add(judgeHadPreviousTurn?$"Last turn: {judgeLastAttacks} Attack cards, {judgeLastEndBlock} Block at end.":"No previous turn yet: Perfect Measure.");break;
                 case GildedThroneContent.Thronebreaker:lines.Add("SIEGE · 3 Load Ram → 2 Advance Ram → 1 Lock Target → Thronebreaker Charge (31). Always visible. Siege resets to 3 afterwards.");break;
                 case GildedThroneContent.General:lines.Add($"FORMATION · Leads 2 Royal Guards. May replace ONE fallen Guard once per fight ({(m.flag?"used":"available")}). Royal Execution deals 24 while both Guards live, else 21.");break;

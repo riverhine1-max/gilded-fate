@@ -67,6 +67,8 @@ namespace GildedFate.UI
             }
             foreach(var key in RuleKeywords)
                 CombatCheck(FormatCardRules("2 "+key.term).Contains("<color=#"+key.hex+">2 "+GameplayTerms.Display(key.term)+"</color>"),"Shared canonical word/value: "+key.term);
+            CombatCheck(RuleKeywords.All(k=>k.detail.Length<=130&&!k.detail.Contains("\n")),"Every keyword explanation stays a single short line");
+            {var hover=GameContent.Find("strike");CombatCheck(!CardGlossaryDetail(hover).Contains("\n\n"),"Card help carries no blank-line padding between entries");}
             var dynamic="Apply <color=#64E884>5</color> Burn. Gain <color=#FF7568>2</color> Block.";
             var rich=FormatCardRules(dynamic);
             CombatCheck(rich.Contains("<color=#64E884>5</color>")&&rich.Contains("<color=#FF7568>2</color>"),"Dynamic green/red numbers remain untouched");

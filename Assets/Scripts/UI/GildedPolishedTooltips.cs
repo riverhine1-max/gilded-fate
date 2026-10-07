@@ -27,16 +27,19 @@ namespace GildedFate.UI
         private bool TooltipsEnabled => profile==null||profile.tooltips;
         private static float TooltipScrollValue(float current,float amount,float maximum)=>Mathf.Clamp(current+amount,0,Mathf.Max(0,maximum));
         private static float TooltipStickScrollDelta(float axis,float deltaTime)=>-axis*Mathf.Clamp(deltaTime,0,.05f)*330;
+        // Card help is a short list, not an essay: the card itself is already on screen, so the tooltip carries
+        // no repeated name or divider. Each entry is "TERM  one line", separated by a thin gap.
+        private const string TooltipGap="\n<size=6>\n</size>";
         private string CardGlossaryDetail(CardDef card,CombatCardPreview preview=null)
         {
             var sections=new List<string>();
             foreach(var attachment in CardAttachments(card))
-                sections.Add("<b><color=#E9C678>"+attachment.title+"</color></b>\n"+attachment.detail);
+                sections.Add("<b><color=#E9C678>"+attachment.title+"</color></b>  "+attachment.detail);
             if(preview!=null&&!string.IsNullOrEmpty(preview.breakdown))
-                sections.Add("<b><color=#91D6A3>LIVE VALUES</color></b>\n"+preview.breakdown);
+                sections.Add("<b><color=#91D6A3>NOW</color></b>\n"+preview.breakdown);
             foreach(var keyword in RuleKeywords.Where(k=>HasRuleKeyword(card.text,k)))
-                sections.Add("<b><color=#"+keyword.hex+">"+keyword.title+"</color></b>\n"+keyword.detail);
-            return string.Join("\n\n",sections);
+                sections.Add("<b><color=#"+keyword.hex+">"+keyword.title+"</color></b>  "+keyword.detail);
+            return string.Join(TooltipGap,sections);
         }
         private void DrawPolishedTooltip(Rect requested,string title,string detail,Rect? avoid=null)
         {
@@ -45,13 +48,14 @@ namespace GildedFate.UI
             detail=FormatCardRules(detail);
             var width=Mathf.Min(Mathf.Max(270,requested.width),CombatWidth-32);
             EnsureTooltipStyles();var heading=cachedTooltipHeading;var body=cachedTooltipBody;
-            tooltipHeadingContent.text=title;tooltipBodyContent.text=detail;
-            var maxHeight=CombatHeight-88;var headingHeight=heading.CalcHeight(tooltipHeadingContent,width-28);
+            var hasTitle=!string.IsNullOrEmpty(title);
+            tooltipHeadingContent.text=title??"";tooltipBodyContent.text=detail;
+            var maxHeight=CombatHeight-88;var headingHeight=hasTitle?heading.CalcHeight(tooltipHeadingContent,width-28):0;
             var bodyHeight=body.CalcHeight(tooltipBodyContent,width-28);
             // Keep the caller's adjacent width: expanding a left-hand tooltip
             // would grow it back over the card that is being inspected.
-            var desired=headingHeight+bodyHeight+38;
-            var height=Mathf.Min(maxHeight,Mathf.Max(80,desired));
+            var desired=hasTitle?headingHeight+bodyHeight+38:bodyHeight+26;
+            var height=Mathf.Min(maxHeight,Mathf.Max(hasTitle?80:46,desired));
             var r=new Rect(Mathf.Clamp(requested.x,16,CombatWidth-width-16),
                 Mathf.Clamp(requested.y,68,CombatHeight-height-16),width,height);
             if(avoid.HasValue&&r.Overlaps(avoid.Value))
@@ -63,13 +67,16 @@ namespace GildedFate.UI
             lastTooltipBounds=r;
             Fill(r,new Color(.009f,.013f,.021f,.985f));
             DrawLine(new Vector2(r.x,r.y),new Vector2(r.x,r.yMax),new Color(.83f,.67f,.36f),3);
-            DrawLine(new Vector2(r.x+12,r.y+headingHeight+21),new Vector2(r.xMax-12,r.y+headingHeight+21),new Color(.52f,.44f,.31f,.55f),1);
-            GUI.Label(new Rect(r.x+14,r.y+11,r.width-28,headingHeight),title,heading);
-            var content=new Rect(r.x+14,r.y+headingHeight+29,r.width-28,r.height-headingHeight-38);
+            if(hasTitle)
+            {
+                DrawLine(new Vector2(r.x+12,r.y+headingHeight+21),new Vector2(r.xMax-12,r.y+headingHeight+21),new Color(.52f,.44f,.31f,.55f),1);
+                GUI.Label(new Rect(r.x+14,r.y+11,r.width-28,headingHeight),title,heading);
+            }
+            var content=hasTitle?new Rect(r.x+14,r.y+headingHeight+29,r.width-28,r.height-headingHeight-38):new Rect(r.x+14,r.y+12,r.width-28,r.height-24);
             if(desired<=height+.1f){GUI.Label(content,detail,body);return;}
             // Exceptionally long inspection text scrolls at the normal readable
             // font size instead of extending past the screen or becoming tiny.
-            var key=title+"\n"+detail;
+            var key=(title??"")+"\n"+detail;
             if(scrollingTooltipKey!=key){scrollingTooltipKey=key;scrollingTooltipPosition=Vector2.zero;}
             var scrollBodyWidth=content.width-14;bodyHeight=body.CalcHeight(tooltipBodyContent,scrollBodyWidth);
             var maxScroll=Mathf.Max(0,bodyHeight-content.height);

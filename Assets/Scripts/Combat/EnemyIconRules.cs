@@ -91,32 +91,32 @@ namespace GildedFate.Combat
         {
             switch(icon)
             {
-                case Command:return "The Owner orders one random living owned Minion to repeat its previous completed action.";
-                case AuctionLot:return "A Lot is up for bidding. The announced Lot resolves on a later action.";
-                case Repeat:return "This action repeats a previous completed action.";
-                case ThronebreakerCharge:return "The siege is complete. The Thronebreaker charges with its full force.";
+                case Command:return "Orders one random living Minion it owns to repeat its last action.";
+                case AuctionLot:return "A Lot is up for bidding. It resolves on a later action.";
+                case Repeat:return "Repeats a previous completed action.";
+                case ThronebreakerCharge:return "Siege complete. The Thronebreaker charges at full force.";
                 case WorldBreak:return "WORLD BREAK. One enormous hit, announced a full turn ahead.";
-                case Eruption:return "Eruption. The Deepcrawler bursts out of the ground; it never left the fight.";
-                case BonusGold:return "Bonus Gold is extra reward on offer for beating this enemy. It is not your Gold and cannot be stolen from you.";
-                case Reserve:return "Stored resource. It builds up and later powers this enemy's stronger action.";
-                case Growth:return "Growth builds to 3. At full Growth, this enemy may use a stronger Bloom action.";
-                case Prediction:return "A future action is shown ahead of time. The move names are listed beside it.";
+                case Eruption:return "The Deepcrawler bursts out of the ground. It never left the fight.";
+                case BonusGold:return "Extra reward for beating this enemy. Not your Gold; it can't be stolen.";
+                case Reserve:return "Stored resource that powers its stronger action.";
+                case Growth:return "Builds to 3. At full Growth it may use a stronger Bloom action.";
+                case Prediction:return "A future action is shown ahead of time.";
                 case OrbitPlate:return "Orbit Plates absorb attention before the enemy is hurt. They are consumed and rebuilt.";
-                case Momentum:return "Momentum builds as this enemy keeps moving. At full Momentum its next strike hits harder.";
-                case Judgment:return "This enemy judges how you played your last turn and answers accordingly.";
-                case Sentence:return "A Sentence countdown. When it reaches zero, the Sentence is carried out.";
-                case Toll:return "The bell tolls. Each Toll brings its great strike closer.";
-                case Echo:return "A stored effect will repeat on a future enemy action.";
-                case Split:return "This enemy can break into fragments. Fragments are Minions of the original.";
-                case Fracture:return "Reality is fractured here. Enemies in this realm repeat, split and echo their actions.";
-                case DualPossibility:return "Exactly two actions are possible next. The enemy will use one of them.";
-                case RoyalOrder:return "Royal Order is a formation theme, not a buff. Enemies of the Throne act together in ranks.";
-                case Siege:return "Siege counts down while the ram advances. When it ends, the Thronebreaker charges.";
-                case WorldBreakCharge:return "The Worldbreaker is charging World Break. The attack occurs after the visible charge completes.";
-                case BurrowWarning:return "It has burrowed and Eruption is next. It is still on the field and can still be attacked.";
-                case FormChange:return "This enemy cycles between named forms. The current form is shown in words.";
-                case PreparedAttack:return "A major attack has been prepared and will be used next.";
-                case SeizedGold:return "This enemy is holding your Gold. Defeating it returns the Gold.";
+                case Momentum:return "Builds as it keeps moving. At full Momentum its next strike hits harder.";
+                case Judgment:return "Judges how you played last turn and answers accordingly.";
+                case Sentence:return "Countdown. At zero the Sentence is carried out.";
+                case Toll:return "Each Toll brings the great strike closer.";
+                case Echo:return "A stored effect repeats on a future action.";
+                case Split:return "Can break into fragments, which are Minions of the original.";
+                case Fracture:return "Enemies here repeat, split and echo their actions.";
+                case DualPossibility:return "Exactly two actions are possible next.";
+                case RoyalOrder:return "A formation theme, not a buff. Throne enemies act in ranks.";
+                case Siege:return "Counts down as the ram advances. At zero, the Thronebreaker charges.";
+                case WorldBreakCharge:return "Charging World Break. It strikes when the charge completes.";
+                case BurrowWarning:return "Burrowed; Eruption is next. It can still be attacked.";
+                case FormChange:return "Cycles between named forms. The current form is shown in words.";
+                case PreparedAttack:return "A major attack is prepared for next.";
+                case SeizedGold:return "Holding your Gold. Defeating it returns the Gold.";
             }
             return null;
         }

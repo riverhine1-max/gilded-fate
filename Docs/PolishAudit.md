@@ -238,3 +238,23 @@ Act 3 elites 31% to 39%, Act 3 Advanced formations 44% to 47%, Act 3 Standard 55
 * **Blind Seer, Living Treasury, Wayfarer and Ferryman** are now the easiest elites of their acts (92 to 94% bot wins) but are not outliers any more, so they were not changed.
 * **Hexer and Reaper win far less than Vanguard in the bot's hands** (for example 2 of 40 against the Royal General versus 28 of 40 for Vanguard, 7 of 40 for Reaper). That is mostly the bot's greedy play suiting Vanguard, not proof of a hero imbalance, but it is worth checking by hand with Hexer against the Royal General and Choir Eternal.
 * Bot tooling (outside the game): probes for solo enemies, elites and bosses, formations and per-enemy move counts. They are not shipped.
+
+## Batch 6 fix log (card-hover shake, tooltip cleanup)
+
+### Hover shake (a regression from Batch 4, fixed)
+
+Hovering a hand card made it shake violently, so its text could not be read. This was introduced in Batch 4, not in the original game. The cause: neighbouring cards step aside for the raised card (up to 18 px, based on the distance to the raised card's current position). While restructuring the raise and aim-lean logic, the raised card itself fell into that same branch. The push depends on which side of itself the card is on, so every frame it flipped direction: a bang-bang oscillation of 3 to 14 px. Fix (`GildedCombatPresentation.cs`): the raised card (hovered or selected) never takes part in the neighbour push; only its neighbours do. A numerical simulation of the old and new logic shows the settled position moving 3 to 14 px per frame before and 0 px after.
+
+A new in-Unity check was added to `GildedCombatVerification.cs` (3, 5, 8 and 10 card hands): hover a card, wait, sample its position for 30 frames and require it to move less than 0.5 px. **This check could not be run here** (it needs the Unity editor); the fix itself was verified by simulation and by compiling.
+
+### Tooltips: shorter and cleaner
+
+* **Keyword help** (`RuleKeywords`, all 40 entries): one short line each, no more than 110 characters, numbers unchanged. The Fortify text still says "triggered effects" and the Resonance text still says "no stack cap" (both are checked by existing tests).
+* **Card tooltip layout** (`GildedPolishedTooltips.cs`): no repeated card name and no divider line (the card is already on screen), entries are `TERM  one line` with a thin gap instead of a blank line, and the live-values block is headed `NOW`. A tooltip with no title is now supported. Attachment/badge tooltips keep their own heading.
+* **Live values** (`CombatReadability.cs`): replaced a 6 to 10 line explanation ("current card base", "Previewed through the live combat resolver", and so on) with one formula line such as `6 base +2 Strength ×0.75 Weak ×1.5 Vulnerable = 10 damage`, then only the lines that matter (absorbed / HP, triggered damage or Block, cost change, condition active or not). The numbers still come from the same resolver; only the wording changed. `+ bonuses` stands in for relic, Shard and card-copy modifiers.
+* **Source / Duration** lines on card badges, status effects and Aspect chips are now one dim line (`Source: X · Duration: Y`) instead of two lines under the text.
+* **Enemy tooltips:** all 25 generic icon tips (`EnemyIconRules.Tip`) shortened; ten of the longest per-enemy rule lines trimmed (High Confessor and other Judgment lines, Choir Eternal, Husk, Oracle, Sovereign, Binder, Treasury, Duelist response); Seized Gold, Heat, Minion, pile, Energy, health, Block, floor, act, gold, deck, settings, map and Gild tooltips shortened. No rule or number changed, only wording. Tests that pin tooltip wording still pass.
+
+### Not changed
+
+* The remaining per-enemy rule lines (about 60) are one line each and many are pinned by tests, so they were left. If any still feel wordy in play, say which and they can be trimmed the same way.

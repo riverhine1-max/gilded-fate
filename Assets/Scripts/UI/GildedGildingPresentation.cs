@@ -76,8 +76,8 @@ namespace GildedFate.UI
             DrawGildBadge(now,armed,ready,used,poor,hot,cost); // GildedGildBadge.cs
             DrawGildSplitFlourish(now,GildCoinCenter);
             DrawGildCoinBurst(now,GildCoinCenter);
-            var detail=$"Spend {cost} gold. Your next card plays twice. Once per turn; the price rises each time this combat.\n\n"+
-                (armed?"ARMED · the next playable card you play resolves twice. Curses and Statuses never spend it.":ready?$"READY · click, or press {GildKeyLabel}. You have {run.gold} gold.":blocked);
+            var detail=$"{cost} Gold: your next card plays twice. Once per turn; the price rises with each Gild.\n"+
+                (armed?"ARMED · next card resolves twice (Curses and Statuses don't use it).":ready?$"READY · click or press {GildKeyLabel}. You have {run.gold} Gold.":blocked);
             RegisterCombatHudTarget("gild",6,r,"GILD",detail);
             if(hot)SetCombatEffectTooltip("GILD",detail,r.center);
             // Always clickable so a refused Gild explains itself through the input hint.

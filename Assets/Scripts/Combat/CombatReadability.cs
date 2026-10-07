@@ -121,44 +121,43 @@ namespace GildedFate.Combat
             return false;
         }
 
+        // Compact on purpose: one formula line, then only the facts that change the outcome. The tooltip it feeds
+        // is read mid-turn, so it must scan in a glance rather than explain every modifier in a sentence.
         private string BuildPreviewBreakdown(CardDef card,CombatCardPreview preview)
         {
             var lines=new List<string>();
+            var hasBonuses=relics.Count>0||!string.IsNullOrEmpty(activeShardId)||card.IsModified;
             if(card.id=="eye_for_an_eye")
             {
-                lines.Add($"{enemy.attemptedAttackDamage} Attack damage attempted by this enemy before Block");
-                lines.Add($"= {preview.totalDamage} damage before enemy Block");
-                if(preview.blockedByTarget>0)lines.Add($"{preview.blockedByTarget} absorbed · {preview.hpDamage} HP damage");
+                lines.Add($"{enemy.attemptedAttackDamage} attempted = {preview.totalDamage} damage");
+                if(preview.blockedByTarget>0)lines.Add($"{preview.blockedByTarget} absorbed · {preview.hpDamage} HP");
             }
             else if(card.kind==CardKind.Attack)
             {
-                lines.Add($"{preview.authoredDamage} current card base");
-                if(card.permanentDamageBonus!=0)lines.Add($"Includes {card.permanentDamageBonus} permanent damage");
-                if(card.perfected)lines.Add("+1 Perfected on this play");
-                if(player.strength!=0)lines.Add($"+{player.strength} Strength per hit");
-                if(player.weak>0)lines.Add("×0.75 Weak");
-                if(enemy.vulnerable>0)lines.Add("×1.50 target Vulnerable");
-                if(!string.IsNullOrEmpty(preview.conditionLabel))lines.Add((preview.conditionActive?"ACTIVE · ":"INACTIVE · ")+preview.conditionLabel);
-                if(relics.Count>0||!string.IsNullOrEmpty(activeShardId)||card.IsModified)lines.Add("Relic, Shard, and card-copy modifiers included");
-                lines.Add(preview.hits>1?$"= {preview.DamageExpression} ({preview.totalDamage} before Block)":$"= {preview.totalDamage} damage before Block");
-                if(preview.blockedByTarget>0)lines.Add($"{preview.blockedByTarget} absorbed · {preview.hpDamage} HP damage");
+                var formula=new List<string>{$"{preview.authoredDamage} base"};
+                if(card.perfected)formula.Add("+1 Perfected");
+                if(player.strength!=0)formula.Add($"{(player.strength>0?"+":"")}{player.strength} Strength");
+                if(hasBonuses)formula.Add("+ bonuses");
+                if(player.weak>0)formula.Add("×0.75 Weak");
+                if(enemy.vulnerable>0)formula.Add("×1.5 Vulnerable");
+                lines.Add(string.Join(" ",formula)+(preview.hits>1?$" = {preview.DamageExpression} ({preview.totalDamage})":$" = {preview.totalDamage} damage"));
+                if(preview.blockedByTarget>0)lines.Add($"{preview.blockedByTarget} absorbed · {preview.hpDamage} HP");
+                if(!string.IsNullOrEmpty(preview.conditionLabel))lines.Add(preview.conditionLabel+(preview.conditionActive?" · active":" · inactive"));
             }
             else if(preview.block>0||card.effect==EffectKind.Block)
             {
-                lines.Add($"{preview.authoredBlock} current card base");
-                if(card.permanentBlockBonus!=0)lines.Add($"Includes {card.permanentBlockBonus} permanent Block");
-                if(card.perfected)lines.Add("+1 Perfected on this play");
-                if(player.fortify>0)lines.Add($"+{player.fortify} Fortify");
-                if(player.frail>0)lines.Add("Frail reduction included");
-                if(relics.Count>0||!string.IsNullOrEmpty(activeShardId)||card.IsModified)lines.Add("Relic, Shard, and card-copy modifiers included");
-                lines.Add($"= {preview.cardBlock} Block from this card");
+                var formula=new List<string>{$"{preview.authoredBlock} base"};
+                if(card.perfected)formula.Add("+1 Perfected");
+                if(player.fortify>0)formula.Add($"+{player.fortify} Fortify");
+                if(hasBonuses)formula.Add("+ bonuses");
+                if(player.frail>0)formula.Add("after Frail");
+                lines.Add(string.Join(" ",formula)+$" = {preview.cardBlock} Block");
             }
-            if(card.kind==CardKind.Attack&&preview.cardBlock>0)lines.Add($"= {preview.cardBlock} Block from this card (Fortify and applicable modifiers included)");
-            if(preview.triggeredBlock>0)lines.Add($"+{preview.triggeredBlock} separate triggered Block");
-            if(preview.triggeredDamage>0)lines.Add($"+{preview.triggeredDamage} separate triggered damage (not extra card hits)");
-            if(preview.cost!=preview.authoredCost)lines.Add($"Energy {preview.authoredCost} → {preview.cost}");
-            if(preview.awaitingChoice)lines.Add("Final result depends on your choice.");
-            lines.Add("Previewed through the live combat resolver.");
+            if(card.kind==CardKind.Attack&&preview.cardBlock>0)lines.Add($"Also gains {preview.cardBlock} Block");
+            if(preview.triggeredBlock>0)lines.Add($"+{preview.triggeredBlock} triggered Block");
+            if(preview.triggeredDamage>0)lines.Add($"+{preview.triggeredDamage} triggered damage");
+            if(preview.cost!=preview.authoredCost)lines.Add($"Cost {preview.authoredCost} → {preview.cost}");
+            if(preview.awaitingChoice)lines.Add("Result depends on your choice.");
             return string.Join("\n",lines);
         }
     }

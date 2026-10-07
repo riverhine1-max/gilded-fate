@@ -132,6 +132,15 @@ namespace GildedFate.UI
                 var slot=HandLayout.Slot(0,count,CombatWidth,CombatHeight);var view=handViews[card.instanceId];
                 CombatCheck(combat.hand.Contains(card)&&combat.energy==before&&!combatBusy,$"{count}-card invalid drop does not spend or play");
                 CombatCheck(Vector2.Distance(view.position,new Vector2(slot.x,slot.y))<3&&Mathf.Abs(view.angle-slot.angle)<.5f,$"{count}-card invalid drop returns to its exact fan slot");
+                // Polish: a hovered card rises, settles and then holds perfectly still. It must never buzz around its own slot,
+                // because a shaking card cannot be read.
+                var hoverIndex=Mathf.Min(1,count-1);var hoveredCard=combat.hand[hoverIndex];
+                HandleCombatPointer(CardPickPoint(hoverIndex),false,false,false);
+                yield return new WaitForSecondsRealtime(.75f);
+                var hoveredView=handViews[hoveredCard.instanceId];var lowX=float.MaxValue;var highX=float.MinValue;var lowY=float.MaxValue;var highY=float.MinValue;
+                for(var frame=0;frame<30;frame++){yield return null;lowX=Mathf.Min(lowX,hoveredView.position.x);highX=Mathf.Max(highX,hoveredView.position.x);lowY=Mathf.Min(lowY,hoveredView.position.y);highY=Mathf.Max(highY,hoveredView.position.y);}
+                CombatCheck(hoverView==hoveredView&&highX-lowX<.5f&&highY-lowY<.5f,$"{count}-card fan: a hovered card holds perfectly still (moved {highX-lowX:F2} x {highY-lowY:F2} px over 30 frames)");
+                HandleCombatPointer(new Vector2(CombatWidth*.5f,90),false,false,false);
             }
             foreach(var id in new[]{"strike","defend","hex","scorch","living_armor"})
             {

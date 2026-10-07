@@ -759,8 +759,8 @@ namespace GildedFate.UI
             DrawRouteMapControl(w,pointer);
             if(ShowPadGlyphs&&TopBarUsesX)DrawPadGlyph(new Vector2(RouteMapButton(w).x-17,RouteMapButton(w).center.y),"X",true); // X opens the top bar
             var deck=RunDeckControlRect(w);var gear=new Rect(w-67,7,46,44);var icon=new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=25,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(.94f,.86f,.67f)}};
-            RegisterCombatHudTarget("nav:map",0,RouteMapButton(w),"ACT MAP","Inspect your route. A: open; no rooms can be entered from the preview.",2);
-            RegisterCombatHudTarget("nav:deck",0,deck,"FULL DECK","Inspect your permanent deck. A: open; return without advancing the run.",1);
+            RegisterCombatHudTarget("nav:map",0,RouteMapButton(w),"ACT MAP","Inspect your route. A: open.",2);
+            RegisterCombatHudTarget("nav:deck",0,deck,"FULL DECK","Inspect your permanent deck. A: open.",1);
             RegisterCombatHudTarget("nav:settings",0,gear,"PAUSE & SETTINGS","A: pause and open settings.",3);
             var deckActive=screen==ScreenMode.Collection&&viewingRunDeck;var gearActive=screen==ScreenMode.Settings||runPauseOpen||screen==ScreenMode.Map&&mapPauseOpen||screen==ScreenMode.Combat&&combatPauseOpen;
             var deckBlocked=routeInspectionOpen||acquisitionActive||runPauseOpen||screen==ScreenMode.Combat&&(combatBusy||choicePresented||dragView!=null)||screen==ScreenMode.Map&&mapPauseOpen;
@@ -768,8 +768,8 @@ namespace GildedFate.UI
             if(gear.Contains(pointer)||gearActive)Fill(new Rect(gear.x-3,gear.y-3,gear.width+6,gear.height+6),new Color(1f,.68f,.2f,gearActive?.19f:.12f));
             if(hudEmblemAtlas){DrawAtlasIcon(hudEmblemAtlas,3,4,2,deck);DrawAtlasIcon(hudEmblemAtlas,4,4,2,gear);}else{GUI.Label(deck,"▤",icon);GUI.Label(gear,"⚙",icon);}
             GUI.Label(new Rect(deck.x+27,deck.y+26,23,20),run.cards.Count.ToString(),new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=11,fontStyle=FontStyle.Bold,alignment=TextAnchor.MiddleCenter,normal={textColor=Color.white}});
-            if(deck.Contains(pointer))SetRunHudTooltip(deck,"FULL DECK · "+run.cards.Count,"Inspect every physical card in acquisition order, including upgrades and permanent enchantments.");
-            if(gear.Contains(pointer))SetRunHudTooltip(gear,screen is ScreenMode.Map or ScreenMode.Combat?"PAUSE & SETTINGS":"SETTINGS","Pause this screen or change graphics, audio, gameplay, and accessibility options.");
+            if(deck.Contains(pointer))SetRunHudTooltip(deck,"FULL DECK · "+run.cards.Count,"Every card you own, in the order you got them.");
+            if(gear.Contains(pointer))SetRunHudTooltip(gear,screen is ScreenMode.Map or ScreenMode.Combat?"PAUSE & SETTINGS":"SETTINGS","Pause, or change graphics, audio, gameplay and accessibility.");
             GUI.enabled=!deckBlocked&&!deckActive;if(GUI.Button(deck,"",GUIStyle.none))OpenRunDeck();GUI.enabled=true;
             GUI.enabled=!routeInspectionOpen&&!acquisitionActive&&screen!=ScreenMode.Settings;if(GUI.Button(gear,"",GUIStyle.none))ToggleRunSettings();GUI.enabled=true;
         }
@@ -1536,11 +1536,11 @@ namespace GildedFate.UI
             if(shownRunId!=run.runId){shownRunId=run.runId;goldShown=hpShown=-1;}
             var hpDrawn=combatMode&&combat!=null?hp:TweenShown(ref hpShown,hp);var lowHp=LowHealth(hp,maxHp);
             GUI.Label(new Rect(health.x+43,health.y,111,health.height),$"{hpDrawn}/{maxHp}",new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=19,alignment=TextAnchor.MiddleLeft,normal={textColor=lowHp?new Color(1f,.42f,.38f):new Color(1f,.91f,.86f)}});
-            if(health.Contains(pointer))SetRunHudTooltip(health,"HEALTH",$"{hp} of {maxHp} health remains."+(combatMode&&combat.player.block>0?$"\n{combat.player.block} Block is protecting it this turn.":""));
+            if(health.Contains(pointer))SetRunHudTooltip(health,"HEALTH",$"{hp} of {maxHp} health remains."+(combatMode&&combat.player.block>0?$"\n{combat.player.block} Block.":""));
 
             var gold=new Rect(190,8,104,40);DrawGoldIcon(RunGoldIconRect);
             GUI.Label(new Rect(gold.x+39,gold.y,gold.width-42,gold.height),TweenShown(ref goldShown,run.gold).ToString(),new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=18,alignment=TextAnchor.MiddleLeft,normal={textColor=new Color(1f,.85f,.52f)}});
-            if(gold.Contains(pointer))SetRunHudTooltip(gold,"GOLD",$"{run.gold} Gold. Spend it with merchants and at certain Vault events.");
+            if(gold.Contains(pointer))SetRunHudTooltip(gold,"GOLD",$"{run.gold} Gold. Spent with merchants and at Vault events.");
 
             var bossNode=run.nodes?.FirstOrDefault(n=>n.kind==NodeKind.Boss);var boss=bossNode!=null?EnemyForNode(bossNode):WorldContent.Enemies.First(e=>e.boss);var bossRect=new Rect(313,6,46,46);
             DrawFloatingEnemy(bossRect,boss);
@@ -1550,13 +1550,13 @@ namespace GildedFate.UI
             GUI.Label(new Rect(floorRect.x+49,floorRect.y,floorRect.width-50,19),"FLOOR",new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=11,alignment=TextAnchor.MiddleLeft,normal={textColor=new Color(.72f,.71f,.67f)}});
             // Floors count up through the whole run (1 to the final boss) instead of restarting each act.
             GUI.Label(new Rect(floorRect.x+49,floorRect.y+17,floorRect.width-50,25),$"{RunFloorNumber}<size=12>/{RunFloorTotal}</size>",new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=18,richText=true,alignment=TextAnchor.MiddleLeft,normal={textColor=new Color(.98f,.88f,.65f)}});
-            if(floorRect.Contains(pointer))SetRunHudTooltip(floorRect,$"FLOOR {RunFloorNumber} OF {RunFloorTotal}",$"Act {RomanAct(run.act)}, room {run.floor+1} of this act. Follow a connected golden path to climb toward the pictured boss. The final boss waits on floor {RunFloorTotal}.");
+            if(floorRect.Contains(pointer))SetRunHudTooltip(floorRect,$"FLOOR {RunFloorNumber} OF {RunFloorTotal}",$"Act {RomanAct(run.act)}, room {run.floor+1}. Follow a golden path toward the boss.");
             // A clear act badge next to the floor counter.
             var actRect=new Rect(floorRect.xMax+8,7,78,43);
             Fill(actRect,new Color(.10f,.07f,.03f,.85f));Outline(actRect,new Color(.86f,.66f,.30f,.9f),1);
             GUI.Label(new Rect(actRect.x,actRect.y,actRect.width,16),"ACT",new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=11,fontStyle=FontStyle.Bold,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(.86f,.74f,.52f)}});
             GUI.Label(new Rect(actRect.x,actRect.y+14,actRect.width,28),$"{RomanAct(run.act)}<size=11> / III</size>",new GUIStyle(titleStyle){font=headingFont?headingFont:labelFont,fontSize=22,richText=true,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(1f,.82f,.42f)}});
-            if(actRect.Contains(pointer))SetRunHudTooltip(actRect,$"ACT {RomanAct(run.act)} OF III",$"Defeat this act's boss to advance. Three acts lead to the final boss on floor {RunFloorTotal}.");
+            if(actRect.Contains(pointer))SetRunHudTooltip(actRect,$"ACT {RomanAct(run.act)} OF III",$"Defeat the act's boss to advance. The final boss waits on floor {RunFloorTotal}.");
             DrawPersistentRunControls(w,pointer);
 
             var shown=VisibleRunRelics(w);

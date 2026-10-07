@@ -53,46 +53,46 @@ namespace GildedFate.UI
         }
         private static readonly RuleKeyword[] RuleKeywords=
         {
-            new("Hidden Potential","HIDDEN POTENTIAL","Attack: +5 damage. Skill: +5 Block, or -1 cost for non-Block Skills. Power: first Power costs 1 less. Lasts this turn.","E1BE68"),
-            new("Ruin","RUIN SIGIL","Activation: deal 5 damage to all enemies.","FF8B72"),
-            new("Wither","WITHER SIGIL","Activation: apply 1 Weak to all enemies.","AED178"),
-            new("Grave Sigil","GRAVE SIGIL","Activation: Exhaust your leftmost Curse or Status; if successful, draw 1.","70E6DA"),
-            new("Mirror Sigil","MIRROR SIGIL","Copies the activation effect of the Sigil on its left. Cannot copy another Mirror.","F2F5EE"),
-            new("Death's Echo","DEATH'S ECHO","Each card drawn on your turn deals this much damage to a random living enemy.","70E6DA"),
-            new("Reaped","REAPED","Souls deal this percentage of additional damage to this enemy for the combat.","70E6DA"),
-            new("Gravemark","GRAVEMARK","Grave Execution consumes every stack for separate damage hits.","70E6DA"),
-            new("Soulbound","SOULBOUND","Combat-only enchantment. Each Soul played increases the selected card's damage or Block. Does not replace a Binding.","70E6DA"),
-            new("Soulbind","SOULBIND","Attach Soulbound to the chosen card for this combat. Each Soul played increases that card's damage or Block. Does not replace a Binding.","70E6DA"),
-            new("Discard","DISCARD","Move the card from your hand to the discard pile. It can return when the draw pile reshuffles.","B9C4D5"),
-            new("Unplayable","UNPLAYABLE","This card cannot be played. Its written drawn, held or end-of-turn effects still apply.","C5C7CE"),
-            new("Retain","RETAIN","Keep this card in hand instead of discarding it at the end of your turn.","A9DCC6"),
-            new("Energy","ENERGY","Pays card costs. Your normal Energy is replenished at the start of your turn; unused Energy normally does not carry over.","F6CC61"),
-            new("Vulnerable","VULNERABLE","Takes 50% more attack damage while this status is active.","FF806F"),
-            new("Resonance","RESONANCE","Hexer's combat resource. Sigil activations and specific effects generate it; cards state how much they spend. No stack cap. Unspent Resonance persists between turns, but resets each combat.","F6CC61"),
-            new("Strength","STRENGTH","Adds its value to attack damage. Multi-hit attacks benefit on every hit.","FF9B58"),
-            new("Fortify","FORTIFY","Adds its value to numerical Gain Block effects, including attacks and triggered effects, unless a rule explicitly excludes Fortify.","7CD7FF"),
-            new("Retaliate","RETALIATE","The next enemy attack takes this much damage back, then consumes all Retaliate. Persists between turns; multi-hit attacks trigger once, even through Block.","FFD072"),
-            new("Heavy","HEAVY","Receives its listed bonus if no other Attack has been played this turn.","F0B66A"),
-            new("Revenge","REVENGE","Receives its listed bonus if an enemy attacked you during the previous enemy turn.","E89172"),
-            new("Marked","MARKED","Occult setup stacks that Arcane cards can consume for stronger effects.","D987FF"),
-            new("Sigil","SIGIL","Runes persist in combat slots. Each activation also grants 1 Resonance. Hover a rune for its specific effect.","B99AFF"),
-            new("Exhaust","DISSIPATE","Moves the card to the Dissipate pile for this combat. Playing an Aspect activates it separately and does not count as Dissipating.","C8A0FF"),
-            new("Ethereal","ETHEREAL","If this remains in hand at end of turn, it Exhausts.","D8C3FF"),
-            new("Binding","BINDING","A permanent special modification on this individual card copy.","FFE28A"),
-            new("Fateweave","FATEWEAVE MODIFICATION","A permanent strand-of-fate change. It occupies the card's one special-modification slot.","FFE28A"),
-            new("Gild","GILD","Once per turn, spend Gold so your next playable card plays twice. Costs 15 Gold, then 10 more for each further Gild this combat. It waits through Curses, Statuses and later turns until a card is played.","FFC94A"),
-            new("Fate Shard","FATE SHARD","A selectable three-use combat power. Only one can be active in a combat.","FFD35A"),
-            new("Stable","STABLE","The first two activations use the Shard's stable effect.","8FD6FF"),
-            new("Fractured","FRACTURED","The third and final activation is stronger; the Shard shatters after combat.","FF806F"),
-            new("Block","BLOCK","Prevents incoming damage before HP is lost. It normally clears on the next turn.","7CD7FF"),
-            new("Burn","BURN","On an enemy, deals its stacks after that enemy acts, then loses 1 stack.","FF8A45"),
-            new("Weak","WEAK","Deals 25% less attack damage while this status is active.","A9D87B"),
-            new("Draw","DRAW","Moves cards from the Draw pile into your hand. Discard reshuffles when Draw is empty.","8FCBFF"),
-            new("Soul","SOUL","A temporary 0-cost Skill: deal 3 damage (5 upgraded), draw 1, then Exhaust. Souls vanish after combat.","65E6D2"),
-            new("Replay","REPLAY","Resolves the Soul's effect one additional time before that Soul Exhausts.","8FFFF0"),
-            new("On Kill","ON KILL","This exact attack must deal the killing blow for its reward to trigger.","F1C86B"),
-            new("Temporary","TEMPORARY","Created only for the current combat and never added to the permanent deck.","91C9BE"),
-            new("Transform","TRANSFORM","Replaces cards for this combat without triggering their normal Exhaust effects.","70D7C7")
+            new("Hidden Potential","HIDDEN POTENTIAL","Attack: +5 damage. Skill: +5 Block, or -1 cost if not a Block Skill. Power: first one costs 1 less. This turn.","E1BE68"),
+            new("Ruin","RUIN SIGIL","Activates: 5 damage to all enemies.","FF8B72"),
+            new("Wither","WITHER SIGIL","Activates: 1 Weak on all enemies.","AED178"),
+            new("Grave Sigil","GRAVE SIGIL","Activates: Exhaust your leftmost Curse or Status, then draw 1.","70E6DA"),
+            new("Mirror Sigil","MIRROR SIGIL","Copies the Sigil on its left. Can't copy another Mirror.","F2F5EE"),
+            new("Death's Echo","DEATH'S ECHO","Each card you draw on your turn hits a random enemy for this much.","70E6DA"),
+            new("Reaped","REAPED","Souls deal this % extra damage to this enemy.","70E6DA"),
+            new("Gravemark","GRAVEMARK","Grave Execution spends every stack as its own hit.","70E6DA"),
+            new("Soulbound","SOULBOUND","This combat: each Soul played adds to this card's damage or Block.","70E6DA"),
+            new("Soulbind","SOULBIND","Soulbound for this combat: each Soul played adds to this card's damage or Block.","70E6DA"),
+            new("Discard","DISCARD","Sent to the discard pile. It returns on the next reshuffle.","B9C4D5"),
+            new("Unplayable","UNPLAYABLE","Can't be played. Its drawn, held or end-of-turn text still applies.","C5C7CE"),
+            new("Retain","RETAIN","Stays in hand at end of turn.","A9DCC6"),
+            new("Energy","ENERGY","Pays card costs. Refills each turn; unused Energy is lost.","F6CC61"),
+            new("Vulnerable","VULNERABLE","Takes 50% more attack damage.","FF806F"),
+            new("Resonance","RESONANCE","Hexer resource, no stack cap. Sigils generate it, cards spend it. Resets each combat.","F6CC61"),
+            new("Strength","STRENGTH","Adds its value to attack damage, on every hit.","FF9B58"),
+            new("Fortify","FORTIFY","Adds its value to every Block you gain, including attacks and triggered effects.","7CD7FF"),
+            new("Retaliate","RETALIATE","The next enemy attack takes this much damage back (once, even if blocked), then it's spent.","FFD072"),
+            new("Heavy","HEAVY","Bonus applies if you played no other Attack this turn.","F0B66A"),
+            new("Revenge","REVENGE","Bonus applies if an enemy attacked you last turn.","E89172"),
+            new("Marked","MARKED","Setup stacks that Arcane cards spend for stronger effects.","D987FF"),
+            new("Sigil","SIGIL","A rune that stays in a slot. Each activation also grants 1 Resonance. Hover a rune for its effect.","B99AFF"),
+            new("Exhaust","DISSIPATE","Moves to the Dissipate pile for this combat. Playing an Aspect isn't Dissipating.","C8A0FF"),
+            new("Ethereal","ETHEREAL","Exhausts if still in hand at end of turn.","D8C3FF"),
+            new("Binding","BINDING","A permanent special change to this card copy.","FFE28A"),
+            new("Fateweave","FATEWEAVE MODIFICATION","A permanent change using the card's single special-modification slot.","FFE28A"),
+            new("Gild","GILD","Once per turn, pay Gold: your next card plays twice. 15 Gold, +10 per extra Gild this combat.","FFC94A"),
+            new("Fate Shard","FATE SHARD","A three-use combat power. Only one active per combat.","FFD35A"),
+            new("Stable","STABLE","The first two activations.","8FD6FF"),
+            new("Fractured","FRACTURED","The third activation is stronger, then the Shard shatters.","FF806F"),
+            new("Block","BLOCK","Absorbs damage before HP. Usually clears next turn.","7CD7FF"),
+            new("Burn","BURN","On an enemy: deals its stacks after it acts, then loses 1.","FF8A45"),
+            new("Weak","WEAK","Deals 25% less attack damage.","A9D87B"),
+            new("Draw","DRAW","Take cards from the draw pile. It reshuffles the discard when empty.","8FCBFF"),
+            new("Soul","SOUL","Temporary 0-cost Skill: 3 damage (5 upgraded), draw 1, Exhaust.","65E6D2"),
+            new("Replay","REPLAY","The Soul's effect resolves once more before it Exhausts.","8FFFF0"),
+            new("On Kill","ON KILL","Only if this attack deals the killing blow.","F1C86B"),
+            new("Temporary","TEMPORARY","Exists for this combat only.","91C9BE"),
+            new("Transform","TRANSFORM","Replaces cards for this combat without triggering Exhaust effects.","70D7C7")
         };
         private readonly Dictionary<int,HandView> handViews=new();
         private readonly Dictionary<int,CombatCardPreview> cardPreviewCache=new();
@@ -231,10 +231,13 @@ namespace GildedFate.UI
                     var pull=aimPull;var forward=new Vector2(Mathf.Lerp(slot.x,CombatWidth*.49f,.38f),CombatHeight*.57f);
                     target=Vector2.Lerp(new Vector2(slot.x,slot.y),forward,Mathf.SmoothStep(0,1,pull));angle=Mathf.Lerp(slot.angle,0,pull);scale=Mathf.Lerp(1f,1.16f,pull);aiming=true;
                 }
-                if(view==hoverView||view==selectedView){target.y-=profile.reduceMotion?104:144;angle=0;scale=1.18f;target.x=Mathf.Clamp(target.x,HandLayout.CardWidth*scale*.5f+24,CombatWidth-HandLayout.CardWidth*scale*.5f-24);}
+                var raisedCard=view==hoverView||view==selectedView;
+                if(raisedCard){target.y-=profile.reduceMotion?104:144;angle=0;scale=1.18f;target.x=Mathf.Clamp(target.x,HandLayout.CardWidth*scale*.5f+24,CombatWidth-HandLayout.CardWidth*scale*.5f-24);}
                 // The aimed card leans toward the cursor and drifts a little with it, so aiming feels attached to the hand.
                 if(aiming&&!profile.reduceMotion){var lean=Mathf.Clamp((combatPointer.x-target.x)/(CombatWidth*.5f),-1f,1f)*aimPull;target.x+=lean*30f;angle+=lean*5f;}
-                else if(!profile.reduceMotion)
+                // Neighbours step aside for the raised card. The raised card itself must never take part: it would push itself
+                // left and right of its own slot every frame and the hovered card would buzz where it cannot be read.
+                else if(!raisedCard&&!profile.reduceMotion)
                 {
                     var raised=hoverView??selectedView;
                     if(raised!=null&&dragView==null){var distance=slot.x-raised.position.x;target.x+=Mathf.Sign(distance)*Mathf.Max(0,1-Mathf.Abs(distance)/210)*18;}
@@ -794,7 +797,7 @@ namespace GildedFate.UI
         {
             if(hoveredCardHelp==null||profile?.tooltips!=true||acquisitionActive)return;
             if(screen==ScreenMode.Combat&&(hoverView!=null||selectedView!=null||dragView!=null))return;
-            var title=hoveredCardHelp.name;var detail=CardGlossaryDetail(hoveredCardHelp);
+            var title="";var detail=CardGlossaryDetail(hoveredCardHelp); // the card is already on screen: no repeated name
             if(CardAttachmentHelp(hoveredCardHelpAnchor,hoveredCardHelp,PointerPosition,out var attachmentTitle,out var attachmentDetail)){title=attachmentTitle;detail=attachmentDetail;}
             if(string.IsNullOrEmpty(detail))return;
             const float width=330;
@@ -804,7 +807,7 @@ namespace GildedFate.UI
         private void DrawCardKeywordHelp(float w,float h)
         {
             var active=hoverView??selectedView??dragView;if(active?.card==null||profile?.tooltips!=true||cardDragging&&dragView!=null)return;
-            var title=active.card.name;var detail=CardGlossaryDetail(active.card,CardPreview(active.card));
+            var title="";var detail=CardGlossaryDetail(active.card,CardPreview(active.card));
             var local=HandCardLocalPoint(combatPointer,active.position.x,active.position.y,active.angle,active.scale);
             if(!controllerNavigation&&CardAttachmentHelp(new Rect(-HandLayout.CardWidth*.5f,-HandLayout.CardHeight*.5f,HandLayout.CardWidth,HandLayout.CardHeight),active.card,local,out var attachmentTitle,out var attachmentDetail)){title=attachmentTitle;detail=attachmentDetail;}
             if(string.IsNullOrEmpty(detail))return;
@@ -869,7 +872,7 @@ namespace GildedFate.UI
                 DrawAtlasIcon(combatReadabilityAtlas,icons[i],8,8,icon);
                 GUI.Label(new Rect(r.x-8,r.y,r.width+16,17),names[i],new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=12,fontStyle=FontStyle.Bold,normal={textColor=hovered?Color.white:Gold}});
                 GUI.Label(new Rect(icon.xMax-15,icon.yMax-25,34,26),counts[i].ToString(),new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=18,alignment=TextAnchor.MiddleCenter,normal={textColor=Color.white}});
-                if(hovered)SetCombatEffectTooltip(names[i]+" · "+counts[i],i==0?"Cards waiting to be drawn. Click to inspect them alphabetically without revealing draw order.":i==1?"Played and discarded cards wait here. When the Draw pile empties, this pile is shuffled back in.":"Cards removed for the rest of this combat. Click to inspect them.",r.center);
+                if(hovered)SetCombatEffectTooltip(names[i]+" · "+counts[i],i==0?"Cards waiting to be drawn. Click to inspect (order stays hidden).":i==1?"Played cards wait here. Shuffled back in when Draw runs out.":"Removed for the rest of this combat. Click to inspect.",r.center);
                 if(GUI.Button(r,"",GUIStyle.none)&&!combatBusy){pileOpen=i;pilePage=0;pileScroll=0;selectedView=dragView=hoverView=null;Sfx(SoundCue.UiHover);}
             }
             DrawEnergyMeter(EnergyMeterRect);
@@ -891,7 +894,7 @@ namespace GildedFate.UI
             DrawEnergyOrbVfx(seal,color);
             GUI.Label(seal,$"{combat.energy}<size=15>/{baseEnergy}</size>",new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=31,richText=true,alignment=TextAnchor.MiddleCenter,normal={textColor=Color.white}});
             GUI.Label(new Rect(r.x-4,r.yMax-14,r.width+8,16),"ENERGY",new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=12,normal={textColor=Color.Lerp(color,Color.white,.28f)}});
-            if(r.Contains(combatPointer))SetCombatEffectTooltip("ENERGY",$"{combat.energy} available now. Your normal turn begins with {baseEnergy}. Cards spend the value shown in their Energy vessel.",r.center);
+            if(r.Contains(combatPointer))SetCombatEffectTooltip("ENERGY",$"{combat.energy} available. You start each turn with {baseEnergy}.",r.center);
         }
 
         private void DrawPileInspector(float w,float h)
@@ -951,7 +954,7 @@ namespace GildedFate.UI
         {
             var group=!playerSide&&GroupCombat&&groupRenderIndex>=0?opponentVisuals[groupRenderIndex]:null;
             var shownHp=playerSide?displayedPlayerHp:group?.hp??displayedEnemyHp;var shownBlock=playerSide?displayedPlayerBlock:group?.block??displayedEnemyBlock;
-            RegisterCombatHudTarget(playerSide?"hero:health":"enemy:"+groupRenderIndex+":health",playerSide?1:2+Mathf.Max(0,groupRenderIndex),r,playerSide?"YOUR HEALTH":"ENEMY HEALTH",$"{shownHp}/{fighter.maxHp} HP. {shownBlock} Block. Black is missing health; blue indicates Block.");
+            RegisterCombatHudTarget(playerSide?"hero:health":"enemy:"+groupRenderIndex+":health",playerSide?1:2+Mathf.Max(0,groupRenderIndex),r,playerSide?"YOUR HEALTH":"ENEMY HEALTH",$"{shownHp}/{fighter.maxHp} HP · {shownBlock} Block.");
             var guarded=shownBlock>0;var pulse=playerSide?heroBuff:foeBuff;var healthColor=guarded?new Color(.12f,.56f,.94f,.99f):new Color(.91f,.075f,.11f,.99f);var shownFill=playerSide?playerHealthFill:group?.fill??enemyHealthFill;
             var ratio=Mathf.Clamp01(shownFill/Mathf.Max(1,fighter.maxHp));var trail=playerSide?playerHealthTrail:group?.trail??enemyHealthTrail;
             // The orange damage slice exists only during the short impact animation;
@@ -965,9 +968,9 @@ namespace GildedFate.UI
             if(guarded)
             {
                 var shield=new Rect(r.x-(playerSide&&!string.IsNullOrEmpty(combat.activeShardId)?80:38),r.center.y-23,46,46);DrawSimpleShieldIcon(shield,shownBlock,pulse);
-                if(CombatInspectionAllowed&&(r.Contains(combatPointer)||shield.Contains(combatPointer)))SetCombatEffectTooltip("BLOCK · "+fighter.block,$"The blue guard absorbs {fighter.block} damage before this health bar is harmed.",r.center);
+                if(CombatInspectionAllowed&&(r.Contains(combatPointer)||shield.Contains(combatPointer)))SetCombatEffectTooltip("BLOCK · "+fighter.block,$"Absorbs {fighter.block} damage before health is lost.",r.center);
             }
-            else if(CombatInspectionAllowed&&r.Contains(combatPointer))SetCombatEffectTooltip(playerSide?"YOUR HEALTH":"ENEMY HEALTH",$"{fighter.hp} of {fighter.maxHp} health remains. The black portion is health already lost.",r.center);
+            else if(CombatInspectionAllowed&&r.Contains(combatPointer))SetCombatEffectTooltip(playerSide?"YOUR HEALTH":"ENEMY HEALTH",$"{fighter.hp} of {fighter.maxHp} health remains.",r.center);
         }
 
         private void DrawSimpleShieldIcon(Rect r,int amount,float pulse)
@@ -1027,7 +1030,7 @@ namespace GildedFate.UI
         }
         private void AddPowerChip(List<CombatEffectChip> chips,string id,int value,Color color,string counter=null)
         {
-            if(value<=0)return;var card=combat.activeAspects.LastOrDefault(c=>c.id==id)??GameContent.Find(id);if(card==null)return;chips.Add(new("PWR",card.name.TrimEnd('+'),GameplayTerms.Display(card.text)+"\n\nSource: "+card.name+" · Aspect\nDuration: this combat."+(PowerIsDormant(card.name)?"\nDormant — its limited trigger has been used.":"")+(string.IsNullOrEmpty(counter)?"":"\nProgress: "+counter),value,color,true,counter));
+            if(value<=0)return;var card=combat.activeAspects.LastOrDefault(c=>c.id==id)??GameContent.Find(id);if(card==null)return;chips.Add(new("PWR",card.name.TrimEnd('+'),GameplayTerms.Display(card.text)+"\n<color=#9A968B>Aspect · this combat"+(PowerIsDormant(card.name)?" · dormant, limited trigger used":"")+(string.IsNullOrEmpty(counter)?"":" · "+counter)+"</color>",value,color,true,counter));
         }
         private void DrawSigilSlots(Rect row)
         {

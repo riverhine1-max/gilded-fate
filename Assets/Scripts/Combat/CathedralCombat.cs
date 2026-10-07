@@ -464,20 +464,20 @@ namespace GildedFate.Combat
                 case BlackCathedralContent.Guard:lines.Add("Penitent Strike → Kneel Behind Steel → Punishing Advance → Sacred Discipline. No Judgment.");break;
                 case BlackCathedralContent.Warden:lines.Add("SUPPORT · Never attacks. Hymns give allies Strength, Block and healing. Leaves if only harmless Supports remain.");break;
                 case BlackCathedralContent.Confessor:
-                    lines.Add("JUDGMENT · Judges your previous turn based on how many Attack cards you played. 0–1: Accuse Cowardice (18). 2: Measured Penance (13 + 9 Block). 3+: Punish Violence (18 Block, 9 + Weak). No previous turn: Measured Penance.");
+                    lines.Add("JUDGMENT · By Attacks you played last turn. 0–1: Accuse Cowardice (18). 2 (or none): Measured Penance (13 + 9 Block). 3+: Punish Violence (18 Block, 9 + Weak).");
                     lines.Add(JudgmentSummaryLine());break;
                 case BlackCathedralContent.Censer:lines.Add("Bitter Incense (Weak + Vulnerable) → Censer Swing → Sacred Smoke (Block to allies) → Choking Procession.");break;
                 case BlackCathedralContent.Saint:lines.Add($"SUMMONER · {OwnedMinions(index).Count()}/2 Chapel Effigies. Consecrates, blesses and commands them. Dies together with its Effigies' owner link.");break;
                 case BlackCathedralContent.Effigy:lines.Add("Stone Strike → Prayer Guard (Block to its Owner).");break;
                 case BlackCathedralContent.Herald:lines.Add($"SENTENCE {m.counter} · First Proclamation (3 → 2) → Second (2 → 1) → Final (stays 1) → EXECUTION (28 damage), then the Sentence resets to 3. It is always visible.");break;
                 case BlackCathedralContent.Priest:
-                    lines.Add("JUDGMENT · Judges whether you repeated one card type last turn: if one type (Attack, Skill or Power) was at least 70% of at least 3 cards played, it answers that type. Otherwise: Broken Vow.");
+                    lines.Add("JUDGMENT · If one card type (Attack, Skill or Power) was 70%+ of 3+ cards you played, it answers that type. Otherwise: Broken Vow.");
                     lines.Add(judgeHadPreviousTurn?$"Last turn: {judgeLastAttacks} Attack · {judgeLastSkills} Skill · {judgeLastPowers} Power of {judgeLastTotal}. Verdict: {PriestJudgmentKind()}.":"No previous turn: Broken Vow.");break;
                 case BlackCathedralContent.Icon:lines.Add($"STATE · {(string.IsNullOrEmpty(m.state)?"MERCY":m.state)}. Mercy (Block + heal) → Judgment (16 + Weak) → Wrath (3 × 7) → Mercy.");break;
                 case BlackCathedralContent.HighConfessor:
-                    lines.Add("JUDGMENT · At the end of each of your turns it picks ONE verdict, checked in this order: Bloodthirst (4+ Attacks), Fortress (20+ Block at end of turn), Restraint (2+ unused Energy), Excess (7+ cards), else Balanced. The verdict decides its next move.");
+                    lines.Add("JUDGMENT · One verdict per turn, checked in order: Bloodthirst (4+ Attacks), Fortress (20+ Block), Restraint (2+ unused Energy), Excess (7+ cards), else Balanced.");
                     lines.Add(JudgmentSummaryLine());break;
-                case BlackCathedralContent.ChoirEternal:lines.Add($"VOICES · {OwnedMinions(index).Count()}/3 alive (Blade, Mercy, Vigil). It never replaces a dead Voice. Eternal Hymn → Sacred Refrain → Conduct → Sacred Refrain. With every Voice dead: Broken Choir ↔ Sacred Refrain.");break;
+                case BlackCathedralContent.ChoirEternal:lines.Add($"VOICES · {OwnedMinions(index).Count()}/3 alive (Blade, Mercy, Vigil), never replaced. Eternal Hymn → Sacred Refrain → Conduct → Sacred Refrain. All dead: Broken Choir ↔ Sacred Refrain.");break;
                 case BlackCathedralContent.VoiceBlade:lines.Add("Blade Verse → Piercing Verse.");break;
                 case BlackCathedralContent.VoiceMercy:lines.Add("Restoring Verse (heals its Owner) → Gentle Ward.");break;
                 case BlackCathedralContent.VoiceVigil:lines.Add("Vigil Strike → Protective Verse (Block to the other Voices).");break;
@@ -485,7 +485,7 @@ namespace GildedFate.Combat
                 case BlackCathedralContent.Bishop:
                     lines.Add($"PHASE {m.phase} · {BishopPhaseName(m.phase)} — changes form at 2/3 and 1/3 health. No heal, Strength, Fortify or Block from changing form.");
                     if(m.phase==1)lines.Add("Judge the Faithful reads whether you played 3+ Attacks last turn. Its Voices collapse when the Bishop rises.");
-                    else if(m.phase==2){lines.Add("JUDGMENT · Picks one verdict from your last turn: Violence (3+ Attacks), Ritual (3+ non-Attack cards), Restraint (2+ unused Energy), else Balanced. It uses that verdict's move.");lines.Add(JudgmentSummaryLine());}
+                    else if(m.phase==2){lines.Add("JUDGMENT · Verdict from your last turn: Violence (3+ Attacks), Ritual (3+ non-Attacks), Restraint (2+ unused Energy), else Balanced.");lines.Add(JudgmentSummaryLine());}
                     else lines.Add("Final Decree → Black Benediction → Shattered Gospel → Last Judgment → Cathedral Collapse. No Judgment.");
                     break;
             }
