@@ -30,11 +30,9 @@ on:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 concurrency:
-  group: build-gilded-fate
+  group: build-gilded-fate-builds-v2
   cancel-in-progress: false
 
 env:
@@ -162,15 +160,3 @@ jobs:
           git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" trailer-player
           ls -lh
 
-  pages:
-    needs: [plan, build]
-    # Runs even if another target failed, as long as a WebGL build was requested.
-    if: ${{ !cancelled() && contains(needs.plan.outputs.matrix, '"webgl"') }}
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
-    steps:
-      - id: deploy
-        uses: actions/deploy-pages@v4
-        continue-on-error: true
