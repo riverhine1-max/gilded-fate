@@ -1,0 +1,60 @@
+# Deployment has its own workflow so a waiting Pages environment cannot block playtests.
+name: Deploy Gilded Fate WebGL
+
+on:
+  workflow_run:
+    workflows: ["Build Gilded Fate"]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  actions: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: gilded-fate-pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion != 'cancelled' }}
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Check for a successful WebGL artifact
+        id: artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          count=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID/artifacts" --jq '[.artifacts[] | select(.name == "github-pages" and .expired == false)] | length')
+          if [ "$count" -gt 0 ]; then
+            echo "found=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "No WebGL artifact in this build; skipping Pages deployment."
+          fi
+      - name: Download WebGL artifact
+        if: steps.artifact.outputs.found == 'true'
+        uses: actions/download-artifact@v4
+        with:
+          name: github-pages
+          path: pages-artifact
+          github-token: ${{ github.token }}
+          run-id: ${{ github.event.workflow_run.id }}
+      - name: Extract WebGL site
+        if: steps.artifact.outputs.found == 'true'
+        run: |
+          mkdir -p site
+          tar -xf pages-artifact/artifact.tar -C site
+      - name: Upload Pages artifact for this deployment
+        if: steps.artifact.outputs.found == 'true'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - name: Deploy WebGL
+        id: deploy
+        if: steps.artifact.outputs.found == 'true'
+        uses: actions/deploy-pages@v4
