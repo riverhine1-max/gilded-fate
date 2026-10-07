@@ -117,19 +117,96 @@ namespace GildedFate.UI
         private void DrawOmenBar(Rect r,float odds,bool good,string label,bool open)
         {
             var a=open?1f:.5f;var main=good?Gold:OmenRed;var rest=good?OmenRed:Gold;
-            Fill(r,new Color(.025f,.02f,.03f,.95f*a));
-            var split=r.x+r.width*Mathf.Clamp01(odds);
-            Fill(new Rect(r.x,r.y,split-r.x,r.height),new Color(main.r*.32f,main.g*.26f,main.b*.2f,.95f*a));
-            Fill(new Rect(r.x,r.y,split-r.x,3),new Color(main.r,main.g,main.b,.9f*a));
-            // The remaining odds: faint diagonal hatching in the opposing color.
-            for(var x=split+4;x<r.xMax-2;x+=7)DrawLine(new Vector2(x,r.yMax-2),new Vector2(Mathf.Min(r.xMax-2,x+8),r.y+2),new Color(rest.r,rest.g,rest.b,.16f*a),1);
-            if(!profile.reduceFlashing&&CardVfxRepaint)ShardSoft(new Rect(r.x-6,r.y-8,split-r.x+12,r.height+16),new Color(main.r,main.g,main.b,.10f*a));
-            // Divider gem at the split.
-            if(odds>0&&odds<1){DrawLine(new Vector2(split,r.y-3),new Vector2(split,r.yMax+3),new Color(1,1,1,.6f*a),1.4f);EventGem(new Vector2(split,r.y-3),3.5f,new Color(main.r,main.g,main.b,a),true);}
-            Outline(r,new Color(main.r,main.g,main.b,.75f*a),1);
-            var style=EventChipStyle(15);style.alignment=TextAnchor.MiddleCenter;
-            style.normal.textColor=new Color(0,0,0,.7f*a);GUI.Label(new Rect(r.x+1,r.y+1,r.width,r.height),label,style);
-            style.normal.textColor=good?new Color(1f,.93f,.72f,a):new Color(1f,.82f,.76f,a);GUI.Label(r,label,style);
+            var style=EventChipStyle(15);style.alignment=TextAnchor.MiddleLeft;
+            var labelWidth=style.CalcSize(new GUIContent(label)).x;
+            var track=new Rect(r.x,r.center.y-5,Mathf.Max(80,Mathf.Min(220,r.width-labelWidth-18)),10);
+            Fill(track,new Color(.03f,.025f,.035f,.95f*a));
+            var split=track.x+track.width*Mathf.Clamp01(odds);
+            for(var x=split+3;x<track.xMax-2;x+=6)DrawLine(new Vector2(x,track.yMax-1),new Vector2(Mathf.Min(track.xMax-1,x+5),track.y+1),new Color(rest.r,rest.g,rest.b,.22f*a),1);
+            if(CardVfxRepaint&&!profile.reduceFlashing)ShardSoft(new Rect(track.x-8,track.y-10,split-track.x+16,track.height+20),new Color(main.r,main.g,main.b,.16f*a));
+            Fill(new Rect(track.x,track.y,split-track.x,track.height),new Color(main.r*.55f,main.g*.45f,main.b*.3f,.95f*a));
+            Fill(new Rect(track.x,track.y,split-track.x,3),new Color(main.r,main.g,main.b,.95f*a));
+            Outline(track,new Color(main.r,main.g,main.b,.7f*a),1);
+            if(odds>0&&odds<1)EventGem(new Vector2(split,track.center.y),5,new Color(main.r,main.g,main.b,a),true);
+            style.normal.textColor=new Color(0,0,0,.7f*a);GUI.Label(new Rect(track.xMax+13,r.y+1,labelWidth+4,r.height),label,style);
+            style.normal.textColor=good?new Color(1f,.9f,.62f,a):new Color(1f,.6f,.52f,a);GUI.Label(new Rect(track.xMax+12,r.y,labelWidth+4,r.height),label,style);
+        }
+
+        // ---------------- reward emblem ----------------
+        // Every plain option shows its main reward as a large glyph on the right: coins, a relic gem, a card...
+        private void DrawRewardEmblem(Vector2 c,float radius,EventChoiceDef choice,bool hot,bool open)
+        {
+            var icon=EventChipIcon.None;
+            foreach(var part in SplitEventText(choice.rewardText)){var found=EventIconFor(part.ToUpperInvariant());if(found==EventChipIcon.None)continue;if(icon==EventChipIcon.None||icon==EventChipIcon.Remove)icon=found;if(found!=EventChipIcon.Remove)break;} // a gain outranks a removal
+            if(icon==EventChipIcon.None)foreach(var part in SplitEventText(choice.costText)){icon=EventIconFor(part.ToUpperInvariant());if(icon!=EventChipIcon.None)break;}
+            var a=open?1f:.4f;var tone=EmblemTone(icon);var t=Time.unscaledTime;var pulse=profile.reduceMotion?.5f:Mathf.Sin(t*(hot?3.6f:1.8f))*.5f+.5f;
+            if(CardVfxRepaint){ShardSoft(c,radius*3.6f,new Color(tone.r,tone.g,tone.b,(.10f+pulse*.06f+(hot?.08f:0))*a));ShardSoft(c,radius*1.6f,new Color(tone.r,tone.g,tone.b,.08f*a));}
+            ShardCircle(c,radius*1.08f,radius*1.08f,new Color(tone.r,tone.g,tone.b,.55f*a),1.4f,56);
+            ShardCircle(c,radius*.92f,radius*.92f,new Color(tone.r,tone.g,tone.b,.18f*a),1f,56);
+            for(var i=0;i<4;i++){var ang=i*Mathf.PI*.5f+Mathf.PI*.25f;var p=c+new Vector2(Mathf.Cos(ang),Mathf.Sin(ang))*radius*1.08f;EventGem(p,2.6f,new Color(tone.r,tone.g,tone.b,.9f*a),true);}
+            DrawEventGlyph(c,radius*.62f,icon,new Color(tone.r,tone.g,tone.b,a));
+            var label=EmblemLabel(icon);
+            if(label.Length>0)GUI.Label(new Rect(c.x-80,c.y+radius*1.2f,160,18),label,new GUIStyle(ReadableStyle(10,true)){alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(tone.r,tone.g,tone.b,.85f*a)}});
+        }
+        private static Color EmblemTone(EventChipIcon icon)=>icon switch
+        {
+            EventChipIcon.Gold=>new Color(1f,.82f,.42f),EventChipIcon.Relic=>new Color(1f,.76f,.4f),EventChipIcon.Card=>new Color(.92f,.86f,.72f),
+            EventChipIcon.Curse=>new Color(.78f,.58f,1f),EventChipIcon.Hp=>new Color(1f,.45f,.4f),EventChipIcon.Heal=>new Color(.55f,.92f,.6f),
+            EventChipIcon.Shard=>new Color(.55f,.88f,1f),EventChipIcon.Upgrade=>new Color(.6f,.95f,.6f),EventChipIcon.Remove=>new Color(1f,.6f,.42f),_=>new Color(.7f,.66f,.6f)
+        };
+        private static string EmblemLabel(EventChipIcon icon)=>icon switch
+        {
+            EventChipIcon.Gold=>"GOLD",EventChipIcon.Relic=>"RELIC",EventChipIcon.Card=>"CARD",EventChipIcon.Curse=>"CURSE",EventChipIcon.Hp=>"BLOOD",
+            EventChipIcon.Heal=>"MEND",EventChipIcon.Shard=>"FATE SHARD",EventChipIcon.Upgrade=>"UPGRADE",EventChipIcon.Remove=>"REMOVE",_=>"WALK ON"
+        };
+        // Scalable glyphs, s = half-size.
+        private void DrawEventGlyph(Vector2 c,float s,EventChipIcon icon,Color col)
+        {
+            var w=Mathf.Max(1.6f,s*.16f);
+            switch(icon)
+            {
+                case EventChipIcon.Gold:
+                    for(var k=2;k>=0;k--){var cc=c+new Vector2(-s*.18f+k*s*.18f,s*.35f-k*s*.42f);ShardCircle(cc,s*.55f,s*.22f,new Color(.05f,.03f,.01f,.9f),w*2.2f,28);ShardCircle(cc,s*.55f,s*.22f,col,w,28);}
+                    break;
+                case EventChipIcon.Relic:
+                {
+                    var pts=new[]{c+new Vector2(0,-s),c+new Vector2(s*.75f,-s*.25f),c+new Vector2(0,s),c+new Vector2(-s*.75f,-s*.25f)};
+                    for(var k=0;k<4;k++)DrawLine(pts[k],pts[(k+1)%4],col,w);DrawLine(pts[3],pts[1],new Color(col.r,col.g,col.b,col.a*.6f),w*.6f);
+                    DrawLine(pts[0],c+new Vector2(0,-s*.25f),new Color(col.r,col.g,col.b,col.a*.6f),w*.6f);DrawLine(c+new Vector2(0,-s*.25f),pts[2],new Color(col.r,col.g,col.b,col.a*.4f),w*.5f);break;
+                }
+                case EventChipIcon.Card:
+                {
+                    var r=new Rect(c.x-s*.55f,c.y-s*.8f,s*1.1f,s*1.6f);Outline(r,col,Mathf.RoundToInt(w));
+                    Outline(new Rect(r.x+s*.18f,r.y+s*.18f,r.width-s*.36f,r.height-s*.36f),new Color(col.r,col.g,col.b,col.a*.45f),1);EventGem(c,s*.22f,col,true);break;
+                }
+                case EventChipIcon.Curse:
+                {
+                    EventGem(c,s*.85f,col,false);DrawLine(c+new Vector2(-s*.35f,-s*.35f),c+new Vector2(s*.35f,s*.35f),col,w);DrawLine(c+new Vector2(s*.35f,-s*.35f),c+new Vector2(-s*.35f,s*.35f),col,w);break;
+                }
+                case EventChipIcon.Hp:
+                {
+                    var pts=new[]{c+new Vector2(0,s*.85f),c+new Vector2(-s*.85f,0),c+new Vector2(-s*.75f,-s*.55f),c+new Vector2(-s*.35f,-s*.75f),c+new Vector2(0,-s*.4f),c+new Vector2(s*.35f,-s*.75f),c+new Vector2(s*.75f,-s*.55f),c+new Vector2(s*.85f,0)};
+                    for(var k=0;k<pts.Length;k++)DrawLine(pts[k],pts[(k+1)%pts.Length],col,w);break;
+                }
+                case EventChipIcon.Heal:DrawLine(c+new Vector2(0,-s*.75f),c+new Vector2(0,s*.75f),col,w*1.8f);DrawLine(c+new Vector2(-s*.75f,0),c+new Vector2(s*.75f,0),col,w*1.8f);break;
+                case EventChipIcon.Shard:
+                {
+                    var pts=new[]{c+new Vector2(0,-s),c+new Vector2(s*.5f,0),c+new Vector2(0,s),c+new Vector2(-s*.5f,0)};
+                    for(var k=0;k<4;k++)DrawLine(pts[k],pts[(k+1)%4],col,w);DrawLine(pts[0],pts[2],new Color(1,1,1,col.a*.6f),w*.5f);break;
+                }
+                case EventChipIcon.Upgrade:
+                    DrawLine(c+new Vector2(-s*.7f,-s*.05f),c+new Vector2(0,-s*.7f),col,w*1.3f);DrawLine(c+new Vector2(0,-s*.7f),c+new Vector2(s*.7f,-s*.05f),col,w*1.3f);
+                    DrawLine(c+new Vector2(-s*.7f,s*.6f),c+new Vector2(0,-s*.05f),col,w*1.3f);DrawLine(c+new Vector2(0,-s*.05f),c+new Vector2(s*.7f,s*.6f),col,w*1.3f);break;
+                case EventChipIcon.Remove:DrawLine(c+new Vector2(-s*.6f,-s*.6f),c+new Vector2(s*.6f,s*.6f),col,w*1.5f);DrawLine(c+new Vector2(s*.6f,-s*.6f),c+new Vector2(-s*.6f,s*.6f),col,w*1.5f);break;
+                case EventChipIcon.Mystery:DrawQuestionSigil(c,s,col,false);break;
+                default:
+                {
+                    // An open doorway: walk on.
+                    DrawLine(c+new Vector2(-s*.5f,s*.8f),c+new Vector2(-s*.5f,-s*.2f),col,w);DrawLine(c+new Vector2(s*.5f,s*.8f),c+new Vector2(s*.5f,-s*.2f),col,w);
+                    for(var i=0;i<8;i++){var a0=Mathf.PI+i*Mathf.PI/8;var a1=a0+Mathf.PI/8;DrawLine(c+new Vector2(Mathf.Cos(a0)*s*.5f,-s*.2f+Mathf.Sin(a0)*s*.5f),c+new Vector2(Mathf.Cos(a1)*s*.5f,-s*.2f+Mathf.Sin(a1)*s*.5f),col,w);}
+                    DrawLine(c+new Vector2(-s*.8f,s*.8f),c+new Vector2(s*.8f,s*.8f),new Color(col.r,col.g,col.b,col.a*.5f),w*.8f);break;
+                }
+            }
         }
 
         // ---------------- outcome reveal ----------------

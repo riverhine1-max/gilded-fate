@@ -24,7 +24,10 @@ namespace GildedFate.UI
             var scene=new Rect(EventMargin,EventTop,Mathf.Round(w*.43f),h-EventTop-EventMargin);
             Fill(new Rect(scene.x+8,scene.y+10,scene.width,scene.height),new Color(0,0,0,.45f));
             Fill(scene,new Color(.012f,.013f,.02f,.94f));
-            var art=new Rect(scene.x+14,scene.y+14,scene.width-28,Mathf.Round(scene.height*.5f));
+            var storyText=EventSceneStory(currentEvent);
+            var promptNeed=new GUIStyle(footerStyle){fontSize=18,wordWrap=true}.CalcHeight(new GUIContent(storyText),scene.width-60);
+            var artHeight=Mathf.Clamp(scene.height-(28+64+promptNeed+64),scene.height*.46f,scene.height*.70f); // a short prompt hands its space to the art
+            var art=new Rect(scene.x+14,scene.y+14,scene.width-28,Mathf.Round(artHeight));
             DrawEventArtwork(art);
             for(var band=0;band<10;band++){var k=band/9f;Fill(new Rect(art.x,art.yMax-art.height*.32f+band*art.height*.032f,art.width,art.height*.033f+1),new Color(.012f,.013f,.02f,k*k*.92f));}
             DrawGildedFrame(scene,1f);
@@ -35,7 +38,6 @@ namespace GildedFate.UI
             GUI.Label(titleRect,currentEvent.name,titleStyle2);
             if(steps>1)DrawEventStepPipsAt(new Vector2(scene.xMax-34,titleRect.center.y),steps);
             var divY=titleRect.yMax+6;DrawOrnamentRule(new Vector2(scene.x+30,divY),scene.width-60,new Color(1f,.78f,.4f,.55f));
-            var storyText=EventSceneStory(currentEvent);
             var promptRect=new Rect(scene.x+30,divY+16,scene.width-60,scene.yMax-(divY+16)-44);
             var promptStyle=new GUIStyle(footerStyle){fontSize=18,alignment=TextAnchor.UpperLeft,wordWrap=true,normal={textColor=new Color(.96f,.93f,.86f)}};
             while(promptStyle.fontSize>13&&promptStyle.CalcHeight(new GUIContent(storyText),promptRect.width)>promptRect.height)promptStyle.fontSize--;
@@ -53,9 +55,11 @@ namespace GildedFate.UI
             var choices=EventSystem.CurrentChoices(run,currentEvent).ToArray();
             var banked=run.eventBank!=null&&run.eventBank.Count>0;
             var inner=new Rect(col.x+20,col.y+54,col.width-40,col.height-54-20-(banked?62:0));
-            const float gap=12;var n=Mathf.Max(1,choices.Length);
-            var choiceH=Mathf.Min(176,(inner.height-gap*(n-1))/n);var total=choiceH*n+gap*(n-1);var startY=inner.y+(inner.height-total)*.3f;
-            for(var i=0;i<choices.Length;i++)DrawEventChoiceCard(new Rect(inner.x,startY+i*(choiceH+gap),inner.width,choiceH),choices[i],i,now);
+            const float gap=14;var n=Mathf.Max(1,choices.Length);
+            var heights=choices.Select(c=>EventCardHeight(c,inner.width)).ToArray();var total=heights.Sum()+gap*(n-1);
+            var squeeze=total>inner.height?(inner.height-gap*(n-1))/Mathf.Max(1,heights.Sum()):1f;total=heights.Sum()*squeeze+gap*(n-1);
+            var cardY=inner.y+Mathf.Max(0,(inner.height-total)*.5f);
+            for(var i=0;i<choices.Length;i++){var ch=heights[i]*squeeze;DrawEventChoiceCard(new Rect(inner.x,cardY,inner.width,ch),choices[i],i,now);cardY+=ch+gap;}
             if(banked)DrawEventBankTray(new Rect(col.x+20,col.yMax-20-50,col.width-40,50));
             DrawPersistentRunTooltip(w,h);
         }
@@ -135,6 +139,15 @@ namespace GildedFate.UI
         }
 
         // ---------- option card ----------
+        // A card is as tall as its content: title, flavor, the sentence, and the odds or lock row.
+        private float EventCardHeight(EventChoiceDef choice,float width)
+        {
+            var tw=width-66-22-136;var sentence=StripRich(EventSentence(choice));
+            var sentenceHeight=new GUIStyle(footerStyle){fontSize=18,wordWrap=true}.CalcHeight(new GUIContent(sentence),tw);
+            var hasFlavor=!string.IsNullOrEmpty(choice.flavor)||!string.IsNullOrEmpty(EventChoiceAction(choice));
+            var bottomRow=choice.chance>0||!EventSystem.Availability(run,choice).available;
+            return Mathf.Clamp(44+(hasFlavor?24:0)+sentenceHeight+(bottomRow?40:18),96,176);
+        }
         private void DrawEventChoiceCard(Rect rect,EventChoiceDef choice,int index,float now)
         {
             var availability=EventSystem.Availability(run,choice);var open=availability.available;
@@ -150,17 +163,17 @@ namespace GildedFate.UI
             Outline(r,edge,hot?2:1);Outline(new Rect(r.x+4,r.y+4,r.width-8,r.height-8),new Color(edge.r,edge.g,edge.b,.2f),1);
             Fill(new Rect(r.x,r.y+12,3,r.height-24),edge);
             foreach(var corner in new[]{new Vector2(r.x,r.y),new Vector2(r.xMax,r.y),new Vector2(r.x,r.yMax),new Vector2(r.xMax,r.yMax)})EventGem(corner,3.5f,edge,true);
-            if(hot&&open&&CardVfxRepaint&&!profile.reduceMotion){var sx=r.x+20+Mathf.Repeat(now*.55f,1f)*(r.width-40);ShardSoft(new Vector2(sx,r.y),70,new Color(1f,.86f,.55f,.55f));}
+            if(hot&&open&&CardVfxRepaint&&!profile.reduceMotion){var sx=r.x+20+Mathf.Repeat(now*.55f,1f)*(r.width-40);ShardSoft(new Rect(sx-80,r.y-5,160,10),new Color(1f,.9f,.62f,.85f));} // light running along the top edge
             // Medallion.
             var m=new Vector2(r.x+34,r.y+31);
             if(CardVfxRepaint)ShardSoft(m,hot?72:46,new Color(1f,.76f,.36f,hot?.22f:.12f));
             EventGem(m,17,edge,false);EventGem(m,11,new Color(edge.r,edge.g,edge.b,.35f),false);
             GUI.Label(new Rect(m.x-17,m.y-13,34,26),(index+1).ToString(),new GUIStyle(titleStyle){fontSize=18,alignment=TextAnchor.MiddleCenter,normal={textColor=open?(hot?new Color(1f,.95f,.78f):new Color(.92f,.78f,.5f)):Color.gray}});
             // Text column.
-            var reserve=mystery?136f:0f;var tx=r.x+66;var tw=r.width-66-22-reserve;
+            const float reserve=136f;var tx=r.x+66;var tw=r.width-66-22-reserve; // the right side always holds an emblem
             var titleArea=new Rect(tx,r.y+12,tw,30);var title=SingleLineStyle(choice.title,titleArea.width,titleStyle,21,14);title.alignment=TextAnchor.MiddleLeft;
             title.normal.textColor=open?new Color(.99f,.91f,.7f):new Color(.6f,.59f,.56f);GUI.Label(titleArea,choice.title,title);
-            var y=r.y+44;var compact=r.height<134;
+            var y=r.y+44;var compact=r.height<92;
             var flavor=!string.IsNullOrEmpty(choice.flavor)?choice.flavor:EventChoiceAction(choice);
             if(!string.IsNullOrEmpty(flavor)&&!compact)
             {
@@ -173,8 +186,10 @@ namespace GildedFate.UI
             sentenceStyle.richText=true;sentenceStyle.normal.textColor=open?new Color(.97f,.94f,.87f):new Color(.62f,.61f,.58f);
             GUI.Label(sentenceRect,open?sentence:StripRich(sentence),sentenceStyle);
             if(!open)DrawLockedReason(new Rect(tx,r.yMax-34,tw,24),availability.reason);
-            else if(choice.chance>0)DrawOmenBar(new Rect(tx,r.yMax-36,Mathf.Min(300,tw),26),choice.chance/100f,choice.chanceGood,choice.chanceLabel,true);
-            if(mystery)DrawFateEmblem(new Vector2(r.xMax-74,r.center.y-8),Mathf.Clamp(r.height*.19f,20,30),hot,open,choice.chance>0);
+            else if(choice.chance>0)DrawOmenBar(new Rect(tx,r.yMax-36,Mathf.Min(320,tw),26),choice.chance/100f,choice.chanceGood,choice.chanceLabel,true);
+            var emblemCenter=new Vector2(r.xMax-78,r.center.y-6);var emblemSize=Mathf.Clamp(r.height*.2f,20,28);
+            if(mystery)DrawFateEmblem(emblemCenter,emblemSize,hot,open,choice.chance>0);
+            else DrawRewardEmblem(emblemCenter,emblemSize,choice,hot,open);
             var enabled=GUI.enabled;GUI.enabled=enabled&&open&&!acquisitionActive;
             if(GUI.Button(rect,"",GUIStyle.none))BeginEventChoice(choice);
             GUI.enabled=enabled;DeniedPress(rect,!open&&!acquisitionActive);
