@@ -28,10 +28,10 @@ namespace GildedFate.Core
             N(Servitor,"GILDED SERVITOR",16,5,"The Reliquary Keeper's Minion. It jabs, then braces.",minion:true),
             N(Mimic,"COIN MIMIC",48,12,"Guards a hoard of Bonus Gold. What it has not consumed is yours when it dies."),
             N(Herald,"BELLBOUND HERALD",46,5,"Tolls three times: Rally, Dissonance, Grand Bellstrike."),
-            N(Duelist,"CROWNLESS DUELIST",58,10,"Reads the cards you played last turn and answers in kind."),
+            N(Duelist,"CROWNLESS DUELIST",54,10,"Reads the cards you played last turn and answers in kind."),
             N(Collector,"THE CROWN COLLECTOR",98,10,"Collects what is due with two Coinbound Guards. Its Foreclosure grows with the Gold it holds.",elite:true),
             N(Guard,"COINBOUND GUARD",23,7,"The Crown Collector's Minion. It cuts, then guards its Collector.",minion:true),
-            N(Auctioneer,"THE ROYAL AUCTIONEER",94,12,"Announces an upcoming Lot. You can see it, and you cannot outbid it.",elite:true),
+            N(Auctioneer,"THE ROYAL AUCTIONEER",118,12,"Announces an upcoming Lot. You can see it, and you cannot outbid it.",elite:true),
             N(Treasury,"THE LIVING TREASURY",108,14,"Every Attack that wounds it fills its Reserve. A full Reserve is released all at once.",elite:true),
             N(Procession,"THE LAST PROCESSION",210,11,"A royal ceremony that never ended. Each phase tears away more of the pageantry.",boss:true),
         };

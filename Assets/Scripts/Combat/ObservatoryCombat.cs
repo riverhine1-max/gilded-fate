@@ -242,9 +242,9 @@ namespace GildedFate.Combat
                 case "so_calm_future":return new[]{P(S,1),P(B,10)};
                 // The Fallen Comet
                 case "so_accelerate":return new[]{P(EnemyActionType.Momentum,1),P(B,8)};
-                case "so_comet_strike":return new[]{P(A,12+2*m.counter)};
-                case "so_falling_arc":return new[]{P(A,6+m.counter,2)};
-                case "so_impact":return new[]{P(A,26),P(EnemyActionType.MomentumReset,0)};
+                case "so_comet_strike":return new[]{P(A,16+2*m.counter)};
+                case "so_falling_arc":return new[]{P(A,8+m.counter,2)};
+                case "so_impact":return new[]{P(A,32),P(EnemyActionType.MomentumReset,0)};
                 case "so_cool_orbit":return new[]{P(B,15)};
                 // The Astral Curator
                 case "so_cur_beam":return new[]{P(A,14)};

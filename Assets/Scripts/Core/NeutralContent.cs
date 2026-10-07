@@ -21,12 +21,12 @@ namespace GildedFate.Core
             N(Wayfarer,"THE WAYFARER",116,12,"Rotates through three visible stances, two actions each.",true),
             N(RaggedVanguard,"RAGGED VANGUARD",68,12,"A frontline hybrid that builds momentum."),
             N(ShiftingHusk,"SHIFTING HUSK",80,11,"Armored until it is badly hurt, then exposed."),
-            N(CrookedOracle,"CROOKED ORACLE",70,13,"Reacts to the Energy you left unspent last turn."),
+            N(CrookedOracle,"CROOKED ORACLE",64,13,"Reacts to the Energy you left unspent last turn."),
             N(Deepcrawler,"THE DEEPCRAWLER",174,19,"A huge armored worm. It burrows, and the eruption is always shown a turn ahead.",true),
-            N(IronWanderer,"IRON WANDERER",96,17,"A heavy bruiser without tricks."),
-            N(PaleChimera,"PALE CHIMERA",100,20,"Alternates two actions of attack with two of defense."),
-            N(NamelessSeer,"NAMELESS SEER",94,16,"Readied Fate always prepares the Sentence that follows."),
-            N(Worldbreaker,"THE WORLDBREAKER",252,20,"Charges World Break over two warning turns.",true),
+            N(IronWanderer,"IRON WANDERER",88,17,"A heavy bruiser without tricks."),
+            N(PaleChimera,"PALE CHIMERA",92,20,"Alternates two actions of attack with two of defense."),
+            N(NamelessSeer,"NAMELESS SEER",86,16,"Readied Fate always prepares the Sentence that follows."),
+            N(Worldbreaker,"THE WORLDBREAKER",224,20,"Charges World Break over two warning turns.",true),
         };
         public static EnemyDef Find(string id)=>Array.Find(Enemies,e=>e.id==id);
         public static bool IsNeutral(string id)=>Find(id)!=null;

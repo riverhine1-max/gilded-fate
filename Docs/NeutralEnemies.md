@@ -6,8 +6,8 @@ One gameplay definition per enemy; the picture follows the current theme.
 | Act | Themes | HP | Normals | Elite |
 |---|---|---|---|---|
 | 1 | Gilded Ruins / Ashen Wilds / Drowned Quarter | 90% | Unbound Blade 40, Fateworn 46, Stray Idol 54 | The Wayfarer 116 |
-| 2 | Crimson Foundry / Hollowwood / Shattered Observatory | 92% | Ragged Vanguard 68, Shifting Husk 80, Crooked Oracle 70 | The Deepcrawler 174 |
-| 3 | Black Cathedral / Fractured Realm / Gilded Throne | 94% | Iron Wanderer 96, Pale Chimera 100, Nameless Seer 94 | The Worldbreaker 252 |
+| 2 | Crimson Foundry / Hollowwood / Shattered Observatory | 92% | Ragged Vanguard 68, Shifting Husk 80, Crooked Oracle 64 | The Deepcrawler 174 |
+| 3 | Black Cathedral / Fractured Realm / Gilded Throne | 94% | Iron Wanderer 88, Pale Chimera 92, Nameless Seer 86 | The Worldbreaker 224 |
 
 Ids are `act<N>_neutral_<name>`. Code: `Core/NeutralContent.cs` (roster, formations, art variant ids), `Combat/NeutralCombat.cs` (moves, hooks, state, thresholds, counters).
 Neutral enemies never appear outside their act (normals, elites, debug/random generators, Daily).
@@ -23,7 +23,7 @@ Neutral enemies never appear outside their act (normals, elites, debug/random ge
 ## Special states (state text only)
 Wayfarer stances (Wanderer/Hunter/Survivor), Shifting Husk Armored then permanently Exposed at 40 HP or less, Crooked Oracle response to last turn's unused Energy,
 Deepcrawler Surface/Burrowed (always targetable, Eruption warned), Pale Chimera Predatory/Guarded, Nameless Seer Sentence prepared,
-Worldbreaker Charge 0/2 then "WORLD BREAK NEXT" (single 42 hit before Strength, not cancelled by damage).
+Worldbreaker Charge 0/2 then "WORLD BREAK NEXT" (single 38 hit before Strength, not cancelled by damage).
 
 ## Art
 No new art is required by the game. For each neutral the picture is looked up as `Assets/Resources/Art/Enemies/<id>_<theme>.tga` and falls back to `<id>.tga`.

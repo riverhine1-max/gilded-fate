@@ -32,7 +32,7 @@ namespace GildedFate.Core
             N(Bellkeeper,"THE BELLKEEPER",96,10,"Rings its bell over two thralls. Alone, it rings the Final Ring.",elite:true),
             N(TollThrall,"TOLL THRALL",21,6,"The Bellkeeper's Minion. It rings weakness into you.",minion:true),
             N(SinkerThrall,"SINKER THRALL",25,7,"The Bellkeeper's Minion. It shields its keeper.",minion:true),
-            N(Engine,"THE SUNKEN ENGINE",124,10,"Builds Pressure you can watch rise, then releases it all at once.",elite:true),
+            N(Engine,"THE SUNKEN ENGINE",132,10,"Builds Pressure you can watch rise, then releases it all at once.",elite:true),
             N(Magistrate,"THE DROWNED MAGISTRATE",220,12,"Fused to its flooded court. Each phase tears it further free.",boss:true),
             N(Bailiff,"BAILIFF ECHO",22,7,"The Drowned Magistrate's Minion. It holds court for its master.",minion:true),
         };

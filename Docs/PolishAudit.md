@@ -182,3 +182,59 @@ Also: one shared `UiScale` formula (menus, combat and the meta overlay each had 
 | J-2 | The combat textures (final VFX, energy orb, boss polish) are built when combat starts, not on the first frame that needs them. |
 | J-18 | **Card aiming and play.** (1) The pull that carries an Attack out of the hand is eased, so a quick flick never makes the card or the guide jump; the card also leans slightly toward the cursor. (2) The target guide no longer appears the moment you press a card: it fades in as you pull, the four brackets close onto the target as it locks, and the dim, labels and damage preview ease in and out (the guide also fades after a release instead of vanishing). (3) The aim arrow is a soft dotted curve that flows toward the target, with a diamond head and a ring that tightens and brightens on lock; its tip glides onto the target instead of snapping. (4) A target you are locked on to holds for 22 px outside its edge while dragging, and the same rule decides the drop, so releasing where the guide says "RELEASE TO PLAY" always plays. A different enemy under the pointer still wins immediately. (5) A soft tick plays when a target locks. (6) A played card leaves your hand at speed and settles onto its impact point (it used to ease in slowly and seem to hang); its arc follows distance travelled; it gives a small pulse as it lands. Draws, discards and Dissipate motions are unchanged. Rules, targets and costs are unchanged. Code: GildedTargetingFeel.cs. New in-Unity checks cover the lock hold, the lock release, the exact edge without a drag and the flight curve. |
 | J-19 | **Gild badge.** It moved from the bottom-left corner (under the shard sockets) to the right-hand column directly under End Turn, beside the Dissipate pile, so it sits where every turn ends. It is a minted coin set in a forged bezel on a nameplate that matches the End Turn plate: READY shows "GILD", the price and its key; ARMED shows "GILDED · NEXT CARD x2" with a molten ring; spent shows "NEXT TURN"; short of gold shows "NEED" with the price in red; during the enemy turn or a resolving card it dims but keeps its layout. State changes fade instead of flipping. While ready, the coin turns now and then and a warm ring pulses outward; at the start of each turn where Gild is affordable the bezel and plate flash once. Reduce Motion and Reduce Flashing are respected. The coin art, the price, the shortcut (G or LT) and the rules are unchanged. The coin-burst from the gold counter and the armed thread to the hand were re-aimed for the new position. Code: GildedGildBadge.cs; a new in-Unity check confirms the badge clears End Turn, all three piles, the energy orb and every hand size from 1 to 12. |
+
+
+---
+
+## Batch 5 fix log (balance)
+
+**Honest limit:** the test player is a simple greedy bot (block when threatened, otherwise the best damage per energy; three heroes; deck and relics sized to the act). It never saves block for a telegraphed big hit, never plans a combo and plays Vanguard far better than Hexer or Reaper. So its win rate says nothing about how hard the game is for a person. It is only good for ranking one encounter against its siblings, which is how it was used here. Every elite and boss was fought 120 times (3 heroes x 40 seeds) for the numbers below; formations 90 times. Nothing here has been play-tested by a human. Every change is small, and the numbers below are exactly what changed. Rules tests that pinned the old numbers were updated (harness: 107,920 checks, 0 failures; both compile configurations clean).
+
+**What counted as "clearly broken":** an elite that the bot beat 98 to 100% of the time while losing only 26 to 43% of its HP (its siblings: 33 to 94% wins, 46 to 90% lost); an Act 3 elite beaten about as rarely as a boss (18 to 29%); or one ordinary enemy that dragged every formation it appears in 25 to 47 points below the median of that tier.
+
+### Elites that were too easy (raised)
+
+| Enemy | Change | Bot win / HP lost, before to after |
+|-------|--------|------------------------------------|
+| The Sunken Engine (Act 1) | HP 124 to 132. Pressure Strike base 10 to 14 (still +2 per Pressure, so the strikes now show 16 / 20 / 22). Burst Valve 7 x 3 to 9 x 3. | 100 / 31 to 97 / 51 |
+| The Royal Auctioneer (Act 1) | HP 94 to 118. Hammer Fall 12 to 16. Lot of Blades 19 to 24. | 100 / 26 to 97 / 49 |
+| The Pale Gardener (Act 2) | Thorn Seed 20 to 28. Weeding Cut 13 to 19. | 100 / 34 to 89 / 57 |
+| The Fallen Comet (Act 2) | Comet Strike 12 + 2 per Momentum to 16 + 2. Falling Arc 2 x (6 + Momentum) to 2 x (8 + Momentum). Impact 26 to 32. | 98 / 43 to 82 / 62 |
+
+### Act 3 elites that were as lethal as bosses (lowered)
+
+| Enemy | Change | Bot win / HP lost, before to after |
+|-------|--------|------------------------------------|
+| The Worldbreaker (neutral) | HP 252 to 224. Crushing March 20 to 18. World Break 42 to 38 (the on-screen text and tooltip say 38). | 18 / 94 to 42 / 88 |
+| The Royal General | HP 208 to 184. General's Advance 18 to 16. Royal Execution 26 / 23 to 24 / 21 (tooltip updated). | 18 / 92 to 31 / 88 |
+| The Choir Eternal | HP 176 to 158. Broken Choir 20 to 18. Blade Verse (Voice) 10 to 9. | 24 / 91 to 31 / 88 |
+| The High Confessor | HP 198 to 178. Condemn Violence 22 to 20. Break the Wall 25 to 22. Punish Hesitation 19 to 17. | 29 / 92 to 42 / 88 |
+
+### Ordinary enemies that made every formation they join brutal (lowered)
+
+Each of these attacks every single turn or stacks pressure, and showed up in formations 25 to 47 points below their tier median. The change is the same in solo and group fights.
+
+| Enemy | Change | Mean bot win over the formations it appears in |
+|-------|--------|-----------------------------------------------|
+| Crooked Oracle (Act 2 neutral) | HP 70 to 64. Full Measure 13 to 11. Left Unspent 19 to 17. | 37 to 49 (8 formations) |
+| Crownless Duelist (Act 1) | HP 58 to 54. Relentless Advance 13 to 11. Measured Cut 10 to 9. | 46 to 56 (4) |
+| Iron Wanderer (Act 3 neutral) | HP 96 to 88. Crushing Step 17 to 15. Breaker 24 to 21. | 16 to 24 (9) |
+| Nameless Seer (Act 3 neutral) | HP 94 to 86. Veiled Strike 16 to 14. Sentence 25 to 22. | 21 to 32 (8) |
+| Pale Chimera (Act 3 neutral) | HP 100 to 92. Rending Maul 20 to 18. | 23 to 30 (8) |
+| Royal Adjudicator | HP 80 to 74. Judicial Strike 16 to 14. Royal Sentence 13 to 12. | 20 to 26 (10) |
+| Crown Duelist | HP 88 to 82. Piercing Advance 21 to 18. Perfect Measure 16 to 14. | 24 to 34 (9) |
+
+Group HP follows from these automatically (the existing 90 / 92 / 94% rule): for example Crooked Oracle 59 in a group, Iron Wanderer 83, Pale Chimera 86, Nameless Seer 81, Royal Adjudicator 70, Crown Duelist 77, Crownless Duelist 49.
+
+### Measured on the whole game (bot, mean win rate)
+
+Act 3 elites 31% to 39%, Act 3 Advanced formations 44% to 47%, Act 3 Standard 55% to 56%, Act 1 Dangerous 57% to 59%. Everything else moved by 1 point or less (the sample for these aggregates is small, so differences under about 5 points are noise).
+
+### Looked at and deliberately left alone
+
+* **Bosses.** The bot wins 5 to 31% against every boss, Act 1 as well as Act 3, so it cannot tell us whether they are fair. No boss number was changed.
+* **Dangerous three-enemy formations.** Several still win 0 to 12% for the bot (for example A3-NO3, GT-D06, BC-D04, BC-D10, CF-D07, DQ-D09). Dangerous is meant to be risky, and each member of these formations is fine alone, so trimming them would be guessing. They are the first thing to try by hand.
+* **GT-S10 (Royal Adjudicator + Crown Duelist) is still about 9%** even after both were trimmed. Both enemies attack every turn. If it feels unfair when you try it, lower one of the two again.
+* **Blind Seer, Living Treasury, Wayfarer and Ferryman** are now the easiest elites of their acts (92 to 94% bot wins) but are not outliers any more, so they were not changed.
+* **Hexer and Reaper win far less than Vanguard in the bot's hands** (for example 2 of 40 against the Royal General versus 28 of 40 for Vanguard, 7 of 40 for Reaper). That is mostly the bot's greedy play suiting Vanguard, not proof of a hero imbalance, but it is worth checking by hand with Hexer against the Royal General and Choir Eternal.
+* Bot tooling (outside the game): probes for solo enemies, elites and bosses, formations and per-enemy move counts. They are not shipped.

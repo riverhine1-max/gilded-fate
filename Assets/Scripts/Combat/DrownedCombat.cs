@@ -82,9 +82,9 @@ namespace GildedFate.Combat
                     switch(Cycle(m,5))
                     {
                         case 0:return "intake";
-                        case 1:m.plannedValue=10+2*m.counter;return "pressure_strike";
+                        case 1:m.plannedValue=14+2*m.counter;return "pressure_strike";
                         case 2:return "compress";
-                        case 3:if(m.counter>=4)return "burst_valve";m.plannedValue=10+2*m.counter;return "pressure_strike";
+                        case 3:if(m.counter>=4)return "burst_valve";m.plannedValue=14+2*m.counter;return "pressure_strike";
                         default:return m.step2==1?"vent":"intake";
                     }
                 case DrownedQuarterContent.Magistrate:
@@ -161,9 +161,9 @@ namespace GildedFate.Combat
                 case "weighted_slam":return new[]{P(A,7)};
                 case "sink_guard":return new[]{P(EnemyActionType.BlockOwner,7),P(B,5)};
                 case "intake":return new[]{P(EnemyActionType.Pressure,1),P(B,8)};
-                case "pressure_strike":return new[]{P(A,m.plannedValue>0?m.plannedValue:10+2*m.counter)};
+                case "pressure_strike":return new[]{P(A,m.plannedValue>0?m.plannedValue:14+2*m.counter)};
                 case "compress":return new[]{P(EnemyActionType.Pressure,2),P(B,6)};
-                case "burst_valve":return new[]{P(A,7,3),P(EnemyActionType.PressureRelease,m.counter)};
+                case "burst_valve":return new[]{P(A,9,3),P(EnemyActionType.PressureRelease,m.counter)};
                 case "vent":return m.counter>0?new[]{P(EnemyActionType.PressureRelease,m.counter),P(B,14)}:new[]{P(B,14)};
                 case "sentence":return new[]{P(A,12)};
                 case "bailiffs_order":return new[]{P(EnemyActionType.Summon,1),P(B,5)};
@@ -335,7 +335,7 @@ namespace GildedFate.Combat
                     lines.Add(OwnedMinions(index).Any()?"THRALLS · Shields and Commands its thralls. Lost thralls are not replaced."
                         :"ALONE · Its thralls are gone. It rings the Final Ring.");break;
                 case DrownedQuarterContent.Engine:
-                    lines.Add($"PRESSURE · {m.counter}/4 — Pressure Strike deals 10 + 2 per Pressure. At 4 Pressure it can Burst Valve (7 × 3)."
+                    lines.Add($"PRESSURE · {m.counter}/4 — Pressure Strike deals 14 + 2 per Pressure. At 4 Pressure it can Burst Valve (9 × 3)."
                         +(m.counter>=4?" PRESSURE IS FULL.":""));break;
                 case DrownedQuarterContent.Magistrate:
                     lines.Add($"PHASE {m.phase} · "+(m.phase==1?"Bound Magistrate":m.phase==2?"Partially Freed Magistrate":"Freed Magistrate")

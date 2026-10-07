@@ -43,7 +43,7 @@ HP shown as solo (group). Group HP is about 92% and applies to normals that star
 | The Orrery Keeper | 150 | Elite. Starts with Sun Fragment (28) and Moon Fragment (30). Celestial Rotation → Star Measure 14 → Command → Grand Alignment (14, 17 with two Fragments, +1 Strength to Minions) |
 | Sun / Moon Fragment | 28 / 30 | Minions. Solar Flare 10 → Radiant Surge (+1 Strength, 6 damage). Lunar Guard (9 Block to Keeper + 5) → Crescent Strike 8 |
 | The Blind Seer | 156 | Elite. Shows Current / Next / Following. Pool: Seer's Cut 15, Foresight Ward 21 Block, Doomed Vision (Weak + Vulnerable), Predicted Ruin 20, Calm Future (+1 Strength, 10 Block). Never the same action three times in a row |
-| The Fallen Comet | 168 | Elite. Momentum 0/4. Accelerate (+1 Momentum, 8 Block) → Comet Strike (12 + 2 per Momentum) → Accelerate → Falling Arc (2 hits of 6 + Momentum). At 4 Momentum: Impact 26, Momentum resets, then Cool Orbit (15 Block) |
+| The Fallen Comet | 168 | Elite. Momentum 0/4. Accelerate (+1 Momentum, 8 Block) → Comet Strike (16 + 2 per Momentum) → Accelerate → Falling Arc (2 hits of 8 + Momentum). At 4 Momentum: Impact 32, Momentum resets, then Cool Orbit (15 Block) |
 | The Astral Curator | 310 | Boss, thresholds 207 and 103. Phases 1 and 2 show a Future Intent (Archive the Future / Predicted Collapse queue the next move). Phase 3 is Twin Fate: two possibilities from Stellar Execution 21, Constellation Barrage 6 × 4, Celestial Fortress 22 Block + 1 Strength, Gravity Sentence 13 + Vulnerable, Astral Surge +2 Strength + 8 Block. Transitions give no heal, Strength or Block and clear the queue |
 
 ## Design rulings

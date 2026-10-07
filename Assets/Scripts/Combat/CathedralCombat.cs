@@ -229,17 +229,17 @@ namespace GildedFate.Combat
                 case "bc_golden_sentence":return new[]{P(A,16),P(W,1)};
                 case "bc_icons_fury":return new[]{P(A,7,3)};
                 // The High Confessor
-                case "bc_condemn_violence":return new[]{P(A,22),P(B,12)};
-                case "bc_break_wall":return new[]{P(A,25),P(V,1)};
-                case "bc_punish_hesitation":return new[]{P(A,19),P(S,2)};
+                case "bc_condemn_violence":return new[]{P(A,20),P(B,12)};
+                case "bc_break_wall":return new[]{P(A,22),P(V,1)};
+                case "bc_punish_hesitation":return new[]{P(A,17),P(S,2)};
                 case "bc_silence_frenzy":return new[]{P(A,15),P(W,2),P(B,8)};
                 case "bc_measured_judgment":return new[]{P(A,17),P(B,10)};
                 // The Choir Eternal and its Voices
                 case "bc_conduct":return new[]{P(EnemyActionType.Command,1),P(B,8)};
                 case "bc_eternal_hymn":return new[]{P(EnemyActionType.StrengthMinions,1),P(EnemyActionType.BlockMinions,5)};
                 case "bc_sacred_refrain":return new[]{P(A,15),P(B,10)};
-                case "bc_broken_choir":return new[]{P(A,20),P(S,1)};
-                case "bc_blade_verse":return new[]{P(A,10)};
+                case "bc_broken_choir":return new[]{P(A,18),P(S,1)};
+                case "bc_blade_verse":return new[]{P(A,9)};
                 case "bc_piercing_verse":return new[]{P(A,7),P(V,1)};
                 case "bc_restoring_verse":return new[]{P(EnemyActionType.HealOwner,6)};
                 case "bc_gentle_ward":return new[]{P(EnemyActionType.BlockOwner,9),P(B,4)};

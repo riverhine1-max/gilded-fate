@@ -77,29 +77,29 @@ namespace GildedFate.Combat
                 case "nt_exposed_rush":return new[]{P(A,18)};
                 case "nt_shattering":return new[]{P(A,9,2)};
                 case "nt_desperate_frame":return new[]{P(A,13),P(B,7)};
-                case "nt_full_measure":return new[]{P(A,13),P(B,9)};
+                case "nt_full_measure":return new[]{P(A,11),P(B,9)};
                 case "nt_quiet_omen":return new[]{P(B,17),P(A,7)};
-                case "nt_left_unspent":return new[]{P(A,19)};
+                case "nt_left_unspent":return new[]{P(A,17)};
                 case "nt_dc_maw":return new[]{P(A,19)};
                 case "nt_dc_coil":return new[]{P(B,24)};
                 case "nt_dc_burrow":return new[]{P(B,16)};
                 case "nt_dc_eruption":return new[]{P(A,28),P(W,1)};
-                case "nt_iw_step":return new[]{P(A,17),P(B,11)};
+                case "nt_iw_step":return new[]{P(A,15),P(B,11)};
                 case "nt_iw_guard":return new[]{P(B,25)};
                 case "nt_iw_warpath":return new[]{P(A,12),P(S,1),P(B,8)};
-                case "nt_iw_breaker":return new[]{P(A,24)};
-                case "nt_pc_maul":return new[]{P(A,20)};
+                case "nt_iw_breaker":return new[]{P(A,21)};
+                case "nt_pc_maul":return new[]{P(A,18)};
                 case "nt_pc_combo":return new[]{P(A,10,2)};
                 case "nt_pc_claw":return new[]{P(A,13),P(B,16)};
                 case "nt_pc_bone":return new[]{P(B,25)};
-                case "nt_ns_veiled":return new[]{P(A,16),P(B,10)};
+                case "nt_ns_veiled":return new[]{P(A,14),P(B,10)};
                 case "nt_ns_omen":return new[]{P(A,12),P(W,1)};
                 case "nt_ns_readied":return new[]{P(S,1),P(B,15)};
-                case "nt_ns_sentence":return new[]{P(A,25)};
-                case "nt_wb_march":return new[]{P(A,20),P(B,9)};
+                case "nt_ns_sentence":return new[]{P(A,22)};
+                case "nt_wb_march":return new[]{P(A,18),P(B,9)};
                 case "nt_wb_gather":return new[]{P(B,15),P(EnemyActionType.ChargeSet,1)};
                 case "nt_wb_overload":return new[]{P(S,1),P(B,17),P(EnemyActionType.ChargeSet,2)};
-                case "nt_wb_break":return new[]{P(A,42),P(EnemyActionType.ChargeSet,0)};
+                case "nt_wb_break":return new[]{P(A,38),P(EnemyActionType.ChargeSet,0)};
                 case "nt_wb_aftershock":return new[]{P(B,16),P(A,10)};
             }
             return null;
@@ -134,7 +134,7 @@ namespace GildedFate.Combat
                 case "nt_ns_readied":return name+" · SENTENCE NEXT";
                 case "nt_wb_gather":return name+" · CHARGE 1/2 · WORLD BREAK COMING";
                 case "nt_wb_overload":return name+" · CHARGE 2/2 · WORLD BREAK NEXT";
-                case "nt_wb_break":return name+" · 42 DAMAGE";
+                case "nt_wb_break":return name+" · 38 DAMAGE";
             }
             switch(enemyId)
             {
@@ -227,7 +227,7 @@ namespace GildedFate.Combat
                 case NeutralContent.IronWanderer:lines.Add("Crushing Step → Raise Guard → Warpath → Breaker.");break;
                 case NeutralContent.PaleChimera:{var s=Cycle(m,4);lines.Add($"STANCE · {ChimeraStance(s/2)} (action {s%2+1}/2). Two Predatory actions, then two Guarded actions. No free stats on switching.");break;}
                 case NeutralContent.NamelessSeer:lines.Add("Veiled Strike → Ill Omen → Readied Fate → Sentence. Readied Fate always prepares the Sentence.");break;
-                case NeutralContent.Worldbreaker:lines.Add($"CHARGE {m.counter}/2 · Crushing March → Gather the World → Overload → WORLD BREAK (42, one hit) → Aftershock. The charge is always shown for two full turns. It cannot be interrupted by damage; kill it, Block, or weaken it.");break;
+                case NeutralContent.Worldbreaker:lines.Add($"CHARGE {m.counter}/2 · Crushing March → Gather the World → Overload → WORLD BREAK (38, one hit) → Aftershock. The charge is always shown for two full turns. It cannot be interrupted by damage; kill it, Block, or weaken it.");break;
             }
         }
         private string DescribeNeutralAction(EnemyActionType type,int amount,EnemyIntentAction a)

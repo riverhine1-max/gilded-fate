@@ -41,7 +41,7 @@ boss always use full HP.
 | Flooded Marionette | Normal | 54 (49) | Strings 3/3. Loses one every action and never regains them |
 | The Ferryman | Elite | 112 | Dragging Anchor / Anchor Raised: Chain Drag → Raise → Drop 22 → Chain Drag → Raise → Crushing Wake |
 | The Bellkeeper | Elite, starts with Toll Thrall (21) + Sinker Thrall (25) | 96 | Chorus → Grand Toll → Command → Grand Toll; alone: Final Ring → Grand Toll → Final Ring |
-| The Sunken Engine | Elite | 124 | Pressure 0–4 |
+| The Sunken Engine | Elite | 132 | Pressure 0–4 |
 | The Drowned Magistrate | Boss, 3 phases, Bailiff Echo (22) Minion, cap 1 | 220 | Phase 2 at 146 HP, phase 3 at 73 HP |
 
 ### Rules worth knowing
@@ -59,10 +59,10 @@ boss always use full HP.
 
   | Cycle | Turns |
   |---|---|
-  | Pressure not yet full | Intake · Strike 12 · Compress · Strike 16 · Intake |
-  | Pressure full | Intake · Strike 18 · Compress · **Burst Valve 7 × 3** · Vent (14 Block) |
+  | Pressure not yet full | Intake · Strike 16 · Compress · Strike 20 · Intake |
+  | Pressure full | Intake · Strike 22 · Compress · **Burst Valve 9 × 3** · Vent (14 Block) |
 
-  The two cycles alternate. Pressure Strike deals 10 + 2 per Pressure. Burst Valve and Vent reset
+  The two cycles alternate. Pressure Strike deals 14 + 2 per Pressure. Burst Valve and Vent reset
   Pressure to 0.
 - **Drowned Magistrate:**
   - Phases change at 2/3 and 1/3 of max HP (146 and 73 at base HP). Each transition fires once and

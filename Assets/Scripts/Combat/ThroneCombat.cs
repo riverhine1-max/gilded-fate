@@ -162,8 +162,8 @@ namespace GildedFate.Combat
                 case "gt_unified":return new[]{P(EnemyActionType.BlockAllies,6),P(B,12)};
                 // Royal Adjudicator
                 case "gt_unworthy":return new[]{P(W,1),P(V,1)};
-                case "gt_judicial":return new[]{P(A,16)};
-                case "gt_sentence":return new[]{P(V,1),P(A,13)};
+                case "gt_judicial":return new[]{P(A,14)};
+                case "gt_sentence":return new[]{P(V,1),P(A,12)};
                 case "gt_seal":return new[]{P(A,10),P(B,11),P(W,1)};
                 // Court Strategist (never attacks)
                 case "gt_tactical":return new[]{P(EnemyActionType.PickRandomDmgAlly,0),P(EnemyActionType.StrengthTarget,1),P(EnemyActionType.BlockTarget,7)};
@@ -190,19 +190,19 @@ namespace GildedFate.Combat
                 case "gt_stampede":return new[]{P(A,12,2),P(EnemyActionType.ReserveSet,1)};
                 // Crown Duelist
                 case "gt_counterstance":return new[]{P(B,20),P(A,11)};
-                case "gt_piercing":return new[]{P(A,21),P(V,1)};
-                case "gt_measure":return new[]{P(A,16),P(B,9)};
+                case "gt_piercing":return new[]{P(A,18),P(V,1)};
+                case "gt_measure":return new[]{P(A,14),P(B,9)};
                 // Thronebreaker
                 case "gt_load":return new[]{P(B,15)};
                 case "gt_advance_ram":return new[]{P(A,12),P(B,8)};
                 case "gt_lock":return new[]{P(S,1),P(B,8)};
                 case "gt_charge":return new[]{P(A,31)};
                 // The Royal General
-                case "gt_gen_advance":return new[]{P(A,18),P(B,10)};
+                case "gt_gen_advance":return new[]{P(A,16),P(B,10)};
                 case "gt_gen_formation":return new[]{P(EnemyActionType.StrengthMinions,1),P(EnemyActionType.BlockMinions,8),P(B,10)};
                 case "gt_gen_command":return new[]{P(EnemyActionType.Command,1),P(B,8)};
                 case "gt_gen_reinforce":return new[]{P(EnemyActionType.Summon,1),P(B,9)};
-                case "gt_execution":return new[]{P(A,OwnedMinions(self).Count()>=2?26:23)};
+                case "gt_execution":return new[]{P(A,OwnedMinions(self).Count()>=2?24:21)};
                 // The Treasury Warden
                 case "gt_build":return new[]{P(EnemyActionType.ReserveGain,2),P(B,10)};
                 case "gt_reserve_strike":return new[]{P(A,14+2*Math.Max(0,m.counter))};
@@ -431,7 +431,7 @@ namespace GildedFate.Combat
                 case GildedThroneContent.Duelist:lines.Add("RESPONSE · Judges your previous turn: 3+ Attack cards → Royal Counterstance; else ending with 20+ Block → Piercing Advance; else Perfect Measure. Resolved on its own turn, never as an interrupt.");
                     lines.Add(judgeHadPreviousTurn?$"Last turn: {judgeLastAttacks} Attack cards, {judgeLastEndBlock} Block at end.":"No previous turn yet: Perfect Measure.");break;
                 case GildedThroneContent.Thronebreaker:lines.Add("SIEGE · 3 Load Ram → 2 Advance Ram → 1 Lock Target → Thronebreaker Charge (31). Always visible. Siege resets to 3 afterwards.");break;
-                case GildedThroneContent.General:lines.Add($"FORMATION · Leads 2 Royal Guards. May replace ONE fallen Guard once per fight ({(m.flag?"used":"available")}). Royal Execution deals 26 while both Guards live, else 23.");break;
+                case GildedThroneContent.General:lines.Add($"FORMATION · Leads 2 Royal Guards. May replace ONE fallen Guard once per fight ({(m.flag?"used":"available")}). Royal Execution deals 24 while both Guards live, else 21.");break;
                 case GildedThroneContent.Warden:lines.Add($"ROYAL RESERVE {m.counter}/6 · Palace-owned power, never your Gold. Reserve Strike 14 +2 per Reserve. Emergency Treasury once, below 35% health: all Reserve becomes 5 healing each, then 12 Block ({(m.flag?"used":"unused")}).");break;
                 case GildedThroneContent.Duelmaster:{var s=Cycle(m,6);lines.Add($"STANCE · {DuelStanceName(s/2)} (action {s%2+1}/2). King's Edge → Royal Guard → Execution, two actions each. Switching gives no heal, Strength or Block.");break;}
                 case GildedThroneContent.Sovereign:

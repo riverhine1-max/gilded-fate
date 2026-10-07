@@ -198,11 +198,11 @@ namespace GildedFate.Combat
                 case "wg_living_canopy":return new[]{P(B,16),P(S,1)};
                 case "wg_falling_grove":return new[]{P(A,11,2)};
                 case "pg_plant_seed":return new[]{P(B,9),P(EnemyActionType.PlantSeed,1)};
-                case "pg_thorn_seed":return new[]{P(A,20)};
+                case "pg_thorn_seed":return new[]{P(A,28)};
                 case "pg_ward_seed":return new[]{P(B,26),P(A,6)};
                 case "pg_rot_seed":return new[]{P(W,2),P(A,8)};
                 case "pg_bloom_seed":return new[]{P(H,8),P(S,1),P(B,8)};
-                case "pg_weeding_cut":return new[]{P(A,13)};
+                case "pg_weeding_cut":return new[]{P(A,19)};
                 case "hr_root_lash":return new[]{P(A,14),P(G,1)};
                 case "hr_ancient_bark":return new[]{P(B,20),P(G,1)};
                 case "hr_sap_draw":return new[]{P(H,7),P(B,7)};

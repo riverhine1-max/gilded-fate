@@ -51,14 +51,14 @@ HP shown as solo (group). Group HP is about 90% and applies to normals that star
 | Gilded Servitor | 16 | Minion. Servitor Jab 5 → Brace Frame 6 Block. Cap 2 |
 | Coin Mimic | 48 (43) | Holds 18 Bonus Gold. Glittering Bait 5 Block → Snap Shut 12 → Hoard (spend 4 Bonus: 12 Block) → Devour Value (spend 4 Bonus: 15). Remaining Bonus Gold is added to the reward |
 | Bellbound Herald | 46 (41) | First Toll (5 Block to others, 9 alone) → Second Toll (1 Weak + 5) → Third Toll (13 + 1 Strength) |
-| Crownless Duelist | 58 (52) | Reads your previous turn. 3+ cards, Attack-majority: Punishing Guard (15 Block + 6). Non-Attack-majority: Relentless Advance (13 + 1 Strength). Otherwise Measured Cut (10 + 5 Block) |
+| Crownless Duelist | 54 (49) | Reads your previous turn. 3+ cards, Attack-majority: Punishing Guard (15 Block + 6). Non-Attack-majority: Relentless Advance (11 + 1 Strength). Otherwise Measured Cut (9 + 5 Block) |
 
 ### Elites
 
 | Elite | HP | Behaviour |
 |---|---|---|
 | Crown Collector | 98 + 2 Coinbound Guards (23) | Collect Due (Seize 8 + 10) → Royal Levy (Seize 5 + 8 Block to Guards) → Collection Order (Command + 8 Block) if legal, else Foreclosure → Repossess (summon a Guard + 10 Block, once per fight) if legal, else Foreclosure. Foreclosure 18, or 22 while holding 10+ Seized Gold. Reward +10 Bonus Gold. Guards: Taxblade 7 → Guard the Collector (8 Block to the owner + 4 to self) |
-| Royal Auctioneer | 94 | Open Bidding (9 Block, announces a random Lot, never the same twice in a row) → the Lot → Hammer Fall 12. Lots: Blades 19 + 1 Strength, Protection 25 Block, Misfortune 2 Weak + 1 Vulnerable + 5, Tribute Seize 10 + 10. The Lot cannot be cancelled and survives save/load |
+| Royal Auctioneer | 118 | Open Bidding (9 Block, announces a random Lot, never the same twice in a row) → the Lot → Hammer Fall 16. Lots: Blades 24 + 1 Strength, Protection 25 Block, Misfortune 2 Weak + 1 Vulnerable + 5, Tribute Seize 10 + 10. The Lot cannot be cancelled and survives save/load |
 | Living Treasury | 108 | Reserve 0/6, +1 per Attack card that deals unblocked damage (once per card). Vault Slam 14 → Lockdown (spend 2: 20 Block, else Vault Slam) → Asset Release (spend all: 10 + 3 per Reserve). Emergency Reserve once, below 35% HP: spend up to 3, heal 6 each, 10 Block, taking priority |
 
 ### Boss — The Last Procession (210, solo, no Minions)

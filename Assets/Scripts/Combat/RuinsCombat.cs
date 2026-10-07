@@ -233,8 +233,8 @@ namespace GildedFate.Combat
                 case "gr_third_toll":return new[]{P(A,13),P(S,1)};
                 // Crownless Duelist
                 case "gr_punishing_guard":return new[]{P(B,15),P(A,6)};
-                case "gr_relentless_advance":return new[]{P(A,13),P(S,1)};
-                case "gr_measured_cut":return new[]{P(A,10),P(B,5)};
+                case "gr_relentless_advance":return new[]{P(A,11),P(S,1)};
+                case "gr_measured_cut":return new[]{P(A,9),P(B,5)};
                 // Crown Collector and Coinbound Guard
                 case "gr_collect_due":return new[]{P(EnemyActionType.SeizeGold,8),P(A,10)};
                 case "gr_royal_levy":return new[]{P(EnemyActionType.SeizeGold,5),P(EnemyActionType.BlockMinions,8)};
@@ -245,11 +245,11 @@ namespace GildedFate.Combat
                 case "gr_guard_collector":return new[]{P(EnemyActionType.BlockOwner,8),P(B,4)};
                 // Royal Auctioneer
                 case "gr_open_bidding":return new[]{P(B,9)};
-                case "gr_lot_blades":return new[]{P(A,19),P(S,1)};
+                case "gr_lot_blades":return new[]{P(A,24),P(S,1)};
                 case "gr_lot_protection":return new[]{P(B,25)};
                 case "gr_lot_misfortune":return new[]{P(W,2),P(V,1),P(A,5)};
                 case "gr_lot_tribute":return new[]{P(EnemyActionType.SeizeGold,10),P(A,10)};
-                case "gr_hammer_fall":return new[]{P(A,12)};
+                case "gr_hammer_fall":return new[]{P(A,16)};
                 // Living Treasury
                 case "gr_vault_slam":return new[]{P(A,14)};
                 case "gr_lockdown":return new[]{P(EnemyActionType.ReserveSpend,2),P(B,20)};
