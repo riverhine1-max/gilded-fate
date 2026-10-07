@@ -37,7 +37,8 @@ namespace GildedFate.Core
                     Opt("descend","SNEAK PAST THE GUARDIAN","","RARE RELIC (BANKED)",Nothing()).Says("One wrong step and it wakes.")
                         .Odds(60,"60% IT WAKES",false,"The guardian wakes. You flee with your life and nothing else, losing 12 HP.","",LoseBank(),Hp(-12))
                         .Otherwise(BankRelic(Rarity.Rare)).To("vault_bottom").Then("You slip past the guardian and lift a rare relic from its hoard."),
-                    Opt("cash","TAKE YOUR LOOT AND LEAVE","","EVERYTHING BANKED",CashOut()).Says("Walk back up with what you found.").Then("You climb back into the light with everything you found.")),
+                    Opt("cash","TAKE YOUR LOOT AND LEAVE","","EVERYTHING BANKED",CashOut()).Says("Walk back up with what you found.").Then("You climb back into the light with everything you found."),
+                    Opt("guardian","WAKE THE GUARDIAN AND FIGHT","START AN ELITE FIGHT","EVERYTHING BANKED · ELITE REWARDS",CashOut(),Fight(true)).Only("Vanguard").Says("A Vanguard doesn't sneak.").Then("You bank your loot, plant your feet and shout. The guardian wakes.")),
                 Scene("vault_bottom",5,"The hoard is yours. The guardian's breathing slows behind you.",
                     Opt("cash","TAKE EVERYTHING","","EVERYTHING BANKED",CashOut()).Says("Climb, and don't look back.").Then("You climb out with a fortune the Vault will not forget.")));
 
@@ -78,6 +79,7 @@ namespace GildedFate.Core
                     Opt("leave","WALK ON","","NOTHING",Nothing()).Says("Not every door needs opening.")},
                 Scene("doors_stranger",2,"The stranger deals two cards face down and waits.",
                     Opt("trade","TRADE A CARD","CHOOSE 1 CARD","REMOVE IT · GAIN AN UNCOMMON CARD",Select(EventEffectKind.RemoveSelected,EventCardFilter.Any),RandomCard(EventCardSource.Own,Rarity.Uncommon,CardKind.Skill,false,EventCardFilter.Any)).Says("He takes yours without looking at it.").Then("He slides one of his cards across the table."),
+                    Opt("hex","HEX THE DECK","ADD A CURSE","RARE RELIC",RandomCurse(),Relic(Rarity.Rare)).Only("Hexer").Says("A Hexer always knows which card bites.").Then("You hex his deck. He loses, pays up and leaves something behind in yours."),
                     Opt("game","PLAY HIS GAME","","???",Nothing()).Says("One card wins. One card bites.")
                         .Odds(50,"50% WIN",true,"You turn the winning card. He bows and hands you a rare relic.","",Relic(Rarity.Rare))
                         .Otherwise(Hp(-8)).Then("You turn the wrong card. It bites. You lose 8 HP."),
@@ -114,6 +116,7 @@ namespace GildedFate.Core
                     Opt("accept","ACCEPT THE FINAL TEST","","???",Nothing()).Says("Pass, and the examiner's reward is yours.")
                         .Odds(50,"50% PASS",true,"You pass. The examiner hands you an uncommon relic without a word.","",Relic(Rarity.Uncommon))
                         .Otherwise(Hp(-10)).Then("The stone splits and so does your guard. You lose 10 HP."),
+                    Opt("break","BREAK THE STONE","LOSE 6 HP","UNCOMMON RELIC",Hp(-6),Relic(Rarity.Uncommon)).Only("Vanguard").Says("There's always one right answer: hit it.").Then("The stone shatters. The examiner blinks, then hands over the relic."),
                     Opt("yield","YIELD","","30 GOLD",Gold(30)).Says("Two out of three is still a story.").Then("The examiner pays you for the two tests you passed.")));
 
             // 6. A funeral march, with an option only the Reaper sees.
@@ -135,6 +138,7 @@ namespace GildedFate.Core
                 new[]{
                     Opt("bid","BID 60 GOLD","NEED 60 GOLD","RARE RELIC IF YOU WIN",Nothing()).Says("A low opening bid. The phantoms may let it go.")
                         .Odds(45,"45% WIN",true,"No phantom hand rises. Sold, for 60 Gold.","",Gold(-60),Relic(Rarity.Rare)).To("auction_2").Then("A phantom hand rises. Outbid."),
+                    Opt("spook","SPOOK THE PHANTOMS","PAY 75 GOLD","RARE RELIC",Gold(-75),Relic(Rarity.Rare)).Only("Reaper").Says("The dead don't bid against a Reaper.").Then("One look from you and the hall empties. Sold, for 75 Gold."),
                     Opt("leave","WALK AWAY","","NOTHING",Nothing()).Says("Let the dead buy their treasures.")},
                 Scene("auction_2",2,"The price climbs. Half the phantoms have stopped bidding.",
                     Opt("bid","BID 90 GOLD","NEED 90 GOLD","RARE RELIC IF YOU WIN",Nothing()).Says("Most phantoms can't follow you this high.")
@@ -260,7 +264,8 @@ namespace GildedFate.Core
             EventChoiceDef Cup(string id,string title,string line)=>Opt(id,title,"","WIN "+stake*2+" GOLD",Nothing()).Says(line)
                 .Odds(34,"1 IN 3",true,"Your coin, right where you guessed. You win "+stake*2+" Gold.","ride_"+stake,Gold(stake*2))
                 .Then("Empty. The dealer sweeps your stake away.");
-            return new[]{Cup("left","THE LEFT CUP","It moved last."),Cup("middle","THE MIDDLE CUP","It never seemed to move."),Cup("right","THE RIGHT CUP","The dealer glanced at it.")};
+            var sight=Opt("sight","SEE THROUGH THE CUPS","LOSE 4 HP","WIN "+stake*2+" GOLD",Hp(-4),Gold(stake*2)).Only("Hexer").Says("A Hexer's eyes see through wood.").To("ride_"+stake).Then("You point at the right cup without blinking. The dealer pays, scowling.");
+            return new[]{Cup("left","THE LEFT CUP","It moved last."),Cup("middle","THE MIDDLE CUP","It never seemed to move."),Cup("right","THE RIGHT CUP","The dealer glanced at it."),sight};
         }
         private static EventChoiceDef[] Ride(int stake)
         {

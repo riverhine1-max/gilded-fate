@@ -107,7 +107,8 @@ namespace GildedFate.Core
             Add("abandoned_forge","THE ABANDONED FORGE","An ancient forge still burns despite having no fuel.",1,1,EventFrequency.Common,"forge",
                 C("sharpen","SHARPEN","CHOOSE 1 ATTACK","UPGRADE IT",Select(EventEffectKind.UpgradeSelected,EventCardFilter.Attack)),
                 C("reinforce","REINFORCE","CHOOSE 1 SKILL","UPGRADE IT",Select(EventEffectKind.UpgradeSelected,EventCardFilter.Skill)),
-                C("ashes","SEARCH THE ASHES","","GAIN 45 GOLD",Gold(45)));
+                C("ashes","SEARCH THE ASHES","","GAIN 45 GOLD",Gold(45)),
+                C("warforge","FORGE A WAR BLADE","LOSE 8 HP","GAIN A RANDOM RARE ATTACK",Hp(-8),RandomCard(EventCardSource.Own,Rarity.Rare,CardKind.Attack)).Only("Vanguard"));
             Add("frayed_thread","THE FRAYED THREAD","A single golden strand hangs unnaturally from the ceiling.",1,1,EventFrequency.Uncommon,"thread",
                 C("pull","PULL IT","CHOOSE AN ELIGIBLE ATTACK","APPLY BINDING: SERRATED",Bind("serrated",EventCardFilter.Attack)),
                 C("armor","WRAP IT AROUND YOUR ARMOR","CHOOSE AN ELIGIBLE BLOCK CARD","APPLY BINDING: REINFORCED",Bind("reinforced",EventCardFilter.DefensiveSkill)),
@@ -169,7 +170,8 @@ namespace GildedFate.Core
             Add("living_ink","THE LIVING INK","Golden ink crawls across an open book.",2,2,EventFrequency.Uncommon,"ink",
                 C("attack","WRITE ON AN ATTACK","CHOOSE AN ELIGIBLE ATTACK","APPLY SERRATED OR WEIGHTED",Bind("serrated|weighted",EventCardFilter.Attack)),
                 C("skill","WRITE ON A SKILL","CHOOSE AN ELIGIBLE SKILL","APPLY REINFORCED OR LINGERING",Bind("reinforced|lingering",EventCardFilter.Skill)),
-                C("drink","DRINK THE INK","LOSE 5 HP","GAIN 1 RANDOM FATE SHARD",Hp(-5),RandomShards(1)));
+                C("drink","DRINK THE INK","LOSE 5 HP","GAIN 1 RANDOM FATE SHARD",Hp(-5),RandomShards(1)),
+                C("hexwrite","WRITE A HEX","LOSE 5 HP","GAIN A RANDOM RARE POWER",Hp(-5),RandomCard(EventCardSource.Own,Rarity.Rare,CardKind.Power)).Only("Hexer"));
             Add("hanging_chains","THE HANGING CHAINS","Thousands of golden chains hang motionless.",2,2,EventFrequency.Uncommon,"chains",
                 C("chain","TAKE A CHAIN","CHOOSE AN ELIGIBLE ATTACK OR SKILL","APPLY BINDING: CHAINED",Bind("chained",EventCardFilter.BindingEligible)),
                 C("melt","MELT THEM","","GAIN 80 GOLD",Gold(80)));
@@ -282,7 +284,7 @@ namespace GildedFate.Core
                 C("possibility","POSSIBILITY","","REVEAL 3 CARDS · SMALL WANDERER CHANCE",RewardCards(EventCardSource.AnyPlayable,3)));
 
             if(events.Count!=50)throw new InvalidOperationException("Event catalog must contain exactly 50 classic events.");
-            AddStoryEvents(events);
+            ApplyClassicFlavor(events);AddStoryEvents(events);
             return events.ToArray();
         }
 

@@ -67,7 +67,7 @@ namespace GildedFate.UI
                 else
                 {DrawLine(c+Vector2.up*17,c+Vector2.down*17,new Color(.58f,.52f,.39f,.46f),1);DrawLine(c+Vector2.left*17,c+Vector2.right*17,new Color(.58f,.52f,.39f,.46f),1);}
                 GUI.color=old;
-                RegisterCombatHudTarget("shard:"+i,8,r,def?.name??"EMPTY SHARD SOCKET",def==null?"An empty socket for a Fate Shard.":(active?"ACTIVE\n":fracture?"FRACTURED\n":"STABLE\n")+(fracture?def.fracturedText:def.stableText)+"\n\nA: awaken this shard once its charge is full. Only one can be active each combat.",def==null?0:4,owned==null?-1:run.shards.IndexOf(owned));
+                RegisterCombatHudTarget("shard:"+i,8,r,def?.name??"EMPTY SHARD SOCKET",def==null?"An empty socket for a Fate Shard.":(active?"ACTIVE\n":fracture?"FRACTURED\n":"STABLE\n")+(fracture?def.fracturedText:def.stableText)+"\n\nA: awaken this shard once its charge is full. Hold Y: shatter it. Only one can be active each combat.",def==null?0:4,owned==null?-1:run.shards.IndexOf(owned));
                 var state=def==null?"EMPTY":fracture?"FRACTURED":owned.uses==(active?1:0)?"STABLE I":"STABLE II";
                 if(ReliquaryLayout&&def!=null)state=ReliquaryStateText(owned,active,state);
                 var stateStyle=ReadableStyle(11,true);stateStyle.normal.textColor=def==null?gold:state=="READY"?Gold:accent;

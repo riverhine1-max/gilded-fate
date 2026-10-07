@@ -85,8 +85,14 @@ namespace GildedFate.UI
                 {
                     var owned=usable[i];var def=WorldContent.FateShards.First(s=>s.id==owned.id);var nextFractured=owned.uses>=2;
                     var art=new Rect(r.center.x-62,r.y+18,124,124);var lift=profile.reduceMotion?0:Mathf.Sin(shimmer*1.3f+i)*4;
-                    if(hot&&!profile.reduceFlashing)Fill(new Rect(art.x-8,art.y-8+lift,art.width+16,art.height+16),new Color(1f,.84f,.47f,.1f));
-                    DrawFateShardArt(new Rect(art.x,art.y+lift,art.width,art.height),def);
+                    // The shard rises out of its reliquary socket to its card.
+                    var rise=ShardEase(Mathf.Clamp01((Time.unscaledTime-shardAttuneOpenedAt)/(profile.reduceMotion?.01f:.55f)));
+                    var from=ReliquarySocketCenter(owned.slot);var at=Vector2.Lerp(from,art.center,rise);var size=Mathf.Lerp(ReliquarySocketSize,art.width,rise);
+                    if(rise<1&&!profile.reducedVfx){var color=ShardColor(def);for(var t=1;t<=6;t++){var p=Vector2.Lerp(from,at,1-t*.12f);ShardSoft(p,40-t*4,new Color(color.r,color.g,color.b,.3f*(1-t/7f)));}}
+                    art=new Rect(at.x-size*.5f,at.y-size*.5f,size,size);
+                    if(hot&&!profile.reduceFlashing&&rise>=1)Fill(new Rect(art.x-8,art.y-8+lift,art.width+16,art.height+16),new Color(1f,.84f,.47f,.1f));
+                    ShardSoft(art.center,art.width*2f,new Color(1f,.82f,.45f,.14f+(1-rise)*.25f));
+                    DrawFateShardArt(new Rect(art.x,art.y+lift*rise,art.width,art.height),def);
                     GUI.Label(new Rect(r.x+8,r.y+146,r.width-16,30),def.name,new GUIStyle(titleStyle){fontSize=21,normal={textColor=nextFractured?new Color(1f,.7f,.38f):new Color(.76f,.9f,1f)}});
                     GUI.Label(new Rect(r.x+8,r.y+176,r.width-16,22),owned.RemainingUses+" / 3 USES LEFT"+(nextFractured?" · FRACTURED NEXT":"")+(owned.primed?" · PRIMED":""),ReadableStyle(12,true));
                     var body=new GUIStyle(footerStyle){fontSize=15,wordWrap=true,alignment=TextAnchor.UpperCenter,normal={textColor=new Color(.94f,.92f,.86f)}};
@@ -99,6 +105,8 @@ namespace GildedFate.UI
             DrawMenuNavigationHint(w,h,"Arrows  Select    Enter  Attune","D-pad / Stick  Select    A  Attune");
         }
 
+        // Socket centre in the combat reliquary, independent of which screen is drawing.
+        private Vector2 ReliquarySocketCenter(int slot){var bottom=CombatHeight-268;return new Vector2(56+ReliquarySocketSize*.5f,bottom-(1-Mathf.Clamp(slot,0,1))*158+ReliquarySocketSize*.5f);}
         // ---------------- Reliquary frame, rings, pips ----------------
         private void DrawReliquaryFrame(Rect first,Rect last,Color gold)
         {
@@ -218,10 +226,25 @@ namespace GildedFate.UI
                 Fill(new Rect(shatter.x+3,shatter.y+3,(shatter.width-6)*p,shatter.height-6),new Color(1f,.45f,.15f,.35f));
                 if(p>=1){shatterHoldStart=-1;shatterHoldSlot=-1;selectedShrineSlot=-1;QueueShard(def,owned,run.shards.IndexOf(owned),true);}
             }
-            else if(shatterHoldSlot==owned.slot){shatterHoldStart=-1;shatterHoldSlot=-1;}
+            else if(shatterHoldSlot==owned.slot&&!controllerShatterActive){shatterHoldStart=-1;shatterHoldSlot=-1;}
             var style=new GUIStyle(buttonStyle){fontSize=13,normal={textColor=ready?new Color(1f,.66f,.36f):new Color(.5f,.45f,.4f)}};
             GUI.Label(shatter,"HOLD TO SHATTER",style);
             if(hot)SetRunHudTooltip(shatter,"SHATTER "+def.name,"Hold to take the FRACTURED power now. The shard is destroyed, however many uses it has left.\n\n"+def.fracturedText);
+        }
+        // Controller / keyboard shatter: hold Y (or H) while a shard is focused in the combat HUD.
+        private bool controllerShatterActive;
+        private void UpdateControllerShatter(int shardIndex)
+        {
+            var pad=UnityEngine.InputSystem.Gamepad.current;var key=UnityEngine.InputSystem.Keyboard.current;
+            var held=pad?.buttonNorth.isPressed==true||key?.hKey.isPressed==true;
+            if(shardIndex<0||shardIndex>=run.shards.Count||!held||combat==null)
+            {if(controllerShatterActive){shatterHoldStart=-1;shatterHoldSlot=-1;controllerShatterActive=false;}return;}
+            var owned=run.shards[shardIndex];var def=WorldContent.FateShards.FirstOrDefault(s=>s.id==owned.id);
+            if(def==null||owned.uses>=2||!ShardReady(owned,false)||combatBusy||combatPauseOpen)return;
+            controllerShatterActive=true;
+            if(shatterHoldSlot!=owned.slot||shatterHoldStart<0){shatterHoldSlot=owned.slot;shatterHoldStart=Time.unscaledTime;}
+            if(Time.unscaledTime-shatterHoldStart>=ShatterHoldSeconds)
+            {shatterHoldStart=-1;shatterHoldSlot=-1;controllerShatterActive=false;combatHudInspectActive=false;QueueShard(def,owned,shardIndex,true);}
         }
         private void ShatterBurst(int slot,FateShardDef shard)
         {

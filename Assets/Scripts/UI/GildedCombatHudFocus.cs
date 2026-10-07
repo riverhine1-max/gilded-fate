@@ -92,6 +92,7 @@ namespace GildedFate.UI
             if(!combatHudInspectActive||screen!=ScreenMode.Combat||routeInspectionOpen)return;
             var i=CombatHudFocusIndex;if(i<0){combatHudInspectActive=false;return;}
             var target=combatHudTargets[i];var r=target.rect;const float reach=7;
+            UpdateControllerShatter(target.command==4?target.index:-1); // hold Y on a focused shard (GildedShardReliquary.cs)
             foreach(var corner in new[]{new Vector2(r.x-4,r.y-4),new Vector2(r.xMax+4,r.y-4),new Vector2(r.xMax+4,r.yMax+4),new Vector2(r.x-4,r.yMax+4)})
             {
                 DrawLine(corner,corner+new Vector2(corner.x<r.center.x?reach:-reach,0),Gold,2);
@@ -101,7 +102,8 @@ namespace GildedFate.UI
             if(captureMode&&CommandValue("-gfCapture")=="polish-tooltip")detail=string.Join("\n\n",RuleKeywords.Select(k=>k.title+"\n"+k.detail));
             SetCombatEffectTooltip(target.title,detail,r.center);
             DrawCombatEffectTooltip(w,h);
-            GUI.Label(new Rect(22,h-27,540,20),menuUsesGamepad?"D-PAD / STICK · INSPECT    UP/DOWN · GROUP    A · CONFIRM    B · HAND":"ARROWS · INSPECT    UP/DOWN · GROUP    ENTER · CONFIRM    BACKSPACE · HAND",
+            var shatterHint=target.command==4?(menuUsesGamepad?"    HOLD Y · SHATTER":"    HOLD H · SHATTER"):"";
+            GUI.Label(new Rect(22,h-27,720,20),(menuUsesGamepad?"D-PAD / STICK · INSPECT    UP/DOWN · GROUP    A · CONFIRM    B · HAND":"ARROWS · INSPECT    UP/DOWN · GROUP    ENTER · CONFIRM    BACKSPACE · HAND")+shatterHint,
                 new GUIStyle(footerStyle){fontSize=12,alignment=TextAnchor.MiddleLeft,normal={textColor=Gold}});
         }
     }
