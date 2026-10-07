@@ -28,6 +28,7 @@ namespace GildedFate.Map
     public sealed class FateShardState
     {
         public string id="";public int uses,slot=-1;public bool active,activeFractured;
+        public bool primed; // Shrine of the Waiting Shard: starts every fight with 3 charge
         public bool Fractured=>uses>=2;
         public bool CanActivate=>!active&&uses<3;
         public int RemainingUses=>Math.Max(0,3-uses);
@@ -71,6 +72,8 @@ namespace GildedFate.Map
         public List<TemporaryEventEffect> temporaryEventEffects=new();
         public EventSelectionKind eventSelectionKind;
         public string pendingEventChoiceId="",pendingEventBindingId="",pendingEventResult="";
+        // Multi-step events: current scene, the scene after the outcome screen, banked loot and the odds-roll counter.
+        public string activeEventSceneId="",pendingEventNextScene="";public List<string> eventBank=new();public int eventStepCounter;
         public int pendingEventChoicesNeeded;
         public string pendingFateweaveId="",pendingBindingId="";public int pendingChoicesNeeded;
         // Pull one, cut one: the strand severed for gold after the pulled boon resolves.

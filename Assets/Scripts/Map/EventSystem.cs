@@ -31,7 +31,7 @@ namespace GildedFate.Map
         public static bool BeginEvent(RunModel run,EventDefinition definition)
         {
             if(run==null||definition==null)return false;
-            run.EnsureEventState();ClearPending(run,false);run.activeEventId=definition.id;
+            run.EnsureEventState();ClearPending(run,false);run.activeEventId=definition.id;run.activeEventSceneId="";run.pendingEventNextScene="";run.eventBank.Clear();
             if(!definition.repeatable&&!run.seenEventIds.Contains(definition.id))run.seenEventIds.Add(definition.id);
             run.stage=RunStage.Event;return true;
         }
@@ -39,7 +39,8 @@ namespace GildedFate.Map
         public static EventChoiceAvailability Availability(RunModel run,EventChoiceDef choice)
         {
             if(run==null||choice==null)return new(false,"Choice unavailable");
-            foreach(var effect in choice.effects)
+            if(!string.IsNullOrEmpty(choice.heroOnly)&&run.hero.ToString()!=choice.heroOnly)return new(false,choice.heroOnly+" only");
+            foreach(var effect in AllEffects(choice))
             {
                 if(effect.kind==EventEffectKind.Gold&&EffectiveGoldAmount(run,effect)<0&&run.gold<-EffectiveGoldAmount(run,effect))return new(false,"Requires "+(-EffectiveGoldAmount(run,effect))+" Gold");
                 if(effect.kind==EventEffectKind.LoseHp&&effect.amount<0&&run.hp+effect.amount<1)return new(false,"Requires more than "+(-effect.amount)+" HP");
@@ -62,7 +63,7 @@ namespace GildedFate.Map
 
         public static bool BeginChoice(RunModel run,EventChoiceDef choice)
         {
-            if(run==null||choice==null||EventContent.FindChoice(run.activeEventId,choice.id)==null||!Availability(run,choice).available)return false;
+            if(run==null||choice==null||!CurrentChoices(run,EventContent.Find(run.activeEventId)).Contains(choice)||!Availability(run,choice).available)return false;
             ClearPending(run,false);run.pendingEventChoiceId=choice.id;
             var selector=choice.effects.FirstOrDefault(NeedsSelection);
             if(selector==null){if(PrepareFatewheelShardReplacement(run,choice)||PrepareAutomaticShardRewards(run,choice))return true;Commit(run);return true;}
@@ -147,7 +148,46 @@ namespace GildedFate.Map
 
         public static bool CompleteResult(RunModel run)
         {
-            if(run==null||run.stage!=RunStage.EventResult)return false;ClearPending(run,false);return true;
+            if(run==null||run.stage!=RunStage.EventResult)return false;ClearPending(run,false);run.activeEventSceneId="";run.pendingEventNextScene="";run.eventBank.Clear();return true;
+        }
+
+        // ---------------- Multi-step events ----------------
+        public static EventSceneDef CurrentScene(RunModel run,EventDefinition definition)=>definition?.Scene(run?.activeEventSceneId);
+        public static IEnumerable<EventChoiceDef> CurrentChoices(RunModel run,EventDefinition definition)
+        {
+            if(definition==null)return Enumerable.Empty<EventChoiceDef>();
+            var choices=CurrentScene(run,definition)?.choices??definition.choices??Array.Empty<EventChoiceDef>();
+            return choices.Where(c=>string.IsNullOrEmpty(c.heroOnly)||run!=null&&run.hero.ToString()==c.heroOnly);
+        }
+        public static int CurrentStep(RunModel run,EventDefinition definition)=>CurrentScene(run,definition)?.step??1;
+        public static bool HasNextScene(RunModel run)=>run!=null&&!string.IsNullOrEmpty(run.pendingEventNextScene)&&EventContent.Find(run.activeEventId)?.Scene(run.pendingEventNextScene)!=null;
+        // After an outcome screen: move to the next scene if there is one. Returns false when the event is over.
+        public static bool ContinueEvent(RunModel run)
+        {
+            if(run==null||run.stage!=RunStage.EventResult||!HasNextScene(run))return false;
+            run.activeEventSceneId=run.pendingEventNextScene;run.pendingEventNextScene="";ClearPending(run,false);run.stage=RunStage.Event;return true;
+        }
+        public static string BankLabel(string entry)
+        {
+            var parts=(entry??"").Split(':');if(parts.Length!=2)return entry??"";
+            return parts[0]=="gold"?parts[1]+" Gold":parts[0]=="relic"?parts[1]+" relic":entry;
+        }
+        private static IEnumerable<EventEffectDef> AllEffects(EventChoiceDef choice)=>(choice.effects??Array.Empty<EventEffectDef>()).Concat(choice.chanceEffects??Array.Empty<EventEffectDef>()).Concat(choice.failEffects??Array.Empty<EventEffectDef>());
+        private static int StableHash(string text){unchecked{var h=23;foreach(var ch in text??"")h=h*31+ch;return h;}}
+        private static void CashOut(RunModel run)
+        {
+            foreach(var entry in run.eventBank.ToArray())
+            {
+                var parts=entry.Split(':');if(parts.Length!=2)continue;
+                if(parts[0]=="gold"&&int.TryParse(parts[1],out var amount))run.gold+=amount;
+                else if(parts[0]=="relic"&&Enum.TryParse<Rarity>(parts[1],out var rarity)){var relic=PickRelic(run,new EventEffectDef{kind=EventEffectKind.GrantRelic,rarity=rarity});if(relic!=null)run.AcquireRelic(relic.id);else run.gold+=rarity==Rarity.Rare?120:rarity==Rarity.Uncommon?80:50;}
+            }
+            run.eventBank.Clear();
+        }
+        private static void Bank(RunModel run,string kind,string value)
+        {
+            if(kind=="gold"){var i=run.eventBank.FindIndex(e=>e.StartsWith("gold:",StringComparison.Ordinal));if(i>=0&&int.TryParse(run.eventBank[i].Substring(5),out var had)){run.eventBank[i]="gold:"+(had+int.Parse(value));return;}}
+            run.eventBank.Add(kind+":"+value);
         }
 
         public static bool BindingEligible(BindingDef binding,RunCard card)=>binding!=null&&card!=null&&card.specialModificationKind==SpecialModificationKind.None&&BindingEligible(binding,card.BuildDefinition());
@@ -230,7 +270,22 @@ namespace GildedFate.Map
         {
             var choice=PendingChoice(run);if(choice==null)return;
             var selectedCards=run.pendingEventSelectionIds.Select(id=>run.cards.FirstOrDefault(c=>c.persistentId==id)).Where(c=>c!=null).ToList();
-            foreach(var effect in choice.effects)
+            ApplyEffects(run,choice.effects,selectedCards);
+            var hit=false;
+            if(choice.chance>0)
+            {
+                var roll=PositiveHash(run.seed,run.floor,run.eventStepCounter,StableHash(run.activeEventId+"/"+choice.id))%100;
+                hit=roll<choice.chance;ApplyEffects(run,hit?choice.chanceEffects:choice.failEffects,selectedCards);
+            }
+            run.eventStepCounter++;
+            var story=hit?choice.chanceText:choice.resultText;if(!string.IsNullOrWhiteSpace(story)&&string.IsNullOrWhiteSpace(run.pendingEventResult))run.pendingEventResult=story;
+            run.pendingEventNextScene=(hit?choice.chanceNext:choice.next)??"";
+            run.SyncLegacyDeck();if(string.IsNullOrWhiteSpace(run.pendingEventResult))run.pendingEventResult=(string.IsNullOrWhiteSpace(choice.costText)?"":choice.costText+"  →  ")+choice.rewardText;run.stage=RunStage.EventResult;run.eventSelectionKind=EventSelectionKind.None;
+        }
+
+        private static void ApplyEffects(RunModel run,IEnumerable<EventEffectDef> effects,List<RunCard> selectedCards)
+        {
+            foreach(var effect in effects??Array.Empty<EventEffectDef>())
             {
                 switch(effect.kind)
                 {
@@ -269,9 +324,13 @@ namespace GildedFate.Map
                     case EventEffectKind.FractureShard:ApplyShardOperation(run,effect,"fracture");break;
                     case EventEffectKind.RevealMap:RevealMap(run,effect.count);break;
                     case EventEffectKind.Fatewheel:ApplyFatewheel(run);break;
+                    case EventEffectKind.BankGold:Bank(run,"gold",effect.amount.ToString());break;
+                    case EventEffectKind.BankRelic:Bank(run,"relic",effect.rarity.ToString());break;
+                    case EventEffectKind.CashOut:CashOut(run);break;
+                    case EventEffectKind.LoseBank:run.eventBank.Clear();break;
+                    case EventEffectKind.AddCard:if(GameContent.Find(effect.id)!=null)run.AddCard(effect.id,effect.upgraded);break;
                 }
             }
-            run.SyncLegacyDeck();if(string.IsNullOrWhiteSpace(run.pendingEventResult))run.pendingEventResult=(string.IsNullOrWhiteSpace(choice.costText)?"":choice.costText+"  →  ")+choice.rewardText;run.stage=RunStage.EventResult;run.eventSelectionKind=EventSelectionKind.None;
         }
 
         private static void ApplyShardGrants(RunModel run)
@@ -288,6 +347,7 @@ namespace GildedFate.Map
         {
             var id=run.pendingEventSelectionIds.FirstOrDefault();var shard=run.shards.FirstOrDefault(s=>s.id==id);if(shard==null)return;
             if(effect.id=="remove"){run.shards.Remove(shard);return;}
+            if(effect.id=="prime"){shard.primed=true;return;}
             if(operation=="repair"){shard.uses=Math.Max(0,shard.uses-1);return;}
             if(operation=="fracture"){shard.uses=2;shard.active=false;shard.activeFractured=false;return;}
             var alternatives=WorldContent.FateShards.Where(s=>s.id!=shard.id).ToList();if(alternatives.Count==0)return;var replacement=alternatives[PositiveHash(run.seed,run.floor,id.GetHashCode(),2081)%alternatives.Count];shard.id=replacement.id;shard.uses=0;shard.active=false;shard.activeFractured=false;
@@ -329,7 +389,13 @@ namespace GildedFate.Map
         }
 
         private static bool EventViable(RunModel run,EventDefinition definition)=>definition.choices.Any(c=>Availability(run,c).available);
-        private static EventChoiceDef PendingChoice(RunModel run)=>EventContent.FindChoice(run?.activeEventId,run?.pendingEventChoiceId);
+        public static EventChoiceDef ActiveChoice(RunModel run)=>PendingChoice(run);
+        // Scene-aware: multi-step events reuse choice ids (such as "descend") across scenes.
+        private static EventChoiceDef PendingChoice(RunModel run)
+        {
+            if(run==null||string.IsNullOrEmpty(run.pendingEventChoiceId))return null;
+            return CurrentChoices(run,EventContent.Find(run.activeEventId)).FirstOrDefault(c=>c.id==run.pendingEventChoiceId)??EventContent.FindChoice(run.activeEventId,run.pendingEventChoiceId);
+        }
         private static bool NeedsSelection(EventEffectDef effect)=>effect!=null&&effect.kind is EventEffectKind.UpgradeSelected or EventEffectKind.RemoveSelected or EventEffectKind.TransformSelected or EventEffectKind.RemoveCurse or EventEffectKind.RewardCards or EventEffectKind.RewardShards or EventEffectKind.RemoveRelic or EventEffectKind.BindSelected or EventEffectKind.DuplicateWithBinding or EventEffectKind.TemporaryFirstDrawFree or EventEffectKind.RepairShard or EventEffectKind.TradeShard or EventEffectKind.FractureShard;
 
         private static IEnumerable<RunCard> EligibleCards(RunModel run,EventEffectDef effect)
@@ -368,7 +434,7 @@ namespace GildedFate.Map
 
         private static IEnumerable<FateShardState> EligibleShards(RunModel run,EventEffectDef effect)
         {
-            if(run?.shards==null)return Enumerable.Empty<FateShardState>();var shards=run.shards.AsEnumerable();if(effect?.kind==EventEffectKind.FractureShard)shards=shards.Where(s=>s.uses<2&&!s.active);if(effect?.kind==EventEffectKind.RepairShard&&effect.id!="remove")shards=shards.Where(s=>s.uses>0&&!s.active);return shards;
+            if(run?.shards==null)return Enumerable.Empty<FateShardState>();var shards=run.shards.AsEnumerable();if(effect?.kind==EventEffectKind.FractureShard)shards=shards.Where(s=>s.uses<2&&!s.active);if(effect?.kind==EventEffectKind.RepairShard&&effect.id=="prime")shards=shards.Where(s=>!s.primed&&s.uses<3);else if(effect?.kind==EventEffectKind.RepairShard&&effect.id!="remove")shards=shards.Where(s=>s.uses>0&&!s.active);return shards;
         }
         private static IEnumerable<RelicDef> RemovableRelics(RunModel run)=>GameContent.Relics.Where(r=>r.rarity==Rarity.Common&&r.id is not ("gilded_buckle" or "cracked_prism")&&run.relics.Contains(r.id));
         private static IEnumerable<RelicDef> RelicPool(RunModel run,EventEffectDef effect)
@@ -451,7 +517,7 @@ namespace GildedFate.Map
     {
         public static void EnsureEventState(this RunModel run)
         {
-            run.seenEventIds??=new List<string>();run.pendingEventOfferIds??=new List<string>();run.pendingEventSelectionIds??=new List<string>();run.pendingEventShardDecisions??=new List<string>();run.temporaryEventEffects??=new List<TemporaryEventEffect>();run.pendingEventChoiceId??="";run.pendingEventBindingId??="";run.pendingEventResult??="";
+            run.seenEventIds??=new List<string>();run.pendingEventOfferIds??=new List<string>();run.pendingEventSelectionIds??=new List<string>();run.pendingEventShardDecisions??=new List<string>();run.temporaryEventEffects??=new List<TemporaryEventEffect>();run.pendingEventChoiceId??="";run.pendingEventBindingId??="";run.pendingEventResult??="";run.activeEventSceneId??="";run.pendingEventNextScene??="";run.eventBank??=new List<string>();
         }
     }
 }

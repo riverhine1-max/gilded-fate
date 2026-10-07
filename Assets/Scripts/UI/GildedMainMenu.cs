@@ -373,11 +373,11 @@ namespace GildedFate.UI
                 else{collectionPage=0;cardChoiceScroll=0;run.BeginBindingChoice();SaveService.Save(run);screen=ScreenMode.BindingSelect;}return;
             }
             if(screen==ScreenMode.Event)
-            {var count=currentEvent?.choices?.Length??0;if(delta!=0)MoveScreenController(delta,count);if(accept&&count>0)BeginEventChoice(currentEvent.choices[Mathf.Clamp(screenControllerIndex,0,count-1)]);return;}
+            {var options=EventSystem.CurrentChoices(run,currentEvent).ToArray();var count=options.Length;if(delta!=0)MoveScreenController(delta,count);if(accept&&count>0)BeginEventChoice(options[Mathf.Clamp(screenControllerIndex,0,count-1)]);return;}
             if(screen==ScreenMode.EventSelection)
             {HandleControllerEventSelection(delta,accept,back);return;}
             if(screen==ScreenMode.EventResult)
-            {if(accept){EventSystem.CompleteResult(run);Advance();}return;}
+            {if(accept)FinishEventOutcome();return;}
             if(screen==ScreenMode.Treasure)
             {if(accept)OpenTreasure();return;}
             if(screen==ScreenMode.RelicReward)
@@ -1352,13 +1352,14 @@ namespace GildedFate.UI
             var storyHeight=Mathf.Clamp(scene.height*.37f,205,270);var story=new Rect(scene.x,scene.yMax-storyHeight,scene.width,storyHeight);
             for(var band=0;band<12;band++){var t=band/11f;Fill(new Rect(story.x,story.y-band*10,story.width,story.height/12f+11),new Color(.002f,.004f,.008f,.18f+t*.065f));}
             Fill(story,new Color(.003f,.006f,.011f,.73f));Fill(new Rect(story.x+24,story.y+18,4,story.height-40),new Color(1f,.69f,.24f,.72f));
-            var eventTitle=new GUIStyle(titleStyle){fontSize=31,alignment=TextAnchor.UpperLeft,wordWrap=true,normal={textColor=new Color(1f,.91f,.68f)}};GUI.Label(new Rect(story.x+48,story.y+20,story.width-78,76),currentEvent.name,eventTitle);
-            var storyText=EventStory(currentEvent);var promptRect=new Rect(story.x+49,story.y+94,story.width-84,story.height-126);var promptStyle=new GUIStyle(footerStyle){fontSize=17,alignment=TextAnchor.UpperLeft,wordWrap=true,normal={textColor=new Color(.97f,.94f,.87f)}};while(promptStyle.fontSize>12&&promptStyle.CalcHeight(new GUIContent(storyText),promptRect.width)>promptRect.height)promptStyle.fontSize--;GUI.Label(promptRect,storyText,promptStyle);
+            var eventTitle=new GUIStyle(titleStyle){fontSize=31,alignment=TextAnchor.UpperLeft,wordWrap=true,normal={textColor=new Color(1f,.91f,.68f)}};GUI.Label(new Rect(story.x+48,story.y+20,story.width-78,76),currentEvent.name,eventTitle);DrawEventStepPips(story);
+            var storyText=EventSceneStory(currentEvent);var promptRect=new Rect(story.x+49,story.y+94,story.width-84,story.height-126);var promptStyle=new GUIStyle(footerStyle){fontSize=17,alignment=TextAnchor.UpperLeft,wordWrap=true,normal={textColor=new Color(.97f,.94f,.87f)}};while(promptStyle.fontSize>12&&promptStyle.CalcHeight(new GUIContent(storyText),promptRect.width)>promptRect.height)promptStyle.fontSize--;GUI.Label(promptRect,TypedEventText(storyText),promptStyle);
             GUI.Label(new Rect(story.x+49,story.yMax-28,story.width-84,18),currentEvent.ambientCue.ToUpperInvariant()+"  ·  A VAULT ENCOUNTER",new GUIStyle(footerStyle){fontSize=12,alignment=TextAnchor.MiddleLeft,normal={textColor=new Color(.85f,.69f,.40f)}});
             StoryEndEventPolish(scene);
 
-            var choices=currentEvent.choices??System.Array.Empty<EventChoiceDef>();var rightX=scene.xMax-18;var rightW=w-rightX-28;var gap=12f;var availableHeight=h-164;var choiceH=Mathf.Min(190f,(availableHeight-gap*Mathf.Max(0,choices.Length-1))/Mathf.Max(1,choices.Length));var startY=116+(availableHeight-(choiceH*choices.Length+gap*Mathf.Max(0,choices.Length-1)))*.5f;
-            for(var i=0;i<choices.Length;i++){var choiceRect=new Rect(rightX,startY+i*(choiceH+gap),rightW,choiceH);DrawClearEventChoice(choiceRect,choices[i],i);StoryEndChoiceThread(choiceRect,i);}
+            var choices=EventSystem.CurrentChoices(run,currentEvent).ToArray();var rightX=scene.xMax-18;var rightW=w-rightX-28;var gap=12f;var banked=run.eventBank!=null&&run.eventBank.Count>0;var availableHeight=h-164-(banked?62:0);var choiceH=Mathf.Min(190f,(availableHeight-gap*Mathf.Max(0,choices.Length-1))/Mathf.Max(1,choices.Length));var startY=116+(availableHeight-(choiceH*choices.Length+gap*Mathf.Max(0,choices.Length-1)))*.5f;
+            for(var i=0;i<choices.Length;i++){var choiceRect=new Rect(rightX,startY+i*(choiceH+gap),rightW,choiceH);DrawEventOptionCard(choiceRect,choices[i],i);StoryEndChoiceThread(choiceRect,i);}
+            if(banked)DrawEventBankTray(new Rect(rightX,h-26-50,rightW,50));
             DrawPersistentRunTooltip(w,h);
         }
 
@@ -1442,7 +1443,7 @@ namespace GildedFate.UI
             if(title.Contains("OPEN"))return "You break the seal and accept whatever wakes on the other side.";
             if(title.Contains("DRINK"))return "You lift the vessel and drink before doubt can stop you.";
             if(title.Contains("LEAVE")||title.Contains("REFUSE"))return "You keep your hands clear and walk away before the offer changes.";
-            return "You commit to the choice and let the Vault rewrite what follows.";
+            return ""; // no generic line: options without their own flavor show none
         }
 
         private void BeginEventChoice(EventChoiceDef choice)
@@ -1467,7 +1468,7 @@ namespace GildedFate.UI
 
         private void DrawEventSelection(float w,float h)
         {
-            if(EventShardPresentation)Fill(new Rect(0,0,w,h),new Color(.004f,.008f,.018f));else DrawEventBackdrop(w,h);DrawRunHud(w);var choice=EventContent.FindChoice(run.activeEventId,run.pendingEventChoiceId);var title=run.eventSelectionKind switch{EventSelectionKind.Card=>"CHOOSE A PHYSICAL CARD",EventSelectionKind.RewardCard=>"CHOOSE ONE REWARD",EventSelectionKind.Binding=>"CHOOSE A BINDING",EventSelectionKind.FocusedEffect=>"FOCUS ONE EFFECT",EventSelectionKind.ShardReward=>"CHOOSE A FATE SHARD",EventSelectionKind.OwnedShard=>"CHOOSE AN OWNED SHARD",EventSelectionKind.ShardReplacement=>"FATE SHARD CASE FULL",EventSelectionKind.Relic=>"CHOOSE A RELIC TO SURRENDER",_=>"COMPLETE THE CHOICE"};
+            if(EventShardPresentation)Fill(new Rect(0,0,w,h),new Color(.004f,.008f,.018f));else DrawEventBackdrop(w,h);DrawRunHud(w);var choice=EventSystem.ActiveChoice(run);var title=run.eventSelectionKind switch{EventSelectionKind.Card=>"CHOOSE A PHYSICAL CARD",EventSelectionKind.RewardCard=>"CHOOSE ONE REWARD",EventSelectionKind.Binding=>"CHOOSE A BINDING",EventSelectionKind.FocusedEffect=>"FOCUS ONE EFFECT",EventSelectionKind.ShardReward=>"CHOOSE A FATE SHARD",EventSelectionKind.OwnedShard=>"CHOOSE AN OWNED SHARD",EventSelectionKind.ShardReplacement=>"FATE SHARD CASE FULL",EventSelectionKind.Relic=>"CHOOSE A RELIC TO SURRENDER",_=>"COMPLETE THE CHOICE"};
             GUI.Label(new Rect(w*.16f,66,w*.68f,48),title,new GUIStyle(titleStyle){fontSize=31,normal={textColor=new Color(.98f,.91f,.72f)}});Fill(new Rect(w*.5f-210,115,420,1),new Color(.76f,.61f,.32f,.7f));GUI.Label(new Rect(w*.16f,119,w*.68f,25),(choice?.title??currentEvent?.name??"EVENT")+"  ·  "+Mathf.Max(1,run.pendingEventChoicesNeeded)+" SELECTION"+(run.pendingEventChoicesNeeded==1?"":"S")+" REMAIN",new GUIStyle(subtitleStyle){fontSize=14,normal={textColor=new Color(.9f,.86f,.75f)}});
             if(run.eventSelectionKind==EventSelectionKind.Card)DrawEventCardSelection(w,h);
             else if(run.eventSelectionKind==EventSelectionKind.RewardCard)DrawEventCardRewards(w,h);
@@ -1488,7 +1489,7 @@ namespace GildedFate.UI
 
         private void DrawEventCardRewards(float w,float h)
         {
-            var choice=EventContent.FindChoice(run.activeEventId,run.pendingEventChoiceId);var effect=choice?.effects.FirstOrDefault(e=>e.kind==EventEffectKind.RewardCards);var offers=run.pendingEventOfferIds.Select(GameContent.Find).Where(c=>c!=null).ToArray();var cardW=220f;var cardH=330f;var gap=34f;var start=(w-(offers.Length*cardW+Mathf.Max(0,offers.Length-1)*gap))*.5f;
+            var choice=EventSystem.ActiveChoice(run);var effect=choice?.effects.FirstOrDefault(e=>e.kind==EventEffectKind.RewardCards);var offers=run.pendingEventOfferIds.Select(GameContent.Find).Where(c=>c!=null).ToArray();var cardW=220f;var cardH=330f;var gap=34f;var start=(w-(offers.Length*cardW+Mathf.Max(0,offers.Length-1)*gap))*.5f;
             for(var i=0;i<offers.Length;i++){var shown=effect?.upgraded==true?GameContent.Upgrade(offers[i]):offers[i];var r=new Rect(start+i*(cardW+gap),h*.27f,cardW,cardH);DrawCard(r,shown);RegisterCardKeywordHelp(r,shown,controllerNavigation&&screenControllerIndex==i);if(controllerNavigation&&screenControllerIndex==i)Outline(new Rect(r.x-6,r.y-6,r.width+12,r.height+12),Gold,4);if(!acquisitionActive&&GUI.Button(r,"",GUIStyle.none))ChooseEventOfferWithAcquisition(offers[i].id);}
         }
 
@@ -1518,7 +1519,7 @@ namespace GildedFate.UI
 
         private void DrawEventResult(float w,float h)
         {
-            DrawEventBackdrop(w,h);DrawRunHud(w);var pulse=.78f+(profile.reduceMotion?0:Mathf.Sin(shimmer*2.4f)*.16f);var panel=new Rect(w*.2f,h*.21f,w*.6f,h*.54f);Fill(panel,new Color(.005f,.009f,.015f,.94f));Outline(panel,new Color(1f,.72f,.23f,pulse),3);GUI.Label(new Rect(panel.x+30,panel.y+38,panel.width-60,80),"✦\nFATE ALTERED",new GUIStyle(titleStyle){fontSize=32,normal={textColor=new Color(1f,.82f,.42f,pulse)}});GUI.Label(new Rect(panel.x+55,panel.y+150,panel.width-110,145),run.pendingEventResult,new GUIStyle(footerStyle){fontSize=22,wordWrap=true,normal={textColor=new Color(.97f,.94f,.85f)}});var next=new Rect(panel.center.x-150,panel.yMax-82,300,48);DrawButtonFrame(next,next.Contains(PointerPosition),false);if(GUI.Button(next,"RETURN TO THE MAP",buttonStyle)){EventSystem.CompleteResult(run);Advance();}DrawPersistentRunTooltip(w,h);
+            DrawEventOutcome(w,h);
         }
 
         private void DrawEventCancel(float w,float h){var r=new Rect(34,h-67,170,38);DrawButtonFrame(r,r.Contains(PointerPosition),false);if(GUI.Button(r,"CANCEL",buttonStyle)&&EventSystem.CancelSelection(run)){collectionPage=0;SaveService.Save(run);screen=ScreenMode.Event;}}

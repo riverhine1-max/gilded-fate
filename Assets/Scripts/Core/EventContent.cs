@@ -14,7 +14,9 @@ namespace GildedFate.Core
         UpgradeSelected, RemoveSelected, TransformSelected, UpgradeRandom, UpgradeAllBasic,
         RewardCards, GrantRandomCard, GrantRelic, RemoveRelic, RewardShards, GrantRandomShards,
         BindSelected, DuplicateWithBinding, TemporaryStartBlock, TemporaryFirstDrawFree,
-        RepairShard, TradeShard, FractureShard, RevealMap, Fatewheel
+        RepairShard, TradeShard, FractureShard, RevealMap, Fatewheel,
+        // Multi-step events (Events Rework). Appended so existing values never shift.
+        BankGold, BankRelic, CashOut, LoseBank, AddCard
     }
 
     [Serializable]
@@ -35,8 +37,28 @@ namespace GildedFate.Core
     {
         public string id,title,costText,rewardText;
         public EventEffectDef[] effects;
+        // Multi-step additions. All optional; a plain choice ends the event as before.
+        public string flavor="",next="",resultText="",heroOnly="";
+        // Odds: chanceEffects apply on a hit (chance%), failEffects otherwise. chanceNext is the
+        // scene after a hit ("" ends the event); next is the scene otherwise.
+        public int chance;public bool chanceGood;public string chanceLabel="",chanceText="",chanceNext="";
+        public EventEffectDef[] chanceEffects=Array.Empty<EventEffectDef>(),failEffects=Array.Empty<EventEffectDef>();
         public EventChoiceDef(string id,string title,string cost,string reward,params EventEffectDef[] effects)
         {this.id=id;this.title=title;costText=cost;rewardText=reward;this.effects=effects??Array.Empty<EventEffectDef>();}
+        public EventChoiceDef To(string scene){next=scene??"";return this;}
+        public EventChoiceDef Says(string line){flavor=line??"";return this;}
+        public EventChoiceDef Then(string text){resultText=text??"";return this;}
+        public EventChoiceDef Only(string hero){heroOnly=hero??"";return this;}
+        public EventChoiceDef Odds(int percent,string label,bool good,string text,string scene,params EventEffectDef[] fx)
+        {chance=Math.Max(0,Math.Min(100,percent));chanceLabel=label??"";chanceGood=good;chanceText=text??"";chanceNext=scene??"";chanceEffects=fx??Array.Empty<EventEffectDef>();return this;}
+        public EventChoiceDef Otherwise(params EventEffectDef[] fx){failEffects=fx??Array.Empty<EventEffectDef>();return this;}
+    }
+
+    [Serializable]
+    public sealed class EventSceneDef
+    {
+        public string id="",prompt="";public int step=1;
+        public EventChoiceDef[] choices=Array.Empty<EventChoiceDef>();
     }
 
     [Serializable]
@@ -47,18 +69,24 @@ namespace GildedFate.Core
         public EventFrequency frequency;
         public bool repeatable;
         public EventChoiceDef[] choices;
+        public EventSceneDef[] scenes=Array.Empty<EventSceneDef>();public int steps=1;
+        public EventSceneDef Scene(string sceneId)=>string.IsNullOrEmpty(sceneId)?null:Array.Find(scenes??Array.Empty<EventSceneDef>(),s=>s.id==sceneId);
         public EventDefinition(string id,string name,string prompt,int minAct,int maxAct,EventFrequency frequency,int artIndex,string cue,params EventChoiceDef[] choices)
         {this.id=id;this.name=name;this.prompt=prompt;this.minAct=minAct;this.maxAct=maxAct;this.frequency=frequency;this.artIndex=artIndex;ambientCue=cue;this.choices=choices??Array.Empty<EventChoiceDef>();}
     }
 
-    public static class EventContent
+    public static partial class EventContent
     {
         public static readonly int[] FatewheelWeights={28,18,17,15,12,10};
         public static readonly int[] BindingCommissionCosts={50,70,90};
         public const int CrossroadsWandererChancePercent=15;
         public static readonly EventDefinition[] All=Build();
         public static EventDefinition Find(string id)=>All.FirstOrDefault(e=>e.id==id);
-        public static EventChoiceDef FindChoice(string eventId,string choiceId)=>Find(eventId)?.choices.FirstOrDefault(c=>c.id==choiceId);
+        public static EventChoiceDef FindChoice(string eventId,string choiceId)
+        {
+            var e=Find(eventId);if(e==null)return null;
+            return e.choices.FirstOrDefault(c=>c.id==choiceId)??(e.scenes??Array.Empty<EventSceneDef>()).SelectMany(s=>s.choices).FirstOrDefault(c=>c.id==choiceId);
+        }
 
         private static EventDefinition[] Build()
         {
@@ -237,14 +265,15 @@ namespace GildedFate.Core
                 C("wash","WASH A CARD","CHOOSE 1 CURSE","REMOVE IT",RemoveCurse()),
                 C("collect","COLLECT THE WATER","","GAIN 1 RANDOM FATE SHARD",RandomShards(1)));
             Add("fortune_teller","THE FORTUNE TELLER","A hooded figure offers knowledge of the road ahead.",1,3,EventFrequency.Uncommon,"whisper",
-                C("road","READ THE ROAD","PAY 25 GOLD","REVEAL THE NEXT 3 REACHABLE MAP OPPORTUNITIES",Gold(-25),RevealMap(3)),
+                C("road","READ THE CARDS","PAY 25 GOLD","REVEAL 3 CHARACTER CARDS · CHOOSE 1",Gold(-25),RewardCards(EventCardSource.Own,3)).Says("She turns three cards and slides them toward you."),
                 C("fortune","ASK FOR FORTUNE","PAY 50 GOLD","GAIN A WEIGHTED COMMON OR UNCOMMON RELIC",Gold(-50),Relic(Rarity.Special,"common_uncommon")));
             Add("crossroads_of_fate","THE CROSSROADS OF FATE","Three golden roads appear where only one should exist.",1,3,EventFrequency.Common,"road",
                 C("power","POWER","CHOOSE 1 CARD","UPGRADE IT",Select(EventEffectKind.UpgradeSelected,EventCardFilter.Any)),
                 C("fortune","FORTUNE","","GAIN 50 GOLD",Gold(50)),
                 C("possibility","POSSIBILITY","","REVEAL 3 CARDS · SMALL WANDERER CHANCE",RewardCards(EventCardSource.AnyPlayable,3)));
 
-            if(events.Count!=50)throw new InvalidOperationException("Event catalog must contain exactly 50 events.");
+            if(events.Count!=50)throw new InvalidOperationException("Event catalog must contain exactly 50 classic events.");
+            AddStoryEvents(events);
             return events.ToArray();
         }
 
@@ -272,5 +301,11 @@ namespace GildedFate.Core
         private static EventEffectDef OwnedShard(EventEffectKind kind,string id="")=>new(){kind=kind,id=id,count=1};
         private static EventEffectDef RevealMap(int count)=>new(){kind=EventEffectKind.RevealMap,count=count};
         private static EventEffectDef Fatewheel()=>E(EventEffectKind.Fatewheel);
+        private static EventEffectDef MaxHp(int amount)=>new(){kind=EventEffectKind.MaxHp,amount=amount};
+        private static EventEffectDef BankGold(int amount)=>new(){kind=EventEffectKind.BankGold,amount=amount};
+        private static EventEffectDef BankRelic(Rarity rarity)=>new(){kind=EventEffectKind.BankRelic,rarity=rarity};
+        private static EventEffectDef CashOut()=>E(EventEffectKind.CashOut);
+        private static EventEffectDef LoseBank()=>E(EventEffectKind.LoseBank);
+        private static EventEffectDef Card(string id,bool upgraded=false)=>new(){kind=EventEffectKind.AddCard,id=id,upgraded=upgraded};
     }
 }

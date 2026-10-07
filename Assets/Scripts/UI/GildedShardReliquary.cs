@@ -31,7 +31,7 @@ namespace GildedFate.UI
             if(combat==null||run.shards.Any(s=>s.active))return;
             var usable=AttuneChoices;
             if(usable.Count==0)return;
-            if(usable.Count==1){combat.AttuneShards(usable[0].id,"",false);return;}
+            if(usable.Count==1){combat.AttuneShards(usable[0].id,"",false);ApplyPrimedCharge();return;}
             combat.shardAttunePending=true;
             shardAttuneIndex=Mathf.Max(0,usable.FindIndex(s=>s.id==run.lastAttunedShardId));
             shardAttuneOpenedAt=Time.unscaledTime;
@@ -42,11 +42,11 @@ namespace GildedFate.UI
             if(usable.Count==0){combat.shardAttunePending=false;return;}
             if(index>=usable.Count)
             {
-                combat.AttuneShards(usable[0].id,usable.Count>1?usable[1].id:"",true);run.lastAttunedShardId="";
+                combat.AttuneShards(usable[0].id,usable.Count>1?usable[1].id:"",true);run.lastAttunedShardId="";ApplyPrimedCharge();
             }
             else
             {
-                var chosen=usable[Mathf.Clamp(index,0,usable.Count-1)];combat.AttuneShards(chosen.id,"",false);run.lastAttunedShardId=chosen.id;
+                var chosen=usable[Mathf.Clamp(index,0,usable.Count-1)];combat.AttuneShards(chosen.id,"",false);run.lastAttunedShardId=chosen.id;ApplyPrimedCharge();
                 var from=new Vector2(CombatWidth*.5f,CombatHeight*.45f);
                 shardFlights.Add(new ShardFlight{from=from,to=ShrineSocket(chosen.slot).center,start=Time.unscaledTime});
             }
@@ -88,7 +88,7 @@ namespace GildedFate.UI
                     if(hot&&!profile.reduceFlashing)Fill(new Rect(art.x-8,art.y-8+lift,art.width+16,art.height+16),new Color(1f,.84f,.47f,.1f));
                     DrawFateShardArt(new Rect(art.x,art.y+lift,art.width,art.height),def);
                     GUI.Label(new Rect(r.x+8,r.y+146,r.width-16,30),def.name,new GUIStyle(titleStyle){fontSize=21,normal={textColor=nextFractured?new Color(1f,.7f,.38f):new Color(.76f,.9f,1f)}});
-                    GUI.Label(new Rect(r.x+8,r.y+176,r.width-16,22),owned.RemainingUses+" / 3 USES LEFT"+(nextFractured?" · FRACTURED NEXT":""),ReadableStyle(12,true));
+                    GUI.Label(new Rect(r.x+8,r.y+176,r.width-16,22),owned.RemainingUses+" / 3 USES LEFT"+(nextFractured?" · FRACTURED NEXT":"")+(owned.primed?" · PRIMED":""),ReadableStyle(12,true));
                     var body=new GUIStyle(footerStyle){fontSize=15,wordWrap=true,alignment=TextAnchor.UpperCenter,normal={textColor=new Color(.94f,.92f,.86f)}};
                     GUI.Label(new Rect(r.x+16,r.y+204,r.width-32,r.height-250),nextFractured?def.fracturedText:def.stableText,body);
                     body.normal.textColor=Gold;body.fontSize=13;
@@ -191,7 +191,7 @@ namespace GildedFate.UI
         private string ShardChargeTooltip(FateShardState owned,FateShardDef def)
         {
             if(combat==null||owned==null||def==null)return "";
-            var line="\n"+ShardChargeHint(def).ToUpperInvariant();
+            var line="\n"+ShardChargeHint(def).ToUpperInvariant()+(owned.primed?"\nPRIMED · STARTS WITH 3 CHARGE":"");
             if(!string.IsNullOrEmpty(combat.activeShardId)||!owned.CanActivate)return line;
             if(!combat.ShardAttunedTo(owned.id))return line+"\nNOT ATTUNED THIS BATTLE";
             return line+"\nCHARGE "+combat.shardCharge+" / "+combat.ShardChargeTarget;
@@ -229,6 +229,13 @@ namespace GildedFate.UI
             shardFlights.Add(new ShardFlight{from=ShrineSocket(Mathf.Clamp(slot,0,1)).center,start=Time.unscaledTime,shatter=true,shard=shard});
         }
 
+        // Shrine of the Waiting Shard: a primed, attuned shard starts the fight with 3 charge.
+        private const int PrimedShardCharge=3;
+        private void ApplyPrimedCharge()
+        {
+            if(combat==null||!run.shards.Any(s=>s.primed&&s.CanActivate&&combat.ShardAttunedTo(s.id)))return;
+            combat.shardCharge=Mathf.Max(combat.shardCharge,Mathf.Min(combat.ShardChargeTarget,PrimedShardCharge));
+        }
         // Verification helper: fills the meter so scripted activations run without playing cards.
         private void FillShardChargeForVerification()
         {
