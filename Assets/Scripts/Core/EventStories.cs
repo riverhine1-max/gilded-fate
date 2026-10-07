@@ -13,10 +13,11 @@ namespace GildedFate.Core
 
         private static void AddStoryEvents(List<EventDefinition> events)
         {
-            void Story(string id,string name,string prompt,int min,int max,EventFrequency frequency,string cue,string artFrom,int steps,EventChoiceDef[] first,params EventSceneDef[] scenes)
+            EventDefinition Story(string id,string name,string prompt,int min,int max,EventFrequency frequency,string cue,string artFrom,int steps,EventChoiceDef[] first,params EventSceneDef[] scenes)
             {
                 var art=events.FindIndex(e=>e.id==artFrom);
-                events.Add(new EventDefinition(id,name,prompt,min,max,frequency,art<0?0:art,cue,first){scenes=scenes??Array.Empty<EventSceneDef>(),steps=Math.Max(1,steps)});
+                var definition=new EventDefinition(id,name,prompt,min,max,frequency,art<0?0:art,cue,first){scenes=scenes??Array.Empty<EventSceneDef>(),steps=Math.Max(1,steps)};
+                events.Add(definition);return definition;
             }
 
             // 1. Push your luck: everything found is banked; the deepest stair can take it all.
@@ -167,6 +168,91 @@ namespace GildedFate.Core
                 Scene("shrine_price",2,"The altar's hum drops to a growl. Blessings are never free.",
                     Opt("blood","PAY IN BLOOD","LOSE 10 HP","THE DEBT IS PAID",Hp(-10)).Says("Quick and honest.").Then("The altar drinks and falls silent."),
                     Opt("curse","PAY IN FATE","ADD A CURSE","THE DEBT IS PAID",RandomCurse()).Says("A slower price, carried with you.").Then("The altar's growl follows you into your deck.")));
+
+            // ---------------- Batch B: memory across floors, map edits, fights ----------------
+
+            // 10. A loan that comes due three floors later.
+            Story("collectors_loan","THE COLLECTOR'S LOAN","A masked collector opens a ledger with your name already written in it.",1,2,EventFrequency.Uncommon,"merchant","collector_event",2,
+                new[]{
+                    Opt("loan","TAKE THE LOAN","HE RETURNS IN 3 FLOORS","GAIN 100 GOLD",Gold(100),Flag("loan_big"),ReturnIn("collector_returns",3)).Says("Repay 150 when he comes back.").Then("He counts out 100 Gold. \"Three floors,\" he says, and is gone."),
+                    Opt("terms","ASK FOR SMALLER TERMS","","???",Nothing()).Says("He has other ledgers.").To("loan_terms").Then("He flips to a thinner page."),
+                    Opt("decline","DECLINE","","NOTHING",Nothing()).Says("Never borrow from the Vault.")},
+                Scene("loan_terms",2,"\"Sixty now, ninety later. A gentler debt.\"",
+                    Opt("small","TAKE THE SMALL LOAN","HE RETURNS IN 3 FLOORS","GAIN 60 GOLD",Gold(60),Flag("loan_small"),ReturnIn("collector_returns",3)).Says("Repay 90 when he comes back.").Then("He counts out 60 Gold and writes something small in the margin."),
+                    Opt("decline","DECLINE","","NOTHING",Nothing()).Says("You close the ledger for him.")));
+            Story("collector_returns","THE COLLECTOR RETURNS","The Collector steps out of the dark, ledger open. Your debt is due.",1,3,EventFrequency.Rare,"merchant","collector_event",1,
+                new[]{
+                    Opt("repay","REPAY 150 GOLD","PAY 150 GOLD","THE DEBT IS CLEARED",Gold(-150),Unflag("loan_big")).If("loan_big").Says("He strikes your name from the page.").Then("He takes the Gold and strikes your name from the ledger."),
+                    Opt("repay_small","REPAY 90 GOLD","PAY 90 GOLD","THE DEBT IS CLEARED",Gold(-90),Unflag("loan_small")).If("loan_small").Says("He strikes your name from the page.").Then("He takes the Gold and strikes your name from the ledger."),
+                    Opt("relic","GIVE HIM A RELIC","LOSE 1 COMMON RELIC","THE DEBT IS CLEARED",RemoveRelic(),Unflag("loan_big"),Unflag("loan_small")).Says("He accepts payment in kind.").Then("He weighs the relic in his palm and nods."),
+                    Opt("refuse","REFUSE TO PAY","ADD 2 CURSES","KEEP YOUR GOLD",RandomCurse(),RandomCurse(),Unflag("loan_big"),Unflag("loan_small")).Says("He writes your name twice.").Then("He writes your name twice, and the ink follows you.")});
+            events[events.Count-1].returnOnly=true;
+
+            // 11-12. A beggar in Act I who remembers you in Act III.
+            Story("ragged_prince","THE RAGGED PRINCE","A young beggar in a torn royal sash asks for anything you can spare.",1,1,EventFrequency.Common,"whisper","golden_beggar",1,
+                new[]{
+                    Opt("gold","GIVE 40 GOLD","PAY 40 GOLD","HE WILL REMEMBER",Gold(-40),Flag("prince_met"),Flag("prince_gave")).Says("A crown is a long way off.").Then("He bows deeply. \"I will remember this.\""),
+                    Opt("card","GIVE HIM A CARD","CHOOSE 1 CARD","REMOVE IT · HE WILL REMEMBER",Select(EventEffectKind.RemoveSelected,EventCardFilter.Any),Flag("prince_met"),Flag("prince_gave")).Says("He studies it like a map.").Then("He tucks the card into his sash. \"I will remember this.\""),
+                    Opt("refuse","REFUSE","","HE WILL REMEMBER",Flag("prince_met"),Flag("prince_refused")).Says("He watches you go without a word.").Then("He says nothing. He doesn't need to.")});
+            var king=Story("beggar_king","THE BEGGAR KING","A throne of stacked coin. The ragged prince from long ago sits on it, crowned.",3,3,EventFrequency.Common,"whisper","crown_without_king",1,
+                new[]{
+                    Opt("gift","ACCEPT HIS GRATITUDE","","RARE RELIC · 60 GOLD",Relic(Rarity.Rare),Gold(60)).If("prince_gave").Says("\"You gave when I had nothing.\"").Then("He presses a rare relic and a purse into your hands."),
+                    Opt("toll","PAY HIS TOLL","PAY 80 GOLD","PASS IN PEACE",Gold(-80)).If("prince_refused").Says("\"You gave me nothing. Now you pay.\"").Then("You pay. He doesn't look up."),
+                    Opt("guard","FIGHT HIS GUARD","START AN ELITE FIGHT","ELITE REWARDS",Fight(true)).If("prince_refused").Says("His champion steps forward.").Then("The king waves a hand, and his champion draws steel."),
+                    Opt("bow","BOW AND LEAVE","","NOTHING",Nothing()).Says("Kings have long memories.")});
+            king.requiresFlag="prince_met";
+
+            // 13. An escort across three floors.
+            Story("ashen_pilgrim","THE ASHEN PILGRIM","A pilgrim covered in ash asks you to walk with her to the next shrine.",1,2,EventFrequency.Uncommon,"road","lost_travelers",1,
+                new[]{
+                    Opt("escort","ESCORT HER","AVOID ELITES FOR 3 FLOORS","START FIGHTS WITH 6 BLOCK · A RELIC AT THE END",TempBlock(6,3),Flag("pilgrim"),ReturnIn("pilgrim_farewell",3)).Says("She shields you; you shield her.").Then("She falls into step beside you. \"Three floors. Keep me out of the worst of it.\""),
+                    Opt("fire","SHARE YOUR FIRE","","HEAL 10 HP",Heal(10)).Says("A rest, and then she walks on alone.").Then("You rest by the fire together before she leaves."),
+                    Opt("pass","PASS HER BY","","NOTHING",Nothing()).Says("Everyone walks the Vault alone.")});
+            Story("pilgrim_farewell","THE PILGRIM'S FAREWELL","The shrine is in sight. The pilgrim turns to you.",1,3,EventFrequency.Rare,"road","lost_travelers",1,
+                new[]{
+                    Opt("gift","ACCEPT HER GIFT","","UNCOMMON RELIC",Relic(Rarity.Uncommon),Unflag("pilgrim")).Unless("pilgrim_elite").Says("\"You kept me safe.\"").Then("She gives you the relic she was carrying to the shrine."),
+                    Opt("search","SEARCH FOR HER","LOSE 6 HP","COMMON RELIC",Hp(-6),Relic(Rarity.Common),Unflag("pilgrim"),Unflag("pilgrim_elite")).If("pilgrim_elite").Says("She fled when you charged an elite.").Then("You find her hiding, shaken. She gives you a lesser gift."),
+                    Opt("let","LET HER GO","","NOTHING",Unflag("pilgrim"),Unflag("pilgrim_elite")).Says("Some roads end early.").Then("You walk the last stretch alone.")});
+            events[events.Count-1].returnOnly=true;
+
+            // 14. Change what lies ahead on the map.
+            Story("cartographer","THE CARTOGRAPHER","A woman with ink-black fingers redraws the map around you as you watch.",1,3,EventFrequency.Uncommon,"road","wrong_road",2,
+                new[]{
+                    Opt("treasure","CHART A TREASURE ROOM","PAY 60 GOLD","A ROOM AHEAD BECOMES TREASURE",Gold(-60),Chart(NodeKind.Treasure)).Says("One path ahead turns to gold.").To("chart_more").Then("She draws a chest on the next floor. The room changes to match."),
+                    Opt("merchant","CHART A MERCHANT","PAY 40 GOLD","A ROOM AHEAD BECOMES A MERCHANT",Gold(-40),Chart(NodeKind.Merchant)).Says("Someone to sell to, soon.").To("chart_more").Then("She sketches a stall on the next floor. A lantern lights up there."),
+                    Opt("elite","CHART AN ELITE","","A ROOM AHEAD BECOMES ELITE · 30 GOLD",Chart(NodeKind.Elite),Gold(30)).Says("She pays you to test her drawing.").To("chart_more").Then("She draws something with teeth on the next floor, and pays you for your nerve."),
+                    Opt("leave","LEAVE HER TO HER WORK","","NOTHING",Nothing()).Says("The map is fine as it is.")},
+                Scene("chart_more",2,"\"One more mark, if you can pay for it.\"",
+                    Opt("rest","CHART A SANCTUARY","PAY 30 GOLD","A ROOM AHEAD BECOMES A SANCTUARY",Gold(-30),Chart(NodeKind.Sanctuary)).Says("A place to rest.").Then("She draws a small flame. A sanctuary waits ahead."),
+                    Opt("thanks","THANK HER","","NOTHING",Nothing()).Says("One change is enough.").Then("She rolls up her map and nods.")));
+
+            // 15. Cross to any lane on the next floor.
+            Story("bridge_of_threads","THE BRIDGE OF THREADS","A chasm splits the floor. Golden threads hang across it, waiting to be woven.",1,3,EventFrequency.Uncommon,"thread","frayed_thread",2,
+                new[]{
+                    Opt("weave","WEAVE THE BRIDGE","LOSE 8 HP","NEXT MOVE: ANY PATH",Hp(-8),OpenLanes()).Says("Blood makes the threads hold.").To("bridge_mid").Then("The threads knot themselves into a bridge. You step out onto it."),
+                    Opt("leave","TURN BACK","","NOTHING",Nothing()).Says("Your path is your path.")},
+                Scene("bridge_mid",2,"Halfway across, the bridge starts to fray.",
+                    Opt("hold","HOLD ON","LOSE 6 HP","CROSS SAFELY",Hp(-6)).Says("The threads cut your hands.").Then("You haul yourself to the far side. Every path ahead is open."),
+                    Opt("drop","DROP SOME GOLD","PAY 35 GOLD","CROSS SAFELY",Gold(-35)).Says("Lighten the load.").Then("Coins tumble into the dark, and the bridge holds. Every path ahead is open."),
+                    Opt("back","CLIMB BACK","","THE BRIDGE IS LOST",Unflag("bridge")).Says("Not today.").Then("You climb back. The bridge unravels behind you.")));
+
+            // 16. A champion's duel: the room becomes an elite fight.
+            Story("champions_challenge","THE CHAMPION'S CHALLENGE","A champion of the Vault plants a banner and waits for a worthy opponent.",1,3,EventFrequency.Uncommon,"duel","duel",1,
+                new[]{
+                    Opt("duel","ACCEPT THE DUEL","START AN ELITE FIGHT","ELITE REWARDS",Fight(true)).Says("Win, and the champion's spoils are yours.").Then("The champion raises a blade in salute. The fight begins."),
+                    Opt("spar","SPAR FOR COIN","LOSE 10 HP","GAIN 60 GOLD",Hp(-10),Gold(60)).Says("Just a friendly bout.").Then("A few bruises, a fair purse."),
+                    Opt("decline","DECLINE","","NOTHING",Nothing()).Says("The champion spits and turns away.")});
+
+            // 17. Sacrifice one shard to empower the other.
+            Story("shard_furnace","THE SHARD FURNACE","A furnace roars with blue fire. Fate Shards melt inside it like candle wax.",2,3,EventFrequency.Uncommon,"shard","shard_smith",2,
+                new[]{
+                    Opt("feed","FEED A SHARD TO THE FIRE","CHOOSE 1 OWNED SHARD","IT IS DESTROYED",OwnedShard(EventEffectKind.RepairShard,"remove")).NeedsShards(2).Says("Its power will pour into the other.").To("furnace_forge").Then("The shard melts. Its light pours into the one you kept."),
+                    Opt("leave","LEAVE THE FURNACE","","NOTHING",Nothing()).Says("Some fires are better left alone.")},
+                Scene("furnace_forge",2,"Your remaining shard glows white-hot in the furnace's mouth.",
+                    Opt("stoke","STOKE THE FURNACE","","FULLY RESTORED · PRIMED",Nothing()).Says("Restore every use and prime it, if it holds.")
+                        .Odds(70,"70% IT HOLDS",true,"It holds. Your shard comes out whole, fully restored and primed.","",EmpowerShards())
+                        .Otherwise(FractureAllShards()).Then("It cracks in the heat. Your shard comes out Fractured."),
+                    Opt("pull","PULL IT OUT","","NOTHING MORE",Nothing()).Says("Take the loss and walk away.").Then("You pull the shard from the fire, unchanged.")));
         }
 
         private static EventChoiceDef[] Cups(int stake)

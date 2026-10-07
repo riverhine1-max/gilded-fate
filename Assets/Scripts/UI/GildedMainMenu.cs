@@ -851,9 +851,13 @@ namespace GildedFate.UI
             Fill(new Rect(0,-width*.5f,length,width),color);GUI.matrix=matrix;
         }
 
-        private void StartNode(MapNode n)
+        private void StartNode(MapNode n,bool allowReturns=true)
         {
             currentNode=n;run.activeNodeFloor=n.floor;run.activeNodeLane=n.lane;
+            // Events Rework: a scheduled return visit (the Collector, the Pilgrim) takes over this room.
+            var due=allowReturns?EventSystem.TakeDueReturn(run,n):null;
+            if(due!=null){n.kind=NodeKind.Event;currentEvent=due;EventSystem.BeginEvent(run,due);screen=ScreenMode.Event;PlayEventCue();SaveService.Save(run);return;}
+            if(n.kind==NodeKind.Elite&&run.HasEventFlag("pilgrim")&&!run.HasEventFlag("pilgrim_elite"))run.eventFlags.Add("pilgrim_elite");
             if(n.kind==NodeKind.Combat||n.kind==NodeKind.Elite||n.kind==NodeKind.Boss)
             {
                 run.PrepareEncounter(n.kind);currentEnemy=EnemyForNode(n);

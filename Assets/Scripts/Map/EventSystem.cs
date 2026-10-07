@@ -20,8 +20,8 @@ namespace GildedFate.Map
         {
             if(run==null)return null;
             run.EnsureEventState();
-            var pool=EventContent.All.Where(e=>run.act>=e.minAct&&run.act<=e.maxAct&&(e.repeatable||!run.seenEventIds.Contains(e.id))&&EventViable(run,e)).ToList();
-            if(pool.Count==0)pool=EventContent.All.Where(e=>run.act>=e.minAct&&run.act<=e.maxAct&&EventViable(run,e)).ToList();
+            var pool=EventContent.All.Where(e=>Rollable(run,e)&&(e.repeatable||!run.seenEventIds.Contains(e.id))&&EventViable(run,e)).ToList();
+            if(pool.Count==0)pool=EventContent.All.Where(e=>Rollable(run,e)&&EventViable(run,e)).ToList();
             if(pool.Count==0)return EventContent.All.First();
             var total=pool.Sum(e=>(int)e.frequency);var roll=PositiveHash(run.seed,run.act,run.floor,7919)%Math.Max(1,total);
             foreach(var candidate in pool){roll-=(int)candidate.frequency;if(roll<0)return candidate;}
@@ -40,6 +40,8 @@ namespace GildedFate.Map
         {
             if(run==null||choice==null)return new(false,"Choice unavailable");
             if(!string.IsNullOrEmpty(choice.heroOnly)&&run.hero.ToString()!=choice.heroOnly)return new(false,choice.heroOnly+" only");
+            if(choice.requiresShards>0&&(run.shards?.Count??0)<choice.requiresShards)return new(false,"Requires "+choice.requiresShards+" Fate Shards");
+            if(AllEffects(choice).Any(e=>e.kind==EventEffectKind.ConvertNextNode)&&ChartTarget(run,AllEffects(choice).First(e=>e.kind==EventEffectKind.ConvertNextNode).id)==null)return new(false,"No path ahead can be charted");
             foreach(var effect in AllEffects(choice))
             {
                 if(effect.kind==EventEffectKind.Gold&&EffectiveGoldAmount(run,effect)<0&&run.gold<-EffectiveGoldAmount(run,effect))return new(false,"Requires "+(-EffectiveGoldAmount(run,effect))+" Gold");
@@ -157,7 +159,8 @@ namespace GildedFate.Map
         {
             if(definition==null)return Enumerable.Empty<EventChoiceDef>();
             var choices=CurrentScene(run,definition)?.choices??definition.choices??Array.Empty<EventChoiceDef>();
-            return choices.Where(c=>string.IsNullOrEmpty(c.heroOnly)||run!=null&&run.hero.ToString()==c.heroOnly);
+            return choices.Where(c=>(string.IsNullOrEmpty(c.heroOnly)||run!=null&&run.hero.ToString()==c.heroOnly)
+                &&(string.IsNullOrEmpty(c.requiresFlag)||run!=null&&run.HasEventFlag(c.requiresFlag))&&(string.IsNullOrEmpty(c.forbidsFlag)||run==null||!run.HasEventFlag(c.forbidsFlag)));
         }
         public static int CurrentStep(RunModel run,EventDefinition definition)=>CurrentScene(run,definition)?.step??1;
         public static bool HasNextScene(RunModel run)=>run!=null&&!string.IsNullOrEmpty(run.pendingEventNextScene)&&EventContent.Find(run.activeEventId)?.Scene(run.pendingEventNextScene)!=null;
@@ -172,6 +175,28 @@ namespace GildedFate.Map
             var parts=(entry??"").Split(':');if(parts.Length!=2)return entry??"";
             return parts[0]=="gold"?parts[1]+" Gold":parts[0]=="relic"?parts[1]+" relic":entry;
         }
+        private static bool Rollable(RunModel run,EventDefinition e)=>!e.returnOnly&&run.act>=e.minAct&&run.act<=e.maxAct&&(string.IsNullOrEmpty(e.requiresFlag)||run.HasEventFlag(e.requiresFlag));
+        // Cartographer: a reachable node on the next floor that is not a boss and not already the target kind.
+        private static MapNode ChartTarget(RunModel run,string kindName)
+        {
+            if(run?.nodes==null||!Enum.TryParse<NodeKind>(kindName,out var kind))return null;
+            var here=run.nodes.FirstOrDefault(n=>n.floor==run.activeNodeFloor&&n.lane==run.activeNodeLane);if(here==null)return null;
+            var options=run.nodes.Where(n=>n.floor==here.floor+1&&(here.nextMask&(1<<n.lane))!=0&&!n.complete&&n.kind!=NodeKind.Boss&&n.kind!=kind).OrderBy(n=>n.lane).ToList();
+            return options.Count==0?null:options[PositiveHash(run.seed,here.floor,(int)kind,4421)%options.Count];
+        }
+        // A scheduled return visit that has come due at this node, if any. It replaces the node's normal content.
+        public static EventDefinition TakeDueReturn(RunModel run,MapNode node)
+        {
+            if(run?.eventReturns==null||node==null||node.kind==NodeKind.Boss)return null;
+            foreach(var entry in run.eventReturns.ToArray())
+            {
+                var parts=entry.Split('|');if(parts.Length!=3||!int.TryParse(parts[1],out var act)||!int.TryParse(parts[2],out var floor)){run.eventReturns.Remove(entry);continue;}
+                if(act<run.act||act==run.act&&node.floor>=floor){run.eventReturns.Remove(entry);var due=EventContent.Find(parts[0]);if(due!=null)return due;}
+            }
+            return null;
+        }
+        // The fight an event started ("elite" or "combat"), consumed once.
+        public static string TakePendingFight(RunModel run){var fight=run?.pendingEventFight??"";if(run!=null)run.pendingEventFight="";return fight;}
         private static IEnumerable<EventEffectDef> AllEffects(EventChoiceDef choice)=>(choice.effects??Array.Empty<EventEffectDef>()).Concat(choice.chanceEffects??Array.Empty<EventEffectDef>()).Concat(choice.failEffects??Array.Empty<EventEffectDef>());
         private static int StableHash(string text){unchecked{var h=23;foreach(var ch in text??"")h=h*31+ch;return h;}}
         private static void CashOut(RunModel run)
@@ -329,6 +354,14 @@ namespace GildedFate.Map
                     case EventEffectKind.CashOut:CashOut(run);break;
                     case EventEffectKind.LoseBank:run.eventBank.Clear();break;
                     case EventEffectKind.AddCard:if(GameContent.Find(effect.id)!=null)run.AddCard(effect.id,effect.upgraded);break;
+                    case EventEffectKind.SetFlag:if(!run.eventFlags.Contains(effect.id))run.eventFlags.Add(effect.id);break;
+                    case EventEffectKind.ClearFlag:run.eventFlags.Remove(effect.id);break;
+                    case EventEffectKind.ScheduleReturn:run.eventReturns.RemoveAll(r=>r.StartsWith(effect.id+"|",StringComparison.Ordinal));var dueFloor=(run.activeNodeFloor>=0?run.activeNodeFloor:run.floor)+Math.Max(1,effect.amount);run.eventReturns.Add(effect.id+"|"+run.act+"|"+dueFloor);break;
+                    case EventEffectKind.StartFight:run.pendingEventFight=effect.amount>0?"elite":"combat";break;
+                    case EventEffectKind.ConvertNextNode:{var target=ChartTarget(run,effect.id);if(target!=null&&Enum.TryParse<NodeKind>(effect.id,out var kind)){target.kind=kind;target.revealed=true;}break;}
+                    case EventEffectKind.OpenLanes:if(!run.eventFlags.Contains("bridge"))run.eventFlags.Add("bridge");break;
+                    case EventEffectKind.EmpowerShards:foreach(var shard in run.shards){shard.uses=0;shard.primed=true;shard.active=false;shard.activeFractured=false;}break;
+                    case EventEffectKind.FractureAllShards:foreach(var shard in run.shards){shard.uses=Math.Max(shard.uses,2);shard.active=false;shard.activeFractured=false;}break;
                 }
             }
         }
@@ -517,7 +550,7 @@ namespace GildedFate.Map
     {
         public static void EnsureEventState(this RunModel run)
         {
-            run.seenEventIds??=new List<string>();run.pendingEventOfferIds??=new List<string>();run.pendingEventSelectionIds??=new List<string>();run.pendingEventShardDecisions??=new List<string>();run.temporaryEventEffects??=new List<TemporaryEventEffect>();run.pendingEventChoiceId??="";run.pendingEventBindingId??="";run.pendingEventResult??="";run.activeEventSceneId??="";run.pendingEventNextScene??="";run.eventBank??=new List<string>();
+            run.seenEventIds??=new List<string>();run.pendingEventOfferIds??=new List<string>();run.pendingEventSelectionIds??=new List<string>();run.pendingEventShardDecisions??=new List<string>();run.temporaryEventEffects??=new List<TemporaryEventEffect>();run.pendingEventChoiceId??="";run.pendingEventBindingId??="";run.pendingEventResult??="";run.activeEventSceneId??="";run.pendingEventNextScene??="";run.eventBank??=new List<string>();run.eventFlags??=new List<string>();run.eventReturns??=new List<string>();run.pendingEventFight??="";
         }
     }
 }

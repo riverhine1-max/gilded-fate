@@ -16,7 +16,9 @@ namespace GildedFate.Core
         BindSelected, DuplicateWithBinding, TemporaryStartBlock, TemporaryFirstDrawFree,
         RepairShard, TradeShard, FractureShard, RevealMap, Fatewheel,
         // Multi-step events (Events Rework). Appended so existing values never shift.
-        BankGold, BankRelic, CashOut, LoseBank, AddCard
+        BankGold, BankRelic, CashOut, LoseBank, AddCard,
+        // Run memory, map edits and event fights (Events Rework batch B).
+        SetFlag, ClearFlag, ScheduleReturn, StartFight, ConvertNextNode, OpenLanes, EmpowerShards, FractureAllShards
     }
 
     [Serializable]
@@ -39,6 +41,8 @@ namespace GildedFate.Core
         public EventEffectDef[] effects;
         // Multi-step additions. All optional; a plain choice ends the event as before.
         public string flavor="",next="",resultText="",heroOnly="";
+        // Conditions: hidden unless the run has (or lacks) a flag; requiresShards locks it below that many shards.
+        public string requiresFlag="",forbidsFlag="";public int requiresShards;
         // Odds: chanceEffects apply on a hit (chance%), failEffects otherwise. chanceNext is the
         // scene after a hit ("" ends the event); next is the scene otherwise.
         public int chance;public bool chanceGood;public string chanceLabel="",chanceText="",chanceNext="";
@@ -49,6 +53,9 @@ namespace GildedFate.Core
         public EventChoiceDef Says(string line){flavor=line??"";return this;}
         public EventChoiceDef Then(string text){resultText=text??"";return this;}
         public EventChoiceDef Only(string hero){heroOnly=hero??"";return this;}
+        public EventChoiceDef If(string flag){requiresFlag=flag??"";return this;}
+        public EventChoiceDef Unless(string flag){forbidsFlag=flag??"";return this;}
+        public EventChoiceDef NeedsShards(int count){requiresShards=count;return this;}
         public EventChoiceDef Odds(int percent,string label,bool good,string text,string scene,params EventEffectDef[] fx)
         {chance=Math.Max(0,Math.Min(100,percent));chanceLabel=label??"";chanceGood=good;chanceText=text??"";chanceNext=scene??"";chanceEffects=fx??Array.Empty<EventEffectDef>();return this;}
         public EventChoiceDef Otherwise(params EventEffectDef[] fx){failEffects=fx??Array.Empty<EventEffectDef>();return this;}
@@ -70,6 +77,8 @@ namespace GildedFate.Core
         public bool repeatable;
         public EventChoiceDef[] choices;
         public EventSceneDef[] scenes=Array.Empty<EventSceneDef>();public int steps=1;
+        // requiresFlag: only offered once the run has this flag. returnOnly: never rolled; it arrives through ScheduleReturn.
+        public string requiresFlag="";public bool returnOnly;
         public EventSceneDef Scene(string sceneId)=>string.IsNullOrEmpty(sceneId)?null:Array.Find(scenes??Array.Empty<EventSceneDef>(),s=>s.id==sceneId);
         public EventDefinition(string id,string name,string prompt,int minAct,int maxAct,EventFrequency frequency,int artIndex,string cue,params EventChoiceDef[] choices)
         {this.id=id;this.name=name;this.prompt=prompt;this.minAct=minAct;this.maxAct=maxAct;this.frequency=frequency;this.artIndex=artIndex;ambientCue=cue;this.choices=choices??Array.Empty<EventChoiceDef>();}
@@ -307,5 +316,13 @@ namespace GildedFate.Core
         private static EventEffectDef CashOut()=>E(EventEffectKind.CashOut);
         private static EventEffectDef LoseBank()=>E(EventEffectKind.LoseBank);
         private static EventEffectDef Card(string id,bool upgraded=false)=>new(){kind=EventEffectKind.AddCard,id=id,upgraded=upgraded};
+        private static EventEffectDef Flag(string key)=>new(){kind=EventEffectKind.SetFlag,id=key};
+        private static EventEffectDef Unflag(string key)=>new(){kind=EventEffectKind.ClearFlag,id=key};
+        private static EventEffectDef ReturnIn(string eventId,int floors)=>new(){kind=EventEffectKind.ScheduleReturn,id=eventId,amount=floors};
+        private static EventEffectDef Fight(bool elite)=>new(){kind=EventEffectKind.StartFight,amount=elite?1:0};
+        private static EventEffectDef Chart(NodeKind kind)=>new(){kind=EventEffectKind.ConvertNextNode,id=kind.ToString()};
+        private static EventEffectDef OpenLanes()=>E(EventEffectKind.OpenLanes);
+        private static EventEffectDef EmpowerShards()=>E(EventEffectKind.EmpowerShards);
+        private static EventEffectDef FractureAllShards()=>E(EventEffectKind.FractureAllShards);
     }
 }

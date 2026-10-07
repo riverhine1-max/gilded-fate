@@ -222,7 +222,11 @@ namespace GildedFate.UI
         private void FinishEventOutcome()
         {
             if(EventSystem.ContinueEvent(run)){screenControllerIndex=0;SaveService.Save(run);screen=ScreenMode.Event;Sfx(SoundCue.EventReveal);return;}
-            EventSystem.CompleteResult(run);Advance();
+            EventSystem.CompleteResult(run);
+            // An event that started a fight turns this room into that fight, with its normal rewards.
+            var fight=EventSystem.TakePendingFight(run);
+            if(!string.IsNullOrEmpty(fight)&&currentNode!=null){currentNode.kind=fight=="elite"?NodeKind.Elite:NodeKind.Combat;StartNode(currentNode,false);return;}
+            Advance();
         }
         private void DrawEventOutcome(float w,float h)
         {
