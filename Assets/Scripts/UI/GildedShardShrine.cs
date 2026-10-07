@@ -163,11 +163,11 @@ namespace GildedFate.UI
             if(!reward.relicClaimed&&!string.IsNullOrEmpty(reward.relicId))
             {
                 DrawFullBackdrop(rewardBackground,w,h,.28f);DrawImportantRewardAtmosphere(w,h);DrawRunDock(w);Heading(w,"A RELIC AWAKENS","A RARE SPOIL FROM THIS ENCOUNTER");
-                var relic=GameContent.Relics.First(r=>r.id==reward.relicId);var r=new Rect(w*.5f-250,h*.30f,500,260);var relicArt=new Rect(r.x+15,r.y+24,130,130);
+                var relic=GameContent.Relics.First(r=>r.id==reward.relicId);var r=new Rect(w*.5f-250,h*.27f,500,310);var relicArt=new Rect(r.x+15,r.y+24,130,130);Fill(r,new Color(.01f,.014f,.022f,.94f));Outline(r,new Color(.62f,.45f,.18f,.9f),2);Outline(new Rect(r.x+6,r.y+6,r.width-12,r.height-12),new Color(.21f,.17f,.1f,.78f),1);
                 DrawRelicArt(relicArt,Array.IndexOf(GameContent.Relics,relic));GUI.Label(new Rect(r.x+168,r.y+24,320,52),relic.name,new GUIStyle(titleStyle){fontSize=23,wordWrap=true});GUI.Label(new Rect(r.x+168,r.y+94,320,112),relic.text,new GUIStyle(footerStyle){fontSize=18,wordWrap=true,alignment=TextAnchor.UpperLeft});
                 if(relicArt.Contains(PointerPosition)){Outline(new Rect(relicArt.x-3,relicArt.y-3,relicArt.width+6,relicArt.height+6),Gold,2);SetRunHudTooltip(relicArt,relic.name,relic.text+"\n\nClick the relic or TAKE RELIC to claim it.");}
                 if(!acquisitionActive&&GUI.Button(relicArt,"",GUIStyle.none))ClaimRolledRelic();
-                if(GUI.Button(new Rect(r.x+100,r.yMax-30,300,48),"TAKE RELIC",buttonStyle))ClaimRolledRelic();return true;
+                var take=new Rect(r.center.x-150,r.yMax-72,300,48);DrawButtonFrame(take,controllerNavigation||take.Contains(PointerPosition),acquisitionActive);if(!acquisitionActive&&GUI.Button(take,"TAKE RELIC",buttonStyle))ClaimRolledRelic();return true;
             }
             if(!reward.shardClaimed&&!string.IsNullOrEmpty(reward.shardId))
             {reward.shardClaimed=true;run.OfferShard(reward.shardId);SaveService.Save(run);return true;}

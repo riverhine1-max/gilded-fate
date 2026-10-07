@@ -282,7 +282,7 @@ namespace GildedFate.UI
             if(action.Icon<EnemyIntentAction.IconSummon)return false;
             if(action.Icon==EnemyIntentAction.IconLoad)
             {
-                GUI.Label(icon,"LOAD",new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=11,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(1f,.6f,.25f)}});
+                GUI.Label(icon,"LOAD",new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=12,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(1f,.6f,.25f)}});
                 return true;
             }
             if(action.Icon==EnemyIntentAction.IconPlate||action.Icon==EnemyIntentAction.IconMomentum)
@@ -292,7 +292,7 @@ namespace GildedFate.UI
             }
             if(action.Icon==EnemyIntentAction.IconGrowth)
             {
-                GUI.Label(icon,action.type==EnemyActionType.PlantSeed?"SEED":"GROWTH",new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=10,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(.6f,.95f,.45f)}});
+                GUI.Label(icon,action.type==EnemyActionType.PlantSeed?"SEED":"GROWTH",new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=11,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(.6f,.95f,.45f)}});
                 return true;
             }
             if(action.Icon==EnemyIntentAction.IconReserve||action.Icon==EnemyIntentAction.IconFortify||action.Icon==EnemyIntentAction.IconBonus)

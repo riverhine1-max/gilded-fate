@@ -238,7 +238,7 @@ namespace GildedFate.UI
                 GUI.Label(new Rect(r.xMax-74,r.y,36,r.height),count.ToString(),new GUIStyle(footerStyle){fontSize=13,alignment=TextAnchor.MiddleCenter,normal={textColor=count>0?Color.white:new Color(.45f,.45f,.45f)}});
                 if(PgButton(new Rect(r.xMax-36,r.y+2,28,r.height-4),"+"))pgDeck[c.id]=Mathf.Min(20,count+1);
             }
-            GUI.EndGroup();DrawScrollRail(listArea,pgCardScroll,content,cards.Length+" CARDS");
+            GUI.EndGroup();DrawScrollRail(listArea,ref pgCardScroll,content,cards.Length+" CARDS");
             foreach(var key in pgDeck.Where(p=>p.Value<=0).Select(p=>p.Key).ToList())pgDeck.Remove(key);
             // ---- right: deck summary, relics, shard ----
             var rx=980f;var ry=140f;var rw=w-rx-30;
@@ -257,7 +257,7 @@ namespace GildedFate.UI
                 var rel=relics[i];var r=new Rect(0,i*26-pgRelicScroll,relicArea.width-14,23);if(r.yMax<0||r.y>relicArea.height)continue;
                 if(PgButton(r,rel.name.ToUpperInvariant(),pgRelics.Contains(rel.id),10)){if(!pgRelics.Remove(rel.id))pgRelics.Add(rel.id);}
             }
-            GUI.EndGroup();DrawScrollRail(relicArea,pgRelicScroll,relicContent,relics.Length+" RELICS");
+            GUI.EndGroup();DrawScrollRail(relicArea,ref pgRelicScroll,relicContent,relics.Length+" RELICS");
             // ---- bottom ----
             if(!string.IsNullOrEmpty(pgResult))GUI.Label(new Rect(w*.5f-400,h-116,800,24),pgResult,new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=14,fontStyle=FontStyle.Bold,normal={textColor=new Color(1f,.85f,.55f)}});
             var start=new Rect(w*.5f-150,h-84,300,52);DrawButtonFrame(start,start.Contains(PointerPosition),false);if(GUI.Button(start,"START FIGHT",buttonStyle))StartPlaygroundFight();

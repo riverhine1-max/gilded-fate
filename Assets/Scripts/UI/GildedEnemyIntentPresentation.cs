@@ -72,7 +72,7 @@ namespace GildedFate.UI
                 {
                     var marker=(int)action.destination+14;var y=r.y+size+21;
                     if(atlas)DrawAtlasIcon(atlas,marker,5,5,new Rect(r.center.x-28,y,13,13));
-                    GUI.Label(new Rect(r.center.x-13,y,48,13),action.destination.ToString().ToUpperInvariant(),new GUIStyle(footerStyle){fontSize=9,alignment=TextAnchor.MiddleLeft,normal={textColor=IntentAccent(action.type)}});
+                    GUI.Label(new Rect(r.center.x-13,y-1,52,15),action.destination.ToString().ToUpperInvariant(),new GUIStyle(footerStyle){fontSize=11,alignment=TextAnchor.MiddleLeft,normal={textColor=IntentAccent(action.type)}});
                 }
                 GUI.color=oldColor;
                 // Two possibilities (Twin Prediction / Twin Fate): the enemy uses ONE group, so the groups are divided by "OR".

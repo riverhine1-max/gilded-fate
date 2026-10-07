@@ -164,7 +164,7 @@ namespace GildedFate.UI
             HubDiamond(new Vector2(r.center.x,r.y),10);
             // Copy.
             var y=art.yMax-18;
-            GUI.Label(new Rect(r.x+16,y,r.width-32,18),p.kicker,new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=11,fontStyle=FontStyle.Bold,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(a.r,a.g,a.b,.95f)}});y+=20;
+            GUI.Label(new Rect(r.x+16,y,r.width-32,18),p.kicker,new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=12,fontStyle=FontStyle.Bold,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(a.r,a.g,a.b,.95f)}});y+=20;
             GUI.Label(new Rect(r.x+12,y,r.width-24,46),p.title,new GUIStyle(titleStyle){font=headingFont?headingFont:titleStyle.font,fontSize=r.width<320?30:36,alignment=TextAnchor.MiddleCenter,normal={textColor=Color.Lerp(new Color(.95f,.9f,.78f),new Color(1f,.95f,.82f),e)}});y+=50;
             var line=Mathf.Min(150,r.width*.42f);Fill(new Rect(r.center.x-line*.5f,y,line,1),new Color(.8f,.65f,.38f,.65f));Fill(new Rect(r.center.x-3,y-3,6,6),new Color(.97f,.85f,.55f,.9f));y+=12;
             GUI.Label(new Rect(r.x+24,y,r.width-48,r.yMax-y-64),p.text,new GUIStyle(footerStyle){fontSize=15,wordWrap=true,alignment=TextAnchor.UpperCenter,normal={textColor=new Color(.84f,.82f,.76f)}});

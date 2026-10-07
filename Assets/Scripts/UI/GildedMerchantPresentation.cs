@@ -21,6 +21,8 @@ namespace GildedFate.UI
         private Rect ShopRelicRect(int slot)=>new Rect(CombatWidth*.23f+slot*CombatWidth*.145f-65,CombatHeight*.65f,130,130);
         private Rect ShopShardRect=>new Rect(CombatWidth*.58f-68,CombatHeight*.64f,136,136);
         private Rect ShopRemovalRect=>new Rect(CombatWidth*.78f-80,CombatHeight*.65f,160,130);
+        // Tooltips anchor below their item; the anchor includes the price tag so the tooltip never covers it.
+        private static Rect WithPriceBand(Rect item)=>new Rect(item.x,item.y,item.width,item.height+46);
         private void ShopPrice(Rect item,int price,string key,bool sold)
         {
             var affordable=run.gold>=price;var hot=item.Contains(PointerPosition)&&!MerchantBusy;
@@ -75,7 +77,7 @@ namespace GildedFate.UI
             {
                 var card=GameContent.Find(run.merchantCardIds[i]);var key="card:"+card.id;var r=ShopCardRect(i);var price=RunModel.MerchantCardPrice(card);var sold=run.merchantSold.Contains(key);var hot=!MerchantBusy&&ScreenChoiceHot(r,i);ShopThread(r,hot);
                 if(!sold){var shown=r;if(hot){shown.y-=8;shown.x-=2;shown.width+=4;shown.height+=5;}var old=GUI.color;if(run.gold<price)GUI.color=new Color(.73f,.73f,.73f,1);DrawCard(shown,card);GUI.color=old;RegisterCardKeywordHelp(shown,card,controllerNavigation&&screenControllerIndex==i);
-                    if(hot&&!RuleKeywords.Any(keyword=>HasRuleKeyword(card.text,keyword)))SetRunHudTooltip(r,card.name,card.text+"\n\nRIGHT CLICK · UPGRADE PREVIEW");
+                    if(hot&&!RuleKeywords.Any(keyword=>HasRuleKeyword(card.text,keyword)))SetRunHudTooltip(WithPriceBand(r),card.name,card.text+"\n\nRIGHT CLICK · UPGRADE PREVIEW");
                     if(!MerchantBusy&&GUI.Button(r,"",GUIStyle.none))BuyShopCard(i);
                 }else{DrawLine(r.center+Vector2.left*24,r.center+Vector2.right*24,new Color(.59f,.43f,.24f,.4f),1);}
                 ShopPrice(r,price,key,sold);
@@ -83,21 +85,21 @@ namespace GildedFate.UI
             for(var i=0;i<2;i++)
             {
                 var relic=GameContent.Relics.First(r=>r.id==run.merchantRelicIds[i]);var key="relic:"+relic.id;var r=ShopRelicRect(i);var sold=run.merchantSold.Contains(key)||run.relics.Contains(relic.id);var hot=!MerchantBusy&&ScreenChoiceHot(r,7+i);ShopThread(r,hot);
-                if(!sold){var shown=hot?new Rect(r.x-5,r.y-9,r.width+10,r.height+10):r;var old=GUI.color;if(run.gold<120)GUI.color=new Color(.73f,.73f,.73f,1);DrawRelicArt(shown,Array.IndexOf(GameContent.Relics,relic));GUI.color=old;if(hot)SetRunHudTooltip(r,relic.name,relic.text);if(!MerchantBusy&&GUI.Button(r,"",GUIStyle.none))BuyShopRelic(i);}ShopPrice(r,120,key,sold);
+                if(!sold){var shown=hot?new Rect(r.x-5,r.y-9,r.width+10,r.height+10):r;var old=GUI.color;if(run.gold<120)GUI.color=new Color(.73f,.73f,.73f,1);DrawRelicArt(shown,Array.IndexOf(GameContent.Relics,relic));GUI.color=old;if(hot)SetRunHudTooltip(WithPriceBand(r),relic.name,relic.text);if(!MerchantBusy&&GUI.Button(r,"",GUIStyle.none))BuyShopRelic(i);}ShopPrice(r,120,key,sold);
             }
             if(!string.IsNullOrEmpty(run.merchantShardId))
             {
                 var shard=WorldContent.FateShards.First(s=>s.id==run.merchantShardId);var r=ShopShardRect;var key="shard:"+shard.id;var sold=run.merchantSold.Contains(key);var hot=!MerchantBusy&&ScreenChoiceHot(r,9);ShopThread(r,hot);
                 var center=r.center;foreach(var sign in new[]{-1,1}){DrawLine(new Vector2(center.x-68,center.y),new Vector2(center.x,center.y+sign*74),Gold,1);DrawLine(new Vector2(center.x+68,center.y),new Vector2(center.x,center.y+sign*74),Gold,1);}
-                if(!sold){var old=GUI.color;if(run.gold<45)GUI.color=new Color(.73f,.73f,.73f,1);DrawFateShardArt(hot?new Rect(r.x-4,r.y-8,r.width+8,r.height+8):r,shard);GUI.color=old;if(hot)SetRunHudTooltip(r,shard.name,"STABLE\n"+shard.stableText+"\n\nFRACTURED\n"+shard.fracturedText);if(!MerchantBusy&&GUI.Button(r,"",GUIStyle.none))BuyShopShard();}ShopPrice(r,45,key,sold);
+                if(!sold){var old=GUI.color;if(run.gold<45)GUI.color=new Color(.73f,.73f,.73f,1);DrawFateShardArt(hot?new Rect(r.x-4,r.y-8,r.width+8,r.height+8):r,shard);GUI.color=old;if(hot)SetRunHudTooltip(WithPriceBand(r),shard.name,"STABLE\n"+shard.stableText+"\n\nFRACTURED\n"+shard.fracturedText);if(!MerchantBusy&&GUI.Button(r,"",GUIStyle.none))BuyShopShard();}ShopPrice(r,45,key,sold);
             }
             var device=ShopRemovalRect;var deviceHot=!MerchantBusy&&ScreenChoiceHot(device,10);ShopThread(device,deviceHot);
             DrawRemovalServiceIcon(device);
             GUI.Label(new Rect(device.x-30,device.yMax-22,device.width+60,24),"SEVER A THREAD",new GUIStyle(footerStyle){fontSize=15,fontStyle=FontStyle.Bold,normal={textColor=Gold}});ShopPrice(device,run.MerchantRemovalCost,"remove",false);
-            if(deviceHot)SetRunHudTooltip(device,"SEVER A THREAD","Permanently remove one chosen card. Each removal raises the next price by 25 Gold.\n\nCurrent price: "+run.MerchantRemovalCost+" Gold.");if(!MerchantBusy&&GUI.Button(device,"",GUIStyle.none))OpenMerchantRemoval();
+            if(deviceHot)SetRunHudTooltip(WithPriceBand(device),"SEVER A THREAD","Permanently remove one chosen card. Each removal raises the next price by 25 Gold.\n\nCurrent price: "+run.MerchantRemovalCost+" Gold.");if(!MerchantBusy&&GUI.Button(device,"",GUIStyle.none))OpenMerchantRemoval();
             var heal=new Rect(w-133,h*.66f+14,66,76);var healTint=GUI.color;if(merchantHealed||run.hp>=run.maxHp)GUI.color=new Color(.45f,.45f,.45f,1);DrawAtlasIcon(hudEmblemAtlas,1,4,2,FittedServiceIcon(heal,60));GUI.color=healTint;
-            ShopPrice(heal,35,"heal",merchantHealed);if(!merchantHealed&&run.hp>=run.maxHp)GUI.Label(new Rect(heal.x-24,heal.y-20,114,20),"FULL HEALTH",new GUIStyle(footerStyle){fontSize=11});
-            if(controllerNavigation?screenControllerIndex==11:heal.Contains(pointer)){Outline(new Rect(heal.x-4,heal.y-4,heal.width+8,heal.height+8),Gold,2);SetRunHudTooltip(heal,"RESTORE 18 HP","Recover up to 18 HP for 35 Gold. Once per visit."+(run.hp>=run.maxHp?"\n\nAlready at full health — no purchase needed.":""));}
+            ShopPrice(heal,35,"heal",merchantHealed);if(!merchantHealed&&run.hp>=run.maxHp)GUI.Label(new Rect(heal.x-24,heal.y-20,114,20),"FULL HEALTH",new GUIStyle(footerStyle){fontSize=12});
+            if(controllerNavigation?screenControllerIndex==11:heal.Contains(pointer)){Outline(new Rect(heal.x-4,heal.y-4,heal.width+8,heal.height+8),Gold,2);SetRunHudTooltip(WithPriceBand(heal),"RESTORE 18 HP","Recover up to 18 HP for 35 Gold. Once per visit."+(run.hp>=run.maxHp?"\n\nAlready at full health — no purchase needed.":""));}
             if(!MerchantBusy&&GUI.Button(heal,"",GUIStyle.none))BuyShopHeal();
             GUI.Label(new Rect(178,h-68,w-430,30),"CLICK AN ITEM TO BUY · RIGHT CLICK / I / R3 TO INSPECT CARDS",new GUIStyle(footerStyle){fontSize=12,normal={textColor=new Color(.84f,.78f,.66f)}});
             var leave=new Rect(w-220,h-67,190,43);DrawButtonFrame(leave,ScreenChoiceHot(leave,12),MerchantBusy);if(!MerchantBusy&&GUI.Button(leave,"LEAVE SHOP",buttonStyle))Advance();

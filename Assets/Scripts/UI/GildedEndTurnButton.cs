@@ -76,7 +76,7 @@ namespace GildedFate.UI
             if(sub)
             {
                 var text=idle&&incoming<=0?"NO PLAYS LEFT":incoming>0?(idle?"NO PLAYS · "+incoming+" INCOMING":"INCOMING "+incoming):"";
-                var subStyle=new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=10,fontStyle=FontStyle.Bold,alignment=TextAnchor.MiddleCenter,normal={textColor=incoming>0?new Color(1f,.55f,.45f):new Color(.95f,.80f,.52f)}};
+                var subStyle=new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=11,fontStyle=FontStyle.Bold,alignment=TextAnchor.MiddleCenter,normal={textColor=incoming>0?new Color(1f,.55f,.45f):new Color(.95f,.80f,.52f)}};
                 GUI.Label(new Rect(shown.x,shown.y+shown.height*.56f,shown.width,shown.height*.34f),text,subStyle);
             }
             GUI.color=old;

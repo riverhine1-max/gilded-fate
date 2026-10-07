@@ -50,7 +50,7 @@ namespace GildedFate.UI
                 DrawMapNodeIcon((int)node.kind,r);GUI.color=old;MapPolishNodeOver(node,r,current);
                 if(current)DrawCurrentMapMarker(r);
                 var roomLabel=node.kind==NodeKind.Sanctuary?"REST SHRINE":node.kind.ToString().ToUpperInvariant();
-                GUI.Label(new Rect(p.x-95,p.y+size*.5f+7,190,22),roomLabel+(current?" · HERE":node.complete?" · CLEARED":""),new GUIStyle(footerStyle){fontSize=11,normal={textColor=current||active?Gold:new Color(.78f,.77f,.70f)}});
+                GUI.Label(new Rect(p.x-95,p.y+size*.5f+7,190,22),roomLabel+(current?" · HERE":node.complete?" · CLEARED":""),new GUIStyle(footerStyle){fontSize=12,normal={textColor=current||active?Gold:new Color(.78f,.77f,.70f)}});
                 if(!inspectOnly&&mapReady&&active&&!mapPauseOpen&&pendingMapNode==null&&GUI.Button(r,"",GUIStyle.none))clicked=node;
             }
             GUI.EndGroup();MapPolishFog(viewport);
@@ -66,7 +66,7 @@ namespace GildedFate.UI
             }
             DrawMapLegend(w,h);
             var rail=new Rect(viewport.xMax-5,viewport.y+8,2,viewport.height-16);Fill(rail,new Color(.5f,.36f,.2f,.4f));var thumb=rail.height*viewport.height/MapContentHeight;Fill(new Rect(rail.x,rail.y+(rail.height-thumb)*mapScroll/Mathf.Max(1,maxScroll),2,thumb),Gold);
-            GUI.Label(new Rect(viewport.x,viewport.yMax-25,viewport.width,22),"SCROLL TO EXPLORE · FOLLOW THE GILDED THREADS",new GUIStyle(footerStyle){fontSize=10,normal={textColor=new Color(.74f,.67f,.52f)}});
+            GUI.Label(new Rect(viewport.x,viewport.yMax-25,viewport.width,22),"SCROLL TO EXPLORE · FOLLOW THE GILDED THREADS",new GUIStyle(footerStyle){fontSize=12,normal={textColor=new Color(.74f,.67f,.52f)}});
             if(hovered!=null&&!mapPauseOpen){var at=viewport.position+MapPosition(hovered,viewport.width)-new Vector2(0,mapScroll);SetRunHudTooltip(new Rect(at.x-35,at.y-35,70,70),hovered.kind==NodeKind.Sanctuary?"REST SHRINE":hovered.kind.ToString().ToUpperInvariant(),NodeDescription(hovered.kind));}
             if(!inspectOnly){if(clicked!=null)BeginMapTravel(clicked);DrawMapTravelTransition(w,h,viewport);if(mapPauseOpen)DrawMapPauseMenu(w,h);}
         }

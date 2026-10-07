@@ -86,6 +86,13 @@ namespace GildedFate.UI
             CombatCheck(resting.y+HandLayout.CardHeight*.5f>CombatHeight-20&&resting.y+HandLayout.CardHeight*.5f<CombatHeight+8,"Resting hand is only slightly tucked below the screen edge");
             CombatCheck(resting.y-144-HandLayout.CardHeight*1.18f*.5f>126&&resting.y-144+HandLayout.CardHeight*1.18f*.5f<CombatHeight-20,"Hovered card rises into a fully readable position");
             CombatCheck(PileRect(0).center.x<CombatWidth*.12f&&PileRect(1).center.x>CombatWidth*.88f,"Draw pile is on the left and Discard is on the right");
+            // Polish: the fan never slides under the energy orb or the End Turn button, at any hand size.
+            for(var handSize=1;handSize<=12;handSize++)
+            {
+                var first=HandLayout.Slot(0,handSize,CombatWidth,CombatHeight);var last=HandLayout.Slot(handSize-1,handSize,CombatWidth,CombatHeight);
+                CombatCheck(first.x-HandLayout.CardEdgeAllowance>=EnergyMeterRect.xMax&&last.x+HandLayout.CardEdgeAllowance<=EndTurnRect.x,"Hand of "+handSize+" clears the energy orb and End Turn");
+                CombatCheck(!EndTurnRect.Overlaps(PileRect(1))&&!EndTurnRect.Overlaps(PileRect(2))&&!EndTurnRect.Overlaps(EnergyMeterRect),"End Turn does not overlap the piles or the energy orb");
+            }
             var scaledCenter=CanvasPointFromPhysical(new Vector2(1440,810),1620,2);
             CombatCheck(Vector2.Distance(scaledCenter,new Vector2(720,405))<.01f,"Physical pointer converts to the same virtual-canvas point at scaled resolutions");
             var markedText=GameContent.Cards.First(c=>c.id=="hex").text;

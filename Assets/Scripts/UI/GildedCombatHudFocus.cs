@@ -102,7 +102,7 @@ namespace GildedFate.UI
             SetCombatEffectTooltip(target.title,detail,r.center);
             DrawCombatEffectTooltip(w,h);
             GUI.Label(new Rect(22,h-27,540,20),menuUsesGamepad?"D-PAD / STICK · INSPECT    UP/DOWN · GROUP    A · CONFIRM    B · HAND":"ARROWS · INSPECT    UP/DOWN · GROUP    ENTER · CONFIRM    BACKSPACE · HAND",
-                new GUIStyle(footerStyle){fontSize=10,alignment=TextAnchor.MiddleLeft,normal={textColor=Gold}});
+                new GUIStyle(footerStyle){fontSize=12,alignment=TextAnchor.MiddleLeft,normal={textColor=Gold}});
         }
     }
 }

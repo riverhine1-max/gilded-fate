@@ -379,7 +379,7 @@ namespace GildedFate.UI
             var previous=GUI.color;GUI.color=new Color(1,1,1,content);DrawAtlasIcon(bindingFateIconAtlas,FateweaveIconIndex(fate.id),4,4,new Rect(iconCenter.x-40,iconCenter.y-40,80,80));GUI.color=previous;
             // A darker reading panel keeps the rules crisp over the weave.
             Fill(new Rect(r.x+16,r.y+112,r.width-32,r.height-176),new Color(0,0,0,.40f*content));
-            GUI.Label(new Rect(r.x+18,r.y+116,r.width-36,16),FateweaveTag(fate.id),new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=10,normal={textColor=FateweaveTint(pal.accent,.92f*content)}});
+            GUI.Label(new Rect(r.x+18,r.y+116,r.width-36,16),FateweaveTag(fate.id),new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=12,normal={textColor=FateweaveTint(pal.accent,.92f*content)}});
             GUI.Label(new Rect(r.x+16,r.y+133,r.width-32,32),fate.name,new GUIStyle(titleStyle){fontSize=20,normal={textColor=hot>.5f?new Color(1f,.93f,.66f,content):new Color(.92f,.78f,.48f,content)}});
             Fill(new Rect(r.x+40,r.y+168,r.width-80,1),FateweaveTint(Gold,.4f*content));Fill(new Rect(r.center.x-3,r.y+165,6,6),FateweaveTint(Gold,.7f*content));
             GUI.Label(new Rect(r.x+24,r.y+176,r.width-48,Mathf.Max(20,r.height-240)),fate.text,new GUIStyle(footerStyle){fontSize=15,wordWrap=true,alignment=TextAnchor.UpperCenter,normal={textColor=new Color(.95f,.92f,.85f,content)}});
@@ -396,7 +396,7 @@ namespace GildedFate.UI
             DrawFateweaveGlow(c,200,pal.glow,.34f*appear*(.85f+.15f*Mathf.Sin(now*2f)));
             for(var k=0;k<32;k++){var a0=k*Mathf.PI/16;var a1=a0+Mathf.PI/16;DrawLine(c+new Vector2(Mathf.Cos(a0),Mathf.Sin(a0))*58,c+new Vector2(Mathf.Cos(a1),Mathf.Sin(a1))*58,FateweaveTint(Gold,.8f*appear),2.5f);DrawLine(c+new Vector2(Mathf.Cos(a0),Mathf.Sin(a0))*50,c+new Vector2(Mathf.Cos(a1),Mathf.Sin(a1))*50,FateweaveTint(pal.strand,.55f*appear),1.2f);}
             var previous=GUI.color;GUI.color=new Color(1,1,1,appear);DrawAtlasIcon(bindingFateIconAtlas,FateweaveIconIndex(fate.id),4,4,new Rect(c.x-40,c.y-40,80,80));GUI.color=previous;
-            GUI.Label(new Rect(c.x-130,c.y+68,260,16),"PULLED",new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=10,normal={textColor=FateweaveTint(pal.accent,appear)}});
+            GUI.Label(new Rect(c.x-130,c.y+68,260,16),"PULLED",new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=12,normal={textColor=FateweaveTint(pal.accent,appear)}});
             GUI.Label(new Rect(c.x-130,c.y+86,260,28),fate.name,new GUIStyle(titleStyle){fontSize=18,normal={textColor=new Color(1f,.9f,.6f,appear)}});
             GUI.Label(new Rect(c.x-130,c.y+116,260,20),"WOVEN INTO YOUR FATE",new GUIStyle(footerStyle){fontSize=12,normal={textColor=new Color(.9f,.86f,.76f,.8f*appear)}});
         }

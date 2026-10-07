@@ -118,9 +118,9 @@ namespace GildedFate.UI
             {
                 var card=cards[i];var r=new Rect(start+(i%columns)*(cardW+gap),(i/columns)*rowStep+4-choiceScroll,cardW,cardH);if(r.yMax<0||r.y>viewport.height)continue;var global=new Rect(viewport.x+r.x,viewport.y+r.y,r.width,r.height);var hot=global.Contains(combatPointer)||choiceControllerIndex==i;
                 DrawCard(r,card);RegisterCardKeywordHelp(global,card);if(hot)Outline(new Rect(r.x-4,r.y-4,r.width+8,r.height+8),Gold,3);
-                GUI.Label(new Rect(r.x,r.yMax-22,r.width,18),hot?(discard?"DISCARD":exhaust?"DISSIPATE":"RETURN"):"SELECT",new GUIStyle(footerStyle){fontSize=10,normal={textColor=hot?Gold:new Color(.65f,.69f,.74f)}});
+                GUI.Label(new Rect(r.x,r.yMax+1,r.width,16),hot?(discard?"DISCARD":exhaust?"DISSIPATE":"RETURN"):"SELECT",new GUIStyle(footerStyle){fontSize=12,normal={textColor=hot?Gold:new Color(.65f,.69f,.74f)}});
             }
-            GUI.EndGroup();DrawScrollRail(viewport,choiceScroll,contentHeight,cards.Count+" ELIGIBLE CARDS  ·  SCROLL");
+            GUI.EndGroup();DrawScrollRail(viewport,ref choiceScroll,contentHeight,cards.Count+" ELIGIBLE CARDS  ·  SCROLL");
             GUI.Label(new Rect(w*.2f,h-59,w*.6f,28),"The card is already paid for. Finish this choice, or save and resume it later.",footerStyle);
         }
         private void DrawCombatOptionChoice(float w,float h)

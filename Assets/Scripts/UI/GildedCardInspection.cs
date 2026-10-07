@@ -38,16 +38,19 @@ namespace GildedFate.UI
                 var details="GREEN · UPGRADE CHANGES";
                 if(inspectionBase.cost!=inspectionUpgrade.cost)details+="\n\nEnergy: "+inspectionBase.cost+" → <color=#83EEA1>"+inspectionUpgrade.cost+"</color>";
                 if(removed.Length>0)details+="\n\nRemoved:\n<color=#83EEA1>"+removed+"</color>";
-                var side=new Rect(Mathf.Max(20,r.x-260),r.y+80,235,220);
-                GUI.Label(side,details,new GUIStyle(footerStyle){fontSize=18,richText=true,wordWrap=true,alignment=TextAnchor.UpperLeft,normal={textColor=new Color(.94f,.91f,.82f)}});
+                var side=new Rect(Mathf.Max(20,r.x-260),r.y+80,235,Mathf.Max(220,r.yMax-r.y-110));
+                // Long change lists shrink to fit the panel instead of running off its bottom edge.
+                var sideStyle=new GUIStyle(footerStyle){fontSize=18,richText=true,wordWrap=true,alignment=TextAnchor.UpperLeft,normal={textColor=new Color(.94f,.91f,.82f)}};
+                while(sideStyle.fontSize>13&&sideStyle.CalcHeight(new GUIContent(details),side.width)>side.height)sideStyle.fontSize--;
+                GUI.Label(side,details,sideStyle);
             }
             var meta=preview.origin.ToString().ToUpperInvariant()+"  ·  "+preview.rarity.ToString().ToUpperInvariant()+(preview.IsModified?"  ·  "+preview.specialModification.ToUpperInvariant():"");
             GUI.Label(new Rect(w*.5f-310,r.yMax+9,620,22),meta,new GUIStyle(footerStyle){fontSize=12});
             var normal=new Rect(w*.5f-156,r.yMax+37,150,36);var upgraded=new Rect(w*.5f+6,r.yMax+37,150,36);
             if(GameContent.HasUpgradePreview(card))
             {
-                DrawButtonFrame(normal,normal.Contains(PointerPosition),!inspectionShowUpgrade);
-                DrawButtonFrame(upgraded,upgraded.Contains(PointerPosition),inspectionShowUpgrade);
+                DrawButtonFrame(normal,normal.Contains(PointerPosition),false,!inspectionShowUpgrade);
+                DrawButtonFrame(upgraded,upgraded.Contains(PointerPosition),false,inspectionShowUpgrade);
                 if(GUI.Button(normal,"NORMAL",buttonStyle)){SelectInspectionVersion(false);Sfx(SoundCue.UiHover);}
                 var upgradeStyle=new GUIStyle(buttonStyle);upgradeStyle.normal.textColor=new Color(.54f,1f,.65f);
                 if(GUI.Button(upgraded,"UPGRADE PREVIEW",new GUIStyle(upgradeStyle){fontSize=12})){SelectInspectionVersion(true);Sfx(SoundCue.UiHover);}

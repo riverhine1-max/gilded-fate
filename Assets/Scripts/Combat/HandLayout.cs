@@ -12,12 +12,15 @@ namespace GildedFate.Combat
     public static class HandLayout
     {
         public const float CardWidth=194,CardHeight=264;
+        // Width kept clear on each side of the hand for the energy orb / Gild button (left) and the End Turn button
+        // (right), plus room for the outermost card's tilt. The fan is narrowed instead of sliding under them.
+        public const float SideReserve=200,CardEdgeAllowance=112;
         public static HandSlot Slot(int index,int count,float width,float height)
         {
             count=Math.Max(1,count);
             // Rest the fan slightly below the viewport. Hover/drag raises a card far
             // enough to reveal it in full, matching the deliberate tabletop feel.
-            var span=Math.Min((count-1)*165f,Math.Min(980f,Math.Max(0,width-430)));
+            var span=Math.Min((count-1)*165f,Math.Min(980f,Math.Max(0,width-2*(SideReserve+5+CardEdgeAllowance))));
             var t=count==1?0:(index/(float)(count-1)*2-1);
             var fan=Math.Min(10,Math.Max(0,(count-1)*1.65f));
             return new HandSlot(width*.5f+t*span*.5f,height-139+t*t*6,t*fan,index);

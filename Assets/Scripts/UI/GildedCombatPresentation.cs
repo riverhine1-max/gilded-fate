@@ -146,7 +146,9 @@ namespace GildedFate.UI
         private Rect PileRect(int pile)=>pile==0?new Rect(18,CombatHeight-104,72,82):pile==1?
             new Rect(CombatWidth-86,CombatHeight-104,68,78):new Rect(CombatWidth-86,CombatHeight-190,68,78);
         private Rect EnergyMeterRect=>new Rect(103,CombatHeight-112,96,96);
-        private Rect EndTurnRect=>new Rect(CombatWidth-286,CombatHeight-155,182,54);
+        // End Turn sits in the right-hand column above the Dissipate pile so the hand fan never has to pass under it.
+        // The hand reserves the same margins on both sides (see HandLayout.SideReserve).
+        private Rect EndTurnRect=>new Rect(CombatWidth-HandLayout.SideReserve,CombatHeight-258,182,54);
         private Vector2 PilePoint(int pile)=>PileRect(pile).center;
         private Vector2 CardImpactPoint(CardDef card)=>combat!=null&&card!=null&&combat.RequiresEnemyTarget(card)?
             new Vector2(EnemyVisualCenterX,CombatHeight*.34f):card?.kind==CardKind.Power?
@@ -869,7 +871,7 @@ namespace GildedFate.UI
         {
             Fill(new Rect(0,66,w,h-66),new Color(0,0,0,.38f));var panel=new Rect(w-430,82,400,h-172);Fill(panel,new Color(.006f,.011f,.019f,.985f));Outline(panel,new Color(.76f,.61f,.34f),2);
             GUI.Label(new Rect(panel.x+24,panel.y+18,panel.width-48,34),"COMBAT HISTORY",new GUIStyle(titleStyle){fontSize=23,alignment=TextAnchor.MiddleLeft,normal={textColor=Gold}});
-            GUI.Label(new Rect(panel.x+24,panel.y+52,panel.width-48,22),"MOST RECENT EVENTS · WHY NUMBERS CHANGED",new GUIStyle(footerStyle){fontSize=10,alignment=TextAnchor.MiddleLeft,normal={textColor=new Color(.69f,.68f,.65f)}});
+            GUI.Label(new Rect(panel.x+24,panel.y+52,panel.width-48,22),"MOST RECENT EVENTS · WHY NUMBERS CHANGED",new GUIStyle(footerStyle){fontSize=12,alignment=TextAnchor.MiddleLeft,normal={textColor=new Color(.69f,.68f,.65f)}});
             var shown=combatHistory.Skip(Mathf.Max(0,combatHistory.Count-13)).Reverse().ToArray();for(var i=0;i<shown.Length;i++){var row=new Rect(panel.x+22,panel.y+86+i*36,panel.width-44,31);if(i%2==0)Fill(row,new Color(1f,1f,1f,.025f));GUI.Label(new Rect(row.x+9,row.y,row.width-18,row.height),shown[i],new GUIStyle(footerStyle){fontSize=12,alignment=TextAnchor.MiddleLeft,clipping=TextClipping.Clip,normal={textColor=i==0?new Color(1f,.9f,.65f):new Color(.88f,.86f,.8f)}});}
             if(shown.Length==0)GUI.Label(new Rect(panel.x+25,panel.y+104,panel.width-50,40),"Actions will appear here as combat resolves.",new GUIStyle(footerStyle){fontSize=13,alignment=TextAnchor.MiddleLeft});
             var close=new Rect(panel.x+95,panel.yMax-55,panel.width-190,36);DrawButtonFrame(close,close.Contains(combatPointer),false);if(GUI.Button(close,"CLOSE · B / ESC",new GUIStyle(buttonStyle){fontSize=12}))combatHistoryOpen=false;
@@ -883,7 +885,7 @@ namespace GildedFate.UI
                 var r=PileRect(i);var hovered=r.Contains(combatPointer);var icon=new Rect(r.center.x-27,r.y+19,54,54);
                 if(hovered&&!profile.reduceMotion){var old=GUI.color;GUI.color=new Color(1f,.78f,.32f,.25f);DrawAtlasIcon(combatReadabilityAtlas,icons[i],8,8,new Rect(icon.x-5,icon.y-5,icon.width+10,icon.height+10));GUI.color=old;}
                 DrawAtlasIcon(combatReadabilityAtlas,icons[i],8,8,icon);
-                GUI.Label(new Rect(r.x-8,r.y,r.width+16,17),names[i],new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=9,fontStyle=FontStyle.Bold,normal={textColor=hovered?Color.white:Gold}});
+                GUI.Label(new Rect(r.x-8,r.y,r.width+16,17),names[i],new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=12,fontStyle=FontStyle.Bold,normal={textColor=hovered?Color.white:Gold}});
                 GUI.Label(new Rect(icon.xMax-15,icon.yMax-25,34,26),counts[i].ToString(),new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=18,alignment=TextAnchor.MiddleCenter,normal={textColor=Color.white}});
                 if(hovered)SetCombatEffectTooltip(names[i]+" · "+counts[i],i==0?"Cards waiting to be drawn. Click to inspect them alphabetically without revealing draw order.":i==1?"Played and discarded cards wait here. When the Draw pile empties, this pile is shuffled back in.":"Cards removed for the rest of this combat. Click to inspect them.",r.center);
                 if(GUI.Button(r,"",GUIStyle.none)&&!combatBusy){pileOpen=i;pilePage=0;pileScroll=0;selectedView=dragView=hoverView=null;Sfx(SoundCue.UiHover);}
@@ -906,7 +908,7 @@ namespace GildedFate.UI
             DrawIdentityEnergyReaction(seal,color,reaction);
             DrawEnergyOrbVfx(seal,color);
             GUI.Label(seal,$"{combat.energy}<size=15>/{baseEnergy}</size>",new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=31,richText=true,alignment=TextAnchor.MiddleCenter,normal={textColor=Color.white}});
-            GUI.Label(new Rect(r.x-4,r.yMax-14,r.width+8,16),"ENERGY",new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=8,normal={textColor=Color.Lerp(color,Color.white,.28f)}});
+            GUI.Label(new Rect(r.x-4,r.yMax-14,r.width+8,16),"ENERGY",new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=12,normal={textColor=Color.Lerp(color,Color.white,.28f)}});
             if(r.Contains(combatPointer))SetCombatEffectTooltip("ENERGY",$"{combat.energy} available now. Your normal turn begins with {baseEnergy}. Cards spend the value shown in their Energy vessel.",r.center);
         }
 
@@ -919,7 +921,7 @@ namespace GildedFate.UI
             var cards=pileOpen==0?pile.OrderBy(c=>c.name).ThenBy(c=>c.instanceId).ToArray():pile.ToArray();
             Heading(w,(pileOpen==0?"DRAW PILE":pileOpen==1?"DISCARD PILE":"DISSIPATE PILE")+"  ·  "+cards.Length,pileOpen==0?"CONTENTS SHOWN ALPHABETICALLY · DRAW ORDER HIDDEN":pileOpen==2?"REMOVED FOR THE REST OF THIS COMBAT":"RETURNS TO DRAW WHEN THE DECK IS EMPTY");
             const int columns=6;const float gap=12f;var viewport=new Rect(34,150,w-68,h-228);var cardW=Mathf.Min(186f,(viewport.width-34-gap*(columns-1))/columns);var cardH=cardW*1.48f;var rowStep=cardH+17;var totalW=columns*cardW+(columns-1)*gap;var start=(viewport.width-totalW)*.5f;var rows=Mathf.CeilToInt(cards.Length/(float)columns);var contentHeight=Mathf.Max(viewport.height,rows*rowStep+8);if(!modal)UpdateScrollArea(viewport,ref pileScroll,contentHeight);
-            GUI.BeginGroup(viewport);for(var index=0;index<cards.Length;index++){var row=index/columns;var col=index%columns;var r=new Rect(start+col*(cardW+gap),row*rowStep+4-pileScroll,cardW,cardH);if(r.yMax<0||r.y>viewport.height)continue;DrawCard(r,cards[index]);if(!modal){RegisterCardKeywordHelp(new Rect(viewport.x+r.x,viewport.y+r.y,r.width,r.height),cards[index]);if(GUI.Button(r,"",GUIStyle.none)){inspectedCard=cards[index];Sfx(SoundCue.UiConfirm);}}}GUI.EndGroup();DrawScrollRail(viewport,pileScroll,contentHeight,cards.Length+" CARDS  ·  SCROLL");
+            GUI.BeginGroup(viewport);for(var index=0;index<cards.Length;index++){var row=index/columns;var col=index%columns;var r=new Rect(start+col*(cardW+gap),row*rowStep+4-pileScroll,cardW,cardH);if(r.yMax<0||r.y>viewport.height)continue;DrawCard(r,cards[index]);if(!modal){RegisterCardKeywordHelp(new Rect(viewport.x+r.x,viewport.y+r.y,r.width,r.height),cards[index]);if(GUI.Button(r,"",GUIStyle.none)){inspectedCard=cards[index];Sfx(SoundCue.UiConfirm);}}}GUI.EndGroup();DrawScrollRail(viewport,ref pileScroll,contentHeight,cards.Length+" CARDS  ·  SCROLL");
             if(cards.Length==0)GUI.Label(new Rect(0,300,w,60),"This pile is empty.",subtitleStyle);
             if(modal)return;
             var close=new Rect(w*.5f-90,h-62,180,40);DrawButtonFrame(close,close.Contains(combatPointer),false);if(GUI.Button(close,"CLOSE",buttonStyle)){pileOpen=-1;Sfx(SoundCue.UiHover);}
@@ -1085,7 +1087,7 @@ namespace GildedFate.UI
                     DrawLine(from,to,new Color(accent.r,accent.g,accent.b,shatter),2);
                 }
                 GUI.Label(new Rect(r.x-5,r.yMax+1,r.width+10,14),filled?kind.ToString().ToUpperInvariant():(i+1).ToString(),
-                    new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=10,normal={textColor=accent}});
+                    new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=12,normal={textColor=accent}});
                 GUI.color=old;
                 RegisterCombatHudTarget("sigil:"+i,7,r,filled?kind.ToString().ToUpperInvariant()+" SIGIL":"EMPTY SIGIL SLOT "+(i+1),filled?SigilDescription(kind):"Create a Sigil here. Slots resolve from left to right.");
                 if(CombatInspectionAllowed&&r.Contains(combatPointer))
@@ -1140,7 +1142,7 @@ namespace GildedFate.UI
                 if(pulse>0&&!expansion&&!profile.reduceFlashing)Fill(new Rect(rect.x+3,rect.y+3,rect.width-6,rect.height-6),new Color(chip.color.r,chip.color.g,chip.color.b,pulse*.12f));
                 if(hidden)GUI.Label(rect,"+"+(chips.Count-shown+1),new GUIStyle(titleStyle){fontSize=21,normal={textColor=Gold}});else if(!DrawMajorEffectIcon(iconRect,chip.title)&&(!expansion||!DrawExpansionPowerIcon(iconRect,chip.title,chip.title=="GILDED WARLORD"&&!combat.WarlordReady&&pulse<=.01f)))DrawAtlasIcon(combatReadabilityAtlas,CombatReadabilityIcon(chip),8,8,iconRect);
                 if(!hidden&&chip.value>0){var label=string.IsNullOrEmpty(chip.counter)?chip.value.ToString():chip.counter;var width=string.IsNullOrEmpty(chip.counter)?21f:36f;var number=new Rect(rect.xMax-width+3,rect.yMax-19,width,21);Fill(number,new Color(.005f,.008f,.012f,.96f));Outline(number,chip.color,1);GUI.Label(number,label,new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=string.IsNullOrEmpty(chip.counter)?12:9,alignment=TextAnchor.MiddleCenter,normal={textColor=Color.white}});}
-                if(profile.colorblindStatus&&!hidden)GUI.Label(new Rect(rect.x-3,rect.yMax-10,rect.width+6,14),chip.code,new GUIStyle(footerStyle){fontSize=8,alignment=TextAnchor.MiddleCenter,normal={textColor=chip.color}});
+                if(profile.colorblindStatus&&!hidden)GUI.Label(new Rect(rect.x-3,rect.yMax-13,rect.width+6,16),chip.code,new GUIStyle(footerStyle){fontSize=11,alignment=TextAnchor.MiddleCenter,normal={textColor=chip.color}});
                 GUI.color=iconTint;
                 if(CombatInspectionAllowed&&rect.Contains(combatPointer))SetCombatEffectTooltip(hidden?"MORE ACTIVE EFFECTS":chip.title,hidden?string.Join("\n\n",chips.Skip(i).Select(c=>c.title+" — "+c.detail)):chip.detail,rect.center);
             }
@@ -1164,16 +1166,6 @@ namespace GildedFate.UI
             const float width=340;var measure=new GUIStyle(footerStyle){fontSize=15,wordWrap=true};var height=Mathf.Clamp(measure.CalcHeight(new GUIContent(combatEffectTooltipDetail??""),width-30)+58,106,260);
             var x=combatEffectTooltipAnchor.x+28;if(x+width>w-18)x=combatEffectTooltipAnchor.x-width-28;if(x<18)x=18;var y=Mathf.Clamp(combatEffectTooltipAnchor.y-height*.46f,72,h-height-18);
             DrawTooltip(new Rect(x,y,width,height),combatEffectTooltipTitle,combatEffectTooltipDetail);
-        }
-        private void DrawCombatRelics()
-        {
-            var shown=Mathf.Min(6,run.relics.Count);for(var i=0;i<shown;i++)
-            {
-                var id=run.relics[i];var index=System.Array.FindIndex(GameContent.Relics,relic=>relic.id==id);var r=new Rect(520+i*48,9,42,42);
-                DrawRelicArt(r,index>=0?index:0);if(powerBadgePulse>0)Outline(new Rect(r.x-2,r.y-2,r.width+4,r.height+4),new Color(1f,.78f,.3f,powerBadgePulse),2);
-                if(r.Contains(combatPointer)){var relic=index>=0?GameContent.Relics[index]:null;DrawTooltip(new Rect(Mathf.Clamp(r.x-80,18,CombatWidth-318),72,300,70),relic?.name??"UNKNOWN RELIC",relic?.text??"This legacy relic is no longer part of the replacement catalog.");}
-            }
-            if(run.relics.Count>shown)GUI.Label(new Rect(520+shown*48,11,40,38),"+"+(run.relics.Count-shown),new GUIStyle(footerStyle){fontSize=12,normal={textColor=Gold}});
         }
         private void DrawCombatAtmosphere(float w,float h)
         {

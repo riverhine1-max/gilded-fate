@@ -105,7 +105,7 @@ namespace GildedFate.UI
             style.normal.textColor=Color.Lerp(new Color(.97f,.94f,1f),new Color(1f,.85f,.50f),profile.reduceFlashing?0:pulse);
             // Keep the integer, not a rounded float (large counts lose precision).
             GUI.Label(number,resonanceTarget.ToString(),style);
-            GUI.Label(new Rect(area.x,area.yMax+1,area.width,16),"RESONANCE",new GUIStyle(footerStyle){fontSize=10,alignment=TextAnchor.MiddleLeft,normal={textColor=new Color(.84f,.79f,.9f)}});
+            GUI.Label(new Rect(area.x,area.yMax+1,area.width,16),"RESONANCE",new GUIStyle(footerStyle){fontSize=12,alignment=TextAnchor.MiddleLeft,normal={textColor=new Color(.84f,.79f,.9f)}});
             var detail=resonanceTarget+" Resonance.\n"+RuleKeywords.First(k=>k.term=="Resonance").detail;
             RegisterCombatHudTarget("hero:resonance",1,area,"RESONANCE",detail);
             if(CombatInspectionAllowed&&area.Contains(combatPointer))SetCombatEffectTooltip("RESONANCE",detail,area.center);

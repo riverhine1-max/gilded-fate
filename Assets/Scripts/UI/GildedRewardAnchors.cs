@@ -6,10 +6,13 @@ namespace GildedFate.UI
     public sealed partial class GildedMainMenu
     {
         private static Rect RunDeckControlRect(float width)=>new Rect(width-126,7,46,44);
-        private static Rect RunRelicSlotRect(int index)=>new Rect(18+index*45,67,38,38);
+        // Relics live inside the top bar, between the act badge and the map button, so a long relic row can never run
+        // under a page heading. Anything past the last slot collapses into a "+N" chip.
+        private const float RelicRowStart=600,RelicRowRightGap=205;
+        private static Rect RunRelicSlotRect(int index)=>new Rect(RelicRowStart+index*45,10,38,38);
         private int VisibleRunRelics(float width)
         {
-            var capacity=Mathf.Max(1,Mathf.FloorToInt((width-40)/45));
+            var capacity=Mathf.Clamp(Mathf.FloorToInt((width-RelicRowStart-RelicRowRightGap+7)/45),1,18);
             return Mathf.Min(run.relics.Count,run.relics.Count>capacity?capacity-1:capacity);
         }
         private Vector2 AcquisitionTarget(float width)

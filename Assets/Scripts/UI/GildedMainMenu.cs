@@ -589,14 +589,16 @@ namespace GildedFate.UI
             Fill(new Rect(w * .8f, 0, w * .2f, h), new Color(0, 0, 0, .28f));
         }
 
-        private void DrawButtonFrame(Rect rect, bool hover, bool disabled)
+        // disabled: dimmed and inert (no hover light). selected: a steady lit frame for the active tab or choice.
+        private void DrawButtonFrame(Rect rect, bool hover, bool disabled, bool selected=false)
         {
-            if(hover&&!disabled)Fill(new Rect(rect.x-5,rect.y-5,rect.width+10,rect.height+10),new Color(1f,.55f,.12f,.1f));
-            Fill(rect, hover&&!disabled ? new Color(.22f, .135f, .035f, .92f) : new Color(.018f, .024f, .034f, .94f));
-            Outline(rect, hover&&!disabled ? new Color(1f, .7f, .24f, .96f) : new Color(.42f, .32f, .16f, .76f), hover&&!disabled ? 3 : 2);Outline(new Rect(rect.x+5,rect.y+5,rect.width-10,rect.height-10),new Color(.21f,.17f,.1f,.78f),1);
-            Fill(new Rect(rect.x, rect.y, hover&&!disabled ? 8 : 4, rect.height), hover&&!disabled ? new Color(1f, .69f, .18f) : new Color(.45f, .32f, .13f));Fill(new Rect(rect.x+16,rect.y,rect.width-32,2),new Color(.85f,.57f,.18f,hover?.82f:.34f));
-            var corner=7f;Fill(new Rect(rect.x-2,rect.y-2,corner,2),new Color(.95f,.68f,.24f));Fill(new Rect(rect.x-2,rect.y-2,2,corner),new Color(.95f,.68f,.24f));Fill(new Rect(rect.xMax-corner+2,rect.y-2,corner,2),new Color(.95f,.68f,.24f));Fill(new Rect(rect.xMax,rect.y-2,2,corner),new Color(.95f,.68f,.24f));
-            if (disabled) Fill(new Rect(rect.xMax - 76, rect.center.y, 50, 1), new Color(.35f, .28f, .16f));
+            var lit=!disabled&&(hover||selected);
+            Color Shade(Color c)=>disabled?new Color(c.r*.72f,c.g*.72f,c.b*.74f,c.a*.8f):c;
+            if(!disabled&&hover)Fill(new Rect(rect.x-5,rect.y-5,rect.width+10,rect.height+10),new Color(1f,.55f,.12f,.1f));
+            Fill(rect, Shade(lit ? new Color(.22f, .135f, .035f, .92f) : new Color(.018f, .024f, .034f, .94f)));
+            Outline(rect, Shade(lit ? new Color(1f, .7f, .24f, .96f) : new Color(.42f, .32f, .16f, .76f)), lit ? 3 : 2);Outline(new Rect(rect.x+5,rect.y+5,rect.width-10,rect.height-10),Shade(new Color(.21f,.17f,.1f,.78f)),1);
+            Fill(new Rect(rect.x, rect.y, lit ? 8 : 4, rect.height), Shade(lit ? new Color(1f, .69f, .18f) : new Color(.45f, .32f, .13f)));Fill(new Rect(rect.x+16,rect.y,rect.width-32,2),Shade(new Color(.85f,.57f,.18f,lit?.82f:.34f)));
+            var corner=7f;var cornerColor=Shade(new Color(.95f,.68f,.24f));Fill(new Rect(rect.x-2,rect.y-2,corner,2),cornerColor);Fill(new Rect(rect.x-2,rect.y-2,2,corner),cornerColor);Fill(new Rect(rect.xMax-corner+2,rect.y-2,corner,2),cornerColor);Fill(new Rect(rect.xMax,rect.y-2,2,corner),cornerColor);
         }
 
         private void Activate(int index)
@@ -761,7 +763,7 @@ namespace GildedFate.UI
             if(deck.Contains(pointer)||deckActive)Fill(new Rect(deck.x-3,deck.y-3,deck.width+6,deck.height+6),new Color(1f,.68f,.2f,deckActive?.19f:.12f));
             if(gear.Contains(pointer)||gearActive)Fill(new Rect(gear.x-3,gear.y-3,gear.width+6,gear.height+6),new Color(1f,.68f,.2f,gearActive?.19f:.12f));
             if(hudEmblemAtlas){DrawAtlasIcon(hudEmblemAtlas,3,4,2,deck);DrawAtlasIcon(hudEmblemAtlas,4,4,2,gear);}else{GUI.Label(deck,"▤",icon);GUI.Label(gear,"⚙",icon);}
-            GUI.Label(new Rect(deck.x+27,deck.y+26,23,20),run.cards.Count.ToString(),new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=10,fontStyle=FontStyle.Bold,alignment=TextAnchor.MiddleCenter,normal={textColor=Color.white}});
+            GUI.Label(new Rect(deck.x+27,deck.y+26,23,20),run.cards.Count.ToString(),new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=11,fontStyle=FontStyle.Bold,alignment=TextAnchor.MiddleCenter,normal={textColor=Color.white}});
             if(deck.Contains(pointer))SetRunHudTooltip(deck,"FULL DECK · "+run.cards.Count,"Inspect every physical card in acquisition order, including upgrades and permanent enchantments.");
             if(gear.Contains(pointer))SetRunHudTooltip(gear,screen is ScreenMode.Map or ScreenMode.Combat?"PAUSE & SETTINGS":"SETTINGS","Pause this screen or change graphics, audio, gameplay, and accessibility options.");
             GUI.enabled=!deckBlocked&&!deckActive;if(GUI.Button(deck,"",GUIStyle.none))OpenRunDeck();GUI.enabled=true;
@@ -1017,7 +1019,7 @@ namespace GildedFate.UI
         {
             DrawFloatingEnemy(r,currentEnemy);
         }
-        private void DrawBossIntro(float w,float h){Fill(new Rect(0,0,w,h),new Color(0,0,0,.38f));var progress=1f-bossIntroTime/2.4f;var scale=Mathf.Lerp(1.2f,1f,Mathf.SmoothStep(0,1,progress));var portrait=new Rect(w*.5f-180*scale,h*.25f-30*scale,360*scale,320*scale);DrawFloatingEnemy(portrait,currentEnemy);var name=new GUIStyle(titleStyle){fontSize=42,normal={textColor=new Color(1f,.58f,.22f)}};ShadowLabel(new Rect(w*.15f,h*.64f,w*.7f,58),currentEnemy.name,name);var lore=new GUIStyle(subtitleStyle){fontSize=14,wordWrap=true};lore.normal.textColor=new Color(.9f,.78f,.62f);GUI.Label(new Rect(w*.25f,h*.72f,w*.5f,55),currentEnemy.description,lore);var warning=new GUIStyle(footerStyle){fontSize=11,normal={textColor=new Color(1f,.35f,.22f)}};GUI.Label(new Rect(w*.3f,h*.81f,w*.4f,22),"THE FINAL SEAL BREAKS",warning);}
+        private void DrawBossIntro(float w,float h){Fill(new Rect(0,0,w,h),new Color(0,0,0,.38f));var progress=1f-bossIntroTime/2.4f;var scale=Mathf.Lerp(1.2f,1f,Mathf.SmoothStep(0,1,progress));var portrait=new Rect(w*.5f-180*scale,h*.25f-30*scale,360*scale,320*scale);DrawFloatingEnemy(portrait,currentEnemy);var name=new GUIStyle(titleStyle){fontSize=42,normal={textColor=new Color(1f,.58f,.22f)}};ShadowLabel(new Rect(w*.15f,h*.64f,w*.7f,58),currentEnemy.name,name);var lore=new GUIStyle(subtitleStyle){fontSize=14,wordWrap=true};lore.normal.textColor=new Color(.9f,.78f,.62f);GUI.Label(new Rect(w*.25f,h*.72f,w*.5f,55),currentEnemy.description,lore);var warning=new GUIStyle(footerStyle){fontSize=12,normal={textColor=new Color(1f,.35f,.22f)}};GUI.Label(new Rect(w*.3f,h*.81f,w*.4f,22),"THE FINAL SEAL BREAKS",warning);}
         private void UpdateBossPhaseVisual(){if(currentEnemy==null||!currentEnemy.boss)return;var wildBoss=combat.WildBossIndex;if(wildBoss>=0?!combat.IsLivingTarget(wildBoss):combat.enemy.hp<=0)return;if(wildBoss<0)combat.RefreshEnemyState();var phase=wildBoss>=0?combat.MindAt(wildBoss).phase:combat.bossPhase;if(phase>lastBossPhase){lastBossPhase=phase;if(wildBoss>=0)RefreshEnemyArt(wildBoss);bossPhaseTime=profile.reduceMotion ? .35f : 1.2f;gildedFlash=1f;Sfx(SoundCue.BossPhase);}}
         private void DrawBossPhaseTransition(float w,float h){var alpha=Mathf.Clamp01(bossPhaseTime*1.4f);Fill(new Rect(0,0,w,h),new Color(.15f,0,.01f,alpha*.46f));var style=new GUIStyle(titleStyle){fontSize=52,normal={textColor=new Color(1f,.52f,.18f,alpha)}};ShadowLabel(new Rect(w*.2f,h*.39f,w*.6f,72),"PHASE "+lastBossPhase,style);var sub=new GUIStyle(subtitleStyle){fontSize=13};sub.normal.textColor=new Color(1f,.76f,.4f,alpha);GUI.Label(new Rect(w*.25f,h*.48f,w*.5f,28),BossPhaseSubtitle(),sub);}
 
@@ -1097,7 +1099,7 @@ namespace GildedFate.UI
         private void DrawCollectionRail(float h)
         {
             var panel=new Rect(20,135,142,h-230);Fill(panel,new Color(.006f,.011f,.018f,.94f));Outline(panel,new Color(.47f,.39f,.25f,.82f),1);
-            GUI.Label(new Rect(panel.x+10,panel.y+17,panel.width-20,22),"ARCHIVE",new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=11,fontStyle=FontStyle.Bold,normal={textColor=new Color(.83f,.69f,.39f)}});
+            GUI.Label(new Rect(panel.x+10,panel.y+17,panel.width-20,22),"ARCHIVE",new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=12,fontStyle=FontStyle.Bold,normal={textColor=new Color(.83f,.69f,.39f)}});
             var names=new[]{"CARDS","RELICS"};
             for(var i=0;i<2;i++)
             {
@@ -1106,7 +1108,7 @@ namespace GildedFate.UI
                 GUI.Label(r,names[i],new GUIStyle(buttonStyle){fontSize=13,normal={textColor=active?new Color(1f,.91f,.65f):new Color(.82f,.81f,.76f)}});
                 if(GUI.Button(r,"",GUIStyle.none)&&!active){Sfx(SoundCue.UiHover);collectionRelics=i==1;collectionFilter=collectionSort=screenControllerIndex=0;collectionScroll=0;inspectedCard=null;inspectedRelic=null;}
             }
-            GUI.Label(new Rect(panel.x+13,panel.y+188,panel.width-26,80),collectionRelics?"Every recovered relic in one continuous vault ledger.":"Browse the complete card archive. Use the filters and sort controls above.",new GUIStyle(footerStyle){fontSize=11,wordWrap=true,alignment=TextAnchor.UpperLeft,normal={textColor=new Color(.65f,.64f,.59f)}});
+            GUI.Label(new Rect(panel.x+13,panel.y+188,panel.width-26,80),collectionRelics?"Every recovered relic in one continuous vault ledger.":"Browse the complete card archive. Use the filters and sort controls above.",new GUIStyle(footerStyle){fontSize=12,wordWrap=true,alignment=TextAnchor.UpperLeft,normal={textColor=new Color(.65f,.64f,.59f)}});
         }
 
         private CardDef[] CollectionCardEntries(bool deckMode)
@@ -1140,7 +1142,7 @@ namespace GildedFate.UI
             var filterNames=deckMode?new[]{"ALL","ATTACK","SKILL","ASPECT"}:CardArchive.Tabs;
             var controlsTop=deckMode?174f:136f;
             DrawTabs(w*.5f-filterNames.Length*53f,controlsTop,106,filterNames,collectionFilter,SelectCollectionFilter);
-            if(deckMode)GUI.Label(new Rect(w*.5f-180,controlsTop+40,360,28),"SORT  ·  FIRST ADDED",new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=11,normal={textColor=new Color(.88f,.72f,.42f)}});
+            if(deckMode)GUI.Label(new Rect(w*.5f-180,controlsTop+40,360,28),"SORT  ·  FIRST ADDED",new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=12,normal={textColor=new Color(.88f,.72f,.42f)}});
             else{var sortNames=new[]{"COST","RARITY","A–Z"};DrawTabs(w*.5f-sortNames.Length*52f,controlsTop+40,104,sortNames,collectionSort,i=>{collectionSort=i;collectionScroll=0;screenControllerIndex=0;});}
             const int columns=6;const float gap=12f;var contentLeft=deckMode?36f:180f;var viewport=new Rect(contentLeft,controlsTop+86,w-contentLeft-30,h-controlsTop-170);var cardW=Mathf.Min(190f,(viewport.width-36-gap*(columns-1))/columns);var cardH=cardW*1.48f;var totalW=columns*cardW+(columns-1)*gap;var startX=(viewport.width-totalW)*.5f;var rows=Mathf.CeilToInt(entries.Length/(float)columns);var contentHeight=Mathf.Max(viewport.height,rows*(cardH+18)+12);if(controllerNavigation)KeepGridSelectionVisible(ref collectionScroll,screenControllerIndex,columns,cardH+18,viewport.height,contentHeight);UpdateScrollArea(viewport,ref collectionScroll,contentHeight);
             GUI.BeginGroup(viewport);
@@ -1148,7 +1150,7 @@ namespace GildedFate.UI
             {
                 var card=entries[index];var row=index/columns;var col=index%columns;var baseRect=new Rect(startX+col*(cardW+gap),row*(cardH+18)+7-collectionScroll,cardW,cardH);if(baseRect.yMax<0||baseRect.y>viewport.height)continue;var globalHit=new Rect(viewport.x+baseRect.x,viewport.y+baseRect.y,baseRect.width,baseRect.height);var draw=baseRect;if(CardHelpContains(globalHit,card,PointerPosition)&&!modal){draw.y-=6;draw.height+=6;}DrawMiniCard(draw,card,1,card.upgraded?1:0);if(!deckMode)DrawCollectionLock(draw,card);if(controllerNavigation&&screenControllerIndex==index&&!modal){Outline(new Rect(draw.x-3,draw.y-3,draw.width+6,draw.height+6),Gold,2);hoveredCardHelp=card;hoveredCardHelpAnchor=globalHit;}if(!modal)RegisterCardKeywordHelp(new Rect(viewport.x+draw.x,viewport.y+draw.y,draw.width,draw.height),card);if(!modal&&GUI.Button(baseRect,"",GUIStyle.none)){Sfx(SoundCue.UiConfirm);inspectedCard=card;}
             }
-            GUI.EndGroup();DrawScrollRail(viewport,collectionScroll,contentHeight,entries.Length+" CARDS  ·  SCROLL");
+            GUI.EndGroup();DrawScrollRail(viewport,ref collectionScroll,contentHeight,entries.Length+" CARDS  ·  SCROLL");
             // Inspections are drawn once by the shared overlay on every card screen.
         }
 
@@ -1163,14 +1165,14 @@ namespace GildedFate.UI
         private void DrawRelicCollection(float w,float h)
         {
             Heading(w,"THE COLLECTION",$"RELICS  ·  {GameContent.Relics.Length} RECOVERED TREASURES");
-            GUI.Label(new Rect(w*.5f-220,134,440,26),"ALL RELICS  ·  ORDERED BY RARITY",new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=11,normal={textColor=new Color(.88f,.72f,.42f)}});
+            GUI.Label(new Rect(w*.5f-220,134,440,26),"ALL RELICS  ·  ORDERED BY RARITY",new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=12,normal={textColor=new Color(.88f,.72f,.42f)}});
             var modal=inspectedRelic!=null;const int columns=6;const float gap=13f;var viewport=new Rect(180,174,w-210,h-258);var tileW=Mathf.Min(184f,(viewport.width-36-gap*(columns-1))/columns);var tileH=tileW*1.17f;var totalW=columns*tileW+(columns-1)*gap;var startX=(viewport.width-totalW)*.5f;var rows=Mathf.CeilToInt(GameContent.Relics.Length/(float)columns);var contentHeight=Mathf.Max(viewport.height,rows*(tileH+14)+10);if(controllerNavigation)KeepGridSelectionVisible(ref collectionScroll,screenControllerIndex,columns,tileH+14,viewport.height,contentHeight);UpdateScrollArea(viewport,ref collectionScroll,contentHeight);
             GUI.BeginGroup(viewport);
             for(int index=0;index<GameContent.Relics.Length;index++)
             {
                 var catalogIndex=CollectionRelicIndices[index];var relic=GameContent.Relics[catalogIndex];var row=index/columns;var col=index%columns;var baseRect=new Rect(startX+col*(tileW+gap),row*(tileH+14)+5-collectionScroll,tileW,tileH);if(baseRect.yMax<0||baseRect.y>viewport.height)continue;var globalHit=new Rect(viewport.x+baseRect.x,viewport.y+baseRect.y,baseRect.width,baseRect.height);var draw=baseRect;if(!controllerNavigation&&globalHit.Contains(PointerPosition)&&!modal){draw.y-=5;draw.height+=5;}DrawRelicTile(draw,relic,catalogIndex);if(controllerNavigation&&screenControllerIndex==index&&!modal)Outline(new Rect(draw.x-3,draw.y-3,draw.width+6,draw.height+6),Gold,2);if(!modal&&GUI.Button(baseRect,"",GUIStyle.none)){Sfx(SoundCue.UiConfirm);inspectedRelic=relic;}
             }
-            GUI.EndGroup();DrawScrollRail(viewport,collectionScroll,contentHeight,GameContent.Relics.Length+" RELICS  ·  SCROLL");
+            GUI.EndGroup();DrawScrollRail(viewport,ref collectionScroll,contentHeight,GameContent.Relics.Length+" RELICS  ·  SCROLL");
             // Relic inspection is drawn above the disabled collection by the shared overlay.
         }
 
@@ -1180,10 +1182,34 @@ namespace GildedFate.UI
             if(Event.current.type==EventType.ScrollWheel&&viewport.Contains(PointerPosition)){scroll=Mathf.Clamp(scroll+Event.current.delta.y*46f,0,max);Event.current.Use();}
         }
 
-        private void DrawScrollRail(Rect viewport,float scroll,float contentHeight,string caption)
+        // The rail is draggable: grab the thumb, or click the track to jump. The hit area is wider than the drawn rail.
+        private float scrollRailGrab;
+        private void DrawScrollRail(Rect viewport,ref float scroll,float contentHeight,string caption)
         {
-            GUI.Label(new Rect(viewport.x,viewport.yMax+5,viewport.width,18),caption,new GUIStyle(footerStyle){fontSize=9,normal={textColor=new Color(.69f,.65f,.56f)}});if(contentHeight<=viewport.height+1)return;
-            var rail=new Rect(viewport.xMax+8,viewport.y+4,4,viewport.height-8);Fill(rail,new Color(.12f,.11f,.09f,.82f));var visible=Mathf.Clamp01(viewport.height/contentHeight);var thumbH=Mathf.Max(42,rail.height*visible);var max=Mathf.Max(1,contentHeight-viewport.height);var thumb=new Rect(rail.x-2,rail.y+(rail.height-thumbH)*(scroll/max),rail.width+4,thumbH);Fill(thumb,new Color(.84f,.61f,.24f,.92f));
+            GUI.Label(new Rect(viewport.x,viewport.yMax+5,viewport.width,18),caption,new GUIStyle(footerStyle){fontSize=12,normal={textColor=new Color(.69f,.65f,.56f)}});if(contentHeight<=viewport.height+1)return;
+            var rail=new Rect(viewport.xMax+8,viewport.y+4,4,viewport.height-8);var visible=Mathf.Clamp01(viewport.height/contentHeight);var thumbH=Mathf.Max(42,rail.height*visible);var max=Mathf.Max(1,contentHeight-viewport.height);var travel=Mathf.Max(1,rail.height-thumbH);
+            scroll=Mathf.Clamp(scroll,0,max);
+            var id=GUIUtility.GetControlID(FocusType.Passive);var e=Event.current;var hit=new Rect(rail.x-10,rail.y-4,rail.width+20,rail.height+8);
+            var thumb=new Rect(rail.x-2,rail.y+travel*(scroll/max),rail.width+4,thumbH);
+            switch(e.GetTypeForControl(id))
+            {
+                case EventType.MouseDown:
+                    if(e.button==0&&GUI.enabled&&hit.Contains(e.mousePosition))
+                    {
+                        GUIUtility.hotControl=id;scrollRailGrab=e.mousePosition.y>=thumb.y&&e.mousePosition.y<=thumb.yMax?e.mousePosition.y-thumb.y:thumbH*.5f;
+                        scroll=Mathf.Clamp((e.mousePosition.y-rail.y-scrollRailGrab)/travel*max,0,max);e.Use();
+                    }
+                    break;
+                case EventType.MouseDrag:
+                    if(GUIUtility.hotControl==id){scroll=Mathf.Clamp((e.mousePosition.y-rail.y-scrollRailGrab)/travel*max,0,max);e.Use();}
+                    break;
+                case EventType.MouseUp:
+                    if(GUIUtility.hotControl==id){GUIUtility.hotControl=0;e.Use();}
+                    break;
+            }
+            var grabbed=GUIUtility.hotControl==id;var hovered=grabbed||hit.Contains(e.mousePosition);
+            thumb=new Rect(rail.x-2,rail.y+travel*(scroll/max),rail.width+4,thumbH);
+            Fill(rail,new Color(.12f,.11f,.09f,.82f));Fill(hovered?new Rect(thumb.x-1,thumb.y,thumb.width+2,thumb.height):thumb,hovered?new Color(1f,.74f,.32f,.98f):new Color(.84f,.61f,.24f,.92f));
         }
 
         private static void KeepGridSelectionVisible(ref float scroll,int index,int columns,float rowStep,float viewportHeight,float contentHeight)
@@ -1201,7 +1227,7 @@ namespace GildedFate.UI
             var accent=RarityAccent(relic.rarity);Fill(r,new Color(.03f,.034f,.047f,.98f));Outline(r,accent,relic.rarity is Rarity.Rare or Rarity.Boss?3:1);var icon=Mathf.Min(r.width-16,r.height*(showDescription?.44f:.58f));var art=new Rect(r.center.x-icon*.5f,r.y+8,icon,icon);DrawRelicArt(art,index);
             var name=new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=14,wordWrap=true,normal={textColor=new Color(.97f,.93f,.81f)}};GUI.Label(new Rect(r.x+6,art.yMax+4,r.width-12,32),relic.name,name);
             if(showDescription){var body=new GUIStyle(footerStyle){fontSize=15,wordWrap=true,normal={textColor=new Color(.94f,.91f,.84f)}};GUI.Label(new Rect(r.x+15,art.yMax+39,r.width-30,r.yMax-art.yMax-47),relic.text,body);}
-            else{var rarity=new GUIStyle(footerStyle){fontSize=11,normal={textColor=Color.Lerp(accent,Color.white,.5f)}};GUI.Label(new Rect(r.x+4,r.yMax-20,r.width-8,16),relic.rarity.ToString().ToUpperInvariant(),rarity);}
+            else{var rarity=new GUIStyle(footerStyle){fontSize=12,normal={textColor=Color.Lerp(accent,Color.white,.5f)}};GUI.Label(new Rect(r.x+4,r.yMax-20,r.width-8,16),relic.rarity.ToString().ToUpperInvariant(),rarity);}
         }
 
         private void DrawCardInspection(float w,float h,CardDef card)
@@ -1217,7 +1243,7 @@ namespace GildedFate.UI
             const float width=520;var nameHeight=Mathf.Max(36,name.CalcHeight(new GUIContent(relic.name),width-64));var bodyHeight=body.CalcHeight(new GUIContent(relic.text),width-64)+8;
             var artSize=Mathf.Clamp(h-nameHeight-bodyHeight-260,100,240);var height=32+artSize+18+nameHeight+12+bodyHeight+85;
             var r=new Rect((w-width)*.5f,(h-height)*.5f,width,height);Fill(r,new Color(.025f,.028f,.04f,.995f));Outline(r,accent,3);var art=new Rect(r.center.x-artSize*.5f,r.y+24,artSize,artSize);DrawRelicArt(art,index);
-            GUI.Label(new Rect(r.x+32,art.yMax+18,r.width-64,nameHeight),relic.name,name);GUI.Label(new Rect(r.x+32,art.yMax+30+nameHeight,r.width-64,bodyHeight),relic.text,body);var rarity=new GUIStyle(subtitleStyle){fontSize=11};rarity.normal.textColor=accent;GUI.Label(new Rect(r.x+30,r.yMax-82,r.width-60,22),relic.rarity.ToString().ToUpperInvariant()+" RELIC",rarity);
+            GUI.Label(new Rect(r.x+32,art.yMax+18,r.width-64,nameHeight),relic.name,name);GUI.Label(new Rect(r.x+32,art.yMax+30+nameHeight,r.width-64,bodyHeight),relic.text,body);var rarity=new GUIStyle(subtitleStyle){fontSize=12};rarity.normal.textColor=accent;GUI.Label(new Rect(r.x+30,r.yMax-82,r.width-60,22),relic.rarity.ToString().ToUpperInvariant()+" RELIC",rarity);
             var close=new Rect(r.x+105,r.yMax-55,r.width-210,35);DrawButtonFrame(close,close.Contains(PointerPosition),false);if(GUI.Button(close,"RETURN TO GALLERY",buttonStyle)){Sfx(SoundCue.UiHover);inspectedRelic=null;}
         }
 
@@ -1231,10 +1257,6 @@ namespace GildedFate.UI
             else DrawAtlasIcon(relicAtlasBonus,Mathf.Clamp(index-24,0,11),4,3,r);
         }
 
-        private void DrawPageControls(float w,float h,int pageCount)
-        {
-            if(pageCount<=1)return;var y=h-76f;var previous=new Rect(w*.5f-170,y,105,42);var next=new Rect(w*.5f+65,y,105,42);DrawButtonFrame(previous,previous.Contains(PointerPosition),collectionPage==0);DrawButtonFrame(next,next.Contains(PointerPosition),collectionPage>=pageCount-1);if(GUI.Button(previous,"PREV",buttonStyle)&&collectionPage>0)collectionPage--;if(GUI.Button(next,"NEXT",buttonStyle)&&collectionPage<pageCount-1)collectionPage++;var pageStyle=new GUIStyle(footerStyle){fontSize=13,normal={textColor=new Color(.9f,.73f,.4f)}};GUI.Label(new Rect(w*.5f-60,y,120,42),$"{collectionPage+1} / {pageCount}",pageStyle);
-        }
 
         private void DrawTabs(float x,float y,float width,string[] names,int selected,System.Action<int> choose)
         {
@@ -1311,9 +1333,9 @@ namespace GildedFate.UI
             GUI.BeginGroup(viewport);
             for(var index=0;index<entries.Length;index++)
             {
-                var saved=entries[index];var current=saved.BuildDefinition();var available=!upgrading||!saved.upgraded;var shown=upgrading&&available?GameContent.Upgrade(current):current;var row=index/columns;var col=index%columns;var r=new Rect(startX+col*(cardW+gap),row*rowStep+5-cardServiceScroll,cardW,cardH);if(r.yMax<0||r.y>viewport.height)continue;DrawCard(r,shown);RegisterCardKeywordHelp(new Rect(viewport.x+r.x,viewport.y+r.y,r.width,r.height),shown,controllerNavigation&&screenControllerIndex==index);if(controllerNavigation&&screenControllerIndex==index)Outline(new Rect(r.x-4,r.y-4,r.width+8,r.height+8),Gold,4);if(!available){Fill(r,new Color(0,0,0,.61f));GUI.Label(new Rect(r.x,r.center.y-15,r.width,30),"ALREADY UPGRADED",new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=11,fontStyle=FontStyle.Bold,normal={textColor=new Color(.72f,.7f,.65f)}});}GUI.enabled=available;if(GUI.Button(r,"",GUIStyle.none))selected=saved;GUI.enabled=true;
+                var saved=entries[index];var current=saved.BuildDefinition();var available=!upgrading||!saved.upgraded;var shown=upgrading&&available?GameContent.Upgrade(current):current;var row=index/columns;var col=index%columns;var r=new Rect(startX+col*(cardW+gap),row*rowStep+5-cardServiceScroll,cardW,cardH);if(r.yMax<0||r.y>viewport.height)continue;DrawCard(r,shown);RegisterCardKeywordHelp(new Rect(viewport.x+r.x,viewport.y+r.y,r.width,r.height),shown,controllerNavigation&&screenControllerIndex==index);if(controllerNavigation&&screenControllerIndex==index)Outline(new Rect(r.x-4,r.y-4,r.width+8,r.height+8),Gold,4);if(!available){Fill(r,new Color(0,0,0,.61f));GUI.Label(new Rect(r.x,r.center.y-15,r.width,30),"ALREADY UPGRADED",new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=12,fontStyle=FontStyle.Bold,normal={textColor=new Color(.72f,.7f,.65f)}});}GUI.enabled=available;if(GUI.Button(r,"",GUIStyle.none))selected=saved;GUI.enabled=true;
             }
-            GUI.EndGroup();DrawScrollRail(viewport,cardServiceScroll,contentHeight,entries.Length+" PHYSICAL CARDS  ·  SCROLL");
+            GUI.EndGroup();DrawScrollRail(viewport,ref cardServiceScroll,contentHeight,entries.Length+" PHYSICAL CARDS  ·  SCROLL");
             if(selected!=null){Sfx(upgrading?SoundCue.Upgrade:SoundCue.RemoveCard);if(upgrading){var shown=GameContent.Upgrade(selected.BuildDefinition());if(run.UpgradeCard(selected)){banner=shown.name+" NOW BEARS THE GOLDEN RUNE";Advance();}}else CompleteMerchantRemoval(selected);}
             var cancel=new Rect(34,h-62,160,36);DrawButtonFrame(cancel,cancel.Contains(PointerPosition),false);if(GUI.Button(cancel,"CANCEL",buttonStyle)){if(upgrading){run.stage=cardServiceReturnScreen==ScreenMode.Event?RunStage.Event:RunStage.Sanctuary;SaveService.Save(run);screen=cardServiceReturnScreen;}else{SaveMerchantState();screen=ScreenMode.Merchant;}}
         }
@@ -1328,7 +1350,7 @@ namespace GildedFate.UI
             Fill(story,new Color(.003f,.006f,.011f,.73f));Fill(new Rect(story.x+24,story.y+18,4,story.height-40),new Color(1f,.69f,.24f,.72f));
             var eventTitle=new GUIStyle(titleStyle){fontSize=31,alignment=TextAnchor.UpperLeft,wordWrap=true,normal={textColor=new Color(1f,.91f,.68f)}};GUI.Label(new Rect(story.x+48,story.y+20,story.width-78,76),currentEvent.name,eventTitle);
             var storyText=EventStory(currentEvent);var promptRect=new Rect(story.x+49,story.y+94,story.width-84,story.height-126);var promptStyle=new GUIStyle(footerStyle){fontSize=17,alignment=TextAnchor.UpperLeft,wordWrap=true,normal={textColor=new Color(.97f,.94f,.87f)}};while(promptStyle.fontSize>12&&promptStyle.CalcHeight(new GUIContent(storyText),promptRect.width)>promptRect.height)promptStyle.fontSize--;GUI.Label(promptRect,storyText,promptStyle);
-            GUI.Label(new Rect(story.x+49,story.yMax-28,story.width-84,18),currentEvent.ambientCue.ToUpperInvariant()+"  ·  A VAULT ENCOUNTER",new GUIStyle(footerStyle){fontSize=9,alignment=TextAnchor.MiddleLeft,normal={textColor=new Color(.85f,.69f,.40f)}});
+            GUI.Label(new Rect(story.x+49,story.yMax-28,story.width-84,18),currentEvent.ambientCue.ToUpperInvariant()+"  ·  A VAULT ENCOUNTER",new GUIStyle(footerStyle){fontSize=12,alignment=TextAnchor.MiddleLeft,normal={textColor=new Color(.85f,.69f,.40f)}});
             StoryEndEventPolish(scene);
 
             var choices=currentEvent.choices??System.Array.Empty<EventChoiceDef>();var rightX=scene.xMax-18;var rightW=w-rightX-28;var gap=12f;var availableHeight=h-164;var choiceH=Mathf.Min(190f,(availableHeight-gap*Mathf.Max(0,choices.Length-1))/Mathf.Max(1,choices.Length));var startY=116+(availableHeight-(choiceH*choices.Length+gap*Mathf.Max(0,choices.Length-1)))*.5f;
@@ -1457,7 +1479,7 @@ namespace GildedFate.UI
             var eligibleCards=EventSystem.PendingEligibleCards(run).ToArray();var eligible=eligibleCards.Select(c=>c.persistentId).ToHashSet();var controllerCard=controllerNavigation&&eligibleCards.Length>0?eligibleCards[Mathf.Clamp(screenControllerIndex,0,eligibleCards.Length-1)]:null;var all=run.cards.ToArray();const int columns=6;const float gap=12f;var viewport=new Rect(34,151,w-68,h-230);var cardW=Mathf.Min(184f,(viewport.width-34-gap*(columns-1))/columns);var cardH=cardW*1.48f;var rowStep=cardH+17;var totalW=columns*cardW+(columns-1)*gap;var start=(viewport.width-totalW)*.5f;var rows=Mathf.CeilToInt(all.Length/(float)columns);var contentHeight=Mathf.Max(viewport.height,rows*rowStep+8);if(controllerCard!=null)KeepGridSelectionVisible(ref cardChoiceScroll,System.Array.IndexOf(all,controllerCard),columns,rowStep,viewport.height,contentHeight);UpdateScrollArea(viewport,ref cardChoiceScroll,contentHeight);RunCard selected=null;
             GUI.BeginGroup(viewport);
             for(var index=0;index<all.Length;index++){var saved=all[index];var shown=saved.BuildDefinition();var row=index/columns;var col=index%columns;var r=new Rect(start+col*(cardW+gap),row*rowStep+4-cardChoiceScroll,cardW,cardH);if(r.yMax<0||r.y>viewport.height)continue;DrawCard(r,shown);RegisterCardKeywordHelp(new Rect(viewport.x+r.x,viewport.y+r.y,r.width,r.height),shown,controllerCard==saved);var available=eligible.Contains(saved.persistentId);if(!available)Fill(r,new Color(0,0,0,.69f));else Outline(new Rect(r.x-3,r.y-3,r.width+6,r.height+6),controllerCard==saved?Gold:new Color(1f,.78f,.28f,.72f),controllerCard==saved?5:2);GUI.enabled=available&&!acquisitionActive;if(GUI.Button(r,"",GUIStyle.none))selected=saved;GUI.enabled=true;}
-            GUI.EndGroup();DrawScrollRail(viewport,cardChoiceScroll,contentHeight,all.Length+" PHYSICAL CARDS  ·  FIRST ADDED FIRST");if(selected!=null)ChooseEventCardWithAcquisition(selected);
+            GUI.EndGroup();DrawScrollRail(viewport,ref cardChoiceScroll,contentHeight,all.Length+" PHYSICAL CARDS  ·  FIRST ADDED FIRST");if(selected!=null)ChooseEventCardWithAcquisition(selected);
         }
 
         private void DrawEventCardRewards(float w,float h)
@@ -1519,14 +1541,14 @@ namespace GildedFate.UI
             if(bossRect.Contains(pointer))SetRunHudTooltip(bossRect,$"ACT {run.act} BOSS · {boss.name}",boss.description);
 
             var floorRect=new Rect(376,7,116,43);DrawFloorHudIcon(new Rect(floorRect.x+4,floorRect.y+5,39,32));
-            GUI.Label(new Rect(floorRect.x+49,floorRect.y+1,floorRect.width-50,21),"FLOOR",new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=8,alignment=TextAnchor.MiddleLeft,normal={textColor=new Color(.72f,.71f,.67f)}});
+            GUI.Label(new Rect(floorRect.x+49,floorRect.y,floorRect.width-50,19),"FLOOR",new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=11,alignment=TextAnchor.MiddleLeft,normal={textColor=new Color(.72f,.71f,.67f)}});
             // Floors count up through the whole run (1 to the final boss) instead of restarting each act.
             GUI.Label(new Rect(floorRect.x+49,floorRect.y+17,floorRect.width-50,25),$"{RunFloorNumber}<size=12>/{RunFloorTotal}</size>",new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=18,richText=true,alignment=TextAnchor.MiddleLeft,normal={textColor=new Color(.98f,.88f,.65f)}});
             if(floorRect.Contains(pointer))SetRunHudTooltip(floorRect,$"FLOOR {RunFloorNumber} OF {RunFloorTotal}",$"Act {RomanAct(run.act)}, room {run.floor+1} of this act. Follow a connected golden path to climb toward the pictured boss. The final boss waits on floor {RunFloorTotal}.");
             // A clear act badge next to the floor counter.
             var actRect=new Rect(floorRect.xMax+8,7,78,43);
             Fill(actRect,new Color(.10f,.07f,.03f,.85f));Outline(actRect,new Color(.86f,.66f,.30f,.9f),1);
-            GUI.Label(new Rect(actRect.x,actRect.y+1,actRect.width,16),"ACT",new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=9,fontStyle=FontStyle.Bold,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(.86f,.74f,.52f)}});
+            GUI.Label(new Rect(actRect.x,actRect.y,actRect.width,16),"ACT",new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=11,fontStyle=FontStyle.Bold,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(.86f,.74f,.52f)}});
             GUI.Label(new Rect(actRect.x,actRect.y+14,actRect.width,28),$"{RomanAct(run.act)}<size=11> / III</size>",new GUIStyle(titleStyle){font=headingFont?headingFont:labelFont,fontSize=22,richText=true,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(1f,.82f,.42f)}});
             if(actRect.Contains(pointer))SetRunHudTooltip(actRect,$"ACT {RomanAct(run.act)} OF III",$"Defeat this act's boss to advance. Three acts lead to the final boss on floor {RunFloorTotal}.");
             DrawPersistentRunControls(w,pointer);
@@ -1635,7 +1657,7 @@ namespace GildedFate.UI
                 var icon=new Rect(r.center.x-48,r.y+17,96,96);if(eligible<=0)GUI.color=new Color(.38f,.38f,.4f,1);DrawAtlasIcon(bindingFateIconAtlas,BindingIconIndex(binding.id),4,4,icon);GUI.color=Color.white;
                 GUI.Label(new Rect(r.x+18,r.y+116,r.width-36,34),binding.name,new GUIStyle(titleStyle){fontSize=22,normal={textColor=eligible>0?new Color(.84f,.94f,1f):new Color(.5f,.5f,.52f)}});
                 GUI.Label(new Rect(r.x+22,r.y+158,r.width-44,92),binding.text,new GUIStyle(footerStyle){fontSize=15,wordWrap=true,alignment=TextAnchor.UpperCenter,normal={textColor=new Color(.92f,.89f,.82f)}});
-                Fill(new Rect(r.x+20,r.yMax-78,r.width-40,1),new Color(.35f,.72f,.82f,.5f));GUI.Label(new Rect(r.x+18,r.yMax-69,r.width-36,22),eligible+" ELIGIBLE CARDS",new GUIStyle(footerStyle){fontSize=11,normal={textColor=eligible>0?new Color(.53f,.87f,.98f):new Color(.5f,.5f,.52f)}});GUI.Label(new Rect(r.x+18,r.yMax-42,r.width-36,25),"CHOOSE THIS BINDING",new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=12,normal={textColor=hot?Color.white:Gold}});
+                Fill(new Rect(r.x+20,r.yMax-78,r.width-40,1),new Color(.35f,.72f,.82f,.5f));GUI.Label(new Rect(r.x+18,r.yMax-69,r.width-36,22),eligible+" ELIGIBLE CARDS",new GUIStyle(footerStyle){fontSize=12,normal={textColor=eligible>0?new Color(.53f,.87f,.98f):new Color(.5f,.5f,.52f)}});GUI.Label(new Rect(r.x+18,r.yMax-42,r.width-36,25),"CHOOSE THIS BINDING",new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=12,normal={textColor=hot?Color.white:Gold}});
                 GUI.enabled=eligible>0&&!acquisitionActive;if(GUI.Button(baseRect,"",GUIStyle.none)&&run.SelectBinding(binding.id)){collectionPage=0;cardChoiceScroll=0;SaveService.Save(run);screen=ScreenMode.BindingCard;}GUI.enabled=true;
             }
             DrawBindingBack(h);
@@ -1671,7 +1693,7 @@ namespace GildedFate.UI
                 if(hot)Outline(new Rect(r.x-3,r.y-3,r.width+6,r.height+6),allowed?Gold:Color.gray,2);
                 if(GUI.Button(r,"",GUIStyle.none)&&allowed)selected=saved;
             }
-            GUI.EndGroup();DrawScrollRail(viewport,cardChoiceScroll,contentHeight,(bindingMode?eligible.Length+" ELIGIBLE / ":"")+choices.Length+" PHYSICAL CARDS · FIRST ADDED FIRST");if(selected!=null)choose(selected);if(choices.Length==0)GUI.Label(new Rect(w*.25f,h*.4f,w*.5f,80),"No eligible unmodified card copies remain for this strand.",new GUIStyle(subtitleStyle){fontSize=20,wordWrap=true});
+            GUI.EndGroup();DrawScrollRail(viewport,ref cardChoiceScroll,contentHeight,(bindingMode?eligible.Length+" ELIGIBLE / ":"")+choices.Length+" PHYSICAL CARDS · FIRST ADDED FIRST");if(selected!=null)choose(selected);if(choices.Length==0)GUI.Label(new Rect(w*.25f,h*.4f,w*.5f,80),"No eligible unmodified card copies remain for this strand.",new GUIStyle(subtitleStyle){fontSize=20,wordWrap=true});
         }
         private void GrantRelic()
         {

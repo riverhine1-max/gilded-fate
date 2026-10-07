@@ -50,7 +50,7 @@ namespace GildedFate.UI
             {
                 acquisitionKind=AcquisitionKind.Card;CombatCheck(AcquisitionTarget(width)==RunDeckControlRect(width).center,"Card reward lands on Deck at width "+width);
                 run.relics.Clear();run.relics.AddRange(GameContent.Relics.Select(r=>r.id));acquisitionKind=AcquisitionKind.Relic;acquisitionRelic=GameContent.Relics[2];
-                CombatCheck(AcquisitionTarget(width)==RunRelicSlotRect(2).center,"Relic lands beneath the main bar");
+                CombatCheck(AcquisitionTarget(width)==RunRelicSlotRect(2).center,"Relic lands inside the main bar");
                 acquisitionRelic=GameContent.Relics.Last();var target=AcquisitionTarget(width);
                 CombatCheck(target==RunRelicSlotRect(VisibleRunRelics(width)).center&&target.x<width-16,"Overflow reward stays on-screen and inspectable");
             }

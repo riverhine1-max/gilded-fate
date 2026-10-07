@@ -43,7 +43,7 @@ Baseline before any change: native harness PASS 107,484 / FAIL 0, compile checks
 | ID | Sev | Finding | Status |
 |----|-----|---------|--------|
 | UI-1 | High | The **End Turn button and energy orb cover the edge cards** of a hand of 6 or more at 1440x810 and up to 16:10 (fixed rects, `HandLayout` ignores them). | Confirmed |
-| UI-2 | High | The enemy status strip's second row hides behind the hand; icons are lost in 4-enemy fights. | Sweep |
+| UI-2 | High | The enemy status strip's second row hides behind the hand; icons are lost in 4-enemy fights. | Re-checked: not a defect. Rows end at y 529 against a resting hand top of 539 (1440x810), more room at taller aspect ratios, and overflow already collapses into a "+N" chip. |
 | UI-3 | Med | Shop and shrine hover tooltips cover the price of the item being hovered. | Sweep |
 | UI-4 | Med | Key numbers use 8 to 12 px fonts (floor, energy, piles, incoming damage, status stacks, colorblind codes). | Sweep |
 | UI-5 | Med | Relic row collides with page headings from about 12 relics. | Sweep |
@@ -137,4 +137,22 @@ All of F-1 to F-11 are addressed. New file: `UI/GildedPolishFlow.cs` (shared UI 
 | F-11 | The Sanctuary UPGRADE tile dims and says "Every card in your deck is already upgraded." when nothing can be upgraded, and plays the denied sound on click or A. |
 
 Also: one shared `UiScale` formula (menus, combat and the meta overlay each had their own copy), and a dead duplicate Merchant controller branch was removed.
+
+
+---
+
+## Batch 3 fix log (UI layout and readability)
+
+**Honest limit (same as Batch 2):** UI code is compile-checked in both configurations and checked by reading; the native harness cannot draw. The one piece of layout that is pure code (the hand fan) has harness tests (`b3.cs`: hands of 1 to 12 cards at four canvas widths clear the energy orb and the End Turn button) and a matching in-Unity verification. Everything else needs a look in Unity. Positions below are in the 1440 x 810 authoring canvas.
+
+| Finding | Fix |
+|---------|-----|
+| UI-1 | **End Turn moved** from beside the Discard pile (where large hands slid under it) to the right-hand column above the Dissipate pile. The hand fan now reserves 200 px on each side (`HandLayout.SideReserve`), so hands of 6 or more cards are slightly tighter (span 806 px at 1440 instead of up to 980) but no card is ever covered by the energy orb or the End Turn button. Hands of 5 or fewer are unchanged. |
+| UI-3 | Shop tooltips (cards, relics, shard, Sever a Thread, Restore HP) anchor to the item plus its price tag, so they open below the price or flip above the item and never cover it. |
+| UI-4 | 40 hard-coded 8 to 11 px fonts raised to 11 or 12 px: FLOOR / ACT labels, deck count, pile names, ENERGY, RESONANCE, End Turn "incoming" line, colorblind status codes, enemy intent destination, map and archive captions, achievement toasts, Fate Debt text, tier labels. Rects were adjusted where a label was tight. Card text and fonts computed at run time were not touched. |
+| UI-5 | **Relics now live inside the top bar** (between the ACT badge and the map button, 14 slots at 1440, "+N" chip beyond that) instead of a second row at y 67 that ran under page headings from about the 9th relic. The old second row is gone; every page heading is clear of it. |
+| UI-6 | `DrawButtonFrame` has a real **disabled** look (dimmed frame, no hover light, the stray 50 px line is gone) and a separate **selected** state. The NORMAL / UPGRADE PREVIEW tabs now use "selected" instead of misusing "disabled". |
+| UI-7 | TAKE RELIC is a framed button inside a proper panel (the panel was an unframed area and the button hung below it). |
+| UI-8 | The scroll rail is now **draggable** (grab the thumb or click the track; 24 px wide hit area) on every scrolling list. Settings sliders have a 32 px tall hit area (was 20). Fate Debt arrows are 44 x 36 (was 36 x 30). |
+| UI-9 | SELECT / DISCARD / DISSIPATE labels in the choose-a-card grid sit under the card instead of over its rules text. The upgrade comparison panel shrinks its text to fit instead of overflowing. Two unused methods (`DrawCombatRelics`, `DrawPageControls`) deleted. |
 

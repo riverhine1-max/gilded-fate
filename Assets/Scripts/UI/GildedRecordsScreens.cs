@@ -73,7 +73,7 @@ namespace GildedFate.UI
             if(profile.lastSeenVersion!=GameVersion&&!bootIntroActive&&!whatsNewOpen&&string.IsNullOrEmpty(profile.lastSeenVersion)==false)whatsNewOpen=true;
             if(string.IsNullOrEmpty(profile.lastSeenVersion)){profile.lastSeenVersion=GameVersion;ProfileService.Save(profile);}
             var summary=ContinueSummary();
-            if(!string.IsNullOrEmpty(summary))GUI.Label(new Rect(continueButton.xMax+14,continueButton.y,320,continueButton.height),summary,new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=11,alignment=TextAnchor.MiddleLeft,normal={textColor=new Color(.86f,.76f,.55f)}});
+            if(!string.IsNullOrEmpty(summary))GUI.Label(new Rect(continueButton.xMax+14,continueButton.y,320,continueButton.height),summary,new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=12,alignment=TextAnchor.MiddleLeft,normal={textColor=new Color(.86f,.76f,.55f)}});
             // Links (hidden until a URL is set in GildedMetaProgress.cs).
             var x=26f;
             void Link(string label,string url){if(string.IsNullOrEmpty(url))return;var r=new Rect(x,h-74,170,38);DrawButtonFrame(r,r.Contains(PointerPosition),false);if(GUI.Button(r,label,new GUIStyle(buttonStyle){fontSize=12}))Application.OpenURL(url);x+=180;}
@@ -137,9 +137,9 @@ namespace GildedFate.UI
                 Fill(r,got?new Color(.07f,.05f,.025f,.95f):new Color(.02f,.022f,.028f,.92f));Outline(r,got?new Color(.86f,.66f,.32f):new Color(.25f,.25f,.27f),1);
                 DrawAchievementIcon(new Rect(r.x+8,r.y+7,r.height-14,r.height-14),a,got);
                 GUI.Label(new Rect(r.x+r.height+2,r.y+8,r.width-r.height-10,24),a.name,new GUIStyle(titleStyle){font=headingFont?headingFont:labelFont,fontSize=16,alignment=TextAnchor.MiddleLeft,normal={textColor=got?new Color(1f,.92f,.75f):new Color(.62f,.6f,.56f)}});
-                GUI.Label(new Rect(r.x+r.height+2,r.y+32,r.width-r.height-10,32),a.text,new GUIStyle(footerStyle){fontSize=11,wordWrap=true,alignment=TextAnchor.UpperLeft,normal={textColor=got?new Color(.85f,.82f,.74f):new Color(.55f,.54f,.52f)}});
+                GUI.Label(new Rect(r.x+r.height+2,r.y+32,r.width-r.height-10,32),a.text,new GUIStyle(footerStyle){fontSize=12,wordWrap=true,alignment=TextAnchor.UpperLeft,normal={textColor=got?new Color(.85f,.82f,.74f):new Color(.55f,.54f,.52f)}});
             }
-            GUI.EndGroup();DrawScrollRail(area,recordsScroll,content,"SCROLL");
+            GUI.EndGroup();DrawScrollRail(area,ref recordsScroll,content,"SCROLL");
         }
         private void DrawRunHistoryTab(Rect view)
         {
@@ -161,7 +161,7 @@ namespace GildedFate.UI
                 GUI.Label(new Rect(r.x+452,r.y,160,r.height),(string.IsNullOrEmpty(rec.dailyDate)?"":"DAILY · ")+"SCORE "+rec.score,new GUIStyle(style){alignment=TextAnchor.MiddleRight});
                 if(GUI.Button(r,"",GUIStyle.none)){historySelected=i;Sfx(SoundCue.UiHover);}
             }
-            GUI.EndGroup();DrawScrollRail(area,recordsScroll,content,list.Count+" RUNS");
+            GUI.EndGroup();DrawScrollRail(area,ref recordsScroll,content,list.Count+" RUNS");
             var d=list[historySelected];var detail=new Rect(area.xMax+24,view.y,view.xMax-area.xMax-24,view.height);
             Fill(detail,new Color(.012f,.014f,.02f,.95f));Outline(detail,new Color(.6f,.48f,.28f),1);
             var head=new GUIStyle(titleStyle){font=headingFont?headingFont:labelFont,fontSize=20,alignment=TextAnchor.MiddleLeft,normal={textColor=new Color(1f,.92f,.75f)}};
@@ -216,7 +216,7 @@ namespace GildedFate.UI
                 for(var t=0;t<thresholds.Length;t++)
                 {
                     var x=bar.x+bar.width*thresholds[t]/(float)max;Fill(new Rect(x-1,bar.y-4,2,bar.height+8),marks>=thresholds[t]?new Color(1f,.92f,.6f):new Color(.4f,.38f,.34f));
-                    GUI.Label(new Rect(x-40,bar.yMax+2,80,18),"TIER "+(t+1),new GUIStyle(footerStyle){fontSize=9,normal={textColor=marks>=thresholds[t]?Gold:new Color(.55f,.53f,.5f)}});
+                    GUI.Label(new Rect(x-40,bar.yMax+2,80,18),"TIER "+(t+1),new GUIStyle(footerStyle){fontSize=11,normal={textColor=marks>=thresholds[t]?Gold:new Color(.55f,.53f,.5f)}});
                 }
             }
         }

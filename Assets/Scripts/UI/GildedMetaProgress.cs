@@ -222,9 +222,9 @@ namespace GildedFate.UI
                 var r=new Rect(w*.5f-220,y-40+slide*40,440,70);var old=GUI.color;GUI.color=new Color(1,1,1,fade);
                 Fill(r,new Color(.02f,.018f,.012f,.96f));Outline(r,new Color(1f,.8f,.4f),2);Fill(new Rect(r.x,r.y,4,r.height),new Color(1f,.78f,.32f));
                 DrawAchievementIcon(new Rect(r.x+12,r.y+9,52,52),def,true);
-                GUI.Label(new Rect(r.x+76,r.y+8,r.width-90,20),"ACHIEVEMENT UNLOCKED",new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=10,fontStyle=FontStyle.Bold,alignment=TextAnchor.MiddleLeft,normal={textColor=new Color(1f,.8f,.42f,fade)}});
+                GUI.Label(new Rect(r.x+76,r.y+8,r.width-90,20),"ACHIEVEMENT UNLOCKED",new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=12,fontStyle=FontStyle.Bold,alignment=TextAnchor.MiddleLeft,normal={textColor=new Color(1f,.8f,.42f,fade)}});
                 GUI.Label(new Rect(r.x+76,r.y+26,r.width-90,24),def.name,new GUIStyle(titleStyle){font=headingFont?headingFont:labelFont,fontSize=19,alignment=TextAnchor.MiddleLeft,normal={textColor=new Color(1f,.95f,.82f,fade)}});
-                GUI.Label(new Rect(r.x+76,r.y+48,r.width-90,18),def.text,new GUIStyle(footerStyle){fontSize=11,alignment=TextAnchor.MiddleLeft,normal={textColor=new Color(.85f,.82f,.74f,fade)}});
+                GUI.Label(new Rect(r.x+76,r.y+48,r.width-90,18),def.text,new GUIStyle(footerStyle){fontSize=12,alignment=TextAnchor.MiddleLeft,normal={textColor=new Color(.85f,.82f,.74f,fade)}});
                 GUI.color=old;y+=80;
             }
         }
@@ -263,11 +263,11 @@ namespace GildedFate.UI
             else{EnsureBossPolishTextures();BossPolishTint(icon,bossPolishDisc,new Color(.16f,.05f,.03f));BossPolishTint(icon,bossPolishRing,level>0?new Color(1f,.45f,.3f):new Color(.6f,.5f,.35f));}
             GUI.Label(icon,level>0?FateDebt.Roman(level):"",new GUIStyle(titleStyle){font=headingFont?headingFont:labelFont,fontSize=15,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(1f,.9f,.7f)}});
             var title=max<=0?"FATE DEBT · LOCKED":level==0?"FATE DEBT · NONE":"FATE DEBT · "+FateDebt.Roman(level)+(level==2?"  ·  INCLUDES I":level>2?"  ·  INCLUDES I–"+FateDebt.Roman(level-1):"");
-            GUI.Label(new Rect(icon.xMax+10,r.y+4,r.width-icon.width-110,22),title,new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=13,fontStyle=FontStyle.Bold,alignment=TextAnchor.MiddleLeft,normal={textColor=level>0?new Color(1f,.62f,.45f):new Color(.9f,.84f,.7f)}});
+            GUI.Label(new Rect(icon.xMax+10,r.y+4,r.width-icon.width-122,22),title,new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=13,fontStyle=FontStyle.Bold,alignment=TextAnchor.MiddleLeft,normal={textColor=level>0?new Color(1f,.62f,.45f):new Color(.9f,.84f,.7f)}});
             var detail=max<=0?"Win a run with this hero to open Fate Debt I.":level==0?"No penalties. Press ▶ to take on debt.":FateDebt.Names[level-1]+": "+FateDebt.Texts[level-1];
-            GUI.Label(new Rect(icon.xMax+10,r.y+24,r.width-icon.width-110,r.height-26),detail,new GUIStyle(footerStyle){fontSize=11,wordWrap=true,alignment=TextAnchor.UpperLeft,normal={textColor=new Color(.84f,.8f,.72f)}});
+            GUI.Label(new Rect(icon.xMax+10,r.y+24,r.width-icon.width-122,r.height-26),detail,new GUIStyle(footerStyle){fontSize=12,wordWrap=true,alignment=TextAnchor.UpperLeft,normal={textColor=new Color(.84f,.8f,.72f)}});
             if(max<=0)return;
-            var left=new Rect(r.xMax-88,r.center.y-15,36,30);var right=new Rect(r.xMax-46,r.center.y-15,36,30);
+            var left=new Rect(r.xMax-98,r.center.y-18,44,36);var right=new Rect(r.xMax-50,r.center.y-18,44,36);
             DrawButtonFrame(left,left.Contains(PointerPosition),level<=0);DrawButtonFrame(right,right.Contains(PointerPosition),level>=max);
             if(GUI.Button(left,"◀",buttonStyle))ChangeFateDebt(-1);if(GUI.Button(right,"▶",buttonStyle))ChangeFateDebt(1);
             if(ShowPadGlyphs){DrawPadGlyph(new Vector2(left.center.x,left.yMax+9),"LB",true,16);DrawPadGlyph(new Vector2(right.center.x,right.yMax+9),"RB",true,16);}
@@ -311,7 +311,7 @@ namespace GildedFate.UI
             var tier=MetaUnlocks.TierOf(card);var origin=card.origin;var isWanderer=origin==CardOrigin.Wanderer;
             var need=isWanderer?MetaUnlocks.WandererThresholds[tier-1]:MetaUnlocks.HeroThresholds[tier-1];
             var have=isWanderer?profile.totalMarks:profile.heroMarks[origin==CardOrigin.Knight?0:origin==CardOrigin.Arcane?1:2];
-            GUI.Label(new Rect(r.x,r.yMax-36,r.width,32),$"LOCKED · TIER {tier}\n{have}/{need} MARKS",new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=10,fontStyle=FontStyle.Bold,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(1f,.85f,.55f)}});
+            GUI.Label(new Rect(r.x,r.yMax-36,r.width,32),$"LOCKED · TIER {tier}\n{have}/{need} MARKS",new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=12,fontStyle=FontStyle.Bold,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(1f,.85f,.55f)}});
         }
     }
 }

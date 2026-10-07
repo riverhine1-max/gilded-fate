@@ -66,7 +66,7 @@ namespace GildedFate.UI
                 var attachment=attachments[i];var r=CardAttachmentRect(card,i);
                 if(attachment.binding){DrawCardBindingClasp(card,definition);continue;}
                 var atlas=LoadAuthoredArt(attachment.resource);if(atlas)DrawAtlasIcon(atlas,attachment.tile,attachment.columns,attachment.rows,r);
-                if(i==5&&attachments.Count>6)ShadowLabel(new Rect(r.x,r.yMax-7,r.width,16),"+"+(attachments.Count-5),new GUIStyle(footerStyle){fontSize=11,fontStyle=FontStyle.Bold});
+                if(i==5&&attachments.Count>6)ShadowLabel(new Rect(r.x,r.yMax-7,r.width,16),"+"+(attachments.Count-5),new GUIStyle(footerStyle){fontSize=12,fontStyle=FontStyle.Bold});
             }
         }
         private bool CardAttachmentHelp(Rect card,CardDef definition,Vector2 point,out string title,out string detail)

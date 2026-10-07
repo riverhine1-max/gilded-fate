@@ -168,12 +168,12 @@ namespace GildedFate.UI
                 if(changed)Fill(new Rect(r.x+r.width-6,r.y+6,3,3),new Color(.96f,.78f,.42f,.8f));
                 if(row.slider)
                 {
-                    var trackX=r.x+(twoColumns?210:292);var track=new Rect(trackX,r.center.y-10,r.xMax-110-trackX,20);var fraction=Mathf.InverseLerp(row.minimum,row.maximum,row.get());
+                    var trackX=r.x+(twoColumns?210:292);var track=new Rect(trackX,r.center.y-16,r.xMax-110-trackX,32);var fraction=Mathf.InverseLerp(row.minimum,row.maximum,row.get());
                     Fill(new Rect(track.x+9,r.center.y-2,track.width-18,4),new Color(.24f,.26f,.28f));
                     Fill(new Rect(track.x+9,r.center.y-2,(track.width-18)*fraction,4),new Color(.80f,.62f,.30f));
                     if(row.minimum<1&&row.maximum>1){var mark=track.x+9+(track.width-18)*Mathf.InverseLerp(row.minimum,row.maximum,1);Fill(new Rect(mark-1,r.center.y-6,2,12),new Color(.55f,.52f,.45f));}
                     var knob=new Rect(track.x+(track.width-18)*fraction+3,r.center.y-8,12,16);Fill(knob,new Color(.96f,.83f,.57f));Outline(knob,new Color(.32f,.22f,.09f),1);
-                    var value=GUI.HorizontalSlider(track,row.get(),row.minimum,row.maximum,GUIStyle.none,new GUIStyle(GUIStyle.none){fixedWidth=18,fixedHeight=20});
+                    var value=GUI.HorizontalSlider(track,row.get(),row.minimum,row.maximum,GUIStyle.none,new GUIStyle(GUIStyle.none){fixedWidth=18,fixedHeight=32});
                     if(!Mathf.Approximately(value,row.get())){row.set(Mathf.Round(value/row.step)*row.step);ApplySettings();AudioListener.volume=profile.master;}
                 }
                 else if(!row.toggle&&hot)
