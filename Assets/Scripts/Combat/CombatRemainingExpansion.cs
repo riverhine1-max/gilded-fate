@@ -155,7 +155,7 @@ namespace GildedFate.Combat
                 case "grave_execution":var marks=ConsumeEffect(enemy,"gravemark");for(var n=0;n<marks&&!IsOver&&enemy.hp>0;n++)DamageEnemy(v+c.permanentDamageBonus,c,n,marks);break;
                 case "soul_dominion":R.soulDominion=Math.Max(R.soulDominion,v);GrantEffect(player,c.id,v,c.id,CombatEffectDuration.Combat);break;
                 case "the_last_harvest":var victims=hand.ToArray();var souls=victims.Count(IsSoul);foreach(var x in victims){hand.Remove(x);ExhaustCard(x);}AllHits(c,v,victims.Length);Draw(souls,false);break;
-                case "gilded_toss":var firstCard=cardsPlayed==0;DamageEnemy(v+c.permanentDamageBonus,c);if(firstCard)Draw(1,false);break;
+                case "gilded_toss":var firstCard=CardsThisTurn==0;DamageEnemy(v+c.permanentDamageBonus,c);if(firstCard)Draw(1,false);break;
                 case "shared_fate":var other=RandomOtherEnemy(source);if(other>=0)OnEnemy(other,()=>CopyDebuffs(snap,v,c.id));break;
                 case "borrowed_strength":GainStrength(Math.Max(0,enemy.strength)*v/100,true);break;
                 case "threadcutter":case "twist_of_fate":case "fates_reflection":case "gilded_imprint":BeginRemainingCards(hand);break;

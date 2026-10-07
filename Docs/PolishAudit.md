@@ -1,0 +1,113 @@
+# Gilded Fate: Polish Audit (October 2026)
+
+Whole-game audit before the professional polish pass. Enemy animation is out of scope (the team will replace the procedural motion later). Status column: **Confirmed** means the code was re-read and the defect reproduced by reading; **Sweep** means reported by the audit sweep and re-checked when the fix is made.
+
+Baseline before any change: native harness PASS 107,484 / FAIL 0, compile checks (with and without DEVELOPMENT_BUILD) 0 errors.
+
+## Batch 1: Rules and card correctness
+
+| ID | Sev | Finding | Status |
+|----|-----|---------|--------|
+| R-1 | High | Player **Vulnerable never expires**. `EndPlayerTurn` ticks Weak/Frail and enemy Vulnerable, nothing ticks the player's. Rune Mage, Wild tear/eruption claws and Debuff intents stack it for the rest of the combat (+50% damage taken). | Confirmed |
+| R-2 | High | "**First card this turn**" effects use the combat-wide `cardsPlayed`: Crown of Sacrifice, Opening Blow, Controlled Breathing, Gilded Toss only work on the first card of the whole combat. Battle Rhythm ("every third card each turn") and Silver Feather ("fourth card each turn") carry their count across turns. | Confirmed |
+| R-3 | High | `retaliateTriggeredTurn` is zeroed in `NextTurn` and only raised during the enemy phase, so "if Retaliate triggered this turn" (No Mercy, Countercharge, Vengeful Sweep) can **never be true**. | Confirmed |
+| R-4 | Med | **Crown Breaker and Final Judgment count Strength twice** (card adds it, the generic damage path adds it again). Final Judgment deals 24 + 3x Strength instead of 24 + 2x. | Confirmed |
+| R-5 | Med | Worn Whetstone ("first Attack each combat") fires every turn and on every hit of a multi-hit attack. Duelist's Pin ignores "only Attack played". | Confirmed (Whetstone) |
+| R-6 | Med | Mirror Fragment ("first 0-cost card each turn") fires once per combat; `zeroCostRelicUsed` is never reset. | Confirmed |
+| R-7 | Med | Stolen Hourglass breaks Twisted Fate (hand is shuffled away and not redrawn) and blocks relic draws the text does not mention. | Confirmed |
+| R-8 | Low | Soul Drain took no target in multi-enemy fights (Marked was consumed from whichever enemy was last selected). Adapt and Dark Veil use the currently selected target, which is intended. | Confirmed, fixed for Soul Drain |
+| R-9 | Med | **Everlasting Ember has no implementation** (relic is in the pool, does nothing). | Confirmed |
+| R-10 | Low | Overhead Strike applies Vulnerable before the hit, so Heavy deals 37 instead of the printed 25. | Sweep |
+| R-11 | Low | 12-card hand cap is skipped by return-from-discard/exhaust, curses, temporary cards, Lingering. | Sweep |
+| R-12 | Low | Dead branches for relic ids that do not exist (`thorn`, `immortal_thread`). | Sweep |
+| R-13 | Low | Sigil of Malice can be played for nothing when the sigil row is full. | Sweep |
+
+## Batch 2: Menus, flow and input safety
+
+| ID | Sev | Finding | Status |
+|----|-----|---------|--------|
+| F-1 | High | **NEW RUN and DAILY RUN silently destroy the saved run.** No confirmation anywhere. | Confirmed |
+| F-2 | High | No input debounce after a screen change: only the Map has one. A double-click on SEVER A THREAD or UPGRADE lands on a card in the next screen and spends gold or the rest-site action. | Confirmed |
+| F-3 | High | Stale controller focus index after a screen change: highlight and action disagree on the first A press (merchant removal, sanctuary upgrade, binding). | Confirmed |
+| F-4 | Med | B/Backspace in the shop leaves it instantly and irreversibly (unspent gold lost) while Esc opens the pause menu. | Confirmed |
+| F-5 | Med | A saved resolution is applied without validation (monitor swap, damaged profile). | Sweep |
+| F-6 | Med | A corrupt save makes CONTINUE vanish with no message. | Sweep |
+| F-7 | Low | Invisible controller slot in the shop when no shard is offered. | Sweep |
+| F-9 | Low | Statistics screen reachable only from Credits and its BACK skips Credits. | Sweep |
+| F-10 | Low | RunResult ignores B/Esc. | Sweep |
+| F-11 | Low | Sanctuary UPGRADE tile stays active when nothing can be upgraded. | Sweep |
+
+## Batch 3: UI layout and readability
+
+| ID | Sev | Finding | Status |
+|----|-----|---------|--------|
+| UI-1 | High | The **End Turn button and energy orb cover the edge cards** of a hand of 6 or more at 1440x810 and up to 16:10 (fixed rects, `HandLayout` ignores them). | Confirmed |
+| UI-2 | High | The enemy status strip's second row hides behind the hand; icons are lost in 4-enemy fights. | Sweep |
+| UI-3 | Med | Shop and shrine hover tooltips cover the price of the item being hovered. | Sweep |
+| UI-4 | Med | Key numbers use 8 to 12 px fonts (floor, energy, piles, incoming damage, status stacks, colorblind codes). | Sweep |
+| UI-5 | Med | Relic row collides with page headings from about 12 relics. | Sweep |
+| UI-6 | Med | `DrawButtonFrame` "disabled" draws a stray line and does not dim; "disabled" is reused for "selected". | Confirmed |
+| UI-7 | Med | TAKE RELIC is an unframed bare button that hangs below its panel. | Sweep |
+| UI-8 | Low | Small hit targets (settings sliders, Fate Debt arrows); scroll rail is not interactive. | Sweep |
+| UI-9 | Low | Small overlaps (SELECT label over rules text, fixed-size upgrade comparison, dead code). | Sweep |
+
+## Batch 4: Feedback and juice
+
+| ID | Sev | Finding | Status |
+|----|-----|---------|--------|
+| J-3 | High | Unaffordable or unavailable clicks are silent (shop, shrine, events). `UiDenied` exists but is only used in combat and Gild. | Confirmed |
+| J-4 | High | The Settings screen is silent (no hover, confirm or volume preview) and ducks the music while the music slider is adjusted. | Sweep |
+| J-5 | High | Combat number popups overlap: lane counters restart at 0 for every card, and under reduce-motion there is no drift. | Confirmed (structure) |
+| J-6 | High | No shared button hover sound, pressed tint or cursor feedback on the 51 `DrawButtonFrame` call sites. | Confirmed |
+| J-7 | Med | Status sound cues inverted (the player's own debuffs play the Energy chime). | Confirmed |
+| J-8 | Med | No enemy-death sound. | Sweep |
+| J-9 | Med | The player-hurt vignette is boss-only. | Sweep |
+| J-10 | Med | No low-HP warning. | Sweep |
+| J-11 | Med | HitHeavy is unreachable for Reaper and Arcane cards. | Sweep |
+| J-12 | Med | Pause, deck, shop-leave, reward-skip, quit-confirm and several choice paths are silent. | Sweep |
+| J-13 | Med | Per-frame regex, LINQ and `new GUIStyle` allocations (card text, map, enemy art lookups). Estimate from code, not profiled. | Sweep |
+| J-2 | Med | Procedural textures are built on first use inside a draw frame (possible hitch on first Dissipate or Gild). Estimate from code, not profiled. | Sweep |
+| J-14 | Med | Gold and HP numbers snap instead of counting. | Sweep |
+| J-16/17 | Low | Some shake/flicker paths ignore the screen-shake or reduce-flashing settings. | Sweep |
+
+## Batch 5: Balance (after the rule fixes, because R-1 distorts every Act 3 number)
+
+Method: every one of the 369 encounters was fought by a simple card-playing bot (greedy block/attack, 3 heroes x 4 seeds, deck and relics sized to how far into the act the fight happens). The bot is crude, so absolute win rates are not meaningful, only comparisons between encounters.
+
+* Difficulty rises act to act and tier to tier as designed.
+* Easy outliers inside Act 1 elites: Sunken Engine, Royal Auctioneer, Living Treasury (100% win, 28 to 49% HP lost) against the other Act 1 elites (33 to 58% win, 79 to 90% lost). Same for Pale Gardener and Fallen Comet in Act 2.
+* Hard outliers in Act 3: High Confessor, Choir Eternal, Royal General, World Break neutral elite and the Black Cathedral and Throne formations (about 35% win against 56% for Fractured Realm).
+* Act 3 formation first-turn spikes: A3-NO3 hits for 53 on turn one against a passive player; BC-D10 averages about 51 per turn.
+
+Re-measured after Batch 1, then tuned. Every number change is listed in the batch notes.
+
+
+---
+
+## Batch 1 fix log (rules and card correctness)
+
+All of R-1 to R-13 are fixed, with regression tests in the native harness (`b1.cs`, 65 new assertions). The fixes were mutation-checked: re-introducing R-1, R-3, R-6 or R-7 makes the new tests fail. One older harness expectation (Choking Procession 15) had been passing only because Vulnerable never wore off; it now expects the printed 10.
+
+**Behaviour changes the player will feel (each is a gameplay change, listed so you can veto any):**
+
+| Change | Direction |
+|--------|-----------|
+| Vulnerable on the player now wears off (one stack per enemy phase it was active for). A Vulnerable applied during an enemy phase still hits the next enemy attack, then ends. | Easier for the player (bug fix) |
+| Crown of Sacrifice: the first card **each turn** is free (was: first card of the whole combat). | Stronger relic; matches its text |
+| Opening Blow, Controlled Breathing, Gilded Toss: "first card this turn" works every turn. | Stronger cards; match their text |
+| Controlled Breathing keeps its Block only if it really was the only card played that turn (checked when the turn ends). | Matches its text |
+| Battle Rhythm and Silver Feather count cards per turn (were counting across turns). | Matches their text |
+| No Mercy, Countercharge, Vengeful Sweep: Retaliate that triggered during the enemy phase counts on your next turn (was: could never be true). | Stronger cards; they now do what they say |
+| Crown Breaker and Final Judgment add Strength once (was twice and three times). | Weaker; matches their text |
+| Worn Whetstone: +6 on the first Attack of the combat, first hit only (was: every turn, every hit). | Weaker; matches its text |
+| Duelist's Pin: +4 on the first hit of the first Attack each turn. Text simplified to "Your first Attack each turn deals +4 damage." (the "only Attack played" condition cannot be known when the hit lands). | Behaviour kept, once per Attack rather than per hit |
+| Mirror Fragment: once each turn (was: once per combat). | Stronger; matches its text |
+| Overhead Strike: deals its printed 25, then applies Vulnerable (was: Vulnerable first, so Heavy hit for 37). | Weaker; matches its text |
+| Everlasting Ember now works: an enemy that dies with Burn passes half of it to a random living enemy. | Relic was a dead pick |
+| Stolen Hourglass no longer breaks Twisted Fate. | Bug fix |
+| Soul Drain needs a chosen target. | Bug fix |
+| Sigil of Malice can be played when the sigil row is full (the row cycles, like every other Sigil card). | Bug fix |
+| Curses, Status cards and Lingering cards no longer push the hand past 12 (they go to the discard pile). | Bug fix |
+| Dead branches for relic ids that do not exist (`thorn`, `immortal_thread`) removed. | Cleanup |
+
+**Measured effect (bot, same 369 encounters):** win rate moved by 1 to 5 points per act (for example Foundry formations 69.5 to 74.6, Black Cathedral formations 35.0 to 39.2). So the permanent-Vulnerable bug did *not* explain the Act 3 difficulty cliff; that is a separate balance question handled in Batch 5.

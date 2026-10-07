@@ -48,6 +48,8 @@ namespace GildedFate.Combat
         public CombatMemory memory=new();public PendingCardPlay pendingPlay;
         [NonSerialized] public List<CombatEvent> events=new();
 
+        // Cards played since this player turn began. `cardsPlayed` is the whole-combat total; every "this turn" effect uses this.
+        public int CardsThisTurn=>Math.Max(0,cardsPlayed-R.turnStartCards);
         public bool IsOver=>player.hp<=0||!AnyEnemyAlive;
         public bool AwaitingChoice=>pendingPlay!=null&&pendingPlay.choice!=CardChoiceKind.None;
         public CardChoiceKind ChoiceKind=>pendingPlay?.choice??CardChoiceKind.None;
@@ -55,7 +57,7 @@ namespace GildedFate.Combat
         public IReadOnlyList<string> ChoiceOptions=>ChoiceKind switch{CardChoiceKind.ExpansionOption=>RemainingChoiceOptions,CardChoiceKind.AdaptMode=>new[]{"BLOCK","DAMAGE"},CardChoiceKind.SigilMode=>new[]{"EMBER SIGIL","HEX SIGIL","ECHO SIGIL"},CardChoiceKind.SigilSlot=>sigils.Select((s,i)=>$"{i+1} · {s.ToString().ToUpperInvariant()} SIGIL").ToArray(),CardChoiceKind.BuffToDouble=>BuffOptions(),CardChoiceKind.BuffToGain=>BuffOptions(),_=>Array.Empty<string>()};
         public bool ImmortalThreadUsed=>memory.immortalThreadUsed;
         public bool IsAttack(CardDef card)=>card!=null&&card.kind==CardKind.Attack;
-        public bool RequiresEnemyTarget(CardDef card)=>RemainingTargets(card)||card!=null&&!AffectsAllEnemies(card)&&!AffectsRandomEnemy(card)&&(card.id is "sigil_of_malice" or "hexed_reverberation" or "turn_their_strength" or "eye_for_an_eye"||IsSoul(card)||IsAttack(card)||card.effect is EffectKind.Burn or EffectKind.Mark or EffectKind.Weak or EffectKind.Vulnerable);
+        public bool RequiresEnemyTarget(CardDef card)=>RemainingTargets(card)||card!=null&&!AffectsAllEnemies(card)&&!AffectsRandomEnemy(card)&&(card.id is "sigil_of_malice" or "hexed_reverberation" or "turn_their_strength" or "eye_for_an_eye" or "soul_drain"||IsSoul(card)||IsAttack(card)||card.effect is EffectKind.Burn or EffectKind.Mark or EffectKind.Weak or EffectKind.Vulnerable);
 
         public bool IntentDealsDamage=>intent==IntentKind.Attack||intent==IntentKind.Special&&enemyId!="hollow_king"&&enemyId!="vault_mother"&&(enemyId!="mirror_witch"||memory.lastCardWasAttack);
         public int IntentDisplayValue{get{if(!IntentDealsDamage)return intentValue;var value=(enemyId=="mirror_witch"&&intent==IntentKind.Special?Math.Max(intentValue,memory.lastCardValue):intentValue)+enemy.strength;if(enemy.weak>0)value=value*3/4;if(player.vulnerable>0)value=value*3/2;return value;}}
@@ -72,7 +74,7 @@ namespace GildedFate.Combat
             if(card.kind==CardKind.Skill){cost-=memory.nextSkillCostReduction;if(memory.perfectForm>0&&!memory.firstSkillPlayed)cost--;}
             if(card.id=="vengeful_rush"&&(memory.wasAttackedLastTurn||memory.attackedThisEnemyTurn))cost=0;
             if(memory.nextCardCostPenalty>0)cost+=memory.nextCardCostPenalty;
-            if(relics.Contains("crown_of_sacrifice")&&cardsPlayed==0)cost=0;
+            if(relics.Contains("crown_of_sacrifice")&&CardsThisTurn==0)cost=0;
             cost=ShardCost(card,cost);
             if(hand.Any(c=>c.id=="fatebound"))cost=Math.Max(card.cost,cost);
             return Math.Max(0,cost);
@@ -131,7 +133,7 @@ namespace GildedFate.Combat
         {
             if(pendingPlay!=null||turn>0&&phase!=CombatPhase.EnemyResolved)return;if(IsOver){phase=CombatPhase.Finished;return;}
             R.turnStartCards=cardsPlayed;RollEnergyMemory();
-            phase=CombatPhase.Player;turn++;ResetRelicTurn();ResetShardTurn();ResetGildTurn();memory.conquestAttacksThisTurn=0;if(memory.unmovable>0&&player.block>0)ExpansionPowerPulse("unmovable");if(relics.Contains("immortal_plate")&&memory.unmovable==0&&player.block>0&&memory.retainBlock<8)RelicPresentationPulse("immortal_plate");var retained=BlockRetention();player.block=Math.Min(retained,player.block);memory.retainBlock=0;memory.freeThisTurnIds.Clear();ExpireEffects(CombatEffectDuration.NextTurn);memory.blockGainedThisTurn=memory.blockGainsThisTurn=memory.skillsThisTurn=memory.attacksThisTurn=memory.soulsPlayedThisTurn=memory.cardsDrawnThisTurn=0;memory.firstAttackPlayed=memory.firstSkillPlayed=memory.firstBlockPlayed=false;memory.spiritStrengthTriggered=memory.spiritFortifyTriggered=memory.onslaughtUsed=memory.crownedBulwarkUsed=memory.deathsGazeUsed=memory.indomitableUsed=memory.gravekeeperUsed=memory.reapersCallingUsed=false;memory.retaliateTriggeredTurn=memory.burnTriggersThisTurn=memory.debuffApplicationsThisTurn=memory.exhaustsThisTurn=memory.warMachineUses=memory.cycleMask=memory.cycleCompletesThisTurn=0;memory.attackedThisEnemyTurn=false;memory.crownSacrificeDebt=false;
+            phase=CombatPhase.Player;turn++;ResetRelicTurn();ResetShardTurn();ResetGildTurn();memory.conquestAttacksThisTurn=0;if(memory.unmovable>0&&player.block>0)ExpansionPowerPulse("unmovable");if(relics.Contains("immortal_plate")&&memory.unmovable==0&&player.block>0&&memory.retainBlock<8)RelicPresentationPulse("immortal_plate");var retained=BlockRetention();player.block=Math.Min(retained,player.block);memory.retainBlock=0;memory.freeThisTurnIds.Clear();ExpireEffects(CombatEffectDuration.NextTurn);memory.blockGainedThisTurn=memory.blockGainsThisTurn=memory.skillsThisTurn=memory.attacksThisTurn=memory.soulsPlayedThisTurn=memory.cardsDrawnThisTurn=0;memory.firstAttackPlayed=memory.firstSkillPlayed=memory.firstBlockPlayed=false;memory.spiritStrengthTriggered=memory.spiritFortifyTriggered=memory.onslaughtUsed=memory.crownedBulwarkUsed=memory.deathsGazeUsed=memory.indomitableUsed=memory.gravekeeperUsed=memory.reapersCallingUsed=false;memory.burnTriggersThisTurn=memory.debuffApplicationsThisTurn=memory.exhaustsThisTurn=memory.warMachineUses=memory.cycleMask=memory.cycleCompletesThisTurn=0;memory.attackedThisEnemyTurn=false;memory.crownSacrificeDebt=false;memory.zeroCostRelicUsed=false;
             var opening=nextTurnBlock;nextTurnBlock=0;if(memory.livingArmor>0){if(player.strength>0)PresentationPulse("living_armor");opening+=player.strength;}if(opening>0)GainBlock(opening);
             if(relics.Contains("gilded_heart"))RelicPresentationPulse("gilded_heart");energy=3+(relics.Contains("gilded_heart")?1:0)+memory.retainedEnergy-memory.nextTurnEnergyPenalty;memory.retainedEnergy=memory.nextTurnEnergyPenalty=0;
             var drawCount=5-memory.nextTurnDrawPenalty;memory.nextTurnDrawPenalty=0;if(relics.Contains("stolen_hourglass")){RelicPresentationPulse("stolen_hourglass");drawCount+=2;}if(relics.Contains("threads_of_fate")&&turn%3==0){RelicPresentationPulse("threads_of_fate");drawCount+=2;energy++;}drawCount+=ShardOpeningDraw();
@@ -141,7 +143,7 @@ namespace GildedFate.Combat
 
         public bool Play(CardDef card)
         {
-            if(!CanPlay(card))return false;var paid=CostFor(card);if(memory.perfectForm>0&&card.cost>0&&(card.kind==CardKind.Attack&&!memory.firstAttackPlayed||card.kind==CardKind.Skill&&!memory.firstSkillPlayed))PresentationPulse("perfect_form");if(relics.Contains("crown_of_sacrifice")&&cardsPlayed==0&&card.cost>0)RelicPresentationPulse("crown_of_sacrifice");if(relics.Contains("crown_of_sacrifice")&&cardsPlayed==0&&card.cost>=2)memory.crownSacrificeDebt=true;energy-=paid;energySpentThisTurn+=paid;CountRuinsCard(card);Emit(CombatEventKind.Energy,energy,true);hand.Remove(card);
+            if(!CanPlay(card))return false;var paid=CostFor(card);if(memory.perfectForm>0&&card.cost>0&&(card.kind==CardKind.Attack&&!memory.firstAttackPlayed||card.kind==CardKind.Skill&&!memory.firstSkillPlayed))PresentationPulse("perfect_form");if(relics.Contains("crown_of_sacrifice")&&CardsThisTurn==0&&card.cost>0)RelicPresentationPulse("crown_of_sacrifice");if(relics.Contains("crown_of_sacrifice")&&CardsThisTurn==0&&card.cost>=2)memory.crownSacrificeDebt=true;energy-=paid;energySpentThisTurn+=paid;CountRuinsCard(card);Emit(CombatEventKind.Energy,energy,true);hand.Remove(card);
             if(card.kind==CardKind.Attack){memory.nextAttackCostReduction=0;if(memory.battleRushCharges>0)memory.battleRushCharges--;if(card.keywords?.Contains("Heavy")==true)memory.nextHeavyCostReduction=0;}if(card.kind==CardKind.Skill)memory.nextSkillCostReduction=0;memory.nextCardCostPenalty=0;
             if(card.firstDrawFree||card.specialModification=="quickened")memory.specialPlayIds.Add(-card.instanceId);memory.freeThisTurnIds.Remove(card.instanceId);
             // Echo is deliberately activation-only. Activating it arms exactly one
@@ -208,10 +210,10 @@ namespace GildedFate.Combat
             switch(card.id)
             {
                 case "great_cleave":if(heavy)value=secondary;break;case "executioners_cleave":if(heavy)value=secondary+card.permanentDamageBonus;break;case "payback":if(memory.wasAttackedLastTurn)value=secondary;break;
-                case "crown_breaker":value+=player.strength+player.fortify;break;case "crushing_weight":value+=player.fortify;break;case "final_judgment":value+=player.strength*2;break;
+                case "crown_breaker":value+=player.fortify;break;case "crushing_weight":value+=player.fortify;break;case "final_judgment":value+=player.strength;break;
                 case "eye_for_an_eye":DamageEnemyRaw(enemy.attemptedAttackDamage,"EYE FOR AN EYE");return;case "rising_strike":value+=memory.attacksThisTurn*secondary;break;
                 case "raging_blow":value+=BuffCount()*secondary;break;case "second_wind":value*=Math.Max(1,memory.powersInPlay);break;
-                case "opening_blow":if(cardsPlayed==0)value+=secondary;break;case "follow_through":if(memory.skillsThisTurn>0)value+=secondary;break;
+                case "opening_blow":if(CardsThisTurn==0)value+=secondary;break;case "follow_through":if(memory.skillsThisTurn>0)value+=secondary;break;
                 case "opportunist":if(debuffs>0)value=secondary;break;case "pocket_guard":if(memory.attacksThisTurn>0)value+=secondary;break;case "finishing_cut":if(enemy.hp*2<enemy.maxHp)value+=secondary;break;
                 case "exploit_weakness":value+=debuffs*secondary;break;case "emergency_guard":if(IntentDealsDamage&&IntentDisplayValue*intentHits>=15)value+=secondary;break;
                 case "perfect_opportunity":value*=debuffs;break;case "brace_yourself":if(player.block==0)value=secondary;break;
@@ -226,7 +228,6 @@ namespace GildedFate.Combat
             if(IsSoul(card)){ResolveSoul(card,0);return;}
             if(card.id=="blood_magic")LosePlayerHp(3,true);if(card.id=="blood_rush")LosePlayerHp(secondary,true);if(card.id=="blood_price")LosePlayerHp(secondary,true);if(player.hp<=0)return;
             if(card.id=="breakthrough")enemy.block=0;
-            if(card.id=="overhead_strike"&&heavy)ApplyEnemyDebuff(EffectKind.Vulnerable,secondary);
             if(card.id=="soul_pierce"&&enemy.marked>0){ConsumeMarked(1);value+=secondary;}
             if(card.id=="final_curse"){var consumed=ConsumeMarked(enemy.marked);value*=consumed;}
             if(card.id=="black_sun"){var consumed=ConsumeMarked(enemy.marked);value+=consumed*secondary;ApplyBurn(value);return;}
@@ -261,7 +262,7 @@ namespace GildedFate.Combat
             {
                 case EffectKind.Damage:
                     var hits=Math.Max(1,card.hits);if(card.id=="cremation"&&enemy.burn>=10)hits=2;if(card.id=="no_mercy"&&memory.retaliateTriggeredTurn>0)hits=2;if(card.id=="soul_piercer_reaper"&&hand.Any(IsSoul))hits++;
-                    var beforeEnemyHp=enemy.hp;for(var i=0;i<hits&&!IsOver&&enemy.hp>0;i++){var hitValue=value;if(card.id=="soul_carver"&&i<hand.Count(IsSoul))hitValue+=secondary;DamageEnemy(hitValue,card,i,hits);}if(card.id=="claim_the_fallen"&&beforeEnemyHp>0&&enemy.hp<=0)bonusCardRewards++;break;
+                    var beforeEnemyHp=enemy.hp;for(var i=0;i<hits&&!IsOver&&enemy.hp>0;i++){var hitValue=value;if(card.id=="soul_carver"&&i<hand.Count(IsSoul))hitValue+=secondary;DamageEnemy(hitValue,card,i,hits);}if(card.id=="overhead_strike"&&heavy&&enemy.hp>0)ApplyEnemyDebuff(EffectKind.Vulnerable,secondary);if(card.id=="claim_the_fallen"&&beforeEnemyHp>0&&enemy.hp<=0)bonusCardRewards++;break;
                 case EffectKind.Block:GainBlock(value,true,card);break;
                 case EffectKind.Draw:Draw(value,false);break;
                 case EffectKind.Strength:GainStrength(value,true);break;
@@ -292,7 +293,7 @@ namespace GildedFate.Combat
                 case "hexed_blade":if(enemy.marked>0)GainResonance(secondary);break;case "burning_hex":ApplyMarked(secondary);break;case "hexfire":if(enemy.marked>0)ApplyBurn(secondary);break;
                 case "quick_thinking":if(secondary>0)GainBlock(secondary,true,card);break;case "adrenaline_rush":AddTemporaryCard("dazed_mind",false);if(secondary>0)Draw(secondary,false);break;
                 case "dark_bargain":AddRandomCurse(false);break;case "forbidden_knowledge":AddRandomCurse(true);break;case "dark_offering":AddRandomCurse(false);energy+=secondary;Emit(CombatEventKind.Energy,energy,true);break;
-                case "blasphemous_ritual":AddRandomCurse(false);break;case "controlled_breathing":if(cardsPlayed==0)memory.retainBlock=Math.Max(memory.retainBlock,card.value+card.permanentBlockBonus+player.fortify);break;
+                case "blasphemous_ritual":AddRandomCurse(false);break;case "controlled_breathing":if(CardsThisTurn==0)memory.retainBlock=Math.Max(memory.retainBlock,card.value+card.permanentBlockBonus+player.fortify);break;
                 case "soul_slash":AddSouls(secondary,SoulDestination.Hand);break;
                 case "soul_call":AddSouls(card.value,SoulDestination.Hand);break;
                 case "deaths_touch":ApplyEnemyDebuff(EffectKind.Weak,secondary);break;
@@ -341,8 +342,8 @@ namespace GildedFate.Combat
         private void TriggerAfterCard(CardDef card)
         {
             AfterRemainingCard(card);
-            if(memory.battleRhythm>0&&cardsPlayed%3==0)TriggerEffect("battle_rhythm",()=>DamageRandomEnemy(memory.battleRhythm,"BATTLE RHYTHM"));
-            if(relics.Contains("silver_feather")&&cardsPlayed%4==0)RelicTrigger("silver_feather",()=>GainBlock(4));
+            if(memory.battleRhythm>0&&CardsThisTurn>0&&CardsThisTurn%3==0)TriggerEffect("battle_rhythm",()=>DamageRandomEnemy(memory.battleRhythm,"BATTLE RHYTHM"));
+            if(relics.Contains("silver_feather")&&CardsThisTurn>0&&CardsThisTurn%4==0)RelicTrigger("silver_feather",()=>GainBlock(4));
             if(relics.Contains("mirror_fragment")&&card.cost==0&&!memory.zeroCostRelicUsed){memory.zeroCostRelicUsed=true;RelicTrigger("mirror_fragment",()=>RelicDamage(3,"MIRROR FRAGMENT"));}
             if(memory.tacticalAdvantage>0&&card.cost==0&&!memory.specialPlayIds.Contains(-100000-turn)){PresentationPulse("tactical_advantage");Draw(1,false);if(memory.tacticalAdvantage>1)DamageRandomEnemy(2,"TACTICAL ADVANTAGE");memory.specialPlayIds.Add(-100000-turn);}
             if(memory.onslaughtThreshold>0&&card.kind==CardKind.Attack&&memory.attacksThisTurn>=memory.onslaughtThreshold&&!memory.onslaughtUsed){PresentationPulse("onslaught");energy++;memory.onslaughtUsed=true;Emit(CombatEventKind.Energy,energy,true);}
@@ -373,6 +374,8 @@ namespace GildedFate.Combat
             if(memory.overflowPower>0&&player.block>TotalIntendedDamage){PresentationPulse("overflow");DamageEnemyRaw(memory.overflowPower,"OVERFLOW");}
             if(memory.grandConvergence>0&&sigils.Count>=3){PresentationPulse("grand_convergence");for(var i=0;i<sigils.Count;i++)ActivateSigil(i);}for(var i=0;i<sigils.Count;i++)if(sigils[i]==SigilKind.Ember)ActivateSigil(i);
             foreach(var card in hand.ToArray()){if(card.id=="lingering_pain")LosePlayerHp(3,false);else if(card.id is "decay" or "haunting")LosePlayerHp(2,false);if(card.ethereal){hand.Remove(card);ExhaustCard(card);}else{hand.Remove(card);discard.Add(card);Emit(CombatEventKind.Discard,1,true,card);}card.firstDrawFree=false;}
+            memory.retaliateTriggeredTurn=0; // Retaliate that fires in the enemy phase counts for the next player turn
+            if(memory.retainBlock>0&&CardsThisTurn>1)memory.retainBlock=0; // Controlled Breathing: only if it was the only card played this turn
             ExpireEffects(CombatEffectDuration.TurnEnd);memory.temporaryDamageIds.Clear();memory.temporaryDamageValues.Clear();memory.nextSoulDamageBonus=memory.nextSoulReplay=memory.gravePactBonus=0;
             if(memory.temporaryFortify>0){var expired=Math.Min(player.fortify,memory.temporaryFortify);player.fortify-=expired;memory.temporaryFortify=0;Emit(CombatEventKind.Status,-expired,true,null,"FORTIFY");}
             memory.nextAttackBonus=memory.nextAttackPenalty=memory.battleRushCharges=0;if(memory.temporaryStrength>0){player.strength=Math.Max(0,player.strength-memory.temporaryStrength);memory.temporaryStrength=0;}
@@ -386,6 +389,7 @@ namespace GildedFate.Combat
         public void ResolveEnemyTurn()
         {
             if(pendingPlay!=null||IsOver||phase!=CombatPhase.Enemy)return;
+            var hadVulnerable=player.vulnerable>0;
             memory.attackedThisEnemyTurn=false;memory.unblockedDamageAttempted=0;ForEachLivingEnemy(()=>enemy.attemptedAttackDamage=0);
             // Themed fights clear every enemy's Block as the enemy phase begins, so Block an
             // ally grants during this phase lasts through the player's next turn. For each
@@ -401,6 +405,7 @@ namespace GildedFate.Combat
                 else ExecuteEnemyPlan(PlannedEnemyTurn());
                 if(enemy.weak>0)enemy.weak--;if(enemy.hp>0&&enemy.burn>0)TriggerBurn(enemy.burn,false);Emit(CombatEventKind.StateSnapshot);
             });
+            if(hadVulnerable&&player.vulnerable>0)player.vulnerable--; // Vulnerable lasts through the enemy phase that used it, then wears off one stack at a time
             memory.wasAttackedLastTurn=memory.attackedThisEnemyTurn;phase=CombatPhase.EnemyResolved;
             if(IsOver){phase=CombatPhase.Finished;Emit(CombatEventKind.Death,0,player.hp<=0);}
         }
@@ -428,7 +433,7 @@ namespace GildedFate.Combat
                 }
             }
             if(enemy.hp<=0)return;var amount=baseAmount+RemainingDamageBonus(card)+TemporaryDamageBonus(card)+(pendingPlay?.attackEffectBonus??0);var heavy=memory.attacksThisTurn==0;if(card.specialModification=="serrated")amount+=2;if(card.specialModification=="weighted"&&card.cost>=2)amount+=6;if(memory.patientWarrior>0&&card.keywords.Contains("Heavy")){PresentationPulse("patient_warrior");amount+=memory.patientWarrior;}if(memory.nextAttackBonus>0){amount+=memory.nextAttackBonus;memory.nextAttackBonus=0;}if(memory.extraDrawDamage>0){amount+=memory.extraDrawDamage;memory.extraDrawDamage=0;}if(memory.nextAttackPenalty>0){amount=Math.Max(0,amount-memory.nextAttackPenalty);memory.nextAttackPenalty=0;}
-            if(relics.Contains("worn_whetstone")&&!memory.firstAttackPlayed){RelicPresentationPulse("worn_whetstone");amount+=6;}if(relics.Contains("war_gods_crest")&&card.cost>=2){RelicPresentationPulse("war_gods_crest");amount+=3;GainBlock(3);}if(relics.Contains("duelists_pin")&&heavy){RelicPresentationPulse("duelists_pin");amount+=4;}
+            if(relics.Contains("worn_whetstone")&&hit==0&&IsAttack(card)&&RelicOnce("worn_whetstone",true)){RelicPresentationPulse("worn_whetstone");amount+=6;}if(relics.Contains("war_gods_crest")&&card.cost>=2){RelicPresentationPulse("war_gods_crest");amount+=3;GainBlock(3);}if(relics.Contains("duelists_pin")&&heavy&&hit==0&&IsAttack(card)){RelicPresentationPulse("duelists_pin");amount+=4;}
             if(hand.Any(c=>c.id=="dread"))amount=amount*90/100;if(hand.Any(c=>c.id=="falter"))amount=Math.Max(0,amount-3);amount+=player.strength;
             amount=RelicAttackAmount(card,amount);amount=ShardAttackDamage(amount,card,hit,hits);if(card.id=="break_the_line"&&heavy)amount*=2;if(card.id=="shatter_the_ranks"&&enemy.block>0)amount=amount*3/2;if(player.weak>0)amount=amount*3/4;if(enemy.vulnerable>0)amount=amount*3/2;
             if(IsSoul(card))amount=amount*(100+EffectValue(enemy,"reaped"))/100;
@@ -441,10 +446,10 @@ namespace GildedFate.Combat
             var hitId=++nextFeedbackHitId;memory.attackedThisEnemyTurn=true;amount=EnemyAttackBeforeBlock(amount);memory.unblockedDamageAttempted+=amount;enemy.attemptedAttackDamage+=amount;var beforeBlock=player.block;var absorbed=Math.Min(player.block,amount);player.block-=absorbed;var lost=amount-absorbed;if(absorbed>0)Emit(CombatEventKind.Block,absorbed,true,null,"BLOCKED",hitId);if(lost>0)LosePlayerHp(lost,false,hitId);
             if(beforeBlock>0&&player.block==0&&memory.indomitable>0&&!memory.indomitableUsed){PresentationPulse("indomitable");nextTurnBlock+=memory.indomitable;memory.indomitableUsed=true;Emit(CombatEventKind.Status,memory.indomitable,true,null,"INDOMITABLE · NEXT TURN");}
             if(beforeBlock>0&&player.block==0)OnEnemyBreaksBlock();
-            var reflected=0;if(relics.Contains("thorn")&&absorbed>0){RelicPresentationPulse("thorn");reflected+=5;}if(activeShardId=="thorn"&&absorbed>0){ShardPulse(false,amount:absorbed);reflected+=activeShardFractured?20:10;if(activeShardFractured)GainBlock(CeilPercent(absorbed,25));}
+            var reflected=0;if(activeShardId=="thorn"&&absorbed>0){ShardPulse(false,amount:absorbed);reflected+=activeShardFractured?20:10;if(activeShardFractured)GainBlock(CeilPercent(absorbed,25));}
             if(reflected>0)DamageEnemyRaw(reflected,"THORNS");
         }
-        private void LosePlayerHp(int amount,bool selfInflicted,int hitId=0){var before=player.hp;player.hp=Math.Max(0,player.hp-Math.Max(0,amount));if(player.hp<=0&&memory.immortalThreadUsed==false&&relics.Contains("immortal_thread")){RelicPresentationPulse("immortal_thread");player.hp=1;memory.immortalThreadUsed=true;}if(before>player.hp)Emit(CombatEventKind.Damage,before-player.hp,true,hitId:hitId);if(selfInflicted&&before>player.hp&&relics.Contains("crimson_spur")&&!memory.selfDamageRelicUsed){memory.selfDamageRelicUsed=true;RelicPresentationPulse("crimson_spur");GainStrength(2);}}
+        private void LosePlayerHp(int amount,bool selfInflicted,int hitId=0){var before=player.hp;player.hp=Math.Max(0,player.hp-Math.Max(0,amount));if(before>player.hp)Emit(CombatEventKind.Damage,before-player.hp,true,hitId:hitId);if(selfInflicted&&before>player.hp&&relics.Contains("crimson_spur")&&!memory.selfDamageRelicUsed){memory.selfDamageRelicUsed=true;RelicPresentationPulse("crimson_spur");GainStrength(2);}}
         private void Heal(int amount){var before=player.hp;player.hp=Math.Min(player.maxHp,player.hp+amount);if(player.hp>before)Emit(CombatEventKind.Heal,player.hp-before,true);}
         // Block stacking order: resolved card base/permanent copy bonus, Fortify and flat
         // Binding modifiers, in-hand Frailty percentage, then relic and Shard additions.
@@ -605,19 +610,20 @@ namespace GildedFate.Combat
         }
         private int TemporaryDamageBonus(CardDef card){if(card==null)return 0;var index=memory.temporaryDamageIds.IndexOf(card.instanceId);return index>=0&&index<memory.temporaryDamageValues.Count?memory.temporaryDamageValues[index]:0;}
 
-        private void AddRandomCurse(bool toHand){var pool=GameContent.Cards.Where(c=>c.origin==CardOrigin.Curse).ToArray();if(pool.Length==0)return;var card=Instance(pool[NextRandom(pool.Length)]);if(toHand)hand.Add(card);else discard.Add(card);cursePressure++;Emit(CombatEventKind.Status,1,true,card,"CURSE");}
-        private void AddTemporaryCard(string id,bool toHand){var def=GameContent.Find(id);if(def==null)return;var card=Instance(def);RelicGenerated(card);if(toHand)hand.Add(card);else discard.Add(card);Emit(CombatEventKind.Status,1,true,card,"STATUS");}
+        private void AddRandomCurse(bool toHand){var pool=GameContent.Cards.Where(c=>c.origin==CardOrigin.Curse).ToArray();if(pool.Length==0)return;var card=Instance(pool[NextRandom(pool.Length)]);if(toHand&&hand.Count<12)hand.Add(card);else discard.Add(card);cursePressure++;Emit(CombatEventKind.Status,1,true,card,"CURSE");}
+        private void AddTemporaryCard(string id,bool toHand){var def=GameContent.Find(id);if(def==null)return;var card=Instance(def);RelicGenerated(card);if(toHand&&hand.Count<12)hand.Add(card);else discard.Add(card);Emit(CombatEventKind.Status,1,true,card,"STATUS");}
 
+        [NonSerialized] private bool redrawingHand; // Twisted Fate replaces the hand: not an extra card effect, so Stolen Hourglass lets it through
         private void DrawImmediate(int count,bool normalDraw)
         {
-            if(!normalDraw&&relics.Contains("stolen_hourglass")){RelicPresentationPulse("stolen_hourglass");return;}
+            if(!normalDraw&&!redrawingHand&&relics.Contains("stolen_hourglass")){RelicPresentationPulse("stolen_hourglass");return;}
             while(count-->0&&player.hp>0)
             {
                 if(hand.Count>=12)return;
                 if(draw.Count==0&&discard.Count>0){var shuffled=discard.Count;draw.AddRange(discard);discard.Clear();Shuffle(draw);Emit(CombatEventKind.Shuffle,shuffled);}if(draw.Count==0)return;
                 var card=draw[^1];draw.RemoveAt(draw.Count-1);
                 ShardCardDrawn(card,normalDraw);if(ShardInterceptDraw(card,normalDraw))continue;
-                if(card.id=="twisted_fate"){RecordActualDraw(card,normalDraw);ExhaustCard(card);var replacement=hand.Count;draw.AddRange(hand);hand.Clear();Shuffle(draw);Draw(replacement,false);continue;}
+                if(card.id=="twisted_fate"){RecordActualDraw(card,normalDraw);ExhaustCard(card);var replacement=hand.Count;draw.AddRange(hand);hand.Clear();Shuffle(draw);var wasRedrawing=redrawingHand;redrawingHand=true;try{DrawImmediate(replacement,false);}finally{redrawingHand=wasRedrawing;}continue;}
                 if(card.id=="shattered_guard"){RecordActualDraw(card,normalDraw);player.block=Math.Max(0,player.block-5);ExhaustCard(card);continue;}
                 if(card.id=="spirit_scar"){RecordActualDraw(card,normalDraw);LosePlayerHp(2,false);ExhaustCard(card);continue;}
                 hand.Add(card);if(memory.makeNextDrawFree>0){memory.freeThisTurnIds.Add(card.instanceId);memory.makeNextDrawFree=0;}RecordActualDraw(card,normalDraw);
@@ -637,7 +643,7 @@ namespace GildedFate.Combat
             {memory.reapersCallingUsed=true;PresentationPulse("reapers_calling");AddSouls(memory.reapersCalling,SoulDestination.Hand);}
             if(card.origin==CardOrigin.Curse&&memory.embraceVoid>0)Draw(memory.embraceVoid,false);
         }
-        private void ReturnLingeringCards(){if(memory.lingeringIds.Count==0)return;foreach(var id in memory.lingeringIds.ToArray()){var card=discard.FirstOrDefault(c=>c.instanceId==id);if(card==null)continue;discard.Remove(card);hand.Add(card);Emit(CombatEventKind.Draw,1,true,card,"LINGERING");memory.lingeringIds.Remove(id);}}
+        private void ReturnLingeringCards(){if(memory.lingeringIds.Count==0)return;foreach(var id in memory.lingeringIds.ToArray()){var card=discard.FirstOrDefault(c=>c.instanceId==id);if(card==null||hand.Count>=12)continue;discard.Remove(card);hand.Add(card);Emit(CombatEventKind.Draw,1,true,card,"LINGERING");memory.lingeringIds.Remove(id);}}
         private int BlockRetention(){if(memory.unmovable>0)return int.MaxValue;var retain=memory.retainBlock;if(relics.Contains("immortal_plate"))retain=Math.Max(retain,8);if(activeShardId=="overflow")retain=Math.Max(retain,activeShardFractured?int.MaxValue:15);return RelicRetainedBlock(retain);}
         private IReadOnlyList<string> BuffOptions(){var options=new List<string>();if(player.strength>0)options.Add("STRENGTH");if(player.fortify>0)options.Add("FORTIFY");if(retaliation>0)options.Add("RETALIATE");return options;}
         private void DrawMatching(CardKind kind)

@@ -50,7 +50,7 @@ namespace GildedFate.Combat
                 case "forbidden_convergence":ActivateAllSigils(1+hand.Count(c=>c.origin==CardOrigin.Curse));return true;
                 case "arcane_overload":DamageEnemy(value,card);ActivateAllSigils(2);return true;
                 case "sigil_of_malice":
-                    if(sigils.Count<SigilCapacity){pendingPlay.choice=CardChoiceKind.SigilMode;pendingPlay.choiceFollowupValue=EnemyDebuffCount()>0?1:0;}return true;
+                    pendingPlay.choice=CardChoiceKind.SigilMode;pendingPlay.choiceFollowupValue=EnemyDebuffCount()>0?1:0;return true; // a full row cycles (CreateSigil), like every other Sigil card
                 case "unstable_ritual":
                     if(sigils.Count>0){var slot=sigils.Count-1;for(var i=0;i<value;i++)ActivateSigil(slot);RemoveRemainingSigil(slot);EmitSigilShatter(slot,card);}return true;
                 case "dark_resonance":

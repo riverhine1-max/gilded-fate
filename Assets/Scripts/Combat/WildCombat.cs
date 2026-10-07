@@ -436,10 +436,20 @@ namespace GildedFate.Combat
             finally{wildSweepDepth--;}
         }
         private bool PlayerPhaseReplan=>phase==CombatPhase.Player&&wildPlanning==0;
+        // Everlasting Ember: an enemy that dies while burning passes half of its remaining Burn to a random living enemy.
+        private void EverlastingEmberTransfer(int index)
+        {
+            if(!relics.Contains("everlasting_ember"))return;
+            var half=opponents[index].fighter.burn/2;if(half<=0)return;
+            var living=Enumerable.Range(0,opponents.Count).Where(i=>i!=index&&opponents[i].fighter.hp>0).ToArray();if(living.Length==0)return;
+            var target=living[NextRandom(living.Length)];
+            RelicTrigger("everlasting_ember",()=>InEnemyContext(target,()=>{enemy.burn+=half;Emit(CombatEventKind.Status,half,false,null,"BURN");}));
+        }
         private void OnWildDeath(int index)
         {
             var m=MindAt(index);var id=EnemyIdAt(index);
             RuinsOnDeath(index);
+            EverlastingEmberTransfer(index);
             if(m.minion)InEnemyContext(index,()=>EmitHook(id==AshenWildsContent.Sapling?"sapling_death":id==DrownedQuarterContent.Hand?"drowned_hand_death":id==HollowwoodContent.Sporeling?"sporeling_death":id==ShatteredObservatoryContent.StarFragment?"star_fragment_death":id is ShatteredObservatoryContent.SunFragment or ShatteredObservatoryContent.MoonFragment?"orrery_fragment_death":id==GildedRuinsContent.Servitor?"servitor_death":id==GildedRuinsContent.Guard?"coinbound_guard_death":"minion_death"));
             // Owner death: every Minion it owns withers immediately (no rewards of their own).
             foreach(var k in Enumerable.Range(0,opponents.Count).Where(k=>opponents[k].fighter.hp>0&&opponents[k].mind?.ownerUid==m.uid).ToArray())
