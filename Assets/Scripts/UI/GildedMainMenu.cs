@@ -270,7 +270,7 @@ namespace GildedFate.UI
 
         private void Update()
         {
-            if(screen!=previousScreen){previousScreen=screen;transitionAlpha=1f;if(screen==ScreenMode.Map)mapInputReadyAt=Time.unscaledTime+.22f;}
+            if(screen!=previousScreen){previousScreen=screen;transitionAlpha=1f;if(screen==ScreenMode.Map)mapInputReadyAt=Time.unscaledTime+.22f;ArmScreenInputGuard();if(!captureMode){screenControllerIndex=0;controllerScreen=screen;}}
             UpdateHexerVideos();UpdateVanguardVideos();UpdateReaperVideos();
             if(runStartActive){if(!runStartCaptureFrozen)AdvanceRunStart(Time.unscaledDeltaTime);return;}
             if(bootIntroActive){AdvanceBootIntro(Time.unscaledDeltaTime);return;}
@@ -318,7 +318,7 @@ namespace GildedFate.UI
         {
             if(runStartActive)return;
             var previous=input.x<0||input.y<0;var next=input.x>0||input.y>0;
-            var accept=input.accept;var back=input.back;var inspectPressed=input.inspect;
+            var accept=input.accept&&(ScreenInputReady||!ScreenUsesInputGuard);var back=input.back;var inspectPressed=input.inspect;
             if(inspectedRelic!=null){if(back||accept)inspectedRelic=null;return;}
             if(inspectedCard!=null){PrepareCardInspection(inspectedCard);if(back)inspectedCard=inspectionSource=null;else if(previous||next||accept)SelectInspectionVersion(!inspectionShowUpgrade);return;}
             if(HandleMetaScreenNavigation(input))return; // Records, Daily, menu modals
@@ -349,9 +349,9 @@ namespace GildedFate.UI
             }
             if(screen==ScreenMode.Merchant)
             {
-                if(MerchantBusy)return;run.PrepareMerchantStock();if(delta!=0)MoveScreenController(delta,13);
+                if(MerchantBusy)return;run.PrepareMerchantStock();if(delta!=0){MoveScreenController(delta,13);if(screenControllerIndex==9&&string.IsNullOrEmpty(run.merchantShardId))MoveScreenController(delta,13);}
                 if(inspectPressed&&screenControllerIndex<7){InspectUpgrade(GameContent.Find(run.merchantCardIds[screenControllerIndex]));return;}
-                if(back){Advance();return;}if(!accept)return;
+                if(back){if(screenControllerIndex!=12){screenControllerIndex=12;Sfx(SoundCue.UiHover);}else{Sfx(SoundCue.UiBack);Advance();}return;}if(!accept)return;
                 if(screenControllerIndex<7)BuyShopCard(screenControllerIndex);else if(screenControllerIndex<9)BuyShopRelic(screenControllerIndex-7);else if(screenControllerIndex==9)BuyShopShard();else if(screenControllerIndex==10)OpenMerchantRemoval();else if(screenControllerIndex==11)BuyShopHeal();else if(screenControllerIndex==12)Advance();return;
             }
             if(screen==ScreenMode.Reward)
@@ -368,7 +368,7 @@ namespace GildedFate.UI
             {
                 if(delta!=0)MoveScreenController(delta,3);if(!accept)return;
                 if(screenControllerIndex==0)RestAtShrine();
-                else if(screenControllerIndex==1){collectionPage=0;cardServiceScroll=0;cardServiceReturnScreen=ScreenMode.Sanctuary;run.stage=RunStage.CardUpgrade;SaveService.Save(run);screen=ScreenMode.CardUpgrade;}
+                else if(screenControllerIndex==1){if(!HasUpgradableCard()){Sfx(SoundCue.UiDenied);return;}collectionPage=0;cardServiceScroll=0;cardServiceReturnScreen=ScreenMode.Sanctuary;run.stage=RunStage.CardUpgrade;SaveService.Save(run);screen=ScreenMode.CardUpgrade;}
                 else{collectionPage=0;cardChoiceScroll=0;run.BeginBindingChoice();SaveService.Save(run);screen=ScreenMode.BindingSelect;}return;
             }
             if(screen==ScreenMode.Event)
@@ -395,10 +395,8 @@ namespace GildedFate.UI
             }
             if(screen==ScreenMode.CardUpgrade||screen==ScreenMode.CardRemove)
             {HandleControllerDeckService(delta,accept,back,screen==ScreenMode.CardUpgrade);return;}
-            if(screen==ScreenMode.Merchant)
-            {if(back)Advance();return;}
             if(screen==ScreenMode.RunResult)
-            {if(delta!=0)MoveScreenController(delta,2);if(accept){if(screenControllerIndex==0){selectingNewRun=true;selectedHero=HeroId.Vanguard;heroSelectionTime=Time.unscaledTime;screen=ScreenMode.CharacterSelect;}else screen=ScreenMode.Menu;}return;}
+            {if(back){Sfx(SoundCue.UiBack);screen=ScreenMode.Menu;return;}if(delta!=0)MoveScreenController(delta,2);if(accept){if(screenControllerIndex==0){selectingNewRun=true;selectedHero=HeroId.Vanguard;heroSelectionTime=Time.unscaledTime;screen=ScreenMode.CharacterSelect;}else screen=ScreenMode.Menu;}return;}
             if(screen==ScreenMode.Settings&&back){ProfileService.Save(profile);screen=settingsReturnScreen;return;}
             if(back)screen=ScreenMode.Menu;
         }
@@ -462,6 +460,7 @@ namespace GildedFate.UI
         private void OnGUI()
         {
             DrawMainGUI();
+            DrawFlowOverlays();
             DrawMetaOverlay(); // brightness + achievement toasts, always on top
         }
         private void DrawMainGUI()
@@ -477,7 +476,7 @@ namespace GildedFate.UI
             if(captureMode&&!typographyAudited&&Event.current.type==EventType.Repaint)AuditCardTypography();
             // Author every screen against one coherent canvas, then fit that canvas to the
             // current Game view. This keeps the large cards and menu together at any aspect.
-            var uiScale = Mathf.Max(.35f, Mathf.Min(Screen.width / 1440f, Screen.height / 810f));
+            var uiScale = UiScale;
             GUI.matrix = Matrix4x4.Scale(new Vector3(uiScale, uiScale, 1f));
             // Cache once at the root canvas. Never re-convert inside clipped groups.
             guiPointerPosition=rootEventPointer/uiScale;
@@ -485,6 +484,7 @@ namespace GildedFate.UI
             guiPointerReady=true;
             var w = Screen.width / uiScale;
             var h = Screen.height / uiScale;
+            HandleReplaceRunPointer(w,h);SwallowEarlyPointerInput();
             DrawBackdrop(w, h);
             if(bootIntroActive&&DrawBootIntro(w,h))return;
             if(runStartActive)
@@ -499,7 +499,7 @@ namespace GildedFate.UI
             if(PerfectedScreenOpen&&inspectedCard==null){DrawPerfectedSelection(w,h);return;}
             if(inspectedCard!=null){DrawCardInspection(w,h,inspectedCard);DrawScreenCardKeywordHelp(w,h);return;}
             if(severedCard!=null){DrawLocationBackdrop(w,h,0);DrawRunDock(w);DrawSeveredThread(w,h);return;}
-            if(ShardDiscoveryOpen||acquisitionActive)GUI.enabled=false;
+            if(ShardDiscoveryOpen||acquisitionActive||replaceRunConfirmOpen)GUI.enabled=false;
 
             if (screen == ScreenMode.CharacterSelect) { DrawCharacterSelect(w, h); DrawTransition(w,h); return; }
             if (screen == ScreenMode.Map) { DrawMap(w, h); DrawTransition(w,h); return; }
@@ -558,6 +558,7 @@ namespace GildedFate.UI
             DrawMenuExtras(w,h,new Rect(buttonX,menuY,buttonW,54f));
             if(hovered>=0&&hovered!=lastHoverAudio)Sfx(SoundCue.UiHover);lastHoverAudio=hovered;
 
+            DrawDamagedSaveNotice(w,h);
             if(!string.IsNullOrEmpty(banner)){var note=new GUIStyle(footerStyle){fontSize=12,normal={textColor=new Color(.95f,.67f,.24f)}};GUI.Label(new Rect(w*.2f,h-62,w*.6f,24),banner,note);}
             GUI.Label(new Rect(0, h - 34, w, 20), "THE GILDED VAULT AWAITS  ·  VERSION "+GameVersion, footerStyle);
             if(bootIntroActive)DrawBootIntroSettle(w,h);
@@ -680,7 +681,7 @@ namespace GildedFate.UI
         {
             if(runStartActive)return;
             Sfx(SoundCue.Resonance);
-            if(selectingNewRun){PrepareNormalRunStart(selectedHero);BeginRunStartTransition();}
+            if(selectingNewRun){GuardReplaceRun(()=>{PrepareNormalRunStart(selectedHero);BeginRunStartTransition();});}
             else{viewingRunDeck=false;collectionRelics=false;collectionReturnScreen=ScreenMode.Menu;collectionFilter=selectedHero==HeroId.Vanguard?1:selectedHero==HeroId.Hexer?2:3;collectionPage=0;collectionScroll=0;screen=ScreenMode.Collection;}
         }
 
@@ -1298,7 +1299,7 @@ namespace GildedFate.UI
         private void DrawSanctuary(float w,float h)
         {
             DrawLocationBackdrop(w,h,1);DrawRunDock(w);
-            Heading(w,"SANCTUARY","A QUIET FLAME BURNS WITHOUT FUEL");DrawShopRestSanctuaryPolish(w,h); Choice(new Rect(w*.125f,h*.34f,w*.23f,220),"REST","Heal "+Mathf.RoundToInt(run.RestHealFraction*100)+"% maximum HP.\nRecover up to "+Mathf.Min(run.maxHp-run.hp,Mathf.RoundToInt(run.maxHp*run.RestHealFraction))+" HP now.",RestAtShrine,0); Choice(new Rect(w*.385f,h*.34f,w*.23f,220),"UPGRADE","Choose one physical card copy and improve its authored upgrade.\nYou can cancel before choosing a card.",()=>{collectionPage=0;cardServiceScroll=0;cardServiceReturnScreen=ScreenMode.Sanctuary;run.stage=RunStage.CardUpgrade;SaveService.Save(run);screen=ScreenMode.CardUpgrade;},1); Choice(new Rect(w*.645f,h*.34f,w*.23f,220),"BIND A CARD","Choose one Act-appropriate Binding, then engrave it onto one eligible unmodified card copy.\nYou can cancel before engraving.",()=>{collectionPage=0;cardChoiceScroll=0;run.BeginBindingChoice();SaveService.Save(run);screen=ScreenMode.BindingSelect;},2);
+            Heading(w,"SANCTUARY","A QUIET FLAME BURNS WITHOUT FUEL");DrawShopRestSanctuaryPolish(w,h); Choice(new Rect(w*.125f,h*.34f,w*.23f,220),"REST","Heal "+Mathf.RoundToInt(run.RestHealFraction*100)+"% maximum HP.\nRecover up to "+Mathf.Min(run.maxHp-run.hp,Mathf.RoundToInt(run.maxHp*run.RestHealFraction))+" HP now.",RestAtShrine,0); Choice(new Rect(w*.385f,h*.34f,w*.23f,220),"UPGRADE","Choose one physical card copy and improve its authored upgrade.\nYou can cancel before choosing a card.",()=>{collectionPage=0;cardServiceScroll=0;cardServiceReturnScreen=ScreenMode.Sanctuary;run.stage=RunStage.CardUpgrade;SaveService.Save(run);screen=ScreenMode.CardUpgrade;},1,HasUpgradableCard()?null:"Every card in your deck is already upgraded."); Choice(new Rect(w*.645f,h*.34f,w*.23f,220),"BIND A CARD","Choose one Act-appropriate Binding, then engrave it onto one eligible unmodified card copy.\nYou can cancel before engraving.",()=>{collectionPage=0;cardChoiceScroll=0;run.BeginBindingChoice();SaveService.Save(run);screen=ScreenMode.BindingSelect;},2);
         }
 
         private void DrawDeckService(float w,float h,bool upgrading)
@@ -1709,20 +1710,22 @@ namespace GildedFate.UI
             if(captureMode){if(Screen.fullScreen!=profile.fullscreen)Screen.fullScreenMode=profile.fullscreen?FullScreenMode.FullScreenWindow:FullScreenMode.Windowed;return;}
             var mode=profile.windowMode switch{0=>FullScreenMode.ExclusiveFullScreen,2=>FullScreenMode.Windowed,_=>FullScreenMode.FullScreenWindow};
             profile.fullscreen=mode!=FullScreenMode.Windowed;
+            // A saved size this monitor no longer offers (monitor swap, damaged profile) falls back to native.
+            if((profile.resolutionWidth>0||profile.resolutionHeight>0)&&ResolutionIndex()==0)profile.resolutionWidth=profile.resolutionHeight=0;
             var native=Screen.currentResolution;
             var width=profile.resolutionWidth>0?profile.resolutionWidth:mode==FullScreenMode.Windowed?Mathf.RoundToInt(native.width*.8f):native.width;
             var height=profile.resolutionHeight>0?profile.resolutionHeight:mode==FullScreenMode.Windowed?Mathf.RoundToInt(native.height*.8f):native.height;
             var sizeChanged=profile.resolutionWidth>0&&(Screen.width!=width||Screen.height!=height);
             if(Screen.fullScreenMode!=mode||sizeChanged||mode!=FullScreenMode.Windowed&&profile.resolutionWidth<=0&&(Screen.width!=width||Screen.height!=height))Screen.SetResolution(width,height,mode);
         }
-        private void Choice(Rect r,string name,string text,System.Action action,int controllerIndex=-1){var over=ScreenChoiceHot(r,controllerIndex);if(over)Fill(new Rect(r.x-7,r.y-7,r.width+14,r.height+14),new Color(1f,.56f,.12f,.11f));Fill(r,over?new Color(.085f,.06f,.025f,.98f):new Color(.018f,.026f,.04f,.98f));Outline(r,over?new Color(1f,.84f,.55f):new Color(.73f,.61f,.39f),over?3:2);Outline(new Rect(r.x+7,r.y+7,r.width-14,r.height-14),new Color(.26f,.2f,.11f,.8f),1);Fill(new Rect(r.x+18,r.y+7,r.width-36,2),new Color(.9f,.78f,.53f,.5f));var n=new GUIStyle(titleStyle){fontSize=24,wordWrap=true,normal={textColor=new Color(.98f,.93f,.78f)}};GUI.Label(new Rect(r.x+16,r.y+18,r.width-32,58),name,n);var b=new GUIStyle(footerStyle){fontSize=17,wordWrap=true,normal={textColor=new Color(.94f,.91f,.84f)}};GUI.Label(new Rect(r.x+22,r.y+82,r.width-44,r.height-98),text,b);if(GUI.Button(r,"",GUIStyle.none)){Sfx(SoundCue.UiConfirm);action();}}
+        private void Choice(Rect r,string name,string text,System.Action action,int controllerIndex=-1,string unavailable=null){if(unavailable!=null)text=unavailable;var over=ScreenChoiceHot(r,controllerIndex)&&unavailable==null;if(over)Fill(new Rect(r.x-7,r.y-7,r.width+14,r.height+14),new Color(1f,.56f,.12f,.11f));Fill(r,over?new Color(.085f,.06f,.025f,.98f):new Color(.018f,.026f,.04f,.98f));Outline(r,over?new Color(1f,.84f,.55f):new Color(.73f,.61f,.39f),over?3:2);Outline(new Rect(r.x+7,r.y+7,r.width-14,r.height-14),new Color(.26f,.2f,.11f,.8f),1);Fill(new Rect(r.x+18,r.y+7,r.width-36,2),new Color(.9f,.78f,.53f,.5f));var n=new GUIStyle(titleStyle){fontSize=24,wordWrap=true,normal={textColor=new Color(.98f,.93f,.78f)}};GUI.Label(new Rect(r.x+16,r.y+18,r.width-32,58),name,n);var b=new GUIStyle(footerStyle){fontSize=17,wordWrap=true,normal={textColor=new Color(.94f,.91f,.84f)}};GUI.Label(new Rect(r.x+22,r.y+82,r.width-44,r.height-98),text,b);if(unavailable!=null)Fill(r,new Color(0,0,0,.5f));if(GUI.Button(r,"",GUIStyle.none)){if(unavailable!=null)Sfx(SoundCue.UiDenied);else{Sfx(SoundCue.UiConfirm);action();}}}
 
         private void Advance(){if(ShardDiscoveryOpen)return;if(run.pendingBonusCardRewards>0){run.pendingBonusCardRewards--;run.NextBonusCardReward();rewardRevealTime=profile.reduceMotion?0:1.15f;run.stage=RunStage.CardReward;SaveService.Save(run);screen=ScreenMode.Reward;return;}if(currentNode?.kind==NodeKind.Boss){run.RollEncounterRewards(NodeKind.Boss);run.encounterRewards.cardClaimed=true;if(!run.encounterRewards.bossRelicClaimed&&run.BossRelicOffers().Length>0){run.stage=RunStage.RelicReward;screen=ScreenMode.RelicReward;screenControllerIndex=0;SaveService.Save(run);return;}if(run.perfectedSelectionPending)return;EnterFateweave();return;}if(currentNode!=null)run.AdvanceFrom(currentNode);SaveService.Save(run);mapFocusFloor=-1;screen=run.floor>=run.ActFloorCount?ScreenMode.Menu:ScreenMode.Map;}
         private void HealthBar(Rect r,int hp,int max,string label){Fill(new Rect(r.x-3,r.y-3,r.width+6,r.height+6),new Color(0,0,0,.7f));Fill(r,new Color(.075f,.018f,.025f));var fill=new Rect(r.x+2,r.y+2,(r.width-4)*Mathf.Clamp01(hp/(float)max),r.height-4);Fill(fill,new Color(.68f,.08f,.105f));Fill(new Rect(fill.x,fill.y,fill.width,Mathf.Max(2,fill.height*.18f)),new Color(1f,.38f,.28f,.58f));Outline(r,new Color(.86f,.62f,.24f),2);var s=new GUIStyle(footerStyle){fontSize=Mathf.Clamp(Mathf.RoundToInt(r.height*.45f),12,15),fontStyle=FontStyle.Bold,normal={textColor=Color.white}};GUI.Label(r,$"{label}   {Mathf.Max(0,hp)}/{max}",s);}
         private static bool IsRunScreen(ScreenMode mode)=>mode is ScreenMode.Map or ScreenMode.Combat or ScreenMode.Reward or ScreenMode.Merchant or ScreenMode.Sanctuary or ScreenMode.Event or ScreenMode.EventSelection or ScreenMode.EventResult or ScreenMode.Treasure or ScreenMode.RelicReward or ScreenMode.CardUpgrade or ScreenMode.CardRemove or ScreenMode.BindingSelect or ScreenMode.BindingCard or ScreenMode.Fateweave or ScreenMode.FateweaveCard;
         private bool ShowsPersistentRunHud=>!string.IsNullOrEmpty(run.runId)&&!run.closed&&(IsRunScreen(screen)||screen==ScreenMode.Collection&&viewingRunDeck||screen==ScreenMode.Settings&&(IsRunScreen(settingsReturnScreen)||settingsReturnScreen==ScreenMode.Collection&&viewingRunDeck));
         private void Heading(float w,string title,string sub){var top=ShowsPersistentRunHud?68f:30f;titleStyle.fontSize=38;titleStyle.normal.textColor=new Color(.98f,.92f,.76f);ShadowLabel(new Rect(w*.16f,top,w*.68f,59),title,titleStyle);var lineW=Mathf.Min(440f,w*.38f);Fill(new Rect(w*.5f-lineW*.5f,top+61,lineW,1),new Color(.76f,.65f,.43f,.65f));Fill(new Rect(w*.5f-3,top+58,6,7),new Color(.97f,.88f,.64f,.85f));subtitleStyle.fontSize=17;subtitleStyle.normal.textColor=new Color(.91f,.87f,.77f);GUI.Label(new Rect(w*.16f,top+67,w*.68f,28),sub,subtitleStyle);}
-        private void BackButton(float w,float h){var r=new Rect(34,h-76,148,46);DrawButtonFrame(r,r.Contains(PointerPosition),false);if(GUI.Button(r,"BACK",buttonStyle)){Sfx(SoundCue.UiBack);if(screen==ScreenMode.Settings){ProfileService.Save(profile);screen=settingsReturnScreen;return;}if(screen==ScreenMode.Collection){ReturnFromCollection();return;}screen=ScreenMode.Menu;}}
+        private void BackButton(float w,float h){var r=new Rect(34,h-76,148,46);DrawButtonFrame(r,r.Contains(PointerPosition),false);if(GUI.Button(r,"BACK",buttonStyle)){Sfx(SoundCue.UiBack);if(screen==ScreenMode.Settings){ProfileService.Save(profile);screen=settingsReturnScreen;return;}if(screen==ScreenMode.Collection){ReturnFromCollection();return;}screen=screen==ScreenMode.Statistics?ScreenMode.Credits:ScreenMode.Menu;}}
         private void CopyRun(RunModel source)
         {
             if(source==null)return;run.CopyRunMeta(source);run.perfectedSelectionPending=source.perfectedSelectionPending;run.perfectedSelectionStep=source.perfectedSelectionStep;run.CopyRewardState(source);run.seed=source.seed;run.runId=source.runId;run.saveFormat=source.saveFormat;run.closed=source.closed;run.hasCombatCheckpoint=source.hasCombatCheckpoint;run.combatCheckpoint=source.combatCheckpoint;run.immortalThreadUsed=source.immortalThreadUsed;mapFocusFloor=-1;

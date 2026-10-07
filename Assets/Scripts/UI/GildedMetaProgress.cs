@@ -53,7 +53,8 @@ namespace GildedFate.UI
 
         // ---------- run start ----------
         private void PrepareNormalRunStart(HeroId hero){pendingFateDebt=Mathf.Clamp(selectedFateDebt[HeroIndex(hero)],0,profile.fateDebtUnlocked[HeroIndex(hero)]);pendingSeed=0;pendingDailyDate="";pendingDailyPractice=false;}
-        private void BeginDailyRun()
+        private void BeginDailyRun()=>GuardReplaceRun(BeginDailyRunNow);
+        private void BeginDailyRunNow()
         {
             var date=TodayDaily;var practice=DailyCompleted(date);
             pendingFateDebt=0;pendingSeed=DailySeed(date);pendingDailyDate=date;pendingDailyPractice=practice;
@@ -206,7 +207,7 @@ namespace GildedFate.UI
         private void DrawMetaOverlay()
         {
             if(profile==null)return;
-            var scale=Mathf.Max(.35f,Mathf.Min(Screen.width/1440f,Screen.height/810f));GUI.matrix=Matrix4x4.Scale(new Vector3(scale,scale,1));
+            var scale=UiScale;GUI.matrix=Matrix4x4.Scale(new Vector3(scale,scale,1));
             var w=Screen.width/scale;var h=Screen.height/scale;
             var b=Mathf.Clamp(profile.brightness,.7f,1.3f);
             if(b<.995f)Fill(new Rect(0,0,w,h),new Color(0,0,0,(1-b)*1.6f));

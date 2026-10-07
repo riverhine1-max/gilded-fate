@@ -115,7 +115,7 @@ namespace GildedFate.UI
         private float hintUntil;
         private Coroutine combatSequence;
         private static Color Gold=>new Color(1f,.84f,.47f);
-        private float CombatScale=>Mathf.Max(.35f,Mathf.Min(Screen.width/1440f,Screen.height/810f));
+        private float CombatScale=>UiScale;
         private float CombatWidth=>Screen.width/CombatScale;
         private float CombatHeight=>Screen.height/CombatScale;
         // Game Speed (Settings > Gameplay) scales every combat beat; rules are unchanged.

@@ -39,6 +39,15 @@ namespace GildedFate.Saving
                 {LastError="Could not access the saved run: "+error.Message;return false;}
             }
         }
+        // True when save files exist but none can be read, so CONTINUE is hidden and the player should be told why.
+        public static bool DamagedSaveExists
+        {
+            get
+            {
+                try{return !HasRun&&(File.Exists(PathName)||File.Exists(PathName+".bak"));}
+                catch(Exception error) when(error is IOException||error is UnauthorizedAccessException){return false;}
+            }
+        }
         // The Playground never touches the player's saved run.
         public static bool Suspended;
         public static bool Save(RunModel run)

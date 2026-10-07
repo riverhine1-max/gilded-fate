@@ -29,6 +29,7 @@ namespace GildedFate.UI
         // ---------- navigation for the new screens (called from HandleLegacyMenuNavigation) ----------
         private bool HandleMetaScreenNavigation(MenuNavigation input)
         {
+            if(HandleReplaceRunNavigation(input))return true;
             if(screen==ScreenMode.Menu&&(quitConfirmOpen||whatsNewOpen))
             {
                 if(!input.Any)return true;controllerNavigation=true;

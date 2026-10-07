@@ -33,6 +33,7 @@ Baseline before any change: native harness PASS 107,484 / FAIL 0, compile checks
 | F-5 | Med | A saved resolution is applied without validation (monitor swap, damaged profile). | Sweep |
 | F-6 | Med | A corrupt save makes CONTINUE vanish with no message. | Sweep |
 | F-7 | Low | Invisible controller slot in the shop when no shard is offered. | Sweep |
+| F-8 | Low | A double-click on an event choice also presses RETURN TO THE MAP on the result panel that opens under the cursor, skipping the result text. | Confirmed |
 | F-9 | Low | Statistics screen reachable only from Credits and its BACK skips Credits. | Sweep |
 | F-10 | Low | RunResult ignores B/Esc. | Sweep |
 | F-11 | Low | Sanctuary UPGRADE tile stays active when nothing can be upgraded. | Sweep |
@@ -111,3 +112,29 @@ All of R-1 to R-13 are fixed, with regression tests in the native harness (`b1.c
 | Dead branches for relic ids that do not exist (`thorn`, `immortal_thread`) removed. | Cleanup |
 
 **Measured effect (bot, same 369 encounters):** win rate moved by 1 to 5 points per act (for example Foundry formations 69.5 to 74.6, Black Cathedral formations 35.0 to 39.2). So the permanent-Vulnerable bug did *not* explain the Act 3 difficulty cliff; that is a separate balance question handled in Batch 5.
+
+
+---
+
+## Batch 2 fix log (menus, flow and input safety)
+
+All of F-1 to F-11 are addressed. New file: `UI/GildedPolishFlow.cs` (shared UI scale, input guard, replace-run confirmation, damaged-save notice, sanctuary helper).
+
+**Honest limit:** the native harness only compiles Combat, Core and Map, so none of this UI code was exercised by it. It is compile-checked in both configurations (with and without `DEVELOPMENT_BUILD`) and checked by reading, and the in-Unity verification suites were read for assumptions it could break (they set `screen` and the controller index directly, so the new guards are bypassed when `captureMode` is on). **It needs a play-through in Unity**, ideally with a mouse and a controller.
+
+| Finding | Fix |
+|---------|-----|
+| F-1 | NEW RUN (hero confirm) and DAILY RUN now ask **"Replace your saved run?"** when a run exists, showing hero, act, room, HP and gold. The safe button (KEEP MY RUN) is the default focus; Esc, Backspace and B keep the run (they arrive as the shared "back" input); mouse and controller both work, and nothing underneath reacts while it is open. |
+| F-2 | After every screen change a 0.2 s guard swallows pointer presses and controller A (0.35 s after the run-start hand-off). Combat, the main menu and the Playground are exempt. |
+| F-3 | The controller focus index and its screen are reset on every screen change, so the highlight and the action agree on the first A press. |
+| F-4 | In the shop, **B moves focus to LEAVE SHOP first**; a second B leaves (with the back sound). Esc still opens the pause menu. Unspent gold is no longer lost by one stray press. |
+| F-5 | A saved resolution the monitor cannot show falls back to the native resolution. |
+| F-6 | A save that cannot be read now shows a notice on the title screen ("your saved run could not be read, the files were kept") and the replace confirmation says so ("Replace the damaged save?"). |
+| F-7 | The invisible shop controller slot is skipped when no shard is offered. |
+| F-8 | The event result panel is its own screen, so the screen-change guard (F-2) now covers it: a double-click on a choice no longer presses RETURN TO THE MAP. |
+| F-9 | Statistics BACK returns to Credits (where it was opened from). |
+| F-10 | B / Esc on the run result screen returns to the main menu. |
+| F-11 | The Sanctuary UPGRADE tile dims and says "Every card in your deck is already upgraded." when nothing can be upgraded, and plays the denied sound on click or A. |
+
+Also: one shared `UiScale` formula (menus, combat and the meta overlay each had their own copy), and a dead duplicate Merchant controller branch was removed.
+

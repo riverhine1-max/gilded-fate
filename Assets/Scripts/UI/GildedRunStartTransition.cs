@@ -77,7 +77,7 @@ namespace GildedFate.UI
             runStartActive=false;
             run.NewRun(runStartHero,ConsumeRunSeed());ApplyRunStartMeta();run.BeginFateweave();
             profile.runsPlayed++;ProfileService.Save(profile);SaveService.Save(run);
-            mapFocusFloor=-1;screen=ScreenMode.Fateweave;previousScreen=screen;transitionAlpha=1;
+            mapFocusFloor=-1;screen=ScreenMode.Fateweave;previousScreen=screen;transitionAlpha=1;ArmScreenInputGuard(.35f);if(!captureMode){screenControllerIndex=0;controllerScreen=screen;}
             heldMenuAxis=Vector2Int.zero;menuAxisRepeatAt=Time.unscaledTime+.32f;
         }
         private void RunStartLight(Vector2 center,Vector2 size,Color color)
