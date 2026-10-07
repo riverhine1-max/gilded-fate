@@ -190,9 +190,9 @@ Large images, audio, video, fonts, and models use Git LFS. A source ZIP can cont
 | [Packages](Packages) / [ProjectSettings](ProjectSettings) | Shared package and Unity configuration |
 | [Docs](Docs) | Focused system and region documentation |
 | [ci](ci) / [.github/workflows](.github/workflows) | Cloud builds, trailer capture, and independent WebGL deployment |
-| [Archive](Archive/README.md) | Preserved uploads outside the live Unity project |
+| [Repository notes](Archive/README.md) | Upload inventory, duplicate audit, and historical delivery bundles |
 
-**Unity source belongs under `Assets/`.** Root-level upload copies are preserved under `Archive/RootUploads` for comparison. Differing copies are not merged automatically. The older `GildedFate_VFX_Polish` delivery bundle remains a historical source package, not the live Unity project; see the archive notes before using it.
+**Unity source belongs under `Assets/`.** Loose root uploads are comparison/delivery material and do not replace their live counterparts. They remain in place while the current upload is ongoing. Differing copies are not merged automatically. The older `GildedFate_VFX_Polish` delivery bundle remains a historical source package, not the live Unity project; see the archive notes before using it.
 
 ### Build locally or in the cloud
 
@@ -226,7 +226,7 @@ Suggested playtest: start each hero, play a multi-enemy encounter, exercise the 
 | [Act-shared enemies](Docs/NeutralEnemies.md) | Shared roster and theme-specific art |
 | [Steam setup](Docs/SteamSetup.md) | Steam integration requirements |
 | [Polish audit](Docs/PolishAudit.md) | Dated findings and follow-up records; consult current code before treating a finding as still open |
-| [Archive notes](Archive/README.md) | Preserved root uploads and historical delivery bundles |
+| [Archive notes](Archive/README.md) | Root upload inventory and historical delivery bundles |
 
 ## Credits and rights
 
