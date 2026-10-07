@@ -28,6 +28,7 @@ namespace GildedFate.Map
     public sealed class FateShardState
     {
         public string id="";public int uses,slot=-1;public bool active,activeFractured;
+        public bool primed; // Shrine of the Waiting Shard: starts every fight with 3 charge
         public bool Fractured=>uses>=2;
         public bool CanActivate=>!active&&uses<3;
         public int RemainingUses=>Math.Max(0,3-uses);
@@ -71,6 +72,12 @@ namespace GildedFate.Map
         public List<TemporaryEventEffect> temporaryEventEffects=new();
         public EventSelectionKind eventSelectionKind;
         public string pendingEventChoiceId="",pendingEventBindingId="",pendingEventResult="";
+        // Multi-step events: current scene, the scene after the outcome screen, banked loot and the odds-roll counter.
+        public string activeEventSceneId="",pendingEventNextScene="";public List<string> eventBank=new();public int eventStepCounter;
+        // Run memory for events: flags, scheduled return visits ("eventId|act|floor") and a fight an event started.
+        public List<string> eventFlags=new(),eventReturns=new();public string pendingEventFight="";
+        public int lastEventOmen; // outcome of the last odds roll: 0 none, 1 fortune, 2 misfortune (drives the reveal)
+        public bool HasEventFlag(string key)=>!string.IsNullOrEmpty(key)&&eventFlags!=null&&eventFlags.Contains(key);
         public int pendingEventChoicesNeeded;
         public string pendingFateweaveId="",pendingBindingId="";public int pendingChoicesNeeded;
         // Pull one, cut one: the strand severed for gold after the pulled boon resolves.
@@ -83,7 +90,7 @@ namespace GildedFate.Map
             BuildMap(rng);
             cards.Clear();deck.Clear();upgradedCards.Clear();nextCardSerial=0;var strike=selected==HeroId.Vanguard?"strike":selected==HeroId.Hexer?"hex_strike":"scythe_strike";var defend=selected==HeroId.Vanguard?"defend":selected==HeroId.Hexer?"ward":"deaths_veil";
             for(var i=0;i<4;i++){AddCard(strike);AddCard(defend);}AddCard(selected==HeroId.Vanguard?"battle_cry":selected==HeroId.Hexer?"invocation":"soul_call");AddCard(selected==HeroId.Vanguard?"stand_firm":selected==HeroId.Hexer?"first_ritual":"reaping_blow");
-            relics.Clear();relics.Add(selected==HeroId.Vanguard?"gilded_buckle":selected==HeroId.Hexer?"cracked_prism":"deaths_keepsake");shards.Clear();fateweaveSelections.Clear();temporaryMultiCombatStatuses.Clear();temporaryEventEffects.Clear();seenEventIds.Clear();pendingEventOfferIds.Clear();pendingEventSelectionIds.Clear();pendingEventShardDecisions.Clear();eventSelectionKind=EventSelectionKind.None;pendingEventChoiceId=pendingEventBindingId=pendingEventResult="";pendingEventChoicesNeeded=0;fateweaveOffers.Clear();bindingOffers.Clear();pendingCardOfferIds.Clear();pendingSelectedCardIds.Clear();pendingFateweaveId=pendingBindingId=fateweaveCutId="";pendingChoicesNeeded=0;consumables.Clear();merchantSold.Clear();act=1;floor=0;gold=75;pendingCombatGold=pendingBonusCardRewards=0;combatGoldClaimed=true;elapsedSeconds=0;beggarFavor=merchantRemoved=merchantHealed=false;stage=RunStage.Map;activeNodeFloor=activeNodeLane=-1;activeEnemyId=activeEventId="";
+            relics.Clear();relics.Add(selected==HeroId.Vanguard?"gilded_buckle":selected==HeroId.Hexer?"cracked_prism":"deaths_keepsake");shards.Clear();fateweaveSelections.Clear();temporaryMultiCombatStatuses.Clear();temporaryEventEffects.Clear();seenEventIds.Clear();eventFlags?.Clear();eventReturns?.Clear();pendingEventFight="";pendingEventOfferIds.Clear();pendingEventSelectionIds.Clear();pendingEventShardDecisions.Clear();eventSelectionKind=EventSelectionKind.None;pendingEventChoiceId=pendingEventBindingId=pendingEventResult="";pendingEventChoicesNeeded=0;fateweaveOffers.Clear();bindingOffers.Clear();pendingCardOfferIds.Clear();pendingSelectedCardIds.Clear();pendingFateweaveId=pendingBindingId=fateweaveCutId="";pendingChoicesNeeded=0;consumables.Clear();merchantSold.Clear();act=1;floor=0;gold=75;pendingCombatGold=pendingBonusCardRewards=0;combatGoldClaimed=true;elapsedSeconds=0;beggarFavor=merchantRemoved=merchantHealed=false;stage=RunStage.Map;activeNodeFloor=activeNodeLane=-1;activeEnemyId=activeEventId="";
             ResetRunMeta();
         }
         public RunCard AddCard(string cardId,bool upgraded=false)
@@ -282,7 +289,8 @@ namespace GildedFate.Map
         {
             ClearCombatCheckpoint();
             pendingCombatGold=0;combatGoldClaimed=true;node.complete=true;floor=node.floor+1;stage=RunStage.Map;activeNodeFloor=activeNodeLane=-1;activeEnemyId=activeEventId="";merchantSold.Clear();merchantRemoved=merchantHealed=false;if(floor>=ActFloorCount)return;
-            foreach(var candidate in nodes)if(candidate.floor==floor)candidate.available=(node.nextMask&(1<<candidate.lane))!=0;
+            var bridge=HasEventFlag("bridge");if(bridge)eventFlags.Remove("bridge"); // Bridge of Threads: any lane on the next floor
+            foreach(var candidate in nodes)if(candidate.floor==floor)candidate.available=bridge||(node.nextMask&(1<<candidate.lane))!=0;
         }
 
         public bool HasValidMap()

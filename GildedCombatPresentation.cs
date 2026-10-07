@@ -543,7 +543,7 @@ namespace GildedFate.UI
                 if(CombatHitTiming.IsRelicWrapper(fact))continue; // Its dedicated relic receipt owns the single pulse/cue.
                 if(fact.kind==CombatEventKind.Status&&fact.label=="RETALIATE"&&fact.amount<0)continue; // Consumption is shown by the returning stack, not a debuff burst.
                 if(fact.kind==CombatEventKind.RelicTrigger){relicPulseBeats.Add((fact.label,now+hitTime));Sfx(SoundCue.RewardRelic,intensity:.32f,combatSound:true,delay:hitTime);finish=Mathf.Max(finish,hitTime+.26f);continue;}
-                if(fact.kind==CombatEventKind.ShardTrigger){run.EnsureShardSlots();var slot=run.shards.FirstOrDefault(s=>s.active&&s.id==fact.label)?.slot??0;var from=ShardHealthOrigin;var to=!fact.playerSide?(GroupCombat?GroupPortrait(fact.enemyIndex).center:EnemyPortraitRect.center):fact.card!=null&&handViews.TryGetValue(fact.card.instanceId,out var targetCard)?targetCard.position:HeroPortraitRect.center;shardFlights.Add(new ShardFlight{from=from,to=to,start=now+hitTime});finish=Mathf.Max(finish,hitTime+.48f);continue;}
+                if(fact.kind==CombatEventKind.ShardTrigger){run.EnsureShardSlots();var slot=run.shards.FirstOrDefault(s=>s.active&&s.id==fact.label)?.slot??0;var from=ShardHealthOrigin;var to=!fact.playerSide?(GroupCombat?GroupPortrait(fact.enemyIndex).center:EnemyPortraitRect.center):fact.card!=null&&handViews.TryGetValue(fact.card.instanceId,out var targetCard)?targetCard.position:HeroPortraitRect.center;shardFlights.Add(new ShardFlight{from=from,to=to,start=now+hitTime});QueueShardComet(ReliquaryLayout?ShrineSocket(slot).center:from,to,now+hitTime,.3f,ActiveShardColor,13);finish=Mathf.Max(finish,hitTime+.48f);continue;}
                 if(fact.kind==CombatEventKind.EnemyAction){opponentActions.Add((fact.enemyIndex,now+hitTime));continue;}
                 if(fact.kind==CombatEventKind.Hook){ScheduleWildHook(fact,now+hitTime);continue;}
                 if(fact.card!=null&&(fact.generatedCard||fact.kind==CombatEventKind.Draw))
@@ -658,7 +658,7 @@ namespace GildedFate.UI
             var matrix=GUI.matrix;
             if(profile.screenShake&&!profile.reduceMotion&&impactShake>0)GUI.matrix=matrix*Matrix4x4.Translate(new Vector3(Mathf.Sin(shimmer*61)*impactShake*3,Mathf.Cos(shimmer*47)*impactShake*2,0));
             ApplyBigHitPunch();
-            DrawCombatActors(w,h);GUI.matrix=matrix;
+            DrawShardBattlefieldFx(w,h);DrawCombatActors(w,h);GUI.matrix=matrix;
             combatEffectTooltipTitle=combatEffectTooltipDetail=null;DrawCombatStats(w,h);
             DrawTargetGuide();
             Fill(new Rect(0,h-138,w,138),new Color(.005f,.009f,.017f,.18f));
@@ -1183,7 +1183,8 @@ namespace GildedFate.UI
             while(combatPauseOpen)yield return null;
             if(inventoryIndex>=run.shards.Count||run.shards[inventoryIndex]!=saved){combatBusy=false;combatSequence=null;yield break;}
             var fractured=shatter||saved.Fractured;if(!(shatter?combat.ShatterShard(shard):combat.ActivateShard(shard,fractured))){combatBusy=false;combatSequence=null;yield break;}saved.active=true;saved.activeFractured=fractured;saved.uses=shatter?3:saved.uses+1;if(shatter)ShatterBurst(saved.slot,shard);
-            SaveCombatCheckpoint();
+            SaveCombatCheckpoint();StartShardCinematic(shard,saved.slot,shatter,fractured);
+            yield return new WaitForSecondsRealtime(AnimationSeconds(shatter?.85f:.55f)); // let the cinematic land before the payoff
             var settle=ConsumeCombatEvents(combat.TakeEvents());
             playerVfxIndex=VfxFor(EffectKind.Power);playerVfxTime=.48f;
             UpdateBossPhaseVisual();yield return new WaitForSecondsRealtime(Mathf.Max(settle,.25f));if(combat.pendingPlay!=null)yield return ResolvePendingCardChoices(combat.pendingPlay.card);yield return FinishCombatIfNeeded();combatBusy=false;combatSequence=null;

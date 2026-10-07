@@ -31,7 +31,7 @@ namespace GildedFate.UI
             if(combat==null||run.shards.Any(s=>s.active))return;
             var usable=AttuneChoices;
             if(usable.Count==0)return;
-            if(usable.Count==1){combat.AttuneShards(usable[0].id,"",false);return;}
+            if(usable.Count==1){combat.AttuneShards(usable[0].id,"",false);ApplyPrimedCharge();return;}
             combat.shardAttunePending=true;
             shardAttuneIndex=Mathf.Max(0,usable.FindIndex(s=>s.id==run.lastAttunedShardId));
             shardAttuneOpenedAt=Time.unscaledTime;
@@ -42,11 +42,11 @@ namespace GildedFate.UI
             if(usable.Count==0){combat.shardAttunePending=false;return;}
             if(index>=usable.Count)
             {
-                combat.AttuneShards(usable[0].id,usable.Count>1?usable[1].id:"",true);run.lastAttunedShardId="";
+                combat.AttuneShards(usable[0].id,usable.Count>1?usable[1].id:"",true);run.lastAttunedShardId="";ApplyPrimedCharge();
             }
             else
             {
-                var chosen=usable[Mathf.Clamp(index,0,usable.Count-1)];combat.AttuneShards(chosen.id,"",false);run.lastAttunedShardId=chosen.id;
+                var chosen=usable[Mathf.Clamp(index,0,usable.Count-1)];combat.AttuneShards(chosen.id,"",false);run.lastAttunedShardId=chosen.id;ApplyPrimedCharge();
                 var from=new Vector2(CombatWidth*.5f,CombatHeight*.45f);
                 shardFlights.Add(new ShardFlight{from=from,to=ShrineSocket(chosen.slot).center,start=Time.unscaledTime});
             }
@@ -85,10 +85,16 @@ namespace GildedFate.UI
                 {
                     var owned=usable[i];var def=WorldContent.FateShards.First(s=>s.id==owned.id);var nextFractured=owned.uses>=2;
                     var art=new Rect(r.center.x-62,r.y+18,124,124);var lift=profile.reduceMotion?0:Mathf.Sin(shimmer*1.3f+i)*4;
-                    if(hot&&!profile.reduceFlashing)Fill(new Rect(art.x-8,art.y-8+lift,art.width+16,art.height+16),new Color(1f,.84f,.47f,.1f));
-                    DrawFateShardArt(new Rect(art.x,art.y+lift,art.width,art.height),def);
+                    // The shard rises out of its reliquary socket to its card.
+                    var rise=ShardEase(Mathf.Clamp01((Time.unscaledTime-shardAttuneOpenedAt)/(profile.reduceMotion?.01f:.55f)));
+                    var from=ReliquarySocketCenter(owned.slot);var at=Vector2.Lerp(from,art.center,rise);var size=Mathf.Lerp(ReliquarySocketSize,art.width,rise);
+                    if(rise<1&&!profile.reducedVfx){var color=ShardColor(def);for(var trail=1;trail<=6;trail++){var p=Vector2.Lerp(from,at,1-trail*.12f);ShardSoft(p,40-trail*4,new Color(color.r,color.g,color.b,.3f*(1-trail/7f)));}}
+                    art=new Rect(at.x-size*.5f,at.y-size*.5f,size,size);
+                    if(hot&&!profile.reduceFlashing&&rise>=1)Fill(new Rect(art.x-8,art.y-8+lift,art.width+16,art.height+16),new Color(1f,.84f,.47f,.1f));
+                    ShardSoft(art.center,art.width*2f,new Color(1f,.82f,.45f,.14f+(1-rise)*.25f));
+                    DrawFateShardArt(new Rect(art.x,art.y+lift*rise,art.width,art.height),def);
                     GUI.Label(new Rect(r.x+8,r.y+146,r.width-16,30),def.name,new GUIStyle(titleStyle){fontSize=21,normal={textColor=nextFractured?new Color(1f,.7f,.38f):new Color(.76f,.9f,1f)}});
-                    GUI.Label(new Rect(r.x+8,r.y+176,r.width-16,22),owned.RemainingUses+" / 3 USES LEFT"+(nextFractured?" · FRACTURED NEXT":""),ReadableStyle(12,true));
+                    GUI.Label(new Rect(r.x+8,r.y+176,r.width-16,22),owned.RemainingUses+" / 3 USES LEFT"+(nextFractured?" · FRACTURED NEXT":"")+(owned.primed?" · PRIMED":""),ReadableStyle(12,true));
                     var body=new GUIStyle(footerStyle){fontSize=15,wordWrap=true,alignment=TextAnchor.UpperCenter,normal={textColor=new Color(.94f,.92f,.86f)}};
                     GUI.Label(new Rect(r.x+16,r.y+204,r.width-32,r.height-250),nextFractured?def.fracturedText:def.stableText,body);
                     body.normal.textColor=Gold;body.fontSize=13;
@@ -99,6 +105,8 @@ namespace GildedFate.UI
             DrawMenuNavigationHint(w,h,"Arrows  Select    Enter  Attune","D-pad / Stick  Select    A  Attune");
         }
 
+        // Socket centre in the combat reliquary, independent of which screen is drawing.
+        private Vector2 ReliquarySocketCenter(int slot){var bottom=CombatHeight-268;return new Vector2(56+ReliquarySocketSize*.5f,bottom-(1-Mathf.Clamp(slot,0,1))*158+ReliquarySocketSize*.5f);}
         // ---------------- Reliquary frame, rings, pips ----------------
         private void DrawReliquaryFrame(Rect first,Rect last,Color gold)
         {
@@ -119,15 +127,15 @@ namespace GildedFate.UI
             if(combat.shardCharge>lastSeenShardCharge)
             {
                 lastShardChargeGainAt=Time.unscaledTime;
-                if(!profile.reducedVfx)foreach(var s in run.shards.Where(s=>s.CanActivate&&combat.ShardAttunedTo(s.id)))
-                    shardFlights.Add(new ShardFlight{from=new Vector2(CombatWidth*.5f,CombatHeight-150),to=ShrineSocket(s.slot).center,start=Time.unscaledTime});
-                if(combat.ShardChargeFull)Sfx(SoundCue.Resonance,-.6f,.7f);
+                OnShardChargeGained(combat.shardCharge-lastSeenShardCharge,combat.ShardChargeFull);
+                if(combat.ShardChargeFull){Sfx(SoundCue.Resonance,-.6f,.9f);Sfx(SoundCue.RewardShard,-.6f,.7f,false,.08f);}
             }
             lastSeenShardCharge=combat.shardCharge;
         }
         private void DrawShardChargeRing(Rect r,FateShardState owned,bool active,bool dim)
         {
             if(combat==null||owned==null)return;
+            DrawShardSocketFx(r,owned,active,ShardReady(owned,active));
             var c=r.center;var radius=r.width*.62f;var segments=56;
             var charging=string.IsNullOrEmpty(combat.activeShardId)&&combat.ShardAttunedTo(owned.id)&&owned.CanActivate;
             var progress=active?1f:charging?combat.ShardChargeProgress:0f;
@@ -191,7 +199,7 @@ namespace GildedFate.UI
         private string ShardChargeTooltip(FateShardState owned,FateShardDef def)
         {
             if(combat==null||owned==null||def==null)return "";
-            var line="\n"+ShardChargeHint(def).ToUpperInvariant();
+            var line="\n"+ShardChargeHint(def).ToUpperInvariant()+(owned.primed?"\nPRIMED · STARTS WITH 3 CHARGE":"");
             if(!string.IsNullOrEmpty(combat.activeShardId)||!owned.CanActivate)return line;
             if(!combat.ShardAttunedTo(owned.id))return line+"\nNOT ATTUNED THIS BATTLE";
             return line+"\nCHARGE "+combat.shardCharge+" / "+combat.ShardChargeTarget;
@@ -218,10 +226,25 @@ namespace GildedFate.UI
                 Fill(new Rect(shatter.x+3,shatter.y+3,(shatter.width-6)*p,shatter.height-6),new Color(1f,.45f,.15f,.35f));
                 if(p>=1){shatterHoldStart=-1;shatterHoldSlot=-1;selectedShrineSlot=-1;QueueShard(def,owned,run.shards.IndexOf(owned),true);}
             }
-            else if(shatterHoldSlot==owned.slot){shatterHoldStart=-1;shatterHoldSlot=-1;}
+            else if(shatterHoldSlot==owned.slot&&!controllerShatterActive){shatterHoldStart=-1;shatterHoldSlot=-1;}
             var style=new GUIStyle(buttonStyle){fontSize=13,normal={textColor=ready?new Color(1f,.66f,.36f):new Color(.5f,.45f,.4f)}};
             GUI.Label(shatter,"HOLD TO SHATTER",style);
             if(hot)SetRunHudTooltip(shatter,"SHATTER "+def.name,"Hold to take the FRACTURED power now. The shard is destroyed, however many uses it has left.\n\n"+def.fracturedText);
+        }
+        // Controller / keyboard shatter: hold Y (or H) while a shard is focused in the combat HUD.
+        private bool controllerShatterActive;
+        private void UpdateControllerShatter(int shardIndex)
+        {
+            var pad=UnityEngine.InputSystem.Gamepad.current;var key=UnityEngine.InputSystem.Keyboard.current;
+            var held=pad?.buttonNorth.isPressed==true||key?.hKey.isPressed==true;
+            if(shardIndex<0||shardIndex>=run.shards.Count||!held||combat==null)
+            {if(controllerShatterActive){shatterHoldStart=-1;shatterHoldSlot=-1;controllerShatterActive=false;}return;}
+            var owned=run.shards[shardIndex];var def=WorldContent.FateShards.FirstOrDefault(s=>s.id==owned.id);
+            if(def==null||owned.uses>=2||!ShardReady(owned,false)||combatBusy||combatPauseOpen)return;
+            controllerShatterActive=true;
+            if(shatterHoldSlot!=owned.slot||shatterHoldStart<0){shatterHoldSlot=owned.slot;shatterHoldStart=Time.unscaledTime;}
+            if(Time.unscaledTime-shatterHoldStart>=ShatterHoldSeconds)
+            {shatterHoldStart=-1;shatterHoldSlot=-1;controllerShatterActive=false;combatHudInspectActive=false;QueueShard(def,owned,shardIndex,true);}
         }
         private void ShatterBurst(int slot,FateShardDef shard)
         {
@@ -229,6 +252,13 @@ namespace GildedFate.UI
             shardFlights.Add(new ShardFlight{from=ShrineSocket(Mathf.Clamp(slot,0,1)).center,start=Time.unscaledTime,shatter=true,shard=shard});
         }
 
+        // Shrine of the Waiting Shard: a primed, attuned shard starts the fight with 3 charge.
+        private const int PrimedShardCharge=3;
+        private void ApplyPrimedCharge()
+        {
+            if(combat==null||!run.shards.Any(s=>s.primed&&s.CanActivate&&combat.ShardAttunedTo(s.id)))return;
+            combat.shardCharge=Mathf.Max(combat.shardCharge,Mathf.Min(combat.ShardChargeTarget,PrimedShardCharge));
+        }
         // Verification helper: fills the meter so scripted activations run without playing cards.
         private void FillShardChargeForVerification()
         {
