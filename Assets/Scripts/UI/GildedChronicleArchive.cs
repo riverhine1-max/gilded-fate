@@ -401,12 +401,20 @@ namespace GildedFate.UI
             return c.TotalUnlocked + " / " + ChronicleCatalog.MemoryCount + " MEMORIES" + (fresh > 0 ? "  ·  " + fresh + " NEW" : c.secretUnlocked && !c.secretCompleted ? "  ·  A FINAL CHAPTER" : "");
         }
 
+        // Drawn with plain fills only: the hub draws its art inside a clipped group, where rotated lines would land in the wrong place.
         private void HubArtChronicle(Rect r)
         {
-            var c = r.center + new Vector2(0, r.height * .06f); var gold = new Color(1f, .8f, .4f, .9f); var size = Mathf.Min(r.width, r.height) * .42f;
-            ShardSoft(c, size * 3.2f, new Color(.3f, .9f, .6f, .16f));
-            for (var i = 0; i < 4; i++) { var a = i * Mathf.PI / 4f + Mathf.PI / 8f; var d = new Vector2(Mathf.Cos(a), Mathf.Sin(a)) * size; DrawLine(c - d, c + d, gold, 2.4f); }
-            EventGem(c, size * .5f, new Color(.4f, .95f, .7f), false); EventGem(c, size * .22f, new Color(.4f, .95f, .7f), true);
+            var c = new Vector2(r.center.x, r.center.y + r.height * .04f); var arm = Mathf.Min(r.width, r.height) * .36f;
+            var gold = new Color(1f, .8f, .4f, .95f); var emerald = new Color(.4f, .95f, .7f);
+            ShardSoft(c, arm * 5.2f, new Color(.3f, .9f, .6f, .16f));
+            // Four interwoven strands: across, down and the two diagonals, as stepped dots.
+            for (var i = -(int)arm; i <= (int)arm; i += 2)
+            {
+                Fill(new Rect(c.x + i - 1, c.y - 1, 2, 2), gold); Fill(new Rect(c.x - 1, c.y + i - 1, 2, 2), gold);
+                Fill(new Rect(c.x + i * .72f - 1, c.y + i * .72f - 1, 2, 2), gold); Fill(new Rect(c.x + i * .72f - 1, c.y - i * .72f - 1, 2, 2), gold);
+            }
+            HubDiamond(c, arm * .9f);
+            Fill(new Rect(c.x - 4, c.y - 4, 8, 8), emerald);
         }
     }
 }

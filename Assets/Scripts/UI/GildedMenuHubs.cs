@@ -53,7 +53,7 @@ namespace GildedFate.UI
                 new HubPanel{kicker="CARDS & RELICS",title="COLLECTION",action="COLLECTION",accent=gold,text="Every card and relic in the Vault, with locks showing what Fate Marks still open.",footer=$"{GameContent.Cards.Length} CARDS · {GameContent.Relics.Length} RELICS",art=r=>HubArtTexture(r,collectionBackground)},
                 new HubPanel{kicker="THE THREE",title="CHARACTERS",action="CHARACTERS",accent=new Color(.86f,.55f,1f),text="The Vanguard, the Hexer and the Reaper: their stories, decks and engines.",footer="3 HEROES",art=HubArtHeroes},
                 new HubPanel{kicker="YOUR LEGEND",title="RECORDS",action="RECORDS",accent=new Color(.55f,1f,.78f),text="Achievements, run history, lifetime statistics and unlock progress.",footer=$"{ach} / {AchievementCatalog.All.Length} ACHIEVEMENTS · {runs} RUNS",art=r=>HubArtEmblems(r,"AchievementsEmblem","RunHistoryEmblem")},
-                new HubPanel{kicker="THE HIDDEN HISTORY",title="THE CHRONICLE",action="THE CHRONICLE",accent=new Color(.4f,.95f,.7f),text="An ancient book that remembers what the world forgot. Read every memory you have recovered, and watch it again.",footer=ChronicleHubFooter(),art=HubArtChronicle},
+                new HubPanel{kicker="THE HIDDEN HISTORY",title="CHRONICLE",action="THE CHRONICLE",accent=new Color(.4f,.95f,.7f),text="A book that remembers what the world forgot. Read the memories you have recovered.",footer=ChronicleHubFooter(),art=HubArtChronicle},
                 new HubPanel{kicker="THE MAKERS",title="CREDITS",action="CREDITS",accent=new Color(.8f,.78f,.72f),text="The people and the music behind Gilded Fate.",footer="MUSIC · SCOTT BUCKLEY",art=HubArtLogo},
             };
         }
@@ -166,7 +166,9 @@ namespace GildedFate.UI
             // Copy.
             var y=art.yMax-18;
             GUI.Label(new Rect(r.x+16,y,r.width-32,18),p.kicker,new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=12,fontStyle=FontStyle.Bold,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(a.r,a.g,a.b,.95f)}});y+=20;
-            GUI.Label(new Rect(r.x+12,y,r.width-24,46),p.title,new GUIStyle(titleStyle){font=headingFont?headingFont:titleStyle.font,fontSize=r.width<320?30:36,alignment=TextAnchor.MiddleCenter,normal={textColor=Color.Lerp(new Color(.95f,.9f,.78f),new Color(1f,.95f,.82f),e)}});y+=50;
+            var hubTitleStyle=new GUIStyle(titleStyle){font=headingFont?headingFont:titleStyle.font,fontSize=r.width<320?30:36,alignment=TextAnchor.MiddleCenter,wordWrap=false,normal={textColor=Color.Lerp(new Color(.95f,.9f,.78f),new Color(1f,.95f,.82f),e)}};
+            while(hubTitleStyle.fontSize>18&&hubTitleStyle.CalcSize(new GUIContent(p.title)).x>r.width-24)hubTitleStyle.fontSize--; // a long title gets smaller, never clipped
+            GUI.Label(new Rect(r.x+12,y,r.width-24,46),p.title,hubTitleStyle);y+=50;
             var line=Mathf.Min(150,r.width*.42f);Fill(new Rect(r.center.x-line*.5f,y,line,1),new Color(.8f,.65f,.38f,.65f));Fill(new Rect(r.center.x-3,y-3,6,6),new Color(.97f,.85f,.55f,.9f));y+=12;
             GUI.Label(new Rect(r.x+24,y,r.width-48,r.yMax-y-64),p.text,new GUIStyle(footerStyle){fontSize=15,wordWrap=true,alignment=TextAnchor.UpperCenter,normal={textColor=new Color(.84f,.82f,.76f)}});
             // Footer status plate and the pull prompt.
