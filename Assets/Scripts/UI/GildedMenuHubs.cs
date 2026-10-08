@@ -53,6 +53,7 @@ namespace GildedFate.UI
                 new HubPanel{kicker="CARDS & RELICS",title="COLLECTION",action="COLLECTION",accent=gold,text="Every card and relic in the Vault, with locks showing what Fate Marks still open.",footer=$"{GameContent.Cards.Length} CARDS · {GameContent.Relics.Length} RELICS",art=r=>HubArtTexture(r,collectionBackground)},
                 new HubPanel{kicker="THE THREE",title="CHARACTERS",action="CHARACTERS",accent=new Color(.86f,.55f,1f),text="The Vanguard, the Hexer and the Reaper: their stories, decks and engines.",footer="3 HEROES",art=HubArtHeroes},
                 new HubPanel{kicker="YOUR LEGEND",title="RECORDS",action="RECORDS",accent=new Color(.55f,1f,.78f),text="Achievements, run history, lifetime statistics and unlock progress.",footer=$"{ach} / {AchievementCatalog.All.Length} ACHIEVEMENTS · {runs} RUNS",art=r=>HubArtEmblems(r,"AchievementsEmblem","RunHistoryEmblem")},
+                new HubPanel{kicker="THE HIDDEN HISTORY",title="THE CHRONICLE",action="THE CHRONICLE",accent=new Color(.4f,.95f,.7f),text="An ancient book that remembers what the world forgot. Read every memory you have recovered, and watch it again.",footer=ChronicleHubFooter(),art=HubArtChronicle},
                 new HubPanel{kicker="THE MAKERS",title="CREDITS",action="CREDITS",accent=new Color(.8f,.78f,.72f),text="The people and the music behind Gilded Fate.",footer="MUSIC · SCOTT BUCKLEY",art=HubArtLogo},
             };
         }

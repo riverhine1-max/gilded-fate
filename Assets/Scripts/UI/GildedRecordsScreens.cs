@@ -46,6 +46,7 @@ namespace GildedFate.UI
                 else if(input.y!=0)recordsScroll=Mathf.Max(0,recordsScroll+input.y*60);
                 return true;
             }
+            if(screen==ScreenMode.Chronicle)return HandleChronicleArchiveNavigation(input);
             if(screen==ScreenMode.Daily)
             {
                 if(!input.Any)return true;controllerNavigation=true;

@@ -27,6 +27,7 @@ namespace GildedFate.UI
         private bool chronicleActive;
         private float chronicleElapsed, chronicleEndedAt, chronicleCloseHold;
         private Action chronicleOnEnd;
+        private bool chronicleKeepOpen;   // archive replays leave the book open and hand control straight back
         private readonly Dictionary<ChronicleTextBlock, KeyValuePair<int, string>> chronicleRichCache = new();
         private readonly Dictionary<int, GUIStyle> chronicleStyles = new(), chronicleMeasureStyles = new();
 
@@ -34,26 +35,26 @@ namespace GildedFate.UI
 
         /// <summary>Plays a Chronicle scene on the 3D book as a full-screen overlay. preview = true saves nothing.
         /// Returns false if the book cannot be shown (a missing shader, say); the game then carries on without it.</summary>
-        public bool PlayChronicleScene(string sceneId, bool preview = false, Action onEnd = null)
+        public bool PlayChronicleScene(string sceneId, bool preview = false, Action onEnd = null, bool keepBookOpen = false)
         {
             if (chronicleActive || profile == null) return false;
             var scene = ChronicleScripts.Get(sceneId);
             if (scene == null) { Debug.LogWarning("[Chronicle] No scene '" + sceneId + "'."); return false; }
             chronicleHost = chronicleHost ?? ChronicleBookStageHost.Create(1600, 900);
-            if (chronicleHost == null) { onEnd?.Invoke(); return false; }
+            if (chronicleHost == null) return false;   // the caller carries on without the Chronicle
             if (chronicleDirector == null) { chronicleDirector = new ChronicleDirector(); chronicleDirector.SceneEnded += OnChronicleSceneEnded; }
 
             var progress = profile.chronicle; progress.Ensure();
             var settings = progress.ToSettings(profile.reduceMotion, profile.reduceFlashing);
-            chronicleHost.Rig.SetPoseImmediate(ChronicleBookPose.Closed, 0);
+            if (!keepBookOpen) chronicleHost.Rig.SetPoseImmediate(ChronicleBookPose.Closed, 0);
             if (chronicleHost.Rig is ChronicleProceduralBook procedural) procedural.Logic.reduceMotion = profile.reduceMotion;
             var stage = new ChronicleRigStage(chronicleHost.Rig) { audio = ChronicleAudio, stopAudio = () => { }, onBookAction = ChronicleBookSound };
             var replay = sceneId == ChronicleCatalog.OpeningSceneId || sceneId == ChronicleCatalog.OpeningShortSceneId ? progress.openingViews > 0 : progress.IsViewed(sceneId);
             chronicleSink = preview ? null : new ChronicleProgressSink(progress, false);
-            if (!chronicleDirector.TryPlay(scene, stage, new ChronicleProgressContext(progress), chronicleSink, settings, ChronicleBookPose.Closed, replay)) return false;
+            if (!chronicleDirector.TryPlay(scene, stage, new ChronicleProgressContext(progress), chronicleSink, settings, keepBookOpen ? ChronicleBookPose.Open : ChronicleBookPose.Closed, replay)) return false;
 
             chronicleHost.SetActive(true);
-            chronicleActive = true; chronicleStage = ChronicleStage.Playing; chronicleElapsed = 0f; chronicleOnEnd = onEnd;
+            chronicleActive = true; chronicleStage = ChronicleStage.Playing; chronicleElapsed = 0f; chronicleOnEnd = onEnd; chronicleKeepOpen = keepBookOpen;
             return true;
         }
 
@@ -66,8 +67,16 @@ namespace GildedFate.UI
             else chronicleStage = ChronicleStage.WaitingToClose;
         }
 
+        // Failsafe: the overlay blocks all menu input while it is active, so any unexpected error must hand control back rather than strand the player.
         private void AdvanceChronicle(float delta)
         {
+            try { AdvanceChronicleCore(delta); if (chronicleActive && chronicleElapsed > 900f) EndChronicle(); }
+            catch (Exception error) { Debug.LogError("[Chronicle] Playback failed, returning to the game: " + error); try { chronicleDirector?.Abort(); } catch { } EndChronicle(); }
+        }
+
+        private void AdvanceChronicleCore(float delta)
+        {
+            if (!UnityEngine.Rendering.SplashScreen.isFinished) return;   // hold on black until Unity's own splash is done, like the boot cinematic
             delta = Mathf.Clamp(delta, 0f, .1f); chronicleElapsed += delta; shimmer += delta;
             UpdateAudioPresentation();
             if (chronicleHost == null) { EndChronicle(); return; }
@@ -80,7 +89,8 @@ namespace GildedFate.UI
                     if (pressed) chronicleDirector.RequestSkip();   // ignored during the first fraction of a second, so the press that opened the scene cannot cancel it
                     break;
                 case ChronicleStage.WaitingToClose:
-                    if (pressed && Time.unscaledTime - chronicleEndedAt > .4f)
+                    if (pressed && Time.unscaledTime - chronicleEndedAt > .4f && chronicleKeepOpen) EndChronicle();
+                    else if (pressed && Time.unscaledTime - chronicleEndedAt > .4f)
                     {
                         chronicleHost.Rig.Perform(ChronicleBookAction.Close, ChronicleNarratorState.ConfidentHistorian); ChronicleBookSound(ChronicleBookAction.Close);
                         chronicleStage = ChronicleStage.Closing; chronicleEndedAt = Time.unscaledTime; chronicleCloseHold = chronicleHost.Rig.DurationOf(ChronicleBookAction.Close) + .35f;
@@ -95,7 +105,7 @@ namespace GildedFate.UI
         private void EndChronicle()
         {
             chronicleActive = false; chronicleRichCache.Clear();
-            chronicleHost?.SetActive(false);
+            if (!chronicleKeepOpen) chronicleHost?.SetActive(false);
             // The same hand-back the boot cinematic does: the press that skipped must not also activate a menu item.
             heldMenuAxis = Vector2Int.zero; menuAxisRepeatAt = Time.unscaledTime + .25f; ArmScreenInputGuard();
             var callback = chronicleOnEnd; chronicleOnEnd = null; callback?.Invoke();
@@ -111,6 +121,26 @@ namespace GildedFate.UI
                 foreach (var b in new[] { pad.buttonSouth, pad.buttonEast, pad.buttonWest, pad.buttonNorth, pad.startButton, pad.selectButton, pad.leftShoulder, pad.rightShoulder })
                     if (b != null && b.wasPressedThisFrame) return true;
             return false;
+        }
+
+        // ---------------- launch ----------------
+        // The Chronicle's opening plays before everything else at a fresh launch, then hands over to the existing boot cinematic.
+        private void BeginLaunchSequence()
+        {
+            if (!TryBeginLaunchChronicle(TryBeginLaunchBootIntro)) TryBeginLaunchBootIntro();
+        }
+
+        private bool TryBeginLaunchChronicle(Action then)
+        {
+            if (captureMode || profile == null) return false;
+            var args = Environment.GetCommandLineArgs();
+            if (Array.IndexOf(args, "-gfTrailer") >= 0 || Array.IndexOf(args, "-gfSkipChronicle") >= 0) return false;
+#if UNITY_EDITOR
+            if (UnityEditor.EditorPrefs.GetBool("GildedFate.SkipChronicleOpening", false)) return false;   // developer bypass: Gilded Fate > Chronicle > Skip Opening In Editor
+#endif
+            var which = profile.chronicle.OpeningToPlay;   // 0 never, 1 full, 2 short
+            if (which == 0) return false;
+            return PlayChronicleScene(which == 2 ? ChronicleCatalog.OpeningShortSceneId : ChronicleCatalog.OpeningSceneId, false, then);
         }
 
         // ---------------- sound (placeholder mapping onto the game's existing cues; missing cues stay silent) ----------------
@@ -136,6 +166,12 @@ namespace GildedFate.UI
         private bool DrawChronicle(float w, float h)
         {
             if (!chronicleActive || chronicleHost == null) return false;
+            try { return DrawChronicleCore(w, h); }
+            catch (Exception error) { Debug.LogError("[Chronicle] Drawing failed, returning to the game: " + error); EndChronicle(); return false; }
+        }
+
+        private bool DrawChronicleCore(float w, float h)
+        {
             Fill(new Rect(0, 0, w, h), new Color(.02f, .015f, .02f, 1f));
             // Fit the 16:9 book render inside the screen; page rectangles are mapped through the same rectangle.
             var scale = Mathf.Min(w / 1600f, h / 900f); var dest = new Rect((w - 1600f * scale) * .5f, (h - 900f * scale) * .5f, 1600f * scale, 900f * scale);

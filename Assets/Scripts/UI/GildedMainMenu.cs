@@ -142,7 +142,7 @@ namespace GildedFate.UI
         private void Start()
         {
             PrepareRunStartMaterial();
-            TryBeginLaunchBootIntro();
+            BeginLaunchSequence(); // the Chronicle's opening, then the existing boot cinematic
             var capture=CommandValue("-gfCapture");if(string.IsNullOrEmpty(capture))return;
             if(capture=="audio-checks"){combatTestInput=true;PrepareCombatCheck("strike",5);}
             else if(capture=="credits")screen=ScreenMode.Credits;
@@ -275,6 +275,7 @@ namespace GildedFate.UI
             UpdateHexerVideos();UpdateVanguardVideos();UpdateReaperVideos();
             if(runStartActive){if(!runStartCaptureFrozen)AdvanceRunStart(Time.unscaledDeltaTime);return;}
             if(chronicleActive){AdvanceChronicle(Time.unscaledDeltaTime);return;} // the Chronicle overlay (GildedChroniclePresentation.cs)
+            TickChronicleArchive(Time.unscaledDeltaTime); // the open book while THE CHRONICLE archive is on screen
             if(bootIntroActive){AdvanceBootIntro(Time.unscaledDeltaTime);return;}
             UpdatePointerNavigationMode();
             if(routeInspectionOpen){UpdateRouteInspectionInput();return;}
@@ -527,6 +528,7 @@ namespace GildedFate.UI
             if (screen == ScreenMode.Credits) { DrawCredits(w,h); DrawTransition(w,h); return; }
             if (screen == ScreenMode.RunResult) { DrawRunResult(w,h); DrawTransition(w,h); return; }
             if (screen == ScreenMode.Records) { DrawRecords(w,h); DrawTransition(w,h); return; }
+            if (screen == ScreenMode.Chronicle) { DrawChronicleArchive(w,h); DrawTransition(w,h); return; }
             if (screen == ScreenMode.Daily) { DrawDaily(w,h); DrawTransition(w,h); return; }
             if (screen == ScreenMode.Playground) { DrawPlayground(w,h); return; }
 
@@ -618,6 +620,7 @@ namespace GildedFate.UI
             if(item=="ARCHIVE"){OpenMenuHub(MenuHub.Archive);return;}
             if(item=="DAILY RUN"){screen=ScreenMode.Daily;return;}
             if(item=="RECORDS"){OpenRecords();return;}
+            if(item=="THE CHRONICLE"){OpenChronicleArchive();return;}
             if(item=="QUIT"){quitConfirmOpen=true;return;}
             // Remaining items keep their original order (indices below map past the new entries).
             var index=item switch{"CONTINUE RUN"=>0,"NEW RUN"=>1,"COLLECTION"=>2,"CHARACTERS"=>3,"SETTINGS"=>4,"CREDITS"=>5,_=>-1};
@@ -1813,6 +1816,6 @@ private void DrawTransition(float w,float h){if(ShowsPersistentRunHud){if(ShowsN
 
 
         private struct Particle { public Vector2 position; public float speed; public float size; public float phase; }
-        private enum ScreenMode { Menu, CharacterSelect, Map, Combat, Reward, Collection, Merchant, Sanctuary, Event, EventSelection, EventResult, Treasure, RelicReward, Statistics, Settings, CardUpgrade, CardRemove, BindingSelect, BindingCard, Fateweave, FateweaveCard, Credits, RunResult, Records, Daily, Playground }
+        private enum ScreenMode { Menu, CharacterSelect, Map, Combat, Reward, Collection, Merchant, Sanctuary, Event, EventSelection, EventResult, Treasure, RelicReward, Statistics, Settings, CardUpgrade, CardRemove, BindingSelect, BindingCard, Fateweave, FateweaveCard, Credits, RunResult, Records, Daily, Playground, Chronicle }
     }
 }

@@ -215,6 +215,7 @@ namespace GildedFate.UI
             var b=Mathf.Clamp(profile.brightness,.7f,1.3f);
             if(b<.995f)Fill(new Rect(0,0,w,h),new Color(0,0,0,(1-b)*1.6f));
             else if(b>1.005f)Fill(new Rect(0,0,w,h),new Color(1,.97f,.9f,(b-1)*.22f));
+            DrawChronicleToasts(w,h); // unlock notices for the Chronicle, shown only on calm screens
             if(achievementToasts.Count==0)return;
             var now=Time.unscaledTime;achievementToasts.RemoveAll(t=>now>t.at+4.2f);
             var y=74f;

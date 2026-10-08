@@ -39,6 +39,11 @@ namespace GildedFate.Editor
         [MenuItem("Gilded Fate/Chronicle/Play On Book (Play Mode)/First Correction (Memory 07)")] static void PlayFirstCorrection() => PlayInGame("MEM_07", true);
         [MenuItem("Gilded Fate/Chronicle/Play On Book (Play Mode)/Chapter X finale")] static void PlayFinale() => PlayInGame(ChronicleCatalog.SecretSceneId, true);
 
+        // Developer bypass for the launch cinematic while testing in the editor. Builds are unaffected: they always play it unless the player's setting says otherwise.
+        const string SkipOpeningKey = "GildedFate.SkipChronicleOpening", SkipOpeningMenu = "Gilded Fate/Chronicle/Skip Opening In Editor";
+        [MenuItem(SkipOpeningMenu)] static void ToggleSkipOpening() { EditorPrefs.SetBool(SkipOpeningKey, !EditorPrefs.GetBool(SkipOpeningKey, false)); }
+        [MenuItem(SkipOpeningMenu, true)] static bool ToggleSkipOpeningValidate() { Menu.SetChecked(SkipOpeningMenu, EditorPrefs.GetBool(SkipOpeningKey, false)); return true; }
+
         [MenuItem("Gilded Fate/Chronicle/Validate Content")]
         static void Validate()
         {

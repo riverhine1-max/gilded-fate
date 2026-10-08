@@ -1,4 +1,4 @@
-# The Chronicle: architecture (batches 1 and 2: story engine and the book)
+# The Chronicle: architecture (batches 1-3: story engine, the book, the archive and launch)
 
 The Chronicle of Broken Fate is the book that tells Gilded Fate's hidden history. This batch builds everything *except* the
 visible book: the story data, save data, unlock rules, red corrections, the scene engine and all 30 scenes. Rendering
@@ -70,10 +70,26 @@ correction appears only once discovered, on its chapter's preface page, whatever
 
 Try it: enter Play Mode, then Gilded Fate > Chronicle > Play On Book (Play Mode).
 
+## The archive and launch (batch 3)
+
+| Piece | Where | Role |
+| --- | --- | --- |
+| `ChronicleArchive` | `Assets/Scripts/Chronicle/ChronicleArchive.cs` | Pure view models: the contents, a chapter's pages, a memory's reading pages. Locked chapters show only a spoiler-free teaser; locked memories never show titles; a correction shows only once discovered (original struck in red, replacement beneath). |
+| `ChronicleArchiveController` | same | Keyboard, controller and mouse navigation as a state machine. Spread 0 is the contents, 1-9 chapters, 10 Chapter X. Back always steps outward one level (reading, then chapter, then contents, then exit). Locked entries can be focused but never opened. |
+| `GildedChronicleArchive` | `Assets/Scripts/UI/` | THE CHRONICLE screen (a new `ScreenMode`), reached from the main menu's Archive hub. It is the open 3D book: pages turn as you navigate. If the book cannot be built the same pages are drawn flat. Also the unlock toasts and the hub panel. |
+| Launch sequence | `GildedChroniclePresentation.cs` | `BeginLaunchSequence`: the opening plays first (full, or short after the first viewing, or never, per the player's setting), then the existing boot cinematic. Bypass: `-gfSkipChronicle` on the command line, or Gilded Fate > Chronicle > Skip Opening In Editor. |
+
+What the archive offers: contents with counters and the narrator's own page (its sentence is corrected once Chapter X is seen); nine chapter
+spreads with the narrator's original sentences and each hero's memory (READ, or WATCH AGAIN); a reading view per memory; Chapter X (hidden until all
+27 are recovered, never auto-played); three options (instant text, writing speed, opening length). Replays run on the same open book and return to the
+page they started from; they never grant anything twice.
+
+Unlock notices: new memories queue in the profile and appear as a toast on calm screens (menu, run result, records, map), never during combat.
+
 ## Status
 
-Built and tested in the standalone harness: the story engine and the book's behaviour (covers fixed during turns, page-turn timing,
-overlay fades, skip snapping the book to its final pose, sequencer and rig in step). Type-checked against engine stand-ins but never
-run in Unity: the procedural book geometry, the shader, the render-to-texture camera, the on-screen overlay, the finished-model rig.
-Not yet built: THE CHRONICLE archive screen, startup cinematic hookup, unlock notifications, controller navigation, a settings screen for
-instant text and writing speed (the preferences are saved already).
+Built and tested in the standalone harness: the story engine, the book's behaviour, and the archive's content rules and navigation (131 tests).
+Type-checked against engine stand-ins but never run in Unity: the procedural book, shader, render-to-texture camera, the on-screen overlay and
+archive screen, the launch hookup, and the finished-model rig.
+Not yet built: touch-specific archive controls (skipping works by touch; the archive is mouse, keyboard and controller), a settings-menu page for the three
+Chronicle options (they live in the archive's first page), audio beyond the existing cue mapping, and any Windows or WebGL build check.
