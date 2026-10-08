@@ -18,6 +18,7 @@ namespace NUnit.Framework
         public static void IsNull(object o, string m = null) { if (o != null) throw new AssertionException("Expected null" + M(m)); }
         public static void IsNotNull(object o, string m = null) { if (o == null) throw new AssertionException("Expected not null" + M(m)); }
         public static void AreEqual(object expected, object actual, string m = null) { if (!Equals(expected, actual)) throw new AssertionException("Expected <" + expected + "> but was <" + actual + ">" + M(m)); }
+        public static void AreEqual(double expected, double actual, double delta, string m = null) { if (Math.Abs(expected - actual) > delta) throw new AssertionException("Expected <" + expected + "> +/- " + delta + " but was <" + actual + ">" + M(m)); }
         public static void AreNotEqual(object a, object b, string m = null) { if (Equals(a, b)) throw new AssertionException("Expected values to differ, both <" + a + ">" + M(m)); }
         public static void Greater(double a, double b, string m = null) { if (!(a > b)) throw new AssertionException(a + " is not greater than " + b + M(m)); }
         public static void GreaterOrEqual(double a, double b, string m = null) { if (!(a >= b)) throw new AssertionException(a + " is not >= " + b + M(m)); }

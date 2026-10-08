@@ -1,4 +1,4 @@
-# The Chronicle: architecture (batch 1: story engine)
+# The Chronicle: architecture (batches 1 and 2: story engine and the book)
 
 The Chronicle of Broken Fate is the book that tells Gilded Fate's hidden history. This batch builds everything *except* the
 visible book: the story data, save data, unlock rules, red corrections, the scene engine and all 30 scenes. Rendering
@@ -55,8 +55,25 @@ correction appears only once discovered, on its chapter's preface page, whatever
 - Editor menu: Gilded Fate > Chronicle > Validate Content; the Production Quality Gate also validates the Chronicle on load.
 - Developer Console: plays any scene on a sandbox saved in `Library/GildedChronicleSandbox.json`, never the real profile.
 
+## The book (batch 2)
+
+| Piece | Where | Role |
+| --- | --- | --- |
+| `ChronicleBookAnimator` | `Assets/Scripts/Chronicle/ChronicleBook.cs` | Pure logic: poses, timing, page flips, glow, tremor, overlay visibility. Unit-tested. Rule: covers stay at exactly 180 degrees for every page turn. |
+| `IChronicleBookRig` | same | Open, close, turn forward/back, idle, react, major magic, set pose immediately, plus the current frame. |
+| `ChronicleRigStage` | same | The only thing story playback knows about the book: maps `IChronicleStage` onto a rig. |
+| `ChronicleProceduralBook` | `Assets/Scripts/ChronicleBook/` | The temporary book from Unity primitives. Applies the animator's frame to transforms. |
+| `ChronicleAnimatorBookRig` + `ChronicleBookRigConfig` | same | Drives the finished model through its Animator; clip names mapped in a config asset. See `CHRONICLE_BOOK_REPLACEMENT.md`. |
+| `ChronicleBookStageHost` | same | Isolated layer (29), manually rendered camera into a RenderTexture (same pattern as the combat stage), picks the rig. |
+| `GildedChroniclePresentation` | `Assets/Scripts/UI/` | The overlay: shows the book, draws handwriting, red strikes and the placeholder illustration over its pages, handles skip input. Mirrors the boot cinematic's hooks. |
+| `GildedChronicleBook.shader` | `Assets/Resources/` | Flat-shaded depth-correct surface, loaded like the project's other shaders. |
+
+Try it: enter Play Mode, then Gilded Fate > Chronicle > Play On Book (Play Mode).
+
 ## Status
 
-Built and tested (in the standalone harness): everything above. Not yet verified in Unity itself: the Test Runner path, the
-asmdef setup and the Developer Console window. Not yet built: temporary 3D book, rig adapter, illustration and handwriting
-renderers, THE CHRONICLE archive screen, startup cinematic hookup, unlock notifications, controller navigation.
+Built and tested in the standalone harness: the story engine and the book's behaviour (covers fixed during turns, page-turn timing,
+overlay fades, skip snapping the book to its final pose, sequencer and rig in step). Type-checked against engine stand-ins but never
+run in Unity: the procedural book geometry, the shader, the render-to-texture camera, the on-screen overlay, the finished-model rig.
+Not yet built: THE CHRONICLE archive screen, startup cinematic hookup, unlock notifications, controller navigation, a settings screen for
+instant text and writing speed (the preferences are saved already).

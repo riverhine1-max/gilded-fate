@@ -297,8 +297,15 @@ namespace GildedFate.Chronicle
             var ill = State.illustration; ill.visible = false; ill.alpha = 0f; ill.actors.Clear(); ill.animations.Clear(); ill.backdrop = "";
         }
 
+        void CaptureOutgoing()
+        {
+            var o = new ChronicleOutgoingSpread { spread = State.spreadIndex, layout = State.layout, illustration = State.illustration.Clone() };
+            o.blocks.AddRange(State.blocks); State.outgoing = o;
+        }
+
         void TurnToNewSpread(ChronicleSpreadLayout layout, bool instant)
         {
+            if (!instant) CaptureOutgoing();
             State.spreadIndex++; State.layout = layout; ResetSpread();
             if (instant) return;
             stage.BookAction(ChronicleBookAction.TurnPageForward, State.narrator);
@@ -326,6 +333,7 @@ namespace GildedFate.Chronicle
                 case ChronicleOp.CloseBook:
                     if (State.pose == ChronicleBookPose.Open)
                     {
+                        if (!instant) CaptureOutgoing();
                         State.pose = ChronicleBookPose.Closed; ResetSpread();
                         if (!instant) { stage.BookAction(ChronicleBookAction.Close, State.narrator); Hold(stage.BookActionDuration(ChronicleBookAction.Close), false); }
                     }

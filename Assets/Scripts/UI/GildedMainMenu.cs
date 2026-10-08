@@ -274,6 +274,7 @@ namespace GildedFate.UI
             if(screen!=previousScreen){previousScreen=screen;transitionAlpha=1f;if(screen==ScreenMode.Map)mapInputReadyAt=Time.unscaledTime+.22f;ArmScreenInputGuard();if(!captureMode){screenControllerIndex=0;controllerScreen=screen;}}
             UpdateHexerVideos();UpdateVanguardVideos();UpdateReaperVideos();
             if(runStartActive){if(!runStartCaptureFrozen)AdvanceRunStart(Time.unscaledDeltaTime);return;}
+            if(chronicleActive){AdvanceChronicle(Time.unscaledDeltaTime);return;} // the Chronicle overlay (GildedChroniclePresentation.cs)
             if(bootIntroActive){AdvanceBootIntro(Time.unscaledDeltaTime);return;}
             UpdatePointerNavigationMode();
             if(routeInspectionOpen){UpdateRouteInspectionInput();return;}
@@ -487,6 +488,7 @@ namespace GildedFate.UI
             var h = Screen.height / uiScale;
             HandleReplaceRunPointer(w,h);SwallowEarlyPointerInput();
             DrawBackdrop(w, h);
+            if(chronicleActive&&DrawChronicle(w,h))return;
             if(bootIntroActive&&DrawBootIntro(w,h))return;
             if(runStartActive)
             {

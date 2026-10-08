@@ -30,6 +30,7 @@ namespace GildedFate.Chronicle
         public ChronicleShape shape;
         public ChronicleColor color;
         public float x, y, w, h, alpha = 1f, rotation, scale = 1f, speakTimer;
+        public ChronicleActor Clone() => (ChronicleActor)MemberwiseClone();
     }
 
     /// <summary>A timed visual effect inside the illustration. Persistent ones (a shattered world, drawn threads) stay at full
@@ -41,6 +42,7 @@ namespace GildedFate.Chronicle
         public bool persist;
         public float Progress => duration <= 0f ? 1f : Math.Min(1f, t / duration);
         public bool Done => t >= duration;
+        public ChronicleAnimation Clone() => (ChronicleAnimation)MemberwiseClone();
     }
 
     public static class ChronicleAnimations
@@ -59,6 +61,22 @@ namespace GildedFate.Chronicle
         public readonly List<ChronicleActor> actors = new List<ChronicleActor>();
         public readonly List<ChronicleAnimation> animations = new List<ChronicleAnimation>();
         public ChronicleActor Find(string id) { foreach (var a in actors) if (a.id == id) return a; return null; }
+        /// <summary>An independent copy, used to keep the old page on screen while a sheet turns.</summary>
+        public ChronicleIllustrationState Clone()
+        {
+            var copy = new ChronicleIllustrationState { visible = visible, alpha = alpha, backdrop = backdrop, top = top, bottom = bottom };
+            foreach (var a in actors) copy.actors.Add(a.Clone());
+            foreach (var a in animations) copy.animations.Add(a.Clone());
+            return copy;
+        }
+    }
+
+    /// <summary>The spread that was on the page before the latest turn. The presentation keeps drawing it until the turning sheet lifts away.</summary>
+    public sealed class ChronicleOutgoingSpread
+    {
+        public int spread; public ChronicleSpreadLayout layout;
+        public ChronicleIllustrationState illustration = new ChronicleIllustrationState();
+        public readonly List<ChronicleTextBlock> blocks = new List<ChronicleTextBlock>();
     }
 
     public sealed class ChronicleCameraState { public float x, y, zoom = 1f; }
@@ -72,6 +90,7 @@ namespace GildedFate.Chronicle
         public readonly List<ChronicleTextBlock> transcript = new List<ChronicleTextBlock>();  // everything written in the scene
         public readonly ChronicleIllustrationState illustration = new ChronicleIllustrationState();
         public readonly ChronicleCameraState camera = new ChronicleCameraState();
+        public ChronicleOutgoingSpread outgoing;     // null until the first page turn
         public ChronicleNarratorState narrator;
         public string subtitle = "";
         public float pageGlow, pageDarkness, tremor;

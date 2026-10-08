@@ -27,6 +27,18 @@ namespace GildedFate.Editor
         [MenuItem("Gilded Fate/Chronicle/Developer Console")]
         static void Open() { var w = GetWindow<GildedChronicleDevConsole>("Chronicle"); w.minSize = new Vector2(980, 700); w.Show(); }
 
+        // ---- play on the real 3D book, in the Game view (Play Mode) ----
+        static void PlayInGame(string sceneId, bool preview)
+        {
+            if (!Application.isPlaying) { EditorUtility.DisplayDialog("Chronicle", "Enter Play Mode first, then run this again. The book is drawn in the Game view.", "OK"); return; }
+            var menu = UnityEngine.Object.FindFirstObjectByType<GildedFate.UI.GildedMainMenu>();
+            if (menu == null) { Debug.LogWarning("[Chronicle] The game's main menu is not running, so there is nowhere to show the book."); return; }
+            if (!menu.PlayChronicleScene(sceneId, preview)) Debug.LogWarning("[Chronicle] Could not start " + sceneId + " (a scene may already be playing, or the book could not be built).");
+        }
+        [MenuItem("Gilded Fate/Chronicle/Play On Book (Play Mode)/Opening cinematic")] static void PlayOpening() => PlayInGame(ChronicleCatalog.OpeningSceneId, true);
+        [MenuItem("Gilded Fate/Chronicle/Play On Book (Play Mode)/First Correction (Memory 07)")] static void PlayFirstCorrection() => PlayInGame("MEM_07", true);
+        [MenuItem("Gilded Fate/Chronicle/Play On Book (Play Mode)/Chapter X finale")] static void PlayFinale() => PlayInGame(ChronicleCatalog.SecretSceneId, true);
+
         [MenuItem("Gilded Fate/Chronicle/Validate Content")]
         static void Validate()
         {
@@ -88,6 +100,7 @@ namespace GildedFate.Editor
 
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("First Correction test (preview, saves nothing)")) { var keep = session.saveToSandbox; session.saveToSandbox = false; session.Stop(); session.Play("MEM_07"); session.saveToSandbox = keep; }
+            if (GUILayout.Button("Play selected on the 3D book (Play Mode, saves nothing)")) PlayInGame(sceneIds[sceneIndex], true);
             if (GUILayout.Button("Check all 30 scenes (headless)")) CheckAll();
             if (GUILayout.Button("Validate content")) Validate();
             GUILayout.EndHorizontal();

@@ -49,6 +49,8 @@ namespace GildedFate.Chronicle
         public int openingViews;
         public int openingMode;                                     // 0 full every launch (default), 1 short after the first viewing, 2 never
         public int lastChapterOpened;
+        public bool instantText;                                    // accessibility: passages appear immediately
+        public float textSpeed = 1f;                                // 0.5 .. 2
 
         // ---------- safety ----------
         public void Ensure()
@@ -61,7 +63,11 @@ namespace GildedFate.Chronicle
             if (bestFloor == null || bestFloor.Length < 3) bestFloor = Grow(bestFloor);
             if (actBossMask == null || actBossMask.Length < 3) actBossMask = Grow(actBossMask);
             if (version <= 0) version = CurrentVersion;
+            if (textSpeed < .25f || textSpeed > 4f) textSpeed = 1f;
         }
+
+        /// <summary>How scenes should play for this player: the Chronicle's own preferences plus the game's accessibility settings.</summary>
+        public ChronicleSettings ToSettings(bool reduceMotion, bool reduceFlashing) { Ensure(); return new ChronicleSettings { instantText = instantText, textSpeed = textSpeed, reduceMotion = reduceMotion, reduceFlashing = reduceFlashing }; }
         static int[] Grow(int[] old) { var a = new int[3]; if (old != null) Array.Copy(old, a, Math.Min(old.Length, 3)); return a; }
 
         // ---------- queries ----------
@@ -251,10 +257,10 @@ namespace GildedFate.Chronicle
         /// <summary>Clears Chronicle progress. Used only by the developer sandbox and explicit profile resets.</summary>
         public void ResetAll()
         {
-            var keepMode = openingMode;
+            var keepMode = openingMode; var keepInstant = instantText; var keepSpeed = textSpeed;
             unlockedMemories.Clear(); viewedMemories.Clear(); discoveredFacts.Clear(); corrections.Clear(); pendingNotices.Clear(); countedRunIds.Clear(); eventsSeen.Clear();
             runsEnded = new int[3]; wins = new int[3]; bestFloor = new int[3]; actBossMask = new int[3];
-            secretUnlocked = secretCompleted = legacyMigrated = false; openingViews = 0; lastChapterOpened = 0; openingMode = keepMode;
+            secretUnlocked = secretCompleted = legacyMigrated = false; openingViews = 0; lastChapterOpened = 0; openingMode = keepMode; instantText = keepInstant; textSpeed = keepSpeed;
         }
     }
 }
