@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
+using GildedFate.Chronicle;
 
 namespace GildedFate.Saving
 {
@@ -36,6 +37,8 @@ namespace GildedFate.Saving
         public List<string> achievements=new();
         public List<RunRecord> runHistory=new();
         public List<DailyRecord> dailyRecords=new();
+        // The Chronicle's memories, corrections and archive state. A profile saved before the Chronicle existed loads this as a fresh Chronicle.
+        public ChronicleProgress chronicle=new();
         public void EnsureMeta()
         {
             // Profiles from before the Window Mode setting only stored a fullscreen flag.
@@ -46,6 +49,7 @@ namespace GildedFate.Saving
             if(winsByHero==null||winsByHero.Length<3)winsByHero=new int[3];
             bossesDefeatedIds??=new List<string>();achievements??=new List<string>();runHistory??=new List<RunRecord>();dailyRecords??=new List<DailyRecord>();
             lastSeenVersion??="";
+            chronicle??=new ChronicleProgress();chronicle.Ensure();
         }
     }
     [Serializable] public sealed class RunRecord

@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Compiles the engine-free Chronicle assembly plus the EditMode tests and runs them, with no Unity and no NuGet.
+       Usage: dotnet run with the project Tools/ChronicleHarness. A tiny NUnit-compatible shim stands in for NUnit. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <DefineConstants>GF_HARNESS</DefineConstants>
+    <NoWarn>CS0168;CS0219;CS0414;CS0649;CS0169</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs;NUnitShim.cs" />
+    <Compile Include="../../Assets/Scripts/Chronicle/**/*.cs" />
+    <Compile Include="../../Assets/Tests/EditMode/*.cs" />
+  </ItemGroup>
+</Project>

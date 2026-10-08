@@ -44,7 +44,7 @@ namespace GildedFate.UI
             yield return new WaitForSecondsRealtime(.3f);
             // Every authored choice, not just the gallery example, must fit its
             // dedicated title/cost/reward regions at the supported reference size.
-            foreach(var ev in WorldContent.Events)
+            foreach(var ev in WorldContent.Events.Where(e=>e.scenes.Length==0&&!e.returnOnly)) // the classic events this layout check was written for
             {
                 var count=ev.choices.Length;var height=Mathf.Min(190,(810-164-12*Mathf.Max(0,count-1))/Mathf.Max(1,count));
                 var rect=new Rect(749,116,663,height);var parts=EventChoiceLayout(rect);

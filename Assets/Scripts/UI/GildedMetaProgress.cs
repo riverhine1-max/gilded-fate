@@ -118,6 +118,8 @@ namespace GildedFate.UI
             {
                 if(currentNode.kind==NodeKind.Elite)run.elitesThisRun++;
                 if(currentNode.kind==NodeKind.Boss){run.bossesThisRun++;if(currentEnemy!=null&&!profile.bossesDefeatedIds.Contains(currentEnemy.id))profile.bossesDefeatedIds.Add(currentEnemy.id);}
+                // The Chronicle: a boss kill credits its act, any win credits the floor reached (saved with the profile right after).
+                GildedFate.Saving.ChronicleHooks.CombatWon(profile,run.hero,run.act,currentNode.kind==NodeKind.Boss,run.RunFloorNumber);
             }
             EvaluateAchievements(false,false,null);
         }
@@ -164,6 +166,7 @@ namespace GildedFate.UI
             foreach(var s in run.shards){var def=WorldContent.FateShards.FirstOrDefault(f=>f.id==s.id);record.shards.Add(def?.name??s.id);}
             profile.runHistory.Insert(0,record);if(profile.runHistory.Count>100)profile.runHistory.RemoveRange(100,profile.runHistory.Count-100);
             BindMetaUnlocks();
+            GildedFate.Saving.ChronicleHooks.RunEnded(profile,run.hero,victory,run.act,run.RunFloorNumber,run.runId); // Chronicle memories
             EvaluateAchievements(true,victory,result);
             lastRunMeta=result;ProfileService.Save(profile);
         }

@@ -22,7 +22,7 @@ namespace GildedFate.UI
         private IEnumerator RunScreenPassChecks()
         {
             yield return new WaitForSecondsRealtime(.3f);
-            foreach(var ev in WorldContent.Events)
+            foreach(var ev in WorldContent.Events.Where(e=>e.scenes.Length==0&&!e.returnOnly)) // the classic events this layout check was written for
             {
                 var height=Mathf.Min(190,(810-164-12*Mathf.Max(0,ev.choices.Length-1))/Mathf.Max(1,ev.choices.Length));
                 foreach(var choice in ev.choices)

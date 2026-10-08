@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GildedFate.Core
 {
@@ -224,7 +225,7 @@ namespace GildedFate.Core
                 new[]{
                     Opt("treasure","CHART A TREASURE ROOM","PAY 60 GOLD","A ROOM AHEAD BECOMES TREASURE",Gold(-60),Chart(NodeKind.Treasure)).Says("One path ahead turns to gold.").To("chart_more").Then("She draws a chest on the next floor. The room changes to match."),
                     Opt("merchant","CHART A MERCHANT","PAY 40 GOLD","A ROOM AHEAD BECOMES A MERCHANT",Gold(-40),Chart(NodeKind.Merchant)).Says("Someone to sell to, soon.").To("chart_more").Then("She sketches a stall on the next floor. A lantern lights up there."),
-                    Opt("elite","CHART AN ELITE","","A ROOM AHEAD BECOMES ELITE · 30 GOLD",Chart(NodeKind.Elite),Gold(30)).Says("She pays you to test her drawing.").To("chart_more").Then("She draws something with teeth on the next floor, and pays you for your nerve."),
+                    Opt("elite","CHART AN ELITE","","GAIN 30 GOLD · A ROOM AHEAD BECOMES ELITE",Chart(NodeKind.Elite),Gold(30)).Says("She pays you to test her drawing.").To("chart_more").Then("She draws something with teeth on the next floor, and pays you for your nerve."),
                     Opt("leave","LEAVE HER TO HER WORK","","NOTHING",Nothing()).Says("The map is fine as it is.")},
                 Scene("chart_more",2,"\"One more mark, if you can pay for it.\"",
                     Opt("rest","CHART A SANCTUARY","PAY 30 GOLD","A ROOM AHEAD BECOMES A SANCTUARY",Gold(-30),Chart(NodeKind.Sanctuary)).Says("A place to rest.").Then("She draws a small flame. A sanctuary waits ahead."),
@@ -258,6 +259,33 @@ namespace GildedFate.Core
                         .Otherwise(FractureAllShards()).Then("It cracks in the heat. Your shard comes out Fractured."),
                     Opt("pull","PULL IT OUT","","NOTHING MORE",Nothing()).Says("Take the loss and walk away.").Then("You pull the shard from the fire, unchanged.")));
         }
+
+        /// <summary>Authoring checks for multi-step events: every scene link resolves, return visits exist, flags are set somewhere.</summary>
+        public static void ValidateStories(List<string> failures)
+        {
+            // "pilgrim_elite" is raised by the map when the player enters an elite room during the escort (GildedMainMenu.StartNode).
+            var setFlags=new HashSet<string>{"pilgrim_elite"};var returnTargets=new HashSet<string>();
+            foreach(var e in All)foreach(var c in AllChoices(e))
+            {
+                foreach(var fx in c.effects.Concat(c.chanceEffects).Concat(c.failEffects))
+                {
+                    if(fx.kind==EventEffectKind.SetFlag)setFlags.Add(fx.id);
+                    if(fx.kind==EventEffectKind.ScheduleReturn){returnTargets.Add(fx.id);if(Find(fx.id)==null)failures.Add("Event "+e.id+" schedules a return to unknown event "+fx.id);}
+                }
+            }
+            foreach(var e in All)
+            {
+                foreach(var c in AllChoices(e))
+                {
+                    if(!string.IsNullOrEmpty(c.next)&&e.Scene(c.next)==null)failures.Add("Event "+e.id+"/"+c.id+" leads to missing scene "+c.next);
+                    if(!string.IsNullOrEmpty(c.chanceNext)&&e.Scene(c.chanceNext)==null)failures.Add("Event "+e.id+"/"+c.id+" leads to missing scene "+c.chanceNext);
+                    if(!string.IsNullOrEmpty(c.requiresFlag)&&!setFlags.Contains(c.requiresFlag))failures.Add("Event "+e.id+"/"+c.id+" needs flag "+c.requiresFlag+" which nothing sets");
+                }
+                if(e.returnOnly&&!returnTargets.Contains(e.id))failures.Add("Return-only event "+e.id+" is never scheduled");
+                if(!string.IsNullOrEmpty(e.requiresFlag)&&!setFlags.Contains(e.requiresFlag))failures.Add("Event "+e.id+" needs flag "+e.requiresFlag+" which nothing sets");
+            }
+        }
+        private static IEnumerable<EventChoiceDef> AllChoices(EventDefinition e)=>e.choices.Concat((e.scenes??new EventSceneDef[0]).SelectMany(s=>s.choices));
 
         private static EventChoiceDef[] Cups(int stake)
         {

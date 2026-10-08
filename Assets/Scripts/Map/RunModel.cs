@@ -76,6 +76,7 @@ namespace GildedFate.Map
         public string activeEventSceneId="",pendingEventNextScene="";public List<string> eventBank=new();public int eventStepCounter;
         // Run memory for events: flags, scheduled return visits ("eventId|act|floor") and a fight an event started.
         public List<string> eventFlags=new(),eventReturns=new();public string pendingEventFight="";
+        public int lastEventOmen; // outcome of the last odds roll: 0 none, 1 fortune, 2 misfortune (drives the reveal)
         public bool HasEventFlag(string key)=>!string.IsNullOrEmpty(key)&&eventFlags!=null&&eventFlags.Contains(key);
         public int pendingEventChoicesNeeded;
         public string pendingFateweaveId="",pendingBindingId="";public int pendingChoicesNeeded;

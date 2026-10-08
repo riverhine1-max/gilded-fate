@@ -51,7 +51,7 @@ namespace GildedFate.Editor
             Expect("Fate Shards", WorldContent.FateShards.Length, 30, failures);
             Expect("Bindings", WorldContent.Bindings.Length, 11, failures);
             Expect("Fateweaves", WorldContent.Fateweaves.Length, 18, failures);
-            Expect("events", WorldContent.Events.Length, 50, failures);
+            Expect("events (50 classic + 19 multi-step)", WorldContent.Events.Length, 69, failures);
             Expect("normal enemies", System.Array.FindAll(WorldContent.Enemies,x=>!x.elite&&!x.boss).Length, 10, failures);
             Expect("elite enemies", System.Array.FindAll(WorldContent.Enemies,x=>x.elite).Length, 4, failures);
             Expect("boss enemies", System.Array.FindAll(WorldContent.Enemies,x=>x.boss).Length, 3, failures);
@@ -62,6 +62,8 @@ namespace GildedFate.Editor
             Unique("Binding", System.Array.ConvertAll(WorldContent.Bindings, x => x.id), failures);
             Unique("Fateweave", System.Array.ConvertAll(WorldContent.Fateweaves, x => x.id), failures);
             Unique("event", System.Array.ConvertAll(WorldContent.Events, x => x.id), failures);
+            EventContent.ValidateStories(failures);
+            foreach(var problem in GildedFate.Chronicle.ChronicleValidator.Validate())failures.Add("Chronicle: "+problem);
             var vanguard = new RunModel(); vanguard.NewRun(HeroId.Vanguard, 12345);
             var hexer = new RunModel(); hexer.NewRun(HeroId.Hexer, 12345);
             var reaper = new RunModel(); reaper.NewRun(HeroId.Reaper, 12345);
@@ -85,7 +87,7 @@ namespace GildedFate.Editor
 
             LastPassed=failures.Count==0;
             if (LastPassed)
-                Debug.Log("[Gilded Fate Quality Gate] PASS · 282 uniquely illustrated cards · 90 relics · 3 heroes · 17 enemies · transparent actor art · 50 events");
+                Debug.Log("[Gilded Fate Quality Gate] PASS · 282 uniquely illustrated cards · 90 relics · 3 heroes · 17 enemies · transparent actor art · 69 events · Chronicle 27 memories + opening + finale");
             else
                 Debug.LogError("[Gilded Fate Quality Gate] FAIL\n" + string.Join("\n", failures));
         }

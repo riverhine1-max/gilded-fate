@@ -301,6 +301,7 @@ namespace GildedFate.Map
             {
                 var roll=PositiveHash(run.seed,run.floor,run.eventStepCounter,StableHash(run.activeEventId+"/"+choice.id))%100;
                 hit=roll<choice.chance;ApplyEffects(run,hit?choice.chanceEffects:choice.failEffects,selectedCards);
+                run.lastEventOmen=hit==choice.chanceGood?1:2; // a good hit or an avoided risk is fortune
             }
             run.eventStepCounter++;
             var story=hit?choice.chanceText:choice.resultText;if(!string.IsNullOrWhiteSpace(story)&&string.IsNullOrWhiteSpace(run.pendingEventResult))run.pendingEventResult=story;
@@ -542,7 +543,7 @@ namespace GildedFate.Map
 
         private static void ClearPending(RunModel run,bool keepResult)
         {
-            run.EnsureEventState();run.pendingEventChoiceId="";run.pendingEventBindingId="";if(!keepResult)run.pendingEventResult="";run.pendingEventChoicesNeeded=0;run.eventSelectionKind=EventSelectionKind.None;run.pendingEventOfferIds.Clear();run.pendingEventSelectionIds.Clear();run.pendingEventShardDecisions.Clear();
+            run.EnsureEventState();run.pendingEventChoiceId="";run.pendingEventBindingId="";if(!keepResult){run.pendingEventResult="";run.lastEventOmen=0;}run.pendingEventChoicesNeeded=0;run.eventSelectionKind=EventSelectionKind.None;run.pendingEventOfferIds.Clear();run.pendingEventSelectionIds.Clear();run.pendingEventShardDecisions.Clear();
         }
     }
 

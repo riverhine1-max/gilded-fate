@@ -88,7 +88,7 @@ namespace GildedFate.UI
                     // The shard rises out of its reliquary socket to its card.
                     var rise=ShardEase(Mathf.Clamp01((Time.unscaledTime-shardAttuneOpenedAt)/(profile.reduceMotion?.01f:.55f)));
                     var from=ReliquarySocketCenter(owned.slot);var at=Vector2.Lerp(from,art.center,rise);var size=Mathf.Lerp(ReliquarySocketSize,art.width,rise);
-                    if(rise<1&&!profile.reducedVfx){var color=ShardColor(def);for(var t=1;t<=6;t++){var p=Vector2.Lerp(from,at,1-t*.12f);ShardSoft(p,40-t*4,new Color(color.r,color.g,color.b,.3f*(1-t/7f)));}}
+                    if(rise<1&&!profile.reducedVfx){var color=ShardColor(def);for(var trail=1;trail<=6;trail++){var p=Vector2.Lerp(from,at,1-trail*.12f);ShardSoft(p,40-trail*4,new Color(color.r,color.g,color.b,.3f*(1-trail/7f)));}}
                     art=new Rect(at.x-size*.5f,at.y-size*.5f,size,size);
                     if(hot&&!profile.reduceFlashing&&rise>=1)Fill(new Rect(art.x-8,art.y-8+lift,art.width+16,art.height+16),new Color(1f,.84f,.47f,.1f));
                     ShardSoft(art.center,art.width*2f,new Color(1f,.82f,.45f,.14f+(1-rise)*.25f));

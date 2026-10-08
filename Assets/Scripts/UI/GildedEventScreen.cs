@@ -198,7 +198,7 @@ namespace GildedFate.UI
                 case EventChipIcon.Upgrade:{var green=new Color(.55f,.95f,.55f,a);DrawLine(c+new Vector2(-7,1),c+new Vector2(0,-6),green,2.6f);DrawLine(c+new Vector2(0,-6),c+new Vector2(7,1),green,2.6f);DrawLine(c+new Vector2(-7,7),c+new Vector2(0,0),green,2.6f);DrawLine(c+new Vector2(0,0),c+new Vector2(7,7),green,2.6f);break;}
                 case EventChipIcon.Remove:{var ember=new Color(1f,.55f,.35f,a);DrawLine(c+new Vector2(-6,-6),c+new Vector2(6,6),ember,3);DrawLine(c+new Vector2(6,-6),c+new Vector2(-6,6),ember,3);break;}
                 case EventChipIcon.Card:{var bone=new Color(.92f,.86f,.72f,a);var card=new Rect(c.x-6,c.y-8,12,16);Outline(card,bone,2);DrawLine(new Vector2(card.x+3,card.y+5),new Vector2(card.xMax-3,card.y+5),bone,1);break;}
-                case EventChipIcon.Mystery:GUI.Label(r,"?",new GUIStyle(titleStyle){fontSize=18,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(1f,.85f,.5f,a)}});break;
+                case EventChipIcon.Mystery:DrawQuestionSigil(c,9,new Color(1f,.85f,.5f,a),false);break;
             }
         }
 
@@ -230,18 +230,26 @@ namespace GildedFate.UI
         }
         private void DrawEventOutcome(float w,float h)
         {
-            DrawEventBackdrop(w,h);DrawRunHud(w);
+            DrawEventAtmosphere(w,h);DrawRunHud(w);
             var pulse=.78f+(profile.reduceMotion?0:Mathf.Sin(shimmer*2.4f)*.16f);var continues=EventSystem.HasNextScene(run);
             var panel=new Rect(w*.2f,h*.19f,w*.6f,h*.58f);
             ShardSoft(new Rect(panel.x-60,panel.y-50,panel.width+120,panel.height+100),new Color(1f,.7f,.3f,.08f));
             Fill(panel,new Color(.005f,.009f,.015f,.95f));Outline(panel,new Color(1f,.72f,.23f,pulse),2);Outline(new Rect(panel.x+6,panel.y+6,panel.width-12,panel.height-12),new Color(1f,.72f,.23f,.25f),1);
             foreach(var corner in new[]{new Vector2(panel.x,panel.y),new Vector2(panel.xMax,panel.y),new Vector2(panel.x,panel.yMax),new Vector2(panel.xMax,panel.yMax)})EventGem(corner,6,Gold,true);
             GUI.Label(new Rect(panel.x+30,panel.y+26,panel.width-60,24),currentEvent?.name??"",new GUIStyle(ReadableStyle(13,true)){alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(.85f,.69f,.40f)}});
-            GUI.Label(new Rect(panel.x+30,panel.y+54,panel.width-60,50),continues?"THE PATH CONTINUES":"FATE ALTERED",new GUIStyle(titleStyle){fontSize=32,normal={textColor=new Color(1f,.84f,.45f,pulse)}});
+            var key=(run.activeEventId??"")+"/"+run.eventStepCounter;if(key!=eventOutcomeKey){eventOutcomeKey=key;eventOutcomeShownAt=Time.unscaledTime;}
+            var omen=run.lastEventOmen;var header=continues?"THE PATH CONTINUES":"FATE ALTERED";var headerColor=new Color(1f,.84f,.45f,pulse);var reveal=1f;
+            if(omen>0)
+            {
+                var tone=DrawOutcomeSeal(new Vector2(panel.center.x,panel.y+79),omen);header=omen==1?"FORTUNE FAVORS YOU":"FATE TURNS AGAINST YOU";
+                reveal=profile.reduceMotion?1f:Mathf.Clamp01((EventOutcomeAge-.45f)*4);headerColor=new Color(tone.r,tone.g,tone.b,reveal);
+            }
+            if(reveal>0)GUI.Label(new Rect(panel.x+30,panel.y+54,panel.width-60,50),header,new GUIStyle(titleStyle){fontSize=32,normal={textColor=headerColor}});
             DrawLine(new Vector2(panel.center.x-140,panel.y+112),new Vector2(panel.center.x+140,panel.y+112),new Color(1f,.75f,.35f,.5f),1);
             var choice=EventSystem.ActiveChoice(run);var story=choice!=null&&(choice.chance>0||!string.IsNullOrEmpty(choice.resultText));
             var body=new Rect(panel.x+60,panel.y+132,panel.width-120,panel.height-240);
-            if(story||choice==null)
+            if(reveal<1){}
+            else if(story||choice==null)
             {
                 var text=run.pendingEventResult??"";var style=new GUIStyle(footerStyle){fontSize=22,wordWrap=true,alignment=TextAnchor.UpperCenter,normal={textColor=new Color(.97f,.94f,.85f)}};
                 while(style.fontSize>15&&style.CalcHeight(new GUIContent(text),body.width)>body.height)style.fontSize--;
@@ -249,12 +257,9 @@ namespace GildedFate.UI
             }
             else
             {
-                // A plain choice: show what was paid and gained as chips instead of an arrow sentence.
-                var left=SplitEventText(choice.costText).Select(p=>new EventChip{text=EventChipPhrase(p,true),icon=EventIconFor(p.ToUpperInvariant()),tone=EventChipTone.Cost}).ToList();
-                var right=RightChips(choice);var all=left.Concat(right).ToList();var style=EventChipStyle(17);
-                var widths=all.Select(c=>style.CalcSize(new GUIContent(c.text)).x+52).ToList();var total=widths.Sum()+12*Mathf.Max(0,all.Count-1);
-                var x=body.center.x-Mathf.Min(total,body.width)*.5f;var y=body.y+20;
-                for(var i=0;i<all.Count;i++){if(x+widths[i]>body.xMax){x=body.x;y+=44;}DrawEventChip(new Rect(x,y,widths[i],36),all[i],true);x+=widths[i]+12;}
+                // A plain choice: the same one-sentence summary the option card showed.
+                var style=new GUIStyle(footerStyle){fontSize=22,wordWrap=true,richText=true,alignment=TextAnchor.UpperCenter,normal={textColor=new Color(.97f,.94f,.85f)}};
+                GUI.Label(body,EventSentence(choice),style);
             }
             var trayRect=new Rect(panel.x+40,panel.yMax-150,panel.width-80,46);DrawEventBankTray(trayRect);
             var next=new Rect(panel.center.x-150,panel.yMax-82,300,48);DrawButtonFrame(next,next.Contains(PointerPosition)||controllerNavigation,false);
