@@ -16,7 +16,8 @@ namespace GildedFate.UI
     public sealed partial class GildedMainMenu
     {
         private ChronicleArchiveController archive;
-        private bool archiveFlipActive, archiveSyncBook;
+        private bool archiveFlipActive, archiveSyncBook, archiveClosing;
+        private float archiveClosingAt;
         private int archiveOutSpread, archiveOutReadingSpread;
         private string archiveOutReadingId = "";
         private readonly Dictionary<string, ChronicleMemoryReading> archiveReadings = new();
@@ -33,7 +34,7 @@ namespace GildedFate.UI
             if (profile == null) return;
             var progress = profile.chronicle; progress.Ensure();
             archive = new ChronicleArchiveController(progress);
-            archiveReadings.Clear(); archiveFlipActive = archiveSyncBook = false;
+            archiveReadings.Clear(); archiveFlipActive = archiveSyncBook = archiveClosing = false;
             chronicleHost = chronicleHost ?? ChronicleBookStageHost.Create(1600, 900);
             if (chronicleHost != null)
             {
@@ -47,8 +48,19 @@ namespace GildedFate.UI
             screen = ScreenMode.Chronicle; screenControllerIndex = 0;
         }
 
+        // Leaving with BACK closes the book first, and only then returns to the menu. Input is ignored while the cover swings shut.
+        private void BeginCloseChronicleArchive()
+        {
+            if (archiveClosing) return;
+            if (chronicleHost == null || chronicleActive) { CloseChronicleArchive(); return; }   // flat fallback: nothing to close
+            archiveClosing = true; archiveClosingAt = Time.unscaledTime; archiveFlipActive = archiveSyncBook = false;
+            chronicleHost.Rig.Perform(ChronicleBookAction.Close, profile.chronicle.NarratorState); ChronicleBookSound(ChronicleBookAction.Close);
+        }
+
+        // Leaves immediately. Used once the book has closed, and as the failsafe when something goes wrong.
         private void CloseChronicleArchive()
         {
+            archiveClosing = false;
             if (chronicleHost != null && !chronicleActive) chronicleHost.SetActive(false);
             archive = null; archiveReadings.Clear(); screen = ScreenMode.Menu;
         }
@@ -66,6 +78,11 @@ namespace GildedFate.UI
             dt = Mathf.Clamp(dt, 0f, .1f); shimmer += dt;
             chronicleHost.Tick(dt, null);
             var frame = chronicleHost.Rig.Frame;
+            if (archiveClosing)
+            {
+                if (Time.unscaledTime - archiveClosingAt >= chronicleHost.Rig.DurationOf(ChronicleBookAction.Close) + .3f) CloseChronicleArchive();
+                return;   // no page sync while the cover closes, or it would spring back open
+            }
             if (archiveFlipActive && frame.flipDirection == 0 && !frame.busy) archiveFlipActive = false;
             if (archiveSyncBook && !frame.busy) { archiveSyncBook = false; chronicleHost.Rig.SetPoseImmediate(ChronicleBookPose.Open, archive.Spread); }
         }
@@ -74,7 +91,7 @@ namespace GildedFate.UI
         private bool HandleChronicleArchiveNavigation(MenuNavigation input)
         {
             if (archive == null) { screen = ScreenMode.Menu; return true; }
-            if (!input.Any) return true;
+            if (archiveClosing || !input.Any) return true;
             controllerNavigation = true;
             ChronicleArchiveResult result;
             if (input.back) result = archive.Back();
@@ -106,7 +123,7 @@ namespace GildedFate.UI
                 case ChronicleArchiveAction.ChangedOption: Sfx(SoundCue.UiHover); ProfileService.Save(profile); break;
                 case ChronicleArchiveAction.Replay: PlayArchiveScene(r.id); break;
                 case ChronicleArchiveAction.BeginSecret: PlayArchiveScene(ChronicleCatalog.SecretSceneId); break;
-                case ChronicleArchiveAction.Exit: Sfx(SoundCue.UiBack); CloseChronicleArchive(); break;
+                case ChronicleArchiveAction.Exit: Sfx(SoundCue.UiBack); BeginCloseChronicleArchive(); break;
             }
         }
 
@@ -155,8 +172,10 @@ namespace GildedFate.UI
 
             var caption = new GUIStyle(ReadableStyle(13, true)) { alignment = TextAnchor.MiddleLeft, normal = { textColor = new Color(.85f, .72f, .45f) } };
             GUI.Label(new Rect(34, 22, 420, 24), "THE CHRONICLE OF BROKEN FATE", caption);
-            var back = new Rect(34, h - 76, 148, 46); DrawButtonFrame(back, back.Contains(PointerPosition), false);
+            var back = new Rect(34, h - 76, 148, 46); DrawButtonFrame(back, back.Contains(PointerPosition) && !archiveClosing, archiveClosing);
+            var wasEnabled = GUI.enabled; GUI.enabled = wasEnabled && !archiveClosing;
             if (GUI.Button(back, "BACK", buttonStyle)) ApplyArchiveResult(archive.Back());
+            GUI.enabled = wasEnabled;
             DrawMenuNavigationHint(w, h, "← →  Turn page    ↑ ↓  Select    Enter  Open / Read    Esc  Back", "D-pad  Select    LB / RB  Turn page    A  Open    B  Back");
         }
 
@@ -166,7 +185,7 @@ namespace GildedFate.UI
             var outgoing = chronicleHost != null && archiveFlipActive && frame.flipDirection != 0 && frame.flipRaw < .5f;
             var spread = outgoing ? archiveOutSpread : archive.Spread;
             var readId = outgoing ? archiveOutReadingId : archive.ReadingId; var readIndex = outgoing ? archiveOutReadingSpread : archive.ReadingSpread;
-            var enabled = GUI.enabled; GUI.enabled = enabled && alpha > .95f && !outgoing;   // no clicks on a page that is mid-turn
+            var enabled = GUI.enabled; GUI.enabled = enabled && alpha > .95f && !outgoing && !archiveClosing;   // no clicks on a page that is mid-turn
             if (!string.IsNullOrEmpty(readId)) DrawArchiveReading(left, right, alpha, readId, readIndex);
             else if (spread == ChronicleArchiveController.ContentsSpread) DrawArchiveContents(left, right, alpha);
             else if (spread == ChronicleArchiveController.SecretSpread) DrawArchiveSecret(left, right, alpha);
