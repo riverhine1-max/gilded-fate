@@ -1,0 +1,18 @@
+{
+  "byteExactRoundTrip": true,
+  "files": [
+    {
+      "target": "Assets/Resources/Chronicle/BookModel/Chronicle.fbx",
+      "status": "restored_verified",
+      "size": 18486844,
+      "sha256": "393797af6373ed6b9263bfa9d56c1fd20162252304a033d659346863db6b5cdc"
+    },
+    {
+      "target": "SourceAssets/Chronicle/Gilded_Fate_Chronicle.blend",
+      "status": "restored_verified",
+      "size": 24154990,
+      "sha256": "62283dcab5c6d20be11c2e230e7a32f0b2845f57259acc882a92b96ef5c3a9b5"
+    }
+  ],
+  "unityEditorRestoreTested": false
+}

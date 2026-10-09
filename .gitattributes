@@ -17,3 +17,7 @@
 *.ttf filter=lfs diff=lfs merge=lfs -text
 *.otf filter=lfs diff=lfs merge=lfs -text
 *.scenetemplate filter=lfs diff=lfs merge=lfs -text
+
+# Chronicle assets are stored as ordinary Git blobs by the asset uploader.
+Assets/Resources/Chronicle/** -filter
+SourceAssets/Chronicle/** -filter
