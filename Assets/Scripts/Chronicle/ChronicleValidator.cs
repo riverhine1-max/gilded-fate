@@ -16,6 +16,7 @@ namespace GildedFate.Chronicle
             ValidateCatalog(errors);
             ValidateScenes(errors);
             ValidateRules(errors);
+            ChronicleAscensionCatalog.Validate(errors);   // the Ten Recollections' slots
             return errors;
         }
 

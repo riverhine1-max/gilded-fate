@@ -98,9 +98,17 @@ namespace GildedFate.Chronicle
         {
             if (allowLocked) return true;
             if (sceneId == ChronicleCatalog.SecretSceneId) return progress.secretUnlocked;
+            var revelation = ChronicleAscensionCatalog.FindByScene(sceneId);   // a Ten Recollections scene: legitimate once earned
+            if (revelation != null) return progress.IsRevelationEarned(revelation.id);
             return progress.IsUnlocked(sceneId);
         }
-        public void SaveCorrection(string correctionId, string sceneId) { if (Legit(sceneId) && progress.CommitCorrection(correctionId)) newCorrections.Add(correctionId); }
+        public void SaveCorrection(string correctionId, string sceneId)
+        {
+            if (!Legit(sceneId)) return;
+            // The new ASC_CORR_* corrections are stored apart from the ten shared ones, which they never replace.
+            if (ChronicleAscensionCatalog.FindByCorrection(correctionId) != null) { if (progress.CommitAscensionCorrection(correctionId, allowLocked)) newCorrections.Add(correctionId); return; }
+            if (progress.CommitCorrection(correctionId)) newCorrections.Add(correctionId);
+        }
         public void DiscoverFact(string factId, string sceneId) { if (Legit(sceneId) && progress.DiscoverFact(factId)) newFacts.Add(factId); }
         public void SceneFinished(string sceneId, bool skipped)
         {
@@ -111,6 +119,8 @@ namespace GildedFate.Chronicle
                 if (s.accepted) { secretCompleted |= s.secretCompleted; firstView |= s.firstView; newCorrections.AddRange(s.newCorrections); newFacts.AddRange(s.newFacts); }
                 return;
             }
+            var revelation = ChronicleAscensionCatalog.FindByScene(sceneId);
+            if (revelation != null) { if (Legit(sceneId)) firstView |= progress.CommitRevelationWatched(revelation.id, allowLocked); return; }
             var r = progress.CommitMemoryViewed(sceneId, allowLocked);
             if (r.accepted) { firstView |= r.firstView; newCorrections.AddRange(r.newCorrections); newFacts.AddRange(r.newFacts); }
         }

@@ -149,6 +149,8 @@ namespace GildedFate.UI
                     profile.fateDebtBestWin[hero]=Mathf.Max(profile.fateDebtBestWin[hero],run.fateDebt);
                     var next=Mathf.Min(FateDebt.Count,run.fateDebt+1);
                     if(next>profile.fateDebtUnlocked[hero]){profile.fateDebtUnlocked[hero]=next;result.debtUnlocked=true;result.newDebtLevel=next;}
+                    // The Ten Recollections: at most one revelation, for this hero, at exactly the Fate Debt level it requires.
+                    GildedFate.Saving.ChronicleHooks.AscensionVictory(profile,run.hero,victory,run.sandbox,run.IsDaily,run.fateDebt,run.runId);
                 }
             }
             result.score=RunScore(victory);

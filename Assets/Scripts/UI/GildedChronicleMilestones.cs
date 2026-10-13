@@ -28,6 +28,9 @@ namespace GildedFate.UI
             foreach (var id in ChronicleMilestoneScenes.Memories(profile.chronicle, hero, run.act, runEnded))
                 chronicleMilestoneScenes.Enqueue(ChronicleScripts.Get(id));
             if (runEnded) chronicleMilestoneScenes.Enqueue(ChronicleMilestoneScenes.Ending(victory, hero, Math.Max(0, profile.chronicle.runsEnded[(int)hero] - profile.chronicle.wins[(int)hero] - 1)));
+            // The Ten Recollections, after the existing victory presentation. Only authored, approved and registered revelation scenes
+            // are returned, so until that content ships this adds nothing and no placeholder is ever shown.
+            if (runEnded && victory) foreach (var id in ChronicleAscension.ScenesToPresent(profile.chronicle, hero)) chronicleMilestoneScenes.Enqueue(ChronicleScripts.Get(id));
             chronicleMilestoneContinue = then;
             chronicleMilestoneRunEnded = runEnded; chronicleMilestoneVictory = victory;
             chronicleMilestoneOpened = false; chronicleMilestoneActive = true;

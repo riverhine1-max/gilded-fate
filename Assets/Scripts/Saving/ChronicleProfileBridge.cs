@@ -55,5 +55,16 @@ namespace GildedFate.Saving
         }
 
         public static void EventEncountered(PlayerProfile profile, string eventId) { Of(profile).RegisterEventEncountered(eventId); }
+
+        /// <summary>The Ten Recollections: a run was genuinely won and recorded. Earns at most one revelation for the hero who won,
+        /// and only when the run's Fate Debt is exactly the level that hero's next revelation requires. Defeats, sandbox runs and
+        /// Daily Runs never qualify. Repeated callbacks for the same run are ignored. Saved with the profile right after, as usual.</summary>
+        public static ChronicleAscensionResult AscensionVictory(PlayerProfile profile, HeroId hero, bool victory, bool sandbox, bool daily, int fateDebt, string runId)
+        {
+            if (profile == null || !ChronicleAscension.IsQualifyingVictory(victory, sandbox, daily, fateDebt)) return new ChronicleAscensionResult { reason = "not a qualifying victory" };
+            var result = Of(profile).RegisterAscensionVictory((ChronicleHero)(int)hero, fateDebt, runId);
+            if (result.Earned) Debug.Log("[Chronicle] " + hero + " earned recollection " + result.earned.id + " (Fate Debt " + fateDebt + ").");
+            return result;
+        }
     }
 }

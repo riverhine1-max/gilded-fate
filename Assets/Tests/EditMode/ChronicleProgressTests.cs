@@ -21,7 +21,7 @@ namespace GildedFate.Chronicle.Tests
         {
             var p = new ChronicleProgress();
             foreach (ChronicleHero h in Enum.GetValues(typeof(ChronicleHero))) p.RegisterRunEnded(h, true, 3, 54, "win-" + h);
-            return p;
+            return ChronicleAscensionTestKit.CompleteEveryTrueHistory(p);   // Chapter X now also needs every True History
         }
 
         // ---------------------------------------------------------------- catalog shape
@@ -157,13 +157,19 @@ namespace GildedFate.Chronicle.Tests
         }
 
         // ---------------------------------------------------------------- Chapter X
-        [Test] public void ChapterXStaysLockedUntilAllTwentySevenAreCollected()
+        [Test] public void ChapterXStaysLockedUntilEveryHeroCompletesTheirTrueHistory()
         {
             var p = new ChronicleProgress();
             p.RegisterRunEnded(ChronicleHero.Vanguard, true, 3, 54, "a"); p.RegisterRunEnded(ChronicleHero.Hexer, true, 3, 54, "b");
             Assert.AreEqual(18, p.TotalUnlocked); Assert.IsFalse(p.secretUnlocked);
-            var last = p.RegisterRunEnded(ChronicleHero.Reaper, true, 3, 54, "c");
-            Assert.AreEqual(27, p.TotalUnlocked); Assert.IsTrue(p.secretUnlocked); Assert.IsTrue(last.secretUnlocked);
+            var normal = p.RegisterRunEnded(ChronicleHero.Reaper, true, 3, 54, "c");
+            Assert.AreEqual(27, p.TotalUnlocked, "the 27 memories still unlock exactly as before");
+            Assert.IsFalse(p.secretUnlocked, "ordinary victories no longer open Chapter X"); Assert.IsFalse(normal.secretUnlocked);
+            ChronicleAscensionTestKit.ClearThrough(p, ChronicleHero.Vanguard, 10); ChronicleAscensionTestKit.ClearThrough(p, ChronicleHero.Hexer, 10);
+            ChronicleAscensionTestKit.ClearThrough(p, ChronicleHero.Reaper, 9);
+            Assert.IsFalse(p.secretUnlocked, "two True Histories and a Fate Debt IX are not enough");
+            var last = p.RegisterAscensionVictory(ChronicleHero.Reaper, 10, "reaper-x");
+            Assert.IsTrue(p.secretUnlocked); Assert.IsTrue(last.secretUnlocked); Assert.IsFalse(p.secretCompleted, "never marked watched automatically");
         }
 
         [Test] public void ChapterXIsAnnouncedExactlyOnce()

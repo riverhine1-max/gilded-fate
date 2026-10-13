@@ -12,7 +12,7 @@ namespace GildedFate.Chronicle.Tests
         {
             var p = new ChronicleProgress();
             foreach (ChronicleHero h in Enum.GetValues(typeof(ChronicleHero))) p.RegisterRunEnded(h, true, 3, 54, "w" + h);
-            return p;
+            return ChronicleAscensionTestKit.CompleteEveryTrueHistory(p);   // Chapter X now also needs every True History
         }
 
         // ---------------------------------------------------------------- views

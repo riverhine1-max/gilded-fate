@@ -297,7 +297,7 @@ namespace GildedFate.UI
                 GUI.Label(new Rect(r.x + 8 * u, r.y, 46 * u, r.height), ChronicleRoman(secret ? 10 : row.number), roman);
                 var name = secret ? (v.secret == ChronicleSecretState.Locked ? "???" : "The One Who Remembers") : row.title;
                 GUI.Label(new Rect(r.x + 58 * u, r.y, r.width - 150 * u, r.height), name, title);
-                var tag = secret ? (v.secret == ChronicleSecretState.Locked ? "27 REQUIRED" : v.secret == ChronicleSecretState.Unlocked ? "NEW" : "VIEWED") : (row.unlocked > row.viewed ? "NEW  " : "") + row.viewed + " / 3";
+                var tag = secret ? (v.secret == ChronicleSecretState.Locked ? "FATE DEBT X ×3" : v.secret == ChronicleSecretState.Unlocked ? "NEW" : "VIEWED") : (row.unlocked > row.viewed ? "NEW  " : "") + row.viewed + " / 3";
                 GUI.Label(new Rect(r.xMax - 128 * u, r.y, 120 * u, r.height), tag, count);
                 if (ArchiveHit(r, i)) ApplyArchiveResult(secret ? archive.OpenSecret() : archive.OpenChapter(row.number));
             }
@@ -370,7 +370,7 @@ namespace GildedFate.UI
             var progress = profile.chronicle; var state = ChronicleArchive.SecretState(progress); var u = left.width / 470f; var y = left.y;
             y = ArchiveText(left, y, "CHAPTER X", Mathf.RoundToInt(15 * u), ArchiveGold, alpha, false, TextAnchor.UpperLeft, 2 * u);
             y = ArchiveText(left, y, state == ChronicleSecretState.Locked ? "???" : "The One Who Remembers", Mathf.RoundToInt(30 * u), ArchiveInk, alpha, false, TextAnchor.UpperLeft, 12 * u);
-            var body = state == ChronicleSecretState.Locked ? "A last chapter waits at the end of the book. It cannot be opened until every memory has been recovered."
+            var body = state == ChronicleSecretState.Locked ? "A last chapter waits at the end of the book. It cannot be opened until all three heroes have recovered their True History by defeating Fate Debt X."
                 : state == ChronicleSecretState.Unlocked ? "Every memory is recovered. The Chronicle has something to say." : "The Chronicle has said it. It can be read again.";
             ArchiveText(left, y, body, Mathf.RoundToInt(19 * u), ArchiveInk, alpha, true, TextAnchor.UpperLeft, 8 * u);
 

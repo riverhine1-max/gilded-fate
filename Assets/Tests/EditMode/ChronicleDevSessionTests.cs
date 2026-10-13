@@ -52,7 +52,10 @@ namespace GildedFate.Chronicle.Tests
         [Test] public void UnlockingEverythingOpensChapterX()
         {
             var s = new ChronicleDevSession(); s.UnlockEverythingButChapterX(); s.RefreshUnlocks();
-            Assert.AreEqual(27, s.sandbox.TotalUnlocked); Assert.IsTrue(s.sandbox.secretUnlocked);
+            Assert.AreEqual(27, s.sandbox.TotalUnlocked); Assert.IsFalse(s.sandbox.secretUnlocked, "27 memories alone no longer open Chapter X");
+            foreach (ChronicleHero hero in System.Enum.GetValues(typeof(ChronicleHero))) for (var tier = 1; tier <= 10; tier++) s.SimulateAscensionVictory(hero, tier);
+            Assert.IsTrue(s.sandbox.secretUnlocked);
+            Assert.AreEqual(30, s.RecollectionTable().Count);
             Assert.AreEqual(28, s.UnlockTable().Count);
         }
 

@@ -77,6 +77,13 @@ namespace GildedFate.Chronicle
         public ChronicleUnlockResult SimulateRunEnded(ChronicleHero hero, bool victory, int act, int floor) { var r = sandbox.RegisterRunEnded(hero, victory, act, floor, "dev-" + Guid.NewGuid().ToString("N")); Note(r); return r; }
         public ChronicleUnlockResult SimulateBoss(ChronicleHero hero, int act) { var r = sandbox.RegisterBossDefeated(hero, act, act * 18); Note(r); return r; }
         public ChronicleUnlockResult SimulateFloor(ChronicleHero hero, int floor) { var r = sandbox.RegisterFloorReached(hero, floor); Note(r); return r; }
+        /// <summary>Sandbox only: a recorded victory at a Fate Debt level, as the real run-end hook reports it.</summary>
+        public ChronicleAscensionResult SimulateAscensionVictory(ChronicleHero hero, int fateDebt)
+        {
+            var r = sandbox.RegisterAscensionVictory(hero, fateDebt, "dev-" + Guid.NewGuid().ToString("N"));
+            message = r.Earned ? "Earned " + r.earned.id + (r.secretUnlocked ? " + Chapter X" : "") : "No recollection earned: " + r.reason + ".";
+            return r;
+        }
         public void UnlockEverythingButChapterX()
         {
             foreach (var m in ChronicleCatalog.Memories) if (!sandbox.unlockedMemories.Contains(m.id)) sandbox.unlockedMemories.Add(m.id);
@@ -96,7 +103,19 @@ namespace GildedFate.Chronicle
                 var state = sandbox.IsViewed(m.id) ? "viewed  " : sandbox.IsUnlocked(m.id) ? "unlocked" : "locked  ";
                 lines.Add(m.id + "  " + state + "  Ch " + m.chapter + " " + ChronicleCatalog.HeroName(m.hero) + "  \"" + m.title + "\"  -  " + m.rule.hint);
             }
-            lines.Add(ChronicleCatalog.SecretChapterId + "  " + (sandbox.secretCompleted ? "viewed  " : sandbox.secretUnlocked ? "unlocked" : "locked  ") + "  Chapter X - requires all 27 memories");
+            lines.Add(ChronicleCatalog.SecretChapterId + "  " + (sandbox.secretCompleted ? "viewed  " : sandbox.secretUnlocked ? "unlocked" : "locked  ") + "  Chapter X - requires all three True Histories (Fate Debt X with every hero)");
+            return lines;
+        }
+
+        /// <summary>The Ten Recollections in the sandbox: one line per revelation slot with its earned / watched state.</summary>
+        public List<string> RecollectionTable()
+        {
+            var lines = new List<string>();
+            foreach (var d in ChronicleAscensionCatalog.All)
+            {
+                var state = sandbox.IsRevelationWatched(d.id) ? "watched " : sandbox.IsRevelationEarned(d.id) ? "earned  " : "locked  ";
+                lines.Add(d.id + "  " + state + "  " + ChronicleCatalog.HeroName(d.hero) + "  Fate Debt " + d.tier + "  " + (d.IsMajor ? "major " + d.kindOrdinal : "small " + d.kindOrdinal) + (ChronicleAscensionCatalog.IsPresentable(d) ? "" : "  (not yet written)"));
+            }
             return lines;
         }
 

@@ -28,9 +28,10 @@ namespace GildedFate.Chronicle
     /// IDs are stable strings (MEM_xx, CORR_xx, FACT_xxx), never display text.
     /// </summary>
     [Serializable]
-    public sealed class ChronicleProgress
+    public sealed partial class ChronicleProgress
     {
-        public const int CurrentVersion = 1;
+        // Version 2 adds the Ten Recollections (see ChronicleAscensionProgress.cs).
+        public const int CurrentVersion = 2;
         public int version = CurrentVersion;
 
         public List<string> unlockedMemories = new List<string>();
@@ -51,6 +52,7 @@ namespace GildedFate.Chronicle
         public int lastChapterOpened;
         public bool instantText;                                    // accessibility: passages appear immediately
         public float textSpeed = 1f;                                // 0.5 .. 2
+        public ChronicleAscensionProgress ascension = new ChronicleAscensionProgress();   // the Ten Recollections, per hero
 
         // ---------- safety ----------
         public void Ensure()
@@ -62,7 +64,9 @@ namespace GildedFate.Chronicle
             if (wins == null || wins.Length < 3) wins = Grow(wins);
             if (bestFloor == null || bestFloor.Length < 3) bestFloor = Grow(bestFloor);
             if (actBossMask == null || actBossMask.Length < 3) actBossMask = Grow(actBossMask);
+            ascension = ascension ?? new ChronicleAscensionProgress(); ascension.Ensure();
             if (version <= 0) version = CurrentVersion;
+            if (version < 2) { MigrateToAscension(); version = CurrentVersion; }
             if (textSpeed < .25f || textSpeed > 4f) textSpeed = 1f;
         }
 
@@ -139,7 +143,7 @@ namespace GildedFate.Chronicle
                 if (IsUnlocked(memory.id) || !RuleMet(memory.rule, memory.hero)) continue;
                 unlockedMemories.Add(memory.id); pendingNotices.Add(memory.id); result.newMemories.Add(memory.id);
             }
-            if (!secretUnlocked && AllMemoriesUnlocked)
+            if (!secretUnlocked && SecretRequirementMet)
             {
                 secretUnlocked = true; pendingNotices.Add(ChronicleCatalog.SecretChapterId); result.secretUnlocked = true;
             }
@@ -279,6 +283,7 @@ namespace GildedFate.Chronicle
             var keepMode = openingMode; var keepInstant = instantText; var keepSpeed = textSpeed;
             unlockedMemories.Clear(); viewedMemories.Clear(); discoveredFacts.Clear(); corrections.Clear(); pendingNotices.Clear(); countedRunIds.Clear(); eventsSeen.Clear();
             runsEnded = new int[3]; wins = new int[3]; bestFloor = new int[3]; actBossMask = new int[3];
+            ascension = new ChronicleAscensionProgress();
             secretUnlocked = secretCompleted = legacyMigrated = false; openingViews = 0; lastChapterOpened = 0; openingMode = keepMode; instantText = keepInstant; textSpeed = keepSpeed;
         }
     }
