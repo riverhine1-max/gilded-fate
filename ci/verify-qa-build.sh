@@ -37,8 +37,9 @@ else
   # A QA build must never be able to reach Steam or ship a Steam app id.
   if find "$DIR" -maxdepth 2 -name 'steam_appid.txt' | grep -q .; then fail "steam_appid.txt is present in the QA build."; else ok "no steam_appid.txt"; fi
   if find "$DIR" -name 'steam_api64.dll' | grep -q .; then fail "the Steam API library is shipped in the QA build."; else ok "no Steam API library shipped"; fi
-  EXE=$(find "$DIR" -maxdepth 1 -name '*.exe' | head -1)
-  case "$(basename "${EXE:-none}")" in GildedFateQA.exe) ok "executable is GildedFateQA.exe";; *) fail "executable should be GildedFateQA.exe (found: ${EXE:-none}).";; esac
+  # Unity also writes UnityCrashHandler64.exe next to the game, so look for the game's own executable by name.
+  if [ -f "$DIR/GildedFateQA.exe" ]; then ok "executable is GildedFateQA.exe"; else fail "GildedFateQA.exe is missing from $DIR (found: $(cd "$DIR" && ls *.exe 2>/dev/null | tr '\n' ' '))."; fi
+  if [ -f "$DIR/GildedFate.exe" ]; then fail "the QA build contains GildedFate.exe, which is the release executable's name."; fi
 fi
 
 [ "$FAIL" = 0 ] && echo "Chronicle QA build check passed ($MODE)." || { echo "Chronicle QA build check FAILED ($MODE)."; exit 1; }
