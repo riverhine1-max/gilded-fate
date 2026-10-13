@@ -3,6 +3,10 @@
 #   webgl         -> playable in the browser on GitHub Pages
 #   linux-trailer -> Linux player with the trailer-capture harness, pushed to the
 #                    "trailer-player" branch for recording trailer footage
+#   windows-qa    -> GildedFate-Windows-QA.zip: the game plus the developer-only Chronicle QA panel, with its own
+#                    save folder and Steam off. Only ever built by choosing "windows-qa" when you run this workflow
+#                    by hand; it is never part of "all" or of a push build, and it is published on its own
+#                    "chronicle-qa" release, so the normal "playtest" release is never touched.
 #
 # One-time setup (repository Settings):
 #   Secrets and variables > Actions > New repository secret:
@@ -18,7 +22,7 @@ on:
         description: Which builds to make
         type: choice
         default: all
-        options: [all, windows, webgl, linux-trailer, windows+webgl]
+        options: [all, windows, webgl, linux-trailer, windows+webgl, windows-qa]
   push:
     branches: [main]
     paths:
@@ -48,6 +52,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Verify the Chronicle QA configuration
+        run: bash ci/verify-qa-config.sh
       - id: pick
         shell: bash
         run: |
@@ -63,6 +69,7 @@ jobs:
           fi
           items=()
           case "$targets" in all|windows|windows+webgl) items+=('{"name":"windows","image":"windows-mono","target":"StandaloneWindows64","method":"GildedFate.Editor.GildedFateCiBuild.BuildWindows","output":"Builds/Windows/GildedFate.exe"}');; esac
+          case "$targets" in windows-qa) items+=('{"name":"windows-qa","image":"windows-mono","target":"StandaloneWindows64","method":"GildedFate.Editor.GildedFateCiBuild.BuildWindowsQA","output":"Builds/WindowsQA/GildedFateQA.exe"}');; esac
           case "$targets" in all|webgl|windows+webgl) items+=('{"name":"webgl","image":"webgl","target":"WebGL","method":"GildedFate.Editor.GildedFateCiBuild.BuildWebGL","output":"Builds/WebGL"}');; esac
           case "$targets" in all|linux-trailer) items+=('{"name":"linux-trailer","image":"linux-il2cpp","target":"StandaloneLinux64","method":"GildedFate.Editor.GildedFateCiBuild.BuildLinux","output":"Builds/Linux/GildedFate.x86_64"}');; esac
           json=$(IFS=,; echo "{\"include\":[${items[*]}]}")
@@ -123,6 +130,11 @@ jobs:
             bash /project/ci/unity-build.sh "${{ matrix.target }}" "${{ matrix.method }}" "${{ matrix.output }}"
           sudo chown -R "$(id -u):$(id -g)" "$GITHUB_WORKSPACE"
 
+      # The release build must contain no Chronicle QA code; the QA build must contain all of it.
+      - name: Verify Chronicle QA tools are ${{ matrix.name == 'windows-qa' && 'present' || 'absent' }}
+        if: matrix.name == 'windows' || matrix.name == 'windows-qa'
+        run: bash ci/verify-qa-build.sh "${{ matrix.name == 'windows-qa' && 'qa' || 'release' }}" "$(dirname "${{ matrix.output }}")"
+
       # ---------- Windows: zip on the "playtest" release ----------
       - name: Publish Windows playtest
         if: matrix.name == 'windows'
@@ -150,6 +162,51 @@ jobs:
           retry gh release upload playtest GildedFate-Windows.zip --clobber
           retry gh release edit playtest --prerelease --title "Gilded Fate — Windows playtest" \
             --notes "Built from ${GITHUB_SHA::7}. Download the zip, unzip it, and run GildedFate.exe. No Unity install needed."
+
+      # ---------- Windows QA: its own zip on its own "chronicle-qa" release (never "playtest") ----------
+      - name: Publish Chronicle QA build
+        if: matrix.name == 'windows-qa'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd Builds/WindowsQA && rm -rf *_BurstDebugInformation_DoNotShip *_BackUpThisFolder_ButDontShipItWithYourGame
+          cat > QA-README.txt <<EOF
+          GILDED FATE - CHRONICLE QA BUILD (built from ${GITHUB_SHA::7})
+          Unzip, then run GildedFateQA.exe. This is a TESTING build, not the release.
+
+          Open the Chronicle QA panel from the main menu (CHRONICLE QA button) or press F10.
+          Preview mode plays any scene and saves nothing. Record mode counts only what is genuinely unlocked or earned.
+          Everything you do is saved in its own folder, separate from the real game, and Steam is switched off:
+            %USERPROFILE%\AppData\LocalLow\Gilded Fate\Gilded Fate QA\ChronicleQA
+          RESET ALL QA PROGRESS (bottom right of the panel) clears it instantly. Deleting that folder does the same.
+          EOF
+          zip -qr ../../GildedFate-Windows-QA.zip . && cd ../..
+          ls -lh GildedFate-Windows-QA.zip
+          retry() {
+            for attempt in 1 2 3 4; do
+              if "$@"; then return 0; fi
+              if [ "$attempt" -lt 4 ]; then
+                echo "GitHub request failed; retrying in $((attempt * 5)) seconds."
+                sleep "$((attempt * 5))"
+              fi
+            done
+            return 1
+          }
+          ensure_release() {
+            gh release view chronicle-qa >/dev/null 2>&1 ||
+              gh release create chronicle-qa --prerelease --title "Gilded Fate — Chronicle QA build (testers only)" --target "$GITHUB_SHA" \
+                --notes "Developer-only Chronicle testing build."
+          }
+          retry ensure_release
+          retry gh release upload chronicle-qa GildedFate-Windows-QA.zip --clobber
+          retry gh release edit chronicle-qa --prerelease --title "Gilded Fate — Chronicle QA build (testers only)" \
+            --notes "Built from ${GITHUB_SHA::7}. Developer-only Chronicle testing build, separate from the normal playtest build. Unzip and run GildedFateQA.exe. Saves go to their own folder and Steam is off."
+      - uses: actions/upload-artifact@v4
+        if: matrix.name == 'windows-qa'
+        with:
+          name: GildedFate-Windows-QA
+          path: GildedFate-Windows-QA.zip
+          retention-days: 30
 
       # ---------- WebGL: hand the site to the Pages deploy job ----------
       - name: Package WebGL site

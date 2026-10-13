@@ -81,6 +81,9 @@ namespace GildedFate.UI
             Link("WISHLIST ON STEAM",SteamPageUrl);Link("DISCORD",DiscordUrl);Link("SEND FEEDBACK",FeedbackUrl);
             var news=new Rect(w-170,h-74,144,38);DrawButtonFrame(news,news.Contains(PointerPosition),false);if(GUI.Button(news,"WHAT'S NEW",new GUIStyle(buttonStyle){fontSize=12}))whatsNewOpen=true;
             if(!whatsNewOpen&&!quitConfirmOpen)DrawPlaygroundMenuButton(w,h); // Editor / Development Build only
+#if UNITY_EDITOR || GILDED_CHRONICLE_QA
+            if(!whatsNewOpen&&!quitConfirmOpen)DrawChronicleQaMenuButton(w,h); // Editor (QA switch on) / Chronicle QA build only
+#endif
             if(whatsNewOpen)DrawWhatsNew(w,h);
             if(quitConfirmOpen)DrawQuitConfirm(w,h);
         }

@@ -22,6 +22,10 @@ namespace GildedFate.Saving
                 // Capture builds cannot read or overwrite the user's actual save/profile.
                 var args=Environment.GetCommandLineArgs();
                 for(var i=0;i<args.Length-1;i++)if(args[i]=="-gfCapturePath")return Path.Combine(Path.GetDirectoryName(Path.GetFullPath(args[i+1])),"save-fixtures",Path.GetFileNameWithoutExtension(args[i+1]));
+#if UNITY_EDITOR || GILDED_CHRONICLE_QA
+                // The Chronicle QA build (and the editor's QA switch) keeps all test progress in its own folder, apart from the player's real saves.
+                if(ChronicleQaMode.Active){var qa=ChronicleQaMode.SaveDirectory;try{Directory.CreateDirectory(qa);}catch(Exception){}return qa;}
+#endif
                 return Application.persistentDataPath;
             }
         }
