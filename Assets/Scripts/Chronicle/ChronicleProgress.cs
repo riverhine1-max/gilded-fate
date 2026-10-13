@@ -53,6 +53,7 @@ namespace GildedFate.Chronicle
         public bool instantText;                                    // accessibility: passages appear immediately
         public float textSpeed = 1f;                                // 0.5 .. 2
         public ChronicleAscensionProgress ascension = new ChronicleAscensionProgress();   // the Ten Recollections, per hero
+        public ChronicleJournalState journal = new ChronicleJournalState();               // story and reading positions, reading preferences
 
         // ---------- safety ----------
         public void Ensure()
@@ -67,11 +68,12 @@ namespace GildedFate.Chronicle
             ascension = ascension ?? new ChronicleAscensionProgress(); ascension.Ensure();
             if (version <= 0) version = CurrentVersion;
             if (version < 2) { MigrateToAscension(); version = CurrentVersion; }
+            journal = journal ?? new ChronicleJournalState(); journal.Ensure(); ChronicleJournal.Initialise(this);
             if (textSpeed < .25f || textSpeed > 4f) textSpeed = 1f;
         }
 
         /// <summary>How scenes should play for this player: the Chronicle's own preferences plus the game's accessibility settings.</summary>
-        public ChronicleSettings ToSettings(bool reduceMotion, bool reduceFlashing) { Ensure(); return new ChronicleSettings { instantText = instantText, textSpeed = textSpeed, reduceMotion = reduceMotion, reduceFlashing = reduceFlashing }; }
+        public ChronicleSettings ToSettings(bool reduceMotion, bool reduceFlashing) { Ensure(); return new ChronicleSettings { instantText = instantText, textSpeed = textSpeed, reduceMotion = reduceMotion, reduceFlashing = reduceFlashing, manualAdvance = journal.manualAdvance }; }
         static int[] Grow(int[] old) { var a = new int[3]; if (old != null) Array.Copy(old, a, Math.Min(old.Length, 3)); return a; }
 
         // ---------- queries ----------
@@ -284,6 +286,7 @@ namespace GildedFate.Chronicle
             unlockedMemories.Clear(); viewedMemories.Clear(); discoveredFacts.Clear(); corrections.Clear(); pendingNotices.Clear(); countedRunIds.Clear(); eventsSeen.Clear();
             runsEnded = new int[3]; wins = new int[3]; bestFloor = new int[3]; actBossMask = new int[3];
             ascension = new ChronicleAscensionProgress();
+            journal = new ChronicleJournalState { textScale = journal?.textScale ?? 1f, manualAdvance = journal?.manualAdvance ?? false };   // positions reset, preferences kept
             secretUnlocked = secretCompleted = legacyMigrated = false; openingViews = 0; lastChapterOpened = 0; openingMode = keepMode; instantText = keepInstant; textSpeed = keepSpeed;
         }
     }

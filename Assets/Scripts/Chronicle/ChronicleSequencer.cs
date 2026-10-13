@@ -158,6 +158,8 @@ namespace GildedFate.Chronicle
         int lastSpread; bool settleReturnedPage;
         int pc; float wait; bool finishing, committed; ChronicleTextBlock activeWrite, pendingWrite; float activeBeat; ChronicleNarratorStyle narratorStyle;
         string pendingAudioCue = "";
+        // The living journal: page breaks breathe before they turn, wait for narration, and (manual advancement) wait for the player.
+        bool anticipated, waitingAdvance, advanceRequested, authoredBreak, awaitingTurn, completionDone;
 
         public ChronicleSequencer(ChronicleScene scene, IChronicleStage stage, IChronicleContext ctx, IChronicleCommitSink sink, ChronicleSettings settings = null, ChroniclePageMetrics metrics = null, bool replay = false, bool archiveMode = false)
         {
@@ -180,6 +182,21 @@ namespace GildedFate.Chronicle
         }
 
         public void Pause() { Paused = true; (stage as IChronicleDialogueStage)?.SetDialoguePaused(true); }
+        /// <summary>Manual page advancement: a finished page is waiting for the player before it turns or the book closes.</summary>
+        public bool AwaitingAdvance => settings.manualAdvance && (waitingAdvance || awaitingTurn) && !advanceRequested && !Finished;
+        /// <summary>Turns the waiting page. Ignored at any other moment, so it can never cut text short.</summary>
+        public bool Advance() { if (!AwaitingAdvance) return false; advanceRequested = true; return true; }
+        /// <summary>A recorded narration line on the page is still being spoken.</summary>
+        public bool NarrationPlaying
+        {
+            get
+            {
+                foreach (var b in State.blocks) if (Speaking(b)) return true;
+                if (State.outgoing != null) foreach (var b in State.outgoing.blocks) if (Speaking(b)) return true;
+                return false;
+            }
+        }
+        static bool Speaking(ChronicleTextBlock b) => b.dialogue != null && b.dialogue.timing != null && b.dialogue.positionSeconds != null && b.dialogue.positionSeconds() < b.dialogue.timing.durationSeconds;
         public void Resume() { Paused = false; (stage as IChronicleDialogueStage)?.SetDialoguePaused(false); }
 
         public void Update(float dt)
@@ -215,12 +232,14 @@ namespace GildedFate.Chronicle
         void Tick(float dt)
         {
             if (wait > 0f) wait -= dt;
+            if (awaitingTurn && advanceRequested && wait <= 0f && !NarrationPlaying) PerformDeferredTurn();
+            State.awaitingAdvance = AwaitingAdvance;
             if (settleReturnedPage && wait <= 0f)
             {
                 stage.SetBookPoseImmediate(State.pose, State.spreadIndex);
                 settleReturnedPage = false;
             }
-            if (pendingWrite != null && wait <= 0f)
+            if (pendingWrite != null && wait <= 0f && !awaitingTurn)
             {
                 BeginPlayback(pendingWrite, false);
                 if (!string.IsNullOrEmpty(pendingAudioCue)) stage.PlayAudio(pendingAudioCue, 1f);
@@ -255,10 +274,71 @@ namespace GildedFate.Chronicle
         void RunCommands()
         {
             var guard = 0;
-            while (!Finished && !finishing && wait <= 0f && activeWrite == null && pc < Scene.commands.Count && guard++ < 4096)
-                Execute(Scene.commands[pc++], false);
+            while (!Finished && !finishing && wait <= 0f && activeWrite == null && !awaitingTurn && pc < Scene.commands.Count && guard++ < 4096)
+            {
+                if (BeginCompletionHold() || HoldAtPageBreak(Scene.commands[pc])) break;
+                authoredBreak = IsPageBreak(Scene.commands[pc]); Execute(Scene.commands[pc++], false); authoredBreak = false;
+            }
             if (pc >= Scene.commands.Count) finishing = true;
-            if (finishing && !Finished && wait <= 0f && activeWrite == null && tweens.Count == 0 && !EffectsRunning()) Finish(false);
+            if (finishing && !Finished && wait <= 0f && activeWrite == null && !awaitingTurn && tweens.Count == 0 && !EffectsRunning() && !BeginCompletionHold()) Finish(false);
+        }
+
+        // ---------------- the living journal ----------------
+        /// <summary>An authored page break: a turn, a fresh spread on an open book, or the book closing.</summary>
+        bool IsPageBreak(ChronicleCommand c)
+        {
+            if (State.pose != ChronicleBookPose.Open || !Holds(c.condition)) return false;
+            return c.op == ChronicleOp.TurnPage || c.op == ChronicleOp.CloseBook || (c.op == ChronicleOp.OpenBook && SpreadIsDirty);
+        }
+
+        /// <summary>Before a page break: let narration finish, take a breath, and in manual mode wait for the player.
+        /// Returns true while the break must wait. The turn itself then runs exactly as authored.</summary>
+        bool HoldAtPageBreak(ChronicleCommand next)
+        {
+            if (!IsPageBreak(next)) return false;
+            if (NarrationPlaying) return true;
+            if (!anticipated)
+            {
+                anticipated = true;
+                Hold(ChronicleRhythm.TurnAnticipation(Replay, settings.instantText, settings.reduceMotion), false);
+                if (wait > 0f) return true;
+            }
+            if (settings.manualAdvance && !advanceRequested) { waitingAdvance = true; State.awaitingAdvance = true; return true; }
+            anticipated = waitingAdvance = advanceRequested = false; State.awaitingAdvance = false;
+            return false;
+        }
+
+        /// <summary>Only a journal page written for the first time, during real (committing) playback, earns the finishing moment.</summary>
+        bool CompletionEligible => !Replay && !ArchiveMode && sink != null && ChronicleJournal.SpreadOf(Scene.id) >= 1;
+
+        bool WritesRemain()
+        {
+            for (var i = pc; i < Scene.commands.Count; i++)
+            {
+                var c = Scene.commands[i];
+                if ((c.op == ChronicleOp.WriteText || c.op == ChronicleOp.ShowNarration || c.op == ChronicleOp.WriteCorrection || c.op == ChronicleOp.CrossOutText) && Holds(c.condition)) return true;
+            }
+            return false;
+        }
+
+        /// <summary>After the final words of a newly written chapter, hold the finished page while its ink settles, before the
+        /// scene's own closing or page turn. Once only; never on a revisit, an Archive reading, or a skip.</summary>
+        bool BeginCompletionHold()
+        {
+            if (completionDone || !CompletionEligible || activeWrite != null || pendingWrite != null || State.transcript.Count == 0 || WritesRemain()) return false;
+            completionDone = true;
+            var last = State.transcript[State.transcript.Count - 1]; State.completionSide = last.side; State.completion = 0f;
+            var seconds = ChronicleRhythm.CompletionHold(settings.reduceMotion, settings.instantText);
+            AddTween(seconds, e => State.completion = e, false, false); Hold(seconds, false);
+            return true;
+        }
+
+        /// <summary>Manual mode only: a passage overflowed onto fresh paper. The sheet waits for the player before it lifts.</summary>
+        void PerformDeferredTurn()
+        {
+            awaitingTurn = advanceRequested = false; State.awaitingTurn = State.awaitingAdvance = false;
+            stage.BookAction(ChronicleBookAction.TurnPageForward, State.narrator);
+            Hold(stage.BookActionDuration(ChronicleBookAction.TurnPageForward), false);
         }
 
         // A scene is not over while a timed effect (a flash, a shake, drawing threads) is still playing.
@@ -270,6 +350,8 @@ namespace GildedFate.Chronicle
             tweens.Clear(); wait = 0f; activeWrite = pendingWrite = null;
             pendingAudioCue = "";
             settleReturnedPage = false;
+            awaitingTurn = waitingAdvance = advanceRequested = anticipated = authoredBreak = false; completionDone = true;
+            State.awaitingTurn = State.awaitingAdvance = false; State.completion = -1f;
             foreach (var b in State.blocks) ChronicleHandwriting.Complete(b);
             var guard = 0;
             while (pc < Scene.commands.Count && guard++ < 8192) Execute(Scene.commands[pc++], true);
@@ -347,8 +429,11 @@ namespace GildedFate.Chronicle
             State.spreadIndex = ++lastSpread; State.layout = layout; ResetSpread(preserveIllustration);
             if (instant) return;
             settleReturnedPage |= State.spreadIndex != from + 1;
+            // An overflow mid-passage in manual mode waits for the player; authored breaks were already granted in RunCommands.
+            if (settings.manualAdvance && !authoredBreak) { awaitingTurn = true; advanceRequested = false; State.awaitingTurn = true; return; }
             stage.BookAction(ChronicleBookAction.TurnPageForward, State.narrator);
-            Hold(stage.BookActionDuration(ChronicleBookAction.TurnPageForward), false);
+            // Authored page breaks settle briefly before the pen returns; a passage running onto fresh paper keeps its pace.
+            Hold(stage.BookActionDuration(ChronicleBookAction.TurnPageForward) + (authoredBreak ? ChronicleRhythm.TurnSettle(Replay) : 0f), false);
         }
 
         void Execute(ChronicleCommand c, bool instant)
@@ -406,11 +491,12 @@ namespace GildedFate.Chronicle
                         }
                         else if (!instant) State.lastAudioCue = "ink_scratch";
                     }
+                    var beat = ChronicleRhythm.Beat(block.text, c.seconds, Replay, settings.instantText);   // shaped by the passage itself
                     if (!block.complete)
                     {
-                        activeWrite = block; activeBeat = c.seconds;
+                        activeWrite = block; activeBeat = beat;
                     }
-                    else Hold(c.seconds, instant);
+                    else Hold(beat, instant);
                     break;
                 }
                 case ChronicleOp.PauseWriting:
@@ -456,7 +542,8 @@ namespace GildedFate.Chronicle
                         correctionSpace.Remove(c.id);
                     }
                     var block = BeginBlock("fix:" + c.id, def.corrected, ChronicleTextStyle.Correction, "", def.id, true, instant);
-                    if (!block.complete) { activeWrite = block; activeBeat = c.seconds; } else Hold(c.seconds, instant);
+                    var beat = ChronicleRhythm.Beat(block.text, c.seconds, Replay, settings.instantText);
+                    if (!block.complete) { activeWrite = block; activeBeat = beat; } else Hold(beat, instant);
                     break;
                 }
 
@@ -622,7 +709,7 @@ namespace GildedFate.Chronicle
                 // Keep the same scene, illustration and canonical dialogue IDs while giving the pen fresh paper.
                 TurnToNewSpread(State.layout, instant, true);
                 block.spread = State.spreadIndex;
-                chosen = sides[0]; fits = true; turned = !instant && wait > 0f;
+                chosen = sides[0]; fits = true; turned = !instant && (wait > 0f || awaitingTurn);
             }
             if (!fits) { block.overflow = true; State.overflowCount++; }
             budget.Place(chosen, height); block.side = chosen;
@@ -686,6 +773,9 @@ namespace GildedFate.Chronicle
         }
 
         public void Pause() { if (IsPlaying) Current.Pause(); }
+        public bool Paused => IsPlaying && Current.Paused;
+        public bool AwaitingAdvance => IsPlaying && Current.AwaitingAdvance;
+        public bool Advance() => IsPlaying && Current.Advance();
         public void Resume() { if (IsPlaying) Current.Resume(); }
         public void Abort() { if (IsPlaying) Current.Skip(); }
     }

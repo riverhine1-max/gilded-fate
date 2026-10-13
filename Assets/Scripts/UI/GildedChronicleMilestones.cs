@@ -11,7 +11,12 @@ namespace GildedFate.UI
 {
     public sealed partial class GildedMainMenu
     {
-        private enum ChronicleMilestonePhase { FadeOut, Emerge, Playing, Closing, FadeIn }
+        private enum ChronicleMilestonePhase { FadeOut, Emerge, Continuing, Playing, Closing, FadeIn }
+        // The living journal: the book reopens where the story stopped and turns to the new chapter.
+        private ChronicleContinuationPlan chronicleContinuation;
+        private int chronicleContinueSpread, chronicleNextStartSpread = -1;
+        private float chronicleContinueNextTurn;
+        private string chronicleMilestoneLastScene = "";
         private bool chronicleMilestoneActive, chronicleMilestoneRunEnded, chronicleMilestoneVictory, chronicleMilestoneOpened;
         private ChronicleMilestonePhase chronicleMilestonePhase;
         private float chronicleMilestoneTime, chronicleMilestoneCloseDuration;
@@ -31,6 +36,8 @@ namespace GildedFate.UI
             // The Ten Recollections, after the existing victory presentation. Only authored, approved and registered revelation scenes
             // are returned, so until that content ships this adds nothing and no placeholder is ever shown.
             if (runEnded && victory) foreach (var id in ChronicleAscension.ScenesToPresent(profile.chronicle, hero)) chronicleMilestoneScenes.Enqueue(ChronicleScripts.Get(id));
+            chronicleContinuation = chronicleMilestoneScenes.Count > 0 && chronicleMilestoneScenes.Peek() != null ? ChronicleJournal.PlanContinuation(profile.chronicle, chronicleMilestoneScenes.Peek().id) : null;
+            chronicleNextStartSpread = -1; chronicleMilestoneLastScene = "";
             chronicleMilestoneContinue = then;
             chronicleMilestoneRunEnded = runEnded; chronicleMilestoneVictory = victory;
             chronicleMilestoneOpened = false; chronicleMilestoneActive = true;
@@ -55,13 +62,37 @@ namespace GildedFate.UI
                         if (chronicleMilestoneTime < (profile.reduceMotion ? .45f : 1.6f)) break;
                         chronicleHost ??= ChronicleBookStageHost.Create(2400, 1350);
                         if (chronicleHost == null) { FinishChronicleMilestone(); break; }
-                        chronicleHost.SetActive(true); chronicleHost.Rig.SetPoseImmediate(ChronicleBookPose.Closed, 0); chronicleHost.Tick(0, null);
+                        chronicleHost.SetActive(true);
+                        // A journal already begun emerges open at the page where its story last stopped.
+                        if (chronicleContinuation != null) chronicleHost.Rig.SetPoseImmediate(ChronicleBookPose.Open, chronicleContinuation.startSpread);
+                        else chronicleHost.Rig.SetPoseImmediate(ChronicleBookPose.Closed, 0);
+                        chronicleHost.Tick(0, null);
                         SetChronicleMilestonePhase(ChronicleMilestonePhase.Emerge);
                         break;
                     case ChronicleMilestonePhase.Emerge:
                         chronicleHost.Tick(dt, null);
-                        if (chronicleMilestoneTime >= (profile.reduceMotion ? .4f : 1.35f)) PlayNextChronicleMilestone();
+                        if (chronicleMilestoneTime < (profile.reduceMotion ? .4f : 1.35f)) break;
+                        if (chronicleContinuation == null) { PlayNextChronicleMilestone(); break; }
+                        chronicleContinueSpread = chronicleContinuation.startSpread; chronicleContinueNextTurn = .15f;
+                        SetChronicleMilestonePhase(ChronicleMilestonePhase.Continuing);
                         break;
+                    case ChronicleMilestonePhase.Continuing:
+                    {
+                        chronicleHost.Tick(dt, null);
+                        var plan = chronicleContinuation;
+                        if (chronicleContinueSpread == plan.toSpread)
+                        {
+                            if (chronicleHost.Rig.Frame.busy) break;
+                            chronicleMilestoneOpened = true; chronicleNextStartSpread = plan.toSpread; chronicleContinuation = null;   // the scene continues on this open page
+                            PlayNextChronicleMilestone(); break;
+                        }
+                        if (chronicleMilestoneTime < chronicleContinueNextTurn || chronicleHost.Rig.Frame.busy) break;
+                        var action = plan.toSpread > chronicleContinueSpread ? ChronicleBookAction.TurnPageForward : ChronicleBookAction.TurnPageBack;
+                        chronicleHost.Rig.Perform(action, profile.chronicle.NarratorState); ChronicleBookSound(action);
+                        chronicleContinueSpread += action == ChronicleBookAction.TurnPageForward ? 1 : -1;
+                        chronicleContinueNextTurn = chronicleMilestoneTime + chronicleHost.Rig.DurationOf(action) * (profile.reduceMotion ? 1f : .8f);
+                        break;
+                    }
                     case ChronicleMilestonePhase.Playing:
                         AdvanceChronicle(dt);
                         break;
@@ -91,13 +122,19 @@ namespace GildedFate.UI
 
         private void PlayNextChronicleMilestone()
         {
+            // The scene that just ended is where the story now stands (run endings and the opening are not journal pages).
+            if (!string.IsNullOrEmpty(chronicleMilestoneLastScene) && ChronicleJournal.RecordStoryReached(profile.chronicle, chronicleMilestoneLastScene)) ProfileService.Save(profile);
+            chronicleMilestoneLastScene = "";
             while (chronicleMilestoneScenes.Count > 0)
             {
                 var scene = chronicleMilestoneScenes.Dequeue();
                 if (scene == null) continue;
                 var presentationOnly = scene.id == ChronicleMilestoneScenes.VictoryId || scene.id == ChronicleMilestoneScenes.DefeatId;
                 // The shared ending never unlocks Reaper's memory, facts, corrections or Chapter X.
-                if (!PlayChronicleSceneData(scene, presentationOnly, PlayNextChronicleMilestone, true, !chronicleMilestoneOpened)) continue;
+                // Each scene starts on the page the previous one finished on, so the book never jumps back to its first sheet.
+                var start = chronicleNextStartSpread >= 0 ? chronicleNextStartSpread : chronicleMilestoneOpened && chronicleDirector?.Current != null ? chronicleDirector.Current.State.spreadIndex : 0;
+                if (!PlayChronicleSceneData(scene, presentationOnly, PlayNextChronicleMilestone, true, !chronicleMilestoneOpened, start)) continue;
+                chronicleNextStartSpread = -1; if (!presentationOnly) chronicleMilestoneLastScene = scene.id;
                 chronicleMilestoneOpened = true;
                 SetChronicleMilestonePhase(ChronicleMilestonePhase.Playing); return;
             }

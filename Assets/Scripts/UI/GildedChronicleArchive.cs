@@ -34,7 +34,10 @@ namespace GildedFate.UI
         {
             if (profile == null) return;
             var progress = profile.chronicle; progress.Ensure();
-            archive = new ChronicleArchiveController(progress);
+            // Reading pages are laid out with the same hand and paper the screen draws, so page counts always match.
+            archive = new ChronicleArchiveController(progress, ChronicleArchiveController.ContentsSpread, () => chronicleHost != null ? ChronicleWritingMetrics() : null);
+            archive.GetNarrationVolume = () => ChronicleDialogueAudio.VoiceVolume; archive.SetNarrationVolume = v => ChronicleDialogueAudio.VoiceVolume = v;   // the game's existing Narration setting
+            if (ChronicleJournal.HasReadingPosition(progress)) archive.SetFocusIndex(ChronicleArchiveController.ContentsOptionStart + ChronicleArchiveController.OptContinue);
             archiveReadings.Clear(); archiveFlipActive = archiveSyncBook = archiveClosing = false;
             chronicleHost = chronicleHost ?? ChronicleBookStageHost.Create(2400, 1350);
             if (chronicleHost != null)
@@ -63,6 +66,7 @@ namespace GildedFate.UI
         {
             archiveClosing = false;
             if (chronicleHost != null && !chronicleActive) chronicleHost.SetActive(false);
+            if (profile != null) ProfileService.Save(profile);   // the reading place and page are kept for next time
             archive = null; archiveReadings.Clear(); screen = ScreenMode.Menu;
         }
 
@@ -118,10 +122,14 @@ namespace GildedFate.UI
                         chronicleHost.Rig.Perform(action, profile.chronicle.NarratorState); ChronicleBookSound(action);
                         archiveFlipActive = true; archiveSyncBook = true;
                     }
+                    if (!string.IsNullOrEmpty(r.id)) ProfileService.Save(profile);   // a page turned inside a reading is remembered at once
                     break;
-                case ChronicleArchiveAction.OpenedReading: Sfx(SoundCue.UiConfirm); break;
-                case ChronicleArchiveAction.ClosedReading: Sfx(SoundCue.UiBack); break;
-                case ChronicleArchiveAction.ChangedOption: Sfx(SoundCue.UiHover); ProfileService.Save(profile); break;
+                case ChronicleArchiveAction.OpenedReading: Sfx(SoundCue.UiConfirm); ProfileService.Save(profile); break;
+                case ChronicleArchiveAction.ClosedReading: Sfx(SoundCue.UiBack); ProfileService.Save(profile); break;
+                case ChronicleArchiveAction.ChangedOption:
+                    Sfx(SoundCue.UiHover);
+                    if (r.option == ChronicleArchiveController.OptTextSize) { archiveReadings.Clear(); chronicleRichCache.Clear(); }   // reflow the pages
+                    ProfileService.Save(profile); break;
                 case ChronicleArchiveAction.Replay: PlayArchiveScene(r.id); break;
                 case ChronicleArchiveAction.BeginSecret: PlayArchiveScene(ChronicleCatalog.SecretSceneId); break;
                 case ChronicleArchiveAction.Exit: Sfx(SoundCue.UiBack); BeginCloseChronicleArchive(); break;
@@ -243,7 +251,7 @@ namespace GildedFate.UI
             var over = r.Contains(PointerPosition);
             if (!controllerNavigation && over && archive.Focus != focusIndex && focusIndex >= 0) archive.SetFocusIndex(focusIndex);
             var focused = archive.Focus == focusIndex && (controllerNavigation || over);
-            if (focused && controllerNavigation) Outline(r, new Color(.34f, .21f, .07f, .95f), 2);
+            if (focused && GUI.enabled) DrawArchiveInkSelection(r, 1f);   // an ink underline, never a box
             return GUI.Button(r, "", GUIStyle.none);
         }
 
@@ -254,52 +262,154 @@ namespace GildedFate.UI
             var reading = ChronicleArchive.Reading(id, profile.chronicle, ChronicleWritingMetrics()); archiveReadings[id] = reading; return reading;
         }
 
+        // ---- journal ink: everything on these pages is ink on parchment, never filled cards or framed buttons ----
+        private static Color ArchiveTint(Color c, float a) => new Color(c.r, c.g, c.b, c.a * a);
+
+        // A thin antique-gold rule with a small inked diamond at its centre.
+        private void DrawArchiveOrnament(Rect page, float y, float alpha, float widthFraction = .62f, bool diamond = true)
+        {
+            var u = page.width / 470f; var cx = page.center.x; var half = page.width * widthFraction * .5f; var ink = ArchiveTint(ArchiveGold, .7f * alpha);
+            var d = diamond ? 3.5f * u : 0f; var gap = diamond ? d + 4f * u : 0f;
+            ChronicleArtLine(new Vector2(cx - half, y), new Vector2(cx - gap, y), ink, 1f);
+            ChronicleArtLine(new Vector2(cx + gap, y), new Vector2(cx + half, y), ink, 1f);
+            if (!diamond) return;
+            ChronicleArtLine(new Vector2(cx - d, y), new Vector2(cx, y - d), ink, 1f); ChronicleArtLine(new Vector2(cx, y - d), new Vector2(cx + d, y), ink, 1f);
+            ChronicleArtLine(new Vector2(cx + d, y), new Vector2(cx, y + d), ink, 1f); ChronicleArtLine(new Vector2(cx, y + d), new Vector2(cx - d, y), ink, 1f);
+        }
+
+        // The selection: a slightly uneven pen underline and a small gold pointing mark in the margin.
+        private void DrawArchiveInkSelection(Rect r, float alpha)
+        {
+            var ink = ArchiveTint(ArchiveInk, .5f * alpha); var y = r.yMax - 3f; var mid = r.x + r.width * .52f;
+            ChronicleArtLine(new Vector2(r.x + 2f, y), new Vector2(mid, y + .7f), ink, 1.3f);
+            ChronicleArtLine(new Vector2(mid, y + .7f), new Vector2(r.xMax - 4f, y - .3f), ink, 1.1f);
+            var mark = ArchiveStyle(Mathf.Max(9, Mathf.RoundToInt(Mathf.Min(r.height, 40f) * .6f)), false, TextAnchor.MiddleRight); SetChronicleTextInk(mark, ArchiveTint(ArchiveGold, alpha));
+            GUI.Label(new Rect(r.x - 20f, r.y, 17f, Mathf.Min(r.height, 40f)), "\u203a", mark);
+        }
+
+        // A faint dotted leader between a title and its marks, as in a printed table of contents.
+        private void DrawArchiveLeader(float x0, float x1, float y, float unit, float alpha)
+        {
+            var ink = ArchiveTint(ArchiveDim, .35f * alpha); var step = 7f * unit;
+            for (var x = x0 + step * .5f; x < x1 - step * .5f; x += step) ChronicleArtLine(new Vector2(x, y), new Vector2(x + 1.2f * unit, y), ink, 1.2f);
+        }
+
+        // Kept name: now an ink text link, underlined in gold, red when hovered.
+        private void DrawArchiveSmallButton(Rect r, string label)
+        {
+            var hot = GUI.enabled && r.Contains(PointerPosition);
+            var s = ArchiveStyle(Mathf.Max(8, Mathf.RoundToInt(r.height * .62f)), true, TextAnchor.MiddleLeft); SetChronicleTextInk(s, hot ? ArchiveRed : ArchiveInk);
+            var width = Mathf.Min(r.width, s.CalcSize(new GUIContent(label)).x);
+            GUI.Label(r, label, s);
+            ChronicleArtLine(new Vector2(r.x, r.yMax - 3f), new Vector2(r.x + width, r.yMax - 3f), ArchiveTint(hot ? ArchiveRed : ArchiveGold, hot ? .9f : .5f), 1f);
+        }
+
+        private float ArchiveLinkWidth(string label, float height) => ArchiveStyle(Mathf.Max(8, Mathf.RoundToInt(height * .62f)), true, TextAnchor.MiddleLeft).CalcSize(new GUIContent(label)).x + 6f;
+
+        private static string ArchiveTextSizeName(float scale) => scale < .9f ? "small" : scale < 1.07f ? "standard" : scale < 1.22f ? "large" : "largest";
+
         // ---- contents spread ----
         private void DrawArchiveContents(Rect left, Rect right, float alpha)
         {
             var progress = profile.chronicle; var v = ChronicleArchive.Contents(progress); var u = left.width / 470f; var y = left.y;
             y = ArchiveText(left, y, "THE CHRONICLE", Mathf.RoundToInt(15 * u), ArchiveDim, alpha, false, TextAnchor.UpperLeft, 2);
             y = ArchiveText(left, y, "OF BROKEN FATE", Mathf.RoundToInt(32 * u), ArchiveInk, alpha, false, TextAnchor.UpperLeft, 8 * u);
-            y = ArchiveText(left, y, "A history that keeps correcting itself.", Mathf.RoundToInt(17 * u), ArchiveDim, alpha, true, TextAnchor.UpperLeft, 14 * u);
-            y = ArchiveText(left, y, $"MEMORIES  {v.memoriesUnlocked} / {ChronicleCatalog.MemoryCount}     VIEWED  {v.memoriesViewed}", Mathf.RoundToInt(15 * u), ArchiveGold, alpha, false, TextAnchor.UpperLeft, 2 * u);
-            y = ArchiveText(left, y, $"CORRECTIONS FOUND  {v.correctionsFound} / {ChronicleCatalog.Corrections.Length}" + (v.newCount > 0 ? $"     {v.newCount} NEW" : ""), Mathf.RoundToInt(15 * u), ArchiveGold, alpha, false, TextAnchor.UpperLeft, 12 * u);
-            Fill(new Rect(left.x, y, left.width, 1.5f), new Color(ArchiveGold.r, ArchiveGold.g, ArchiveGold.b, .5f * alpha)); y += 14 * u;
+            y = ArchiveText(left, y, "A history that keeps correcting itself.", Mathf.RoundToInt(17 * u), ArchiveDim, alpha, true, TextAnchor.UpperLeft, 10 * u);
+            y = ArchiveText(left, y, $"{v.memoriesUnlocked} of {ChronicleCatalog.MemoryCount} memories recovered  \u00b7  {v.memoriesViewed} watched  \u00b7  {v.correctionsFound} of {ChronicleCatalog.Corrections.Length} corrections" + (v.newCount > 0 ? $"  \u00b7  {v.newCount} new" : ""), Mathf.RoundToInt(14 * u), ArchiveGold, alpha, false, TextAnchor.UpperLeft, 10 * u);
+            DrawArchiveOrnament(left, y + 2 * u, alpha); y += 16 * u;
             DrawArchivePreface(left, y, v.prologue, u, alpha);
 
-            // The three options live at the foot of the left page: accessibility and the opening cinematic.
-            var rowH = 34f * u; var top = left.yMax - rowH * 3f - 4f * u;
-            var mode = progress.openingMode == 0 ? "FULL AT EVERY LAUNCH" : progress.openingMode == 1 ? "SHORT AFTER THE FIRST" : "SKIP IT";
-            var rows = new[] { ("INSTANT TEXT", progress.instantText ? "ON" : "OFF"), ("WRITING SPEED", progress.textSpeed.ToString("0.##") + "x"), ("OPENING", mode) };
+            // ---- the reader's preferences, at the foot of the left page (the same place as before) ----
+            var rowH = 25f * u; var continueH = 34f * u; var top = left.yMax - rowH * 6f - continueH - 26f * u;
+            var calm = profile.reduceMotion || profile.reduceFlashing;
+            ArchiveText(left, top, "READING" + (calm ? "   \u00b7   reduced motion and flashing follow your Settings" : ""), Mathf.RoundToInt(12 * u), ArchiveDim, alpha, false, TextAnchor.UpperLeft, 0);
+            top += 20f * u;
+            var mode = progress.openingMode == 0 ? "full at every launch" : progress.openingMode == 1 ? "short after the first" : "skipped";
+            var rows = new[]
+            {
+                ("Instant text", progress.instantText ? "on" : "off"),
+                ("Writing speed", progress.textSpeed.ToString("0.##") + "\u00d7"),
+                ("Opening", mode),
+                ("Narration volume", Mathf.RoundToInt(archive.NarrationVolume * 100f) + "%"),
+                ("Text size", ArchiveTextSizeName(progress.journal.textScale)),
+                ("Page turns", progress.journal.manualAdvance ? "when I turn them" : "on their own"),
+            };
             for (var i = 0; i < rows.Length; i++)
             {
-                var r = new Rect(left.x, top + i * rowH, left.width, rowH - 4f * u);
-                Fill(r, new Color(.2f, .12f, .05f, .08f * alpha));
-                var label = ArchiveStyle(Mathf.Max(8, Mathf.RoundToInt(14 * u)), false, TextAnchor.MiddleLeft); SetChronicleTextInk(label, new Color(ArchiveDim.r, ArchiveDim.g, ArchiveDim.b, alpha));
-                var value = ArchiveStyle(Mathf.Max(8, Mathf.RoundToInt(14 * u)), false, TextAnchor.MiddleRight); SetChronicleTextInk(value, new Color(ArchiveInk.r, ArchiveInk.g, ArchiveInk.b, alpha));
-                GUI.Label(new Rect(r.x + 8 * u, r.y, r.width * .5f, r.height), rows[i].Item1, label); GUI.Label(new Rect(r.x + r.width * .4f, r.y, r.width * .6f - 8 * u, r.height), rows[i].Item2, value);
-                if (ArchiveHit(r, ChronicleArchiveController.ContentsOptionStart + i)) ApplyArchiveResult(archive.Accept());
+                var r = new Rect(left.x, top + i * rowH, left.width, rowH - 2f * u); var focus = ChronicleArchiveController.ContentsOptionStart + i;
+                var size = Mathf.Max(8, Mathf.RoundToInt(15 * u));
+                var label = ArchiveStyle(size, false, TextAnchor.MiddleLeft); SetChronicleTextInk(label, ArchiveTint(ArchiveDim, alpha));
+                var value = ArchiveStyle(size, false, TextAnchor.MiddleRight); SetChronicleTextInk(value, ArchiveTint(ArchiveInk, alpha));
+                var focused = archive.Focus == focus && (controllerNavigation || r.Contains(PointerPosition));
+                var shown = focused ? "\u2039  " + rows[i].Item2 + "  \u203a" : rows[i].Item2;
+                var lw = label.CalcSize(new GUIContent(rows[i].Item1)).x; var vw = value.CalcSize(new GUIContent(shown)).x;
+                GUI.Label(new Rect(r.x, r.y, r.width * .6f, r.height), rows[i].Item1, label);
+                DrawArchiveLeader(r.x + lw + 4f * u, r.xMax - vw - 4f * u, r.center.y + 3f * u, u, alpha);
+                GUI.Label(new Rect(r.x + r.width * .3f, r.y, r.width * .7f, r.height), shown, value);
+                if (ArchiveHit(r, focus)) ApplyArchiveResult(archive.Accept());
             }
 
-            // Right page: the chapters, then the secret one.
+            // Continue Reading: the saved Archive place (separate from where the automatic story stands).
+            var cont = new Rect(left.x, top + rowH * 6f + 6f * u, left.width, continueH - 6f * u);
+            DrawArchiveOrnament(left, cont.y - 2f * u, alpha * .8f, .9f, false);
+            var cs = ArchiveStyle(Mathf.Max(9, Mathf.RoundToInt(17 * u)), true, TextAnchor.MiddleLeft);
+            SetChronicleTextInk(cs, v.canContinue ? (GUI.enabled && cont.Contains(PointerPosition) ? ArchiveRed : ArchiveTint(ArchiveInk, alpha)) : ArchiveTint(ArchiveDim, alpha * .6f));
+            GUI.Label(cont, v.canContinue ? "Continue reading  \u2014  " + v.continueLabel : "Continue reading  \u2014  nothing marked yet", cs);
+            if (ArchiveHit(cont, ChronicleArchiveController.ContentsOptionStart + ChronicleArchiveController.OptContinue)) ApplyArchiveResult(archive.ContinueReading());
+
+            // ---- right page: the table of contents, written into the journal ----
             u = right.width / 470f; y = right.y;
-            y = ArchiveText(right, y, "CHAPTERS", Mathf.RoundToInt(14 * u), ArchiveDim, alpha, false, TextAnchor.UpperLeft, 6 * u);
-            var rh = Mathf.Min(46f * u, (right.yMax - y) / 10f);
+            y = ArchiveText(right, y, "CONTENTS", Mathf.RoundToInt(15 * u), ArchiveDim, alpha, false, TextAnchor.UpperCenter, 4 * u);
+            DrawArchiveOrnament(right, y + 2f * u, alpha); y += 14f * u;
+            var rh = Mathf.Min(40f * u, (right.yMax - y) / (10f + 3f * .55f + .35f)); var capH = rh * .55f;
+            var indent = 24f * u; var romanW = 40f * u; var marksW = 96f * u;
             for (var i = 0; i < 10; i++)
             {
-                var r = new Rect(right.x, y + i * rh, right.width, rh - 4f * u); var secret = i == 9;
-                var row = secret ? null : v.chapters[i]; var open = secret ? v.secret != ChronicleSecretState.Locked : row.visible;
-                var selected=GUI.enabled&&(controllerNavigation?archive.Focus==i:r.Contains(PointerPosition));
-                Fill(r,selected?new Color(.20f,.12f,.05f,.24f*alpha):secret && v.secret == ChronicleSecretState.Unlocked ? new Color(.3f, .8f, .55f, .16f * alpha) : new Color(.2f, .12f, .05f, (open ? .12f : .05f) * alpha));
-                var size = Mathf.Max(9, Mathf.RoundToInt(17 * u));
-                var roman = ArchiveStyle(size, false, TextAnchor.MiddleLeft); SetChronicleTextInk(roman, new Color(ArchiveGold.r, ArchiveGold.g, ArchiveGold.b, alpha));
-                var title = ArchiveStyle(size, false, TextAnchor.MiddleLeft); SetChronicleTextInk(title, open ? new Color(ArchiveInk.r, ArchiveInk.g, ArchiveInk.b, alpha) : new Color(ArchiveDim.r, ArchiveDim.g, ArchiveDim.b, alpha * .8f));
-                var count = ArchiveStyle(Mathf.Max(8, size - 2), false, TextAnchor.MiddleRight); SetChronicleTextInk(count, new Color(ArchiveDim.r, ArchiveDim.g, ArchiveDim.b, alpha));
-                GUI.Label(new Rect(r.x + 8 * u, r.y, 46 * u, r.height), ChronicleRoman(secret ? 10 : row.number), roman);
+                var secret = i == 9; var row = secret ? null : v.chapters[i];
+                if (!secret && i % 3 == 0)
+                {
+                    ArchiveText(new Rect(right.x + indent, y, right.width - indent, capH), y + capH * .12f, "ACT " + ChronicleRoman(row.act) + "  \u00b7  " + ChronicleCatalog.ActNames[row.act], Mathf.RoundToInt(11 * u), ArchiveTint(ArchiveDim, .85f), alpha, false, TextAnchor.UpperLeft, 0);
+                    y += capH;
+                }
+                if (secret) y += capH * .35f;
+                var r = new Rect(right.x + indent, y, right.width - indent, rh);
+                var open = secret ? v.secret != ChronicleSecretState.Locked : row.visible;
+                var size = Mathf.Max(9, Mathf.RoundToInt(18 * u));
+                var roman = ArchiveStyle(size, false, TextAnchor.MiddleRight); SetChronicleTextInk(roman, ArchiveTint(ArchiveGold, alpha * (open ? 1f : .55f)));
+                GUI.Label(new Rect(r.x, r.y, romanW, r.height), ChronicleRoman(secret ? 10 : row.number), roman);
                 var name = secret ? (v.secret == ChronicleSecretState.Locked ? "???" : "The One Who Remembers") : row.title;
-                GUI.Label(new Rect(r.x + 58 * u, r.y, r.width - 150 * u, r.height), name, title);
-                var tag = secret ? (v.secret == ChronicleSecretState.Locked ? "FATE DEBT X ×3" : v.secret == ChronicleSecretState.Unlocked ? "NEW" : "VIEWED") : (row.unlocked > row.viewed ? "NEW  " : "") + row.viewed + " / 3";
-                GUI.Label(new Rect(r.xMax - 128 * u, r.y, 120 * u, r.height), tag, count);
+                var title = ArchiveStyle(size, false, TextAnchor.MiddleLeft); SetChronicleTextInk(title, open ? ArchiveTint(ArchiveInk, alpha) : ArchiveTint(ArchiveDim, alpha * .6f));
+                var tx = r.x + romanW + 12f * u; var tw = Mathf.Min(r.xMax - marksW - tx, title.CalcSize(new GUIContent(name)).x);
+                GUI.Label(new Rect(tx, r.y, r.xMax - marksW - tx, r.height), name, title);
+                var after = tx + tw + 4f * u;
+                if (!secret && row.updated && row.visible)
+                {
+                    // Newly written ink since this chapter was last opened: a small red pilcrow.
+                    var mark = ArchiveStyle(Mathf.Max(8, size - 4), false, TextAnchor.MiddleLeft); SetChronicleTextInk(mark, ArchiveTint(ArchiveRed, alpha));
+                    GUI.Label(new Rect(after, r.y - 2f * u, 16f * u, r.height), "\u00b6", mark); after += 14f * u;
+                }
+                DrawArchiveLeader(after, r.xMax - marksW, r.center.y + 5f * u, u, alpha * (open ? 1f : .5f));
+                var marks = new Rect(r.xMax - marksW, r.y, marksW, r.height);
+                var small = ArchiveStyle(Mathf.Max(8, Mathf.RoundToInt(13 * u)), true, TextAnchor.MiddleRight);
+                if (secret)
+                {
+                    SetChronicleTextInk(small, v.secret == ChronicleSecretState.Unlocked ? ArchiveTint(ArchiveRed, alpha) : ArchiveTint(ArchiveDim, alpha));
+                    GUI.Label(marks, v.secret == ChronicleSecretState.Locked ? "FATE DEBT X \u00d73" : v.secret == ChronicleSecretState.Unlocked ? "new" : "read", small);
+                }
+                else
+                {
+                    // One mark per hero's memory: dark = watched, faint = recovered, a dot = not yet recovered.
+                    var cx = marks.xMax; var dot = ArchiveStyle(Mathf.Max(8, size), false, TextAnchor.MiddleRight);
+                    for (var slot = 2; slot >= 0; slot--)
+                    {
+                        var id = ChronicleCatalog.MemoryFor(row.number, (ChronicleHero)slot).id; var st = ChronicleArchive.StateOf(progress, id);
+                        SetChronicleTextInk(dot, st == ChronicleEntryState.Viewed ? ArchiveTint(ArchiveInk, alpha) : st == ChronicleEntryState.Unlocked ? ArchiveTint(ArchiveGold, alpha * .75f) : ArchiveTint(ArchiveDim, alpha * .35f));
+                        GUI.Label(new Rect(cx - 14f * u, r.y, 14f * u, r.height), st == ChronicleEntryState.Locked ? "\u00b7" : "\u2022", dot); cx -= 13f * u;
+                    }
+                    if (row.unlocked > row.viewed) { SetChronicleTextInk(small, ArchiveTint(ArchiveRed, alpha)); GUI.Label(new Rect(marks.x - 40f * u, r.y, 40f * u + (cx - marks.x), r.height), "new ", small); }
+                }
                 if (ArchiveHit(r, i)) ApplyArchiveResult(secret ? archive.OpenSecret() : archive.OpenChapter(row.number));
+                y += rh;
             }
         }
 
@@ -309,59 +419,72 @@ namespace GildedFate.UI
             var progress = profile.chronicle; var v = ChronicleArchive.Chapter(number, progress); var u = left.width / 470f; var y = left.y;
             y = ArchiveText(left, y, "CHAPTER " + ChronicleRoman(number), Mathf.RoundToInt(15 * u), ArchiveGold, alpha, false, TextAnchor.UpperLeft, 2 * u);
             y = ArchiveText(left, y, v.row.title, Mathf.RoundToInt(30 * u), ArchiveInk, alpha, false, TextAnchor.UpperLeft, 4 * u);
-            y = ArchiveText(left, y, v.row.actName, Mathf.RoundToInt(13 * u), ArchiveDim, alpha, false, TextAnchor.UpperLeft, 12 * u);
-            Fill(new Rect(left.x, y, left.width, 1.5f), new Color(ArchiveGold.r, ArchiveGold.g, ArchiveGold.b, .5f * alpha)); y += 14 * u;
+            y = ArchiveText(left, y, v.row.actName, Mathf.RoundToInt(13 * u), ArchiveDim, alpha, false, TextAnchor.UpperLeft, 10 * u);
+            DrawArchiveOrnament(left, y + 2f * u, alpha); y += 16 * u;
             if (v.row.visible) y = DrawArchivePreface(left, y, v.preface, u, alpha);
             else ArchiveText(left, y, "Nothing is written here yet.", Mathf.RoundToInt(19 * u), ArchiveDim, alpha, true, TextAnchor.UpperLeft, 6 * u);
-            ArchiveText(new Rect(left.x, left.yMax - 26 * u, left.width, 26 * u), left.yMax - 26 * u, v.row.viewed + " OF 3 WATCHED   ·   PAGE " + number + " OF 9", Mathf.RoundToInt(13 * u), ArchiveDim, alpha, false, TextAnchor.UpperLeft, 0);
+            ArchiveText(new Rect(left.x, left.yMax - 26 * u, left.width, 26 * u), left.yMax - 26 * u, v.row.viewed + " of 3 watched   \u00b7   page " + number + " of 9", Mathf.RoundToInt(13 * u), ArchiveDim, alpha, true, TextAnchor.UpperLeft, 0);
 
-            u = right.width / 470f; var cardH = (right.height - 8 * u) / 3f;
-            for (var i = 0; i < v.memories.Count; i++)
+            // Right page: each hero's memory as a written entry, divided by thin gold rules.
+            u = right.width / 470f; var count = v.memories.Count + v.revelations.Count; var entryH = (right.height - 8 * u) / Mathf.Max(3, count);
+            for (var i = 0; i < count; i++)
             {
-                var m = v.memories[i]; var card = new Rect(right.x, right.y + i * cardH, right.width, cardH - 10 * u);
-                var tint = ChronicleColor.ForHero(m.hero); var heroColor = new Color(tint.r, tint.g, tint.b, alpha);
+                var revelation = i >= v.memories.Count; var m = revelation ? v.revelations[i - v.memories.Count] : v.memories[i];
+                var entry = new Rect(right.x + 22 * u, right.y + i * entryH, right.width - 22 * u, entryH - 10 * u);
+                var tint = ChronicleColor.ForHero(m.hero); var heroInk = new Color(tint.r * .55f, tint.g * .55f, tint.b * .55f, alpha);
                 var locked = m.state == ChronicleEntryState.Locked;
-                Fill(card, new Color(.2f, .12f, .05f, (locked ? .05f : .12f) * alpha)); Fill(new Rect(card.x, card.y, 5 * u, card.height), new Color(heroColor.r, heroColor.g, heroColor.b, locked ? .35f * alpha : alpha));
-                var cx = card.x + 16 * u; var cw = card.width - 24 * u; var cy = card.y + 6 * u;
-                var hero = ArchiveStyle(Mathf.Max(8, Mathf.RoundToInt(13 * u)), false, TextAnchor.UpperLeft); SetChronicleTextInk(hero, new Color(ArchiveDim.r, ArchiveDim.g, ArchiveDim.b, alpha));
-                GUI.Label(new Rect(cx, cy, cw * .6f, 18 * u), ChronicleCatalog.HeroName(m.hero).ToUpperInvariant(), hero);
-                var status = locked ? "LOCKED" : m.isNew ? "NEW" : "WATCHED";
-                var chip = ArchiveStyle(Mathf.Max(8, Mathf.RoundToInt(12 * u)), false, TextAnchor.UpperRight); SetChronicleTextInk(chip, m.isNew ? new Color(.1f, .5f, .3f, alpha) : new Color(ArchiveDim.r, ArchiveDim.g, ArchiveDim.b, alpha));
+                var cx = entry.x; var cw = entry.width; var cy = entry.y + 4 * u;
+                ChronicleArtLine(new Vector2(cx - 10 * u, cy + 3 * u), new Vector2(cx - 10 * u, cy + 15 * u), locked ? ArchiveTint(heroInk, .35f) : heroInk, 2f);   // a hero-coloured ink stroke
+                var hero = ArchiveStyle(Mathf.Max(8, Mathf.RoundToInt(13 * u)), false, TextAnchor.UpperLeft); SetChronicleTextInk(hero, ArchiveTint(ArchiveDim, alpha));
+                GUI.Label(new Rect(cx, cy, cw * .6f, 18 * u), ChronicleCatalog.HeroName(m.hero).ToUpperInvariant() + (revelation ? "  \u00b7  A LATER RECOLLECTION" : ""), hero);
+                var status = locked ? "not yet recovered" : m.isNew ? "new" : "watched";
+                var chip = ArchiveStyle(Mathf.Max(8, Mathf.RoundToInt(13 * u)), true, TextAnchor.UpperRight); SetChronicleTextInk(chip, m.isNew ? ArchiveTint(ArchiveRed, alpha) : ArchiveTint(ArchiveDim, alpha));
                 GUI.Label(new Rect(cx + cw * .5f, cy, cw * .5f, 18 * u), status, chip);
                 cy += 20 * u;
-                var titleStyle2 = ArchiveStyle(Mathf.Max(9, Mathf.RoundToInt(20 * u)), false, TextAnchor.UpperLeft); SetChronicleTextInk(titleStyle2, locked ? new Color(ArchiveDim.r, ArchiveDim.g, ArchiveDim.b, alpha * .8f) : new Color(ArchiveInk.r, ArchiveInk.g, ArchiveInk.b, alpha));
-                GUI.Label(new Rect(cx, cy, cw, 28 * u), locked ? "A memory not yet recovered" : m.title, titleStyle2);
+                var titleText = revelation ? "" : locked ? "A memory not yet recovered" : m.title;
+                var titleStyle2 = ArchiveStyle(Mathf.Max(9, Mathf.RoundToInt(21 * u)), false, TextAnchor.UpperLeft); SetChronicleTextInk(titleStyle2, locked ? ArchiveTint(ArchiveDim, alpha * .8f) : ArchiveTint(ArchiveInk, alpha));
+                if (titleText.Length > 0) GUI.Label(new Rect(cx, cy, cw, 30 * u), titleText, titleStyle2);
                 if (locked) ArchiveText(new Rect(cx, cy, cw, 40 * u), cy + 28 * u, m.hint, Mathf.RoundToInt(15 * u), ArchiveDim, alpha, true, TextAnchor.UpperLeft, 0);
                 else
                 {
-                    var read = new Rect(cx, card.yMax - 34 * u, 110 * u, 28 * u); var replay = new Rect(cx + 120 * u, card.yMax - 34 * u, 150 * u, 28 * u);
-                    DrawArchiveSmallButton(read, "READ"); DrawArchiveSmallButton(replay, "WATCH AGAIN");
+                    // READ opens the written pages; WATCH AGAIN replays the scene. Both are plain ink links.
+                    var lh = 26 * u; var ry = entry.yMax - lh - 2 * u;
+                    var read = new Rect(cx, ry, ArchiveLinkWidth("Read", lh), lh); var replay = new Rect(read.xMax + 22 * u, ry, ArchiveLinkWidth("Watch again", lh), lh);
+                    DrawArchiveSmallButton(read, "Read"); DrawArchiveSmallButton(replay, "Watch again");
                     if (GUI.Button(read, "", GUIStyle.none)) { archive.SetFocusIndex(i); ApplyArchiveResult(archive.OpenReading(m.id)); }
                     if (GUI.Button(replay, "", GUIStyle.none)) { archive.SetFocusIndex(i); ApplyArchiveResult(archive.Replay(m.id)); }
                 }
-                ArchiveHit(card, i);   // the whole card is the focus target; its buttons do the work with a pointer
+                if (i < count - 1) DrawArchiveOrnament(new Rect(right.x + 22 * u, 0, right.width - 22 * u, 0), entry.yMax + 4 * u, alpha * .6f, .5f, false);
+                ArchiveHit(entry, i);   // the whole entry is the focus target; its links do the work with a pointer
             }
         }
 
-        private void DrawArchiveSmallButton(Rect r, string label)
-        {
-            Fill(r, new Color(.62f, .42f, .10f, .10f)); Outline(r, new Color(ArchiveGold.r, ArchiveGold.g, ArchiveGold.b, .8f), 1);
-            var s = ArchiveStyle(Mathf.Max(8, Mathf.RoundToInt(r.height * .5f)), false, TextAnchor.MiddleCenter); SetChronicleTextInk(s, ArchiveInk); GUI.Label(r, label, s);
-        }
-
-        // ---- reading a memory ----
+        // ---- reading a memory, Chapter X or a revelation ----
         private void DrawArchiveReading(Rect left, Rect right, float alpha, string id, int index)
         {
             var reading = ArchiveReadingFor(id); if (reading == null) return;
             archiveInkState.narrator = profile.chronicle.NarratorState;
-            var spread = reading.spreads[Mathf.Clamp(index, 0, reading.spreads.Count - 1)];
+            var page = Mathf.Clamp(index, 0, reading.spreads.Count - 1); var spread = reading.spreads[page];
             DrawChronicleText(left, spread.left, ChroniclePageSide.Left, archiveInkState, alpha);
             DrawChronicleText(right, spread.right, ChroniclePageSide.Right, archiveInkState, alpha);
-            var u = left.width / 470f;
-            ArchiveText(new Rect(left.x, left.yMax - 22 * u, left.width, 22 * u), left.yMax - 22 * u, "PAGE " + (Mathf.Clamp(index, 0, reading.spreads.Count - 1) + 1) + " OF " + reading.spreads.Count, Mathf.RoundToInt(13 * u), ArchiveDim, alpha, false, TextAnchor.UpperLeft, 0);
-            var button = new Rect(right.xMax - 200 * u, right.yMax - 40 * u, 200 * u, 34 * u);
-            DrawArchiveSmallButton(button, "WATCH THIS MEMORY");
-            if (ArchiveHit(button, 0)) ApplyArchiveResult(archive.Replay(id));
+            var u = left.width / 470f; var lh = 26 * u; var footY = left.yMax - lh;
+            ArchiveText(new Rect(left.x, footY, left.width, lh), footY + 2 * u, "page " + (page + 1) + " of " + reading.spreads.Count, Mathf.RoundToInt(13 * u), ArchiveDim, alpha, true, TextAnchor.UpperCenter, 0);
+            // Pointer page turns, written at the outer corners like a reader's marginal arrows.
+            if (page > 0)
+            {
+                var prev = new Rect(left.x, footY, ArchiveLinkWidth("\u2039 previous", lh), lh); DrawArchiveSmallButton(prev, "\u2039 previous");
+                if (GUI.Button(prev, "", GUIStyle.none)) ApplyArchiveResult(archive.Page(-1));
+            }
+            u = right.width / 470f; lh = 26 * u; footY = right.yMax - lh;
+            if (page < reading.spreads.Count - 1)
+            {
+                var next = new Rect(right.x, footY, ArchiveLinkWidth("next \u203a", lh), lh); DrawArchiveSmallButton(next, "next \u203a");
+                if (GUI.Button(next, "", GUIStyle.none)) ApplyArchiveResult(archive.Page(1));
+            }
+            var watchLabel = id == ChronicleCatalog.SecretSceneId ? "Watch Chapter X again" : "Watch again";
+            var button = new Rect(right.xMax - ArchiveLinkWidth(watchLabel, lh), footY, ArchiveLinkWidth(watchLabel, lh), lh);
+            DrawArchiveSmallButton(button, watchLabel);
+            if (ArchiveHit(button, 0)) ApplyArchiveResult(archive.Accept());
         }
 
         // ---- Chapter X ----
@@ -383,11 +506,19 @@ namespace GildedFate.UI
             }
             if (state != ChronicleSecretState.Locked)
             {
-                var button = new Rect(right.x, right.yMax - 60 * u, right.width, 48 * u);
-                Fill(button, new Color(.3f, .8f, .55f, .2f * alpha)); Outline(button, new Color(.1f, .5f, .3f, alpha), 2);
-                var s = ArchiveStyle(Mathf.Max(9, Mathf.RoundToInt(20 * u)), false, TextAnchor.MiddleCenter); SetChronicleTextInk(s, new Color(.05f, .3f, .2f, alpha));
-                GUI.Label(button, state == ChronicleSecretState.Unlocked ? "OPEN THE FINAL CHAPTER" : "READ IT AGAIN", s);
-                if (ArchiveHit(button, 0)) ApplyArchiveResult(archive.BeginSecret());
+                var lh = 30 * u; var by = right.yMax - lh - 8 * u;
+                if (state == ChronicleSecretState.Unlocked)
+                {
+                    var open = new Rect(right.x, by, ArchiveLinkWidth("Open the final chapter", lh), lh); DrawArchiveSmallButton(open, "Open the final chapter");
+                    if (ArchiveHit(open, 0)) ApplyArchiveResult(archive.BeginSecret());
+                }
+                else
+                {
+                    var read = new Rect(right.x, by, ArchiveLinkWidth("Read", lh), lh); var watch = new Rect(read.xMax + 26 * u, by, ArchiveLinkWidth("Watch again", lh), lh);
+                    DrawArchiveSmallButton(read, "Read"); DrawArchiveSmallButton(watch, "Watch again");
+                    if (ArchiveHit(read, 0)) ApplyArchiveResult(archive.OpenReading(ChronicleCatalog.SecretSceneId));
+                    if (ArchiveHit(watch, 1)) ApplyArchiveResult(archive.BeginSecret());
+                }
             }
         }
 

@@ -59,6 +59,7 @@ namespace GildedFate.Chronicle
         public bool reduceFlashing;       // no flashes or strobing magic
         public float textSpeed = 1f;      // 0.5 .. 2
         public float fastForward = 1f;    // developer: scale all time
+        public bool manualAdvance;        // the book waits for the player before every page turn and before closing
         public static ChronicleSettings Default => new ChronicleSettings();
     }
 

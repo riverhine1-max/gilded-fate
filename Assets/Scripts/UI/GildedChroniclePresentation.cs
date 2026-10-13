@@ -33,7 +33,9 @@ namespace GildedFate.UI
         private Font chronicleHandwritingFont;
         private ChronicleInkStrokeRenderer chronicleStrokeInk;
         private ChronicleDialogueAudio chronicleDialogueAudio;
-        private const float ChronicleWritingSize = 34f;
+        private const float ChronicleBaseWritingSize = 34f;
+        // The journal's Text Size preference scales the one fixed hand used for both page layout and drawing, so pages reflow.
+        private float ChronicleWritingSize => ChronicleBaseWritingSize * Mathf.Clamp(profile?.chronicle?.journal != null ? profile.chronicle.journal.textScale : 1f, .85f, 1.3f);
 
         // Budget the same fixed hand that the renderer uses, against the actual imported paper.
         private ChroniclePageMetrics ChronicleWritingMetrics()
@@ -62,7 +64,7 @@ namespace GildedFate.UI
             return PlayChronicleSceneData(scene, preview, onEnd, keepBookOpen);
         }
 
-        private bool PlayChronicleSceneData(ChronicleScene scene, bool preview, Action onEnd, bool keepBookOpen, bool startClosed = false)
+        private bool PlayChronicleSceneData(ChronicleScene scene, bool preview, Action onEnd, bool keepBookOpen, bool startClosed = false, int startSpread = 0)
         {
             if (chronicleActive || profile == null) return false;
             var sceneId = scene.id;
@@ -74,7 +76,8 @@ namespace GildedFate.UI
             chronicleHost.SetActive(true);
             var progress = profile.chronicle; progress.Ensure();
             var settings = progress.ToSettings(profile.reduceMotion, profile.reduceFlashing);
-            chronicleHost.Rig.SetPoseImmediate(ChronicleBookPose.Open, 0);
+            startSpread = Mathf.Max(0, startSpread);
+            chronicleHost.Rig.SetPoseImmediate(ChronicleBookPose.Open, startSpread);   // continuing journals open where the story is
             chronicleHost.Tick(0f, null);
             var writingMetrics = ChronicleWritingMetrics();
             if (!keepBookOpen || startClosed) chronicleHost.Rig.SetPoseImmediate(ChronicleBookPose.Closed, 0);
@@ -84,7 +87,7 @@ namespace GildedFate.UI
             var stage = new ChronicleRigStage(chronicleHost.Rig) { audio = ChronicleAudio, stopAudio = chronicleDialogueAudio.Stop, onBookAction = ChronicleBookSound, dialogue = chronicleDialogueAudio.Begin, pauseDialogue = chronicleDialogueAudio.SetPaused };
             var replay = sceneId == ChronicleCatalog.OpeningSceneId || sceneId == ChronicleCatalog.OpeningShortSceneId ? progress.openingViews > 0 : progress.IsViewed(sceneId);
             chronicleSink = preview ? null : new ChronicleProgressSink(progress, false);
-            if (!chronicleDirector.TryPlay(scene, stage, new ChronicleProgressContext(progress), chronicleSink, settings, keepBookOpen && !startClosed ? ChronicleBookPose.Open : ChronicleBookPose.Closed, replay, writingMetrics)) { chronicleHost.SetActive(false); return false; }
+            if (!chronicleDirector.TryPlay(scene, stage, new ChronicleProgressContext(progress), chronicleSink, settings, keepBookOpen && !startClosed ? ChronicleBookPose.Open : ChronicleBookPose.Closed, replay, writingMetrics, keepBookOpen && !startClosed ? startSpread : 0)) { chronicleHost.SetActive(false); return false; }
 
             chronicleHost.SetActive(true);
             chronicleActive = true; chronicleStage = ChronicleStage.Playing; chronicleElapsed = 0f; chronicleOnEnd = onEnd; chronicleKeepOpen = keepBookOpen;
@@ -110,7 +113,9 @@ namespace GildedFate.UI
         private void AdvanceChronicleCore(float delta)
         {
             if (!UnityEngine.Rendering.SplashScreen.isFinished) return;   // hold on black until Unity's own splash is done, like the boot cinematic
-            delta = Mathf.Clamp(delta, 0f, .1f); chronicleElapsed += delta; shimmer += delta;
+            delta = Mathf.Clamp(delta, 0f, .1f); shimmer += delta;
+            // The 900-second failsafe counts only real playback: a paused book or a page waiting for the player never times out.
+            if (chronicleDirector == null || !(chronicleDirector.Paused || chronicleDirector.AwaitingAdvance)) chronicleElapsed += delta;
             UpdateAudioPresentation();
             if (chronicleHost == null) { EndChronicle(); return; }
             chronicleDirector.Update(delta);
@@ -119,8 +124,21 @@ namespace GildedFate.UI
             switch (chronicleStage)
             {
                 case ChronicleStage.Playing:
+                {
+                    // Pause / resume (P, Pause, gamepad Y or Select) never skips. While paused nothing else acts.
+                    if (ChroniclePausePressed())
+                    {
+                        if (chronicleDirector.Paused) chronicleDirector.Resume(); else chronicleDirector.Pause();
+                        Sfx(SoundCue.UiHover); break;
+                    }
+                    if (chronicleDirector.Paused) break;
+                    // Manual page advancement: the turn keys turn a waiting page and never skip the scene.
+                    var turnKey = ChronicleTurnPressed();
+                    if (turnKey && chronicleDirector.AwaitingAdvance) { chronicleDirector.Advance(); break; }
+                    if (turnKey && profile != null && profile.chronicle.journal.manualAdvance) break;
                     if (pressed) chronicleDirector.RequestSkip();   // ignored during the first fraction of a second, so the press that opened the scene cannot cancel it
                     break;
+                }
                 case ChronicleStage.WaitingToClose:
                     if (chronicleMilestoneActive && Time.unscaledTime - chronicleEndedAt > .8f) { EndChronicle(); break; }
                     if (pressed && Time.unscaledTime - chronicleEndedAt > .4f && chronicleKeepOpen) EndChronicle();
@@ -144,6 +162,19 @@ namespace GildedFate.UI
             // The same hand-back the boot cinematic does: the press that skipped must not also activate a menu item.
             heldMenuAxis = Vector2Int.zero; menuAxisRepeatAt = Time.unscaledTime + .25f; ArmScreenInputGuard();
             var callback = chronicleOnEnd; chronicleOnEnd = null; callback?.Invoke();
+        }
+
+        private static bool ChronicleKey(Key key) { var k = Keyboard.current; return k != null && k[key] != null && k[key].wasPressedThisFrame; }
+        private bool ChroniclePausePressed()
+        {
+            if (ChronicleKey(Key.P) || ChronicleKey(Key.Pause)) return true;
+            var pad = Gamepad.current; return pad != null && ((pad.buttonNorth != null && pad.buttonNorth.wasPressedThisFrame) || (pad.selectButton != null && pad.selectButton.wasPressedThisFrame));
+        }
+        private bool ChronicleTurnPressed()
+        {
+            if (ChronicleKey(Key.Space) || ChronicleKey(Key.Enter) || ChronicleKey(Key.NumpadEnter) || ChronicleKey(Key.RightArrow) || ChronicleKey(Key.PageDown)) return true;
+            var mouse = Mouse.current; if (mouse != null && mouse.leftButton != null && mouse.leftButton.wasPressedThisFrame) return true;
+            var pad = Gamepad.current; return pad != null && ((pad.buttonSouth != null && pad.buttonSouth.wasPressedThisFrame) || (pad.rightShoulder != null && pad.rightShoulder.wasPressedThisFrame));
         }
 
         private bool ChronicleSkipPressed()
@@ -230,20 +261,41 @@ namespace GildedFate.UI
 
             // While a sheet is lifting away, keep drawing the page that was there; the new spread appears as it lands.
             IList<ChronicleTextBlock> blocks = state.blocks; var layout = state.layout; var illustration = state.illustration;
-            if (frame.flipDirection != 0 && frame.flipRaw < .5f && state.outgoing != null) { blocks = state.outgoing.blocks; layout = state.outgoing.layout; illustration = state.outgoing.illustration; }
+            // A finished page waiting for the player (manual advancement) also stays on the paper until its sheet lifts.
+            if ((frame.flipDirection != 0 && frame.flipRaw < .5f || state.awaitingTurn) && state.outgoing != null) { blocks = state.outgoing.blocks; layout = state.outgoing.layout; illustration = state.outgoing.illustration; }
 
             if (layout == ChronicleSpreadLayout.IllustrationLeftTextRight || layout == ChronicleSpreadLayout.IllustrationOnly) DrawChronicleIllustration(left, illustration, alpha);
             else if (layout == ChronicleSpreadLayout.TextLeftIllustrationRight) DrawChronicleIllustration(right, illustration, alpha);
             DrawChronicleText(left, blocks, ChroniclePageSide.Left, state, alpha);
             DrawChronicleText(right, blocks, ChroniclePageSide.Right, state, alpha);
             if (state.pageDarkness > 0f) { Fill(left, new Color(0, 0, 0, state.pageDarkness * .35f * alpha)); Fill(right, new Color(0, 0, 0, state.pageDarkness * .35f * alpha)); }
+            if (state.completion >= 0f && state.completion < 1f) DrawChronicleCompletion(state.completionSide == ChroniclePageSide.Left ? left : right, state.completion, alpha);
             if (state.pageGlow > 0f && !(profile != null && profile.reduceFlashing)) { var c = new Color(.2f, .9f, .6f, Mathf.Clamp01(state.pageGlow) * .2f * alpha); ShardSoft(left, c); ShardSoft(right, c); }
+        }
+
+        // The narrator has just finished an important page: a restrained antique-gold flourish is drawn out beneath the writing
+        // and fades as the ink dries. No flash, no popup. Reduced motion draws it in place; it never repeats on revisits.
+        private void DrawChronicleCompletion(Rect page, float t, float alpha)
+        {
+            var u = page.width / 470f; var still = profile != null && profile.reduceMotion;
+            var grow = still ? 1f : Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t / .45f));
+            var fade = Mathf.Clamp01(t / .15f) * (1f - Mathf.SmoothStep(.55f, 1f, t)) * alpha;
+            if (fade <= .001f) return;
+            var ink = new Color(.42f, .27f, .08f, .85f * fade); var y = page.yMax - 30f * u; var cx = page.center.x; var half = page.width * .16f * grow;
+            ChronicleArtLine(new Vector2(cx - half, y), new Vector2(cx - 7f * u, y), ink, 1.2f);
+            ChronicleArtLine(new Vector2(cx + 7f * u, y), new Vector2(cx + half, y), ink, 1.2f);
+            var d = 4.5f * u * grow;   // a small inked diamond at the centre
+            ChronicleArtLine(new Vector2(cx - d, y), new Vector2(cx, y - d), ink, 1.2f); ChronicleArtLine(new Vector2(cx, y - d), new Vector2(cx + d, y), ink, 1.2f);
+            ChronicleArtLine(new Vector2(cx + d, y), new Vector2(cx, y + d), ink, 1.2f); ChronicleArtLine(new Vector2(cx, y + d), new Vector2(cx - d, y), ink, 1.2f);
         }
 
         private void DrawChronicleHint(float w, float h)
         {
             if (chronicleMilestoneActive && chronicleMilestonePhase != ChronicleMilestonePhase.Playing) return;
-            var text = chronicleStage == ChronicleStage.Playing ? "ANY KEY  ·  SKIP" : chronicleStage == ChronicleStage.WaitingToClose ? "ANY KEY  ·  CLOSE THE CHRONICLE" : "";
+            var playingHint = chronicleDirector != null && chronicleDirector.Paused ? "PAUSED  ·  P / Y  RESUME"
+                : chronicleDirector != null && chronicleDirector.AwaitingAdvance ? "SPACE / A  ·  TURN THE PAGE        P / Y  ·  PAUSE"
+                : profile != null && profile.chronicle.journal.manualAdvance ? "P / Y  ·  PAUSE        ESC / B  ·  SKIP" : "ANY KEY  ·  SKIP        P / Y  ·  PAUSE";
+            var text = chronicleStage == ChronicleStage.Playing ? playingHint : chronicleStage == ChronicleStage.WaitingToClose ? "ANY KEY  ·  CLOSE THE CHRONICLE" : "";
             if (chronicleMilestoneActive && chronicleStage != ChronicleStage.Playing) return;
             if (text.Length == 0) return;
             var pulse = profile != null && profile.reduceMotion ? .7f : .55f + Mathf.Sin(shimmer * 2.2f) * .2f;

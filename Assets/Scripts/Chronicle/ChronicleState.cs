@@ -99,6 +99,11 @@ namespace GildedFate.Chronicle
         public float pageGlow, pageDarkness, tremor;
         public int overflowCount;                   // passages that did not fit their page (authoring validation)
         public string lastAudioCue = "";
+        // ---- the living journal ----
+        public bool awaitingTurn;                   // the page is finished and the next turn is pending; keep showing the outgoing page
+        public bool awaitingAdvance;                // ... and it is waiting for the player (manual page advancement)
+        public float completion = -1f;              // 0..1 while a newly finished chapter's ink dries; -1 = not shown
+        public ChroniclePageSide completionSide = ChroniclePageSide.Right;
     }
 
     /// <summary>Gradient palette for the placeholder illustrations. Replace these ids with painted art later.</summary>
