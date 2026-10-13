@@ -143,7 +143,11 @@ namespace GildedFate.Chronicle
         readonly IChronicleStage stage; readonly IChronicleContext ctx; readonly IChronicleCommitSink sink;
         readonly ChronicleSettings settings; readonly ChroniclePageMetrics metrics; readonly ChroniclePageBudget budget;
         readonly List<Tween> tweens = new List<Tween>();
-        int pc; float wait; bool finishing, committed; ChronicleTextBlock activeWrite; float activeBeat; ChronicleNarratorStyle narratorStyle;
+        readonly Dictionary<int, ChronicleOutgoingSpread> pages = new Dictionary<int, ChronicleOutgoingSpread>();
+        readonly Dictionary<string, (int spread, ChroniclePageSide side, float height)> correctionSpace = new Dictionary<string, (int, ChroniclePageSide, float)>();
+        int lastSpread; bool settleReturnedPage;
+        int pc; float wait; bool finishing, committed; ChronicleTextBlock activeWrite, pendingWrite; float activeBeat; ChronicleNarratorStyle narratorStyle;
+        string pendingAudioCue = "";
 
         public ChronicleSequencer(ChronicleScene scene, IChronicleStage stage, IChronicleContext ctx, IChronicleCommitSink sink, ChronicleSettings settings = null, ChroniclePageMetrics metrics = null, bool replay = false, bool archiveMode = false)
         {
@@ -158,14 +162,15 @@ namespace GildedFate.Chronicle
         {
             if (Started) return;
             Started = true; State.pose = initialPose; State.spreadIndex = initialSpread;
+            lastSpread = initialSpread;
             State.narrator = Scene.narratorOverride >= 0 ? (ChronicleNarratorState)Scene.narratorOverride : ctx.NarratorState;
             narratorStyle = ChronicleNarratorStyle.For(State.narrator);
             State.tremor = settings.reduceMotion ? 0f : narratorStyle.tremor;
             stage.SceneStarted(Scene.id);
         }
 
-        public void Pause() { Paused = true; }
-        public void Resume() { Paused = false; }
+        public void Pause() { Paused = true; (stage as IChronicleDialogueStage)?.SetDialoguePaused(true); }
+        public void Resume() { Paused = false; (stage as IChronicleDialogueStage)?.SetDialoguePaused(false); }
 
         public void Update(float dt)
         {
@@ -200,6 +205,18 @@ namespace GildedFate.Chronicle
         void Tick(float dt)
         {
             if (wait > 0f) wait -= dt;
+            if (settleReturnedPage && wait <= 0f)
+            {
+                stage.SetBookPoseImmediate(State.pose, State.spreadIndex);
+                settleReturnedPage = false;
+            }
+            if (pendingWrite != null && wait <= 0f)
+            {
+                BeginPlayback(pendingWrite, false);
+                if (!string.IsNullOrEmpty(pendingAudioCue)) stage.PlayAudio(pendingAudioCue, 1f);
+                pendingAudioCue = "";
+                pendingWrite = null;
+            }
             for (var i = tweens.Count - 1; i >= 0; i--)
             {
                 var tw = tweens[i]; tw.t += dt;
@@ -213,7 +230,12 @@ namespace GildedFate.Chronicle
                 if (anims[i].Done && !anims[i].persist) anims.RemoveAt(i);
             }
             foreach (var a in State.illustration.actors) if (a.speakTimer > 0f) a.speakTimer = Math.Max(0f, a.speakTimer - dt);
-            foreach (var b in State.blocks) if (!b.complete) ChronicleHandwriting.Step(b, dt, narratorStyle, settings);
+            foreach (var b in State.blocks) if (!b.complete)
+            {
+                if (b == pendingWrite) continue; // The next voice and pen start only after the new sheet lands.
+                if (b.dialogue != null) ChronicleSpokenHandwriting.Step(b, settings.instantText);
+                else ChronicleHandwriting.Step(b, dt, narratorStyle, settings);
+            }
             if (activeWrite != null && activeWrite.complete) { activeWrite = null; wait = Math.Max(wait, activeBeat * narratorStyle.pauseScale); }
             State.pageGlow = Math.Max(0f, State.pageGlow - dt * .8f);
             State.pageDarkness = Math.Max(0f, State.pageDarkness - dt * .6f);
@@ -235,7 +257,9 @@ namespace GildedFate.Chronicle
         void FastForwardToEnd()
         {
             foreach (var tw in tweens.ToArray()) tw.apply(1f);
-            tweens.Clear(); wait = 0f; activeWrite = null;
+            tweens.Clear(); wait = 0f; activeWrite = pendingWrite = null;
+            pendingAudioCue = "";
+            settleReturnedPage = false;
             foreach (var b in State.blocks) ChronicleHandwriting.Complete(b);
             var guard = 0;
             while (pc < Scene.commands.Count && guard++ < 8192) Execute(Scene.commands[pc++], true);
@@ -290,9 +314,11 @@ namespace GildedFate.Chronicle
         static ChronicleSpreadLayout Layout(string name) => Enum.TryParse(name, out ChronicleSpreadLayout l) ? l : ChronicleSpreadLayout.IllustrationLeftTextRight;
         bool SpreadIsDirty => State.blocks.Count > 0 || State.illustration.visible;
 
-        void ResetSpread()
+        void ResetSpread(bool preserveIllustration = false)
         {
-            State.blocks.Clear(); budget.Reset(); activeWrite = null;
+            State.blocks.Clear(); budget.Reset(); activeWrite = pendingWrite = null;
+            pendingAudioCue = "";
+            if (preserveIllustration) return;
             tweens.RemoveAll(t => t.illustration);
             var ill = State.illustration; ill.visible = false; ill.alpha = 0f; ill.actors.Clear(); ill.animations.Clear(); ill.backdrop = "";
         }
@@ -301,13 +327,16 @@ namespace GildedFate.Chronicle
         {
             var o = new ChronicleOutgoingSpread { spread = State.spreadIndex, layout = State.layout, illustration = State.illustration.Clone() };
             o.blocks.AddRange(State.blocks); State.outgoing = o;
+            pages[State.spreadIndex] = o;
         }
 
-        void TurnToNewSpread(ChronicleSpreadLayout layout, bool instant)
+        void TurnToNewSpread(ChronicleSpreadLayout layout, bool instant, bool preserveIllustration = false)
         {
-            if (!instant) CaptureOutgoing();
-            State.spreadIndex++; State.layout = layout; ResetSpread();
+            var from = State.spreadIndex;
+            CaptureOutgoing();
+            State.spreadIndex = ++lastSpread; State.layout = layout; ResetSpread(preserveIllustration);
             if (instant) return;
+            settleReturnedPage |= State.spreadIndex != from + 1;
             stage.BookAction(ChronicleBookAction.TurnPageForward, State.narrator);
             Hold(stage.BookActionDuration(ChronicleBookAction.TurnPageForward), false);
         }
@@ -360,7 +389,11 @@ namespace GildedFate.Chronicle
                     if (c.op == ChronicleOp.ShowNarration)
                     {
                         State.subtitle = block.text;
-                        if (!instant && !string.IsNullOrEmpty(c.arg)) stage.PlayAudio(c.arg, 1f);
+                        if (!instant && !string.IsNullOrEmpty(c.arg))
+                        {
+                            if (block == pendingWrite) pendingAudioCue = c.arg;
+                            else stage.PlayAudio(c.arg, 1f);
+                        }
                         else if (!instant) State.lastAudioCue = "ink_scratch";
                     }
                     if (!block.complete)
@@ -381,6 +414,10 @@ namespace GildedFate.Chronicle
                     if (ArchiveMode && ChronicleCatalog.FindCorrection(gate) != null && !ctx.HasCorrection(gate)) break;
                     var target = FindBlock("corr:" + c.id) ?? FindBlock(c.id);
                     if (target == null) { ChronicleLog.Warn(Scene.id + ": nothing to cross out for " + c.id); break; }
+                    if (metrics.autoPageTurns && !State.blocks.Contains(target) && ReturnToPassage(target, instant))
+                    {
+                        if (!instant) { pc--; break; } // Return to the original ink before beginning the strike.
+                    }
                     if (c.arg == "fade")
                     {
                         target.erased = true;
@@ -403,6 +440,11 @@ namespace GildedFate.Chronicle
                     if (ArchiveMode && !ctx.HasCorrection(c.id)) break;
                     var def = ChronicleCatalog.FindCorrection(c.id);
                     if (def == null) { ChronicleLog.Warn(Scene.id + ": unknown correction " + c.id); break; }
+                    if (correctionSpace.TryGetValue(c.id, out var space))
+                    {
+                        if (space.spread == State.spreadIndex) budget.Place(space.side, -space.height);
+                        correctionSpace.Remove(c.id);
+                    }
                     var block = BeginBlock("fix:" + c.id, def.corrected, ChronicleTextStyle.Correction, "", def.id, true, instant);
                     if (!block.complete) { activeWrite = block; activeBeat = c.seconds; } else Hold(c.seconds, instant);
                     break;
@@ -495,18 +537,109 @@ namespace GildedFate.Chronicle
             }
         }
 
+        // An original sentence and the narration leading to its red-ink rewrite belong on one sheet.
+        float KeepCorrectionTogether(ChronicleTextBlock block, float height)
+        {
+            if (!metrics.autoPageTurns || block.isCorrectionText || string.IsNullOrEmpty(block.correctionId)) return height;
+            var total = height;
+            for (var i = pc; i < Scene.commands.Count; i++)
+            {
+                var c = Scene.commands[i]; if (!Holds(c.condition)) continue;
+                if (c.op == ChronicleOp.TurnPage || c.op == ChronicleOp.CloseBook || c.op == ChronicleOp.OpenBook) break;
+                if (c.op == ChronicleOp.WriteCorrection && c.id == block.correctionId)
+                {
+                    var def = ChronicleCatalog.FindCorrection(c.id);
+                    if (def != null && (!ArchiveMode || ctx.HasCorrection(c.id))) total += ChronicleLayout.HeightOf(def.corrected, metrics, ChronicleTextStyle.Correction);
+                    return total;
+                }
+                if (c.op != ChronicleOp.WriteText && c.op != ChronicleOp.ShowNarration) continue;
+                var text = c.text;
+                if (string.IsNullOrEmpty(text) && c.id.StartsWith("corr:", StringComparison.Ordinal)) text = ChronicleCatalog.FindCorrection(c.arg)?.original ?? "";
+                text = ChronicleMarkup.Parse(text, new List<ChroniclePause>());
+                total += ChronicleLayout.HeightOf(text, metrics, c.style);
+                if ((c.style == ChronicleTextStyle.Dialogue || c.style == ChronicleTextStyle.DeeperVoice) && !string.IsNullOrEmpty(c.arg)) total += metrics.LineHeightFor(c.style);
+            }
+            return height;
+        }
+
+        bool ReturnToPassage(ChronicleTextBlock target, bool instant)
+        {
+            if (!pages.TryGetValue(target.spread, out var page)) return false;
+            var from = State.spreadIndex;
+            CaptureOutgoing();
+            ResetSpread(true);
+            State.spreadIndex = target.spread; State.layout = page.layout;
+            State.blocks.AddRange(page.blocks);
+            foreach (var b in State.blocks)
+                budget.Place(b.side, ChronicleLayout.HeightOf(b.text, metrics, b.style) + (string.IsNullOrEmpty(b.speaker) ? 0f : metrics.LineHeightFor(b.style)));
+            foreach (var space in correctionSpace.Values)
+                if (space.spread == State.spreadIndex) budget.Place(space.side, space.height);
+            if (!instant)
+            {
+                var action = State.spreadIndex < from ? ChronicleBookAction.TurnPageBack : ChronicleBookAction.TurnPageForward;
+                stage.BookAction(action, State.narrator);
+                Hold(stage.BookActionDuration(action), false);
+                settleReturnedPage = true;
+            }
+            return true;
+        }
+
         ChronicleTextBlock BeginBlock(string id, string text, ChronicleTextStyle style, string speaker, string correctionId, bool isCorrectionText, bool instant)
         {
             var block = new ChronicleTextBlock { id = id, style = style, speaker = speaker ?? "", correctionId = correctionId ?? "", isCorrectionText = isCorrectionText, spread = State.spreadIndex };
             ChronicleHandwriting.Prepare(block, text, metrics);
             var height = ChronicleLayout.HeightOf(block.text, metrics, style) + (string.IsNullOrEmpty(block.speaker) ? 0f : metrics.LineHeightFor(style));
+            var group = KeepCorrectionTogether(block, height);
+            var reserve = 0f;
+            // Long correction sequences may span several pages. Leave room beside the original ink,
+            // then turn back to that sheet for its rewrite instead of shrinking or copying the sentence.
+            if (group > metrics.textHeight && !string.IsNullOrEmpty(correctionId))
+            {
+                var def = ChronicleCatalog.FindCorrection(correctionId);
+                if (def != null) reserve = ChronicleLayout.HeightOf(def.corrected, metrics, ChronicleTextStyle.Correction);
+            }
+            var required = group <= metrics.textHeight ? group : height + reserve;
             var sides = SidesFor(); var chosen = sides[sides.Length - 1]; var fits = false;
-            foreach (var side in sides) if (budget.Fits(side, height)) { chosen = side; fits = true; break; }
+            if (isCorrectionText)
+            {
+                var original = FindBlock("corr:" + correctionId);
+                if (original != null && State.blocks.Contains(original)) sides = new[] { original.side };
+            }
+            foreach (var side in sides) if (budget.Fits(side, required)) { chosen = side; fits = true; break; }
+            var turned = false;
+            if (!fits && metrics.autoPageTurns && State.pose == ChronicleBookPose.Open && State.blocks.Count > 0 && required <= metrics.textHeight)
+            {
+                // Keep the same scene, illustration and canonical dialogue IDs while giving the pen fresh paper.
+                TurnToNewSpread(State.layout, instant, true);
+                block.spread = State.spreadIndex;
+                chosen = sides[0]; fits = true; turned = !instant && wait > 0f;
+            }
             if (!fits) { block.overflow = true; State.overflowCount++; }
             budget.Place(chosen, height); block.side = chosen;
-            if (instant || settings.instantText) ChronicleHandwriting.Complete(block);
+            if (reserve > 0f)
+            {
+                budget.Place(chosen, reserve);
+                correctionSpace[correctionId] = (State.spreadIndex, chosen, reserve);
+            }
             State.blocks.Add(block); State.transcript.Add(block);
+            if (turned) { block.complete = false; pendingWrite = block; }
+            else BeginPlayback(block, instant);
             return block;
+        }
+
+        void BeginPlayback(ChronicleTextBlock block, bool instant)
+        {
+            if (instant || settings.instantText) ChronicleHandwriting.Complete(block);
+            if (!instant && stage is IChronicleDialogueStage dialogueStage
+                && (block.style == ChronicleTextStyle.Narration || block.style == ChronicleTextStyle.Dialogue || block.style == ChronicleTextStyle.DeeperVoice || block.style == ChronicleTextStyle.Correction))
+            {
+                var playback=dialogueStage.BeginDialogue(Scene.id,block.id,block.text,block.style == ChronicleTextStyle.DeeperVoice ? "BEING" : "NARRATOR",State.narrator);
+                if(playback != null && playback.timing != null && playback.positionSeconds != null && playback.timing.Validate(block.text,out var reason))
+                {
+                    block.dialogue=playback;block.complete=false;
+                    block.cursor=settings.instantText?block.text.Length:0;
+                }
+            }
         }
     }
 

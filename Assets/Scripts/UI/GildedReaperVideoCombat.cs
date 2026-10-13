@@ -72,7 +72,7 @@ namespace GildedFate.UI
         {
             if(!ReaperVideoEnabled||reaperDefeated)return;
             var clip=ReaperCardAnimation(card);
-            StartReaperVideo(clip,AnimationSeconds(clip=="MajorFinisherAttack"||clip=="HeavyAttack"?1.05f:.8f),50);
+            StartReaperVideo(clip,AnimationSeconds(HeroActionTiming.PlaybackSeconds(clip)),50);
             if(card.kind==CardKind.Attack)reaperAttackVariant++;
         }
         private void PlayReaperVital(CombatEvent fact)

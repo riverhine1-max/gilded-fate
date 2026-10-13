@@ -1,0 +1,14 @@
+{
+  "actualBlendIncluded": true,
+  "actualFBXIncluded": true,
+  "textureMaps": 43,
+  "animationExports": 9,
+  "archiveIconIncluded": true,
+  "handwritingFont": "Caveat (OFL)",
+  "originalBlenderValidationVersion": "4.0.2",
+  "blenderRunDuringThisPackaging": false,
+  "unityEditorTested": false,
+  "voicesIncluded": false,
+  "storyTextChanged": false,
+  "pictureAnimationsChanged": false
+}

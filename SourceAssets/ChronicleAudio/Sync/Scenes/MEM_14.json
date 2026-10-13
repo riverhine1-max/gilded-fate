@@ -1,0 +1,1368 @@
+{
+  "schemaVersion": 1,
+  "sceneId": "MEM_14",
+  "title": "The Impossible Solution",
+  "sourceCommit": "11584b7c925bdb912188355c3f5cd45d6d295fbd",
+  "lines": [
+    {
+      "lineId": "MEM_14__b3",
+      "sceneId": "MEM_14",
+      "commandId": "b3",
+      "commandIndex": 11,
+      "speaker": "NARRATOR",
+      "characterSpeaker": "",
+      "text": "A fourth voice speaks in this memory. The record has no place for him. I will write what I hear.",
+      "scriptText": "A fourth voice speaks in this memory. The record has no place for him. I will write what I hear.",
+      "textSHA256": "fc3b51d3cf314153d56757d98503bdaee504ae7705641749f76a5e8b98245bd5",
+      "emotion": "DoubtingHistorian",
+      "correctionId": "",
+      "condition": "!fact:FACT_FOURTH_COMPANION",
+      "postLineBeatSeconds": 0.35,
+      "sourceCommit": "11584b7c925bdb912188355c3f5cd45d6d295fbd",
+      "recordingId": "MEM_14__b3",
+      "reuseExisting": false,
+      "ready": true,
+      "audio": "Chronicle/Audio/Dialogue/Narrator/MEM_14__b3",
+      "durationSeconds": 5.92,
+      "words": [
+        {
+          "text": "A",
+          "startSeconds": 0.09999999999999998,
+          "endSeconds": 0.12,
+          "confidence": 0.9838429093360901,
+          "charStart": 0,
+          "charLength": 1
+        },
+        {
+          "text": "fourth",
+          "startSeconds": 0.20000000000000007,
+          "endSeconds": 0.4800000000000001,
+          "confidence": 0.9563169578711191,
+          "charStart": 2,
+          "charLength": 6
+        },
+        {
+          "text": "voice",
+          "startSeconds": 0.6,
+          "endSeconds": 0.88,
+          "confidence": 0.9558474659919739,
+          "charStart": 9,
+          "charLength": 5
+        },
+        {
+          "text": "speaks",
+          "startSeconds": 1.06,
+          "endSeconds": 1.4,
+          "confidence": 0.9888488252957662,
+          "charStart": 15,
+          "charLength": 6
+        },
+        {
+          "text": "in",
+          "startSeconds": 1.5,
+          "endSeconds": 1.54,
+          "confidence": 0.9998002052307129,
+          "charStart": 22,
+          "charLength": 2
+        },
+        {
+          "text": "this",
+          "startSeconds": 1.6,
+          "endSeconds": 1.7399999999999998,
+          "confidence": 0.9909596294164658,
+          "charStart": 25,
+          "charLength": 4
+        },
+        {
+          "text": "memory.",
+          "startSeconds": 1.8199999999999998,
+          "endSeconds": 2.1399999999999997,
+          "confidence": 0.9867548445860544,
+          "charStart": 30,
+          "charLength": 7
+        },
+        {
+          "text": "The",
+          "startSeconds": 2.38,
+          "endSeconds": 2.46,
+          "confidence": 0.9985029300053915,
+          "charStart": 38,
+          "charLength": 3
+        },
+        {
+          "text": "record",
+          "startSeconds": 2.54,
+          "endSeconds": 2.8799999999999994,
+          "confidence": 0.9600193599859873,
+          "charStart": 42,
+          "charLength": 6
+        },
+        {
+          "text": "has",
+          "startSeconds": 2.94,
+          "endSeconds": 3.06,
+          "confidence": 0.9998013178507487,
+          "charStart": 49,
+          "charLength": 3
+        },
+        {
+          "text": "no",
+          "startSeconds": 3.18,
+          "endSeconds": 3.28,
+          "confidence": 0.9537619054317474,
+          "charStart": 53,
+          "charLength": 2
+        },
+        {
+          "text": "place",
+          "startSeconds": 3.4,
+          "endSeconds": 3.64,
+          "confidence": 0.9933647274971008,
+          "charStart": 56,
+          "charLength": 5
+        },
+        {
+          "text": "for",
+          "startSeconds": 3.72,
+          "endSeconds": 3.86,
+          "confidence": 0.993194580078125,
+          "charStart": 62,
+          "charLength": 3
+        },
+        {
+          "text": "him.",
+          "startSeconds": 3.94,
+          "endSeconds": 4.04,
+          "confidence": 0.999797523021698,
+          "charStart": 66,
+          "charLength": 4
+        },
+        {
+          "text": "I",
+          "startSeconds": 4.66,
+          "endSeconds": 4.680000000000001,
+          "confidence": 0.9999962449073792,
+          "charStart": 71,
+          "charLength": 1
+        },
+        {
+          "text": "will",
+          "startSeconds": 4.74,
+          "endSeconds": 4.9,
+          "confidence": 0.9997010380029678,
+          "charStart": 73,
+          "charLength": 4
+        },
+        {
+          "text": "write",
+          "startSeconds": 4.94,
+          "endSeconds": 5.140000000000001,
+          "confidence": 0.9877161979675293,
+          "charStart": 78,
+          "charLength": 5
+        },
+        {
+          "text": "what",
+          "startSeconds": 5.220000000000001,
+          "endSeconds": 5.340000000000001,
+          "confidence": 0.9933108687400818,
+          "charStart": 84,
+          "charLength": 4
+        },
+        {
+          "text": "I",
+          "startSeconds": 5.46,
+          "endSeconds": 5.48,
+          "confidence": 0.9999929666519165,
+          "charStart": 89,
+          "charLength": 1
+        },
+        {
+          "text": "hear.",
+          "startSeconds": 5.6000000000000005,
+          "endSeconds": 5.800000000000001,
+          "confidence": 0.9993815571069717,
+          "charStart": 91,
+          "charLength": 5
+        }
+      ],
+      "alignmentMethod": "wav2vec2-base-960h quantized ONNX CTC Viterbi, independently checked by small.en ASR",
+      "frameResolutionSeconds": 0.02,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "f6314cf69fb25bd42732589f691d4125db58d8c1fa0be5635c774ca607f5c7fd"
+    },
+    {
+      "lineId": "MEM_14__b4",
+      "sceneId": "MEM_14",
+      "commandId": "b4",
+      "commandIndex": 12,
+      "speaker": "NARRATOR",
+      "characterSpeaker": "",
+      "text": "The scholar understood the design. He could follow every line of reasoning.",
+      "scriptText": "The scholar understood the design. He could follow every line of reasoning.",
+      "textSHA256": "3cb2d5dcb70d9e6bb2efd01cfde8ee56b19d66daff89b405ded43a865cccf417",
+      "emotion": "DoubtingHistorian",
+      "correctionId": "",
+      "condition": "",
+      "postLineBeatSeconds": 0.35,
+      "sourceCommit": "11584b7c925bdb912188355c3f5cd45d6d295fbd",
+      "recordingId": "MEM_14__b4",
+      "reuseExisting": false,
+      "ready": true,
+      "audio": "Chronicle/Audio/Dialogue/Narrator/MEM_14__b4",
+      "durationSeconds": 4.36,
+      "words": [
+        {
+          "text": "The",
+          "startSeconds": 0.09999999999999964,
+          "endSeconds": 0.17999999999999972,
+          "confidence": 0.983138899008433,
+          "charStart": 0,
+          "charLength": 3
+        },
+        {
+          "text": "scholar",
+          "startSeconds": 0.21999999999999975,
+          "endSeconds": 0.54,
+          "confidence": 0.9966510704585484,
+          "charStart": 4,
+          "charLength": 7
+        },
+        {
+          "text": "understood",
+          "startSeconds": 0.6799999999999997,
+          "endSeconds": 1.08,
+          "confidence": 0.9864605903625489,
+          "charStart": 12,
+          "charLength": 10
+        },
+        {
+          "text": "the",
+          "startSeconds": 1.1400000000000006,
+          "endSeconds": 1.2200000000000006,
+          "confidence": 0.9982275168100992,
+          "charStart": 23,
+          "charLength": 3
+        },
+        {
+          "text": "design.",
+          "startSeconds": 1.2799999999999994,
+          "endSeconds": 1.7200000000000006,
+          "confidence": 0.9359642565250397,
+          "charStart": 27,
+          "charLength": 7
+        },
+        {
+          "text": "He",
+          "startSeconds": 2.34,
+          "endSeconds": 2.4000000000000004,
+          "confidence": 0.9997662603855133,
+          "charStart": 35,
+          "charLength": 2
+        },
+        {
+          "text": "could",
+          "startSeconds": 2.4399999999999995,
+          "endSeconds": 2.58,
+          "confidence": 0.9999615907669067,
+          "charStart": 38,
+          "charLength": 5
+        },
+        {
+          "text": "follow",
+          "startSeconds": 2.6400000000000006,
+          "endSeconds": 2.92,
+          "confidence": 0.9904613494873047,
+          "charStart": 44,
+          "charLength": 6
+        },
+        {
+          "text": "every",
+          "startSeconds": 3.0999999999999996,
+          "endSeconds": 3.3000000000000007,
+          "confidence": 0.9999808192253112,
+          "charStart": 51,
+          "charLength": 5
+        },
+        {
+          "text": "line",
+          "startSeconds": 3.379999999999999,
+          "endSeconds": 3.6400000000000006,
+          "confidence": 0.992895781993866,
+          "charStart": 57,
+          "charLength": 4
+        },
+        {
+          "text": "of",
+          "startSeconds": 3.6999999999999993,
+          "endSeconds": 3.74,
+          "confidence": 0.9995478093624115,
+          "charStart": 62,
+          "charLength": 2
+        },
+        {
+          "text": "reasoning.",
+          "startSeconds": 3.8000000000000007,
+          "endSeconds": 4.24,
+          "confidence": 0.9634667634963989,
+          "charStart": 65,
+          "charLength": 10
+        }
+      ],
+      "alignmentMethod": "wav2vec2-base-960h quantized ONNX CTC Viterbi, independently checked by small.en ASR",
+      "frameResolutionSeconds": 0.02,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "7634ffa041607c6707e1436604daf509306f38d7364ae5e492e92dd57daa68e1"
+    },
+    {
+      "lineId": "MEM_14__b5",
+      "sceneId": "MEM_14",
+      "commandId": "b5",
+      "commandIndex": 13,
+      "speaker": "NARRATOR",
+      "characterSpeaker": "",
+      "text": "He could also see the place where reason ended.",
+      "scriptText": "He could also see the place where reason ended.",
+      "textSHA256": "d347e03c38631af231fd7f35452ad0a5cde56d26016513e653127b2cc1a7bf6a",
+      "emotion": "DoubtingHistorian",
+      "correctionId": "",
+      "condition": "",
+      "postLineBeatSeconds": 0.35,
+      "sourceCommit": "11584b7c925bdb912188355c3f5cd45d6d295fbd",
+      "recordingId": "MEM_14__b5",
+      "reuseExisting": false,
+      "ready": true,
+      "audio": "Chronicle/Audio/Dialogue/Narrator/MEM_14__b5",
+      "durationSeconds": 2.5,
+      "words": [
+        {
+          "text": "He",
+          "startSeconds": 0.09999999999999964,
+          "endSeconds": 0.16000000000000014,
+          "confidence": 0.9997337460517883,
+          "charStart": 0,
+          "charLength": 2
+        },
+        {
+          "text": "could",
+          "startSeconds": 0.1999999999999993,
+          "endSeconds": 0.33999999999999986,
+          "confidence": 0.9525663375854492,
+          "charStart": 3,
+          "charLength": 5
+        },
+        {
+          "text": "also",
+          "startSeconds": 0.379999999999999,
+          "endSeconds": 0.6199999999999992,
+          "confidence": 0.9882076680660248,
+          "charStart": 9,
+          "charLength": 4
+        },
+        {
+          "text": "see",
+          "startSeconds": 0.7400000000000002,
+          "endSeconds": 0.879999999999999,
+          "confidence": 0.9696510235468546,
+          "charStart": 14,
+          "charLength": 3
+        },
+        {
+          "text": "the",
+          "startSeconds": 0.9399999999999995,
+          "endSeconds": 1.0199999999999996,
+          "confidence": 0.999692440032959,
+          "charStart": 18,
+          "charLength": 3
+        },
+        {
+          "text": "place",
+          "startSeconds": 1.0599999999999987,
+          "endSeconds": 1.3200000000000003,
+          "confidence": 0.995824146270752,
+          "charStart": 22,
+          "charLength": 5
+        },
+        {
+          "text": "where",
+          "startSeconds": 1.42,
+          "endSeconds": 1.58,
+          "confidence": 0.9230077147483826,
+          "charStart": 28,
+          "charLength": 5
+        },
+        {
+          "text": "reason",
+          "startSeconds": 1.6600000000000001,
+          "endSeconds": 1.9800000000000004,
+          "confidence": 0.9859235088030497,
+          "charStart": 34,
+          "charLength": 6
+        },
+        {
+          "text": "ended.",
+          "startSeconds": 2.16,
+          "endSeconds": 2.379999999999999,
+          "confidence": 0.9977584838867187,
+          "charStart": 41,
+          "charLength": 6
+        }
+      ],
+      "alignmentMethod": "wav2vec2-base-960h quantized ONNX CTC Viterbi, independently checked by small.en ASR",
+      "frameResolutionSeconds": 0.02,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "8b5ae7c303593cf3c24337d5598ad455c870f4c0ea91781fbe87b5e0e6735cd8"
+    },
+    {
+      "lineId": "MEM_14__corr_CORR_05",
+      "sceneId": "MEM_14",
+      "commandId": "corr:CORR_05",
+      "commandIndex": 25,
+      "speaker": "NARRATOR",
+      "characterSpeaker": "",
+      "text": "The memories were lost by chance.",
+      "scriptText": "",
+      "textSHA256": "217a3322a6d8144370a0b8b8d5ba127045271cc4ce58179e5e9bdb01f1e46543",
+      "emotion": "DoubtingHistorian",
+      "correctionId": "CORR_05",
+      "condition": "",
+      "postLineBeatSeconds": 0.4,
+      "sourceCommit": "11584b7c925bdb912188355c3f5cd45d6d295fbd",
+      "recordingId": "MEM_14__corr_CORR_05",
+      "reuseExisting": false,
+      "ready": true,
+      "audio": "Chronicle/Audio/Dialogue/Narrator/MEM_14__corr_CORR_05",
+      "durationSeconds": 1.96,
+      "words": [
+        {
+          "text": "The",
+          "startSeconds": 0.09999999999999964,
+          "endSeconds": 0.17999999999999972,
+          "confidence": 0.9234253366788229,
+          "charStart": 0,
+          "charLength": 3
+        },
+        {
+          "text": "memories",
+          "startSeconds": 0.2400000000000002,
+          "endSeconds": 0.6400000000000006,
+          "confidence": 0.9666824862360954,
+          "charStart": 4,
+          "charLength": 8
+        },
+        {
+          "text": "were",
+          "startSeconds": 0.6999999999999993,
+          "endSeconds": 0.8200000000000003,
+          "confidence": 0.9995334893465042,
+          "charStart": 13,
+          "charLength": 4
+        },
+        {
+          "text": "lost",
+          "startSeconds": 0.8800000000000008,
+          "endSeconds": 1.1199999999999992,
+          "confidence": 0.9998838305473328,
+          "charStart": 18,
+          "charLength": 4
+        },
+        {
+          "text": "by",
+          "startSeconds": 1.2599999999999998,
+          "endSeconds": 1.3800000000000008,
+          "confidence": 0.9626976549625397,
+          "charStart": 23,
+          "charLength": 2
+        },
+        {
+          "text": "chance.",
+          "startSeconds": 1.4999999999999982,
+          "endSeconds": 1.8400000000000016,
+          "confidence": 0.9652297298113505,
+          "charStart": 26,
+          "charLength": 7
+        }
+      ],
+      "alignmentMethod": "wav2vec2-base-960h quantized ONNX CTC Viterbi, independently checked by small.en ASR",
+      "frameResolutionSeconds": 0.02,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "ede7d9d143fc048fa4ccae702c7fb79666c7c17d02e7ce72dce373954bafb2b8"
+    },
+    {
+      "lineId": "MEM_14__b6",
+      "sceneId": "MEM_14",
+      "commandId": "b6",
+      "commandIndex": 26,
+      "speaker": "NARRATOR",
+      "characterSpeaker": "",
+      "text": "The plan required certainty from a power none of them fully understood.",
+      "scriptText": "The plan required certainty from a power none of them fully understood.",
+      "textSHA256": "d25a5524b867ad1d85d3cb9ff2bc6a991410b2427922df7a810a2966cad6898c",
+      "emotion": "DoubtingHistorian",
+      "correctionId": "",
+      "condition": "",
+      "postLineBeatSeconds": 0.35,
+      "sourceCommit": "11584b7c925bdb912188355c3f5cd45d6d295fbd",
+      "recordingId": "MEM_14__b6",
+      "reuseExisting": false,
+      "ready": true,
+      "audio": "Chronicle/Audio/Dialogue/Narrator/MEM_14__b6",
+      "durationSeconds": 3.76,
+      "words": [
+        {
+          "text": "The",
+          "startSeconds": 0.09999999999999964,
+          "endSeconds": 0.1800000000000015,
+          "confidence": 0.9268262386322021,
+          "charStart": 0,
+          "charLength": 3
+        },
+        {
+          "text": "plan",
+          "startSeconds": 0.22000000000000064,
+          "endSeconds": 0.4399999999999995,
+          "confidence": 0.9577072113752365,
+          "charStart": 4,
+          "charLength": 4
+        },
+        {
+          "text": "required",
+          "startSeconds": 0.5200000000000014,
+          "endSeconds": 0.9399999999999995,
+          "confidence": 0.9802349284291267,
+          "charStart": 9,
+          "charLength": 8
+        },
+        {
+          "text": "certainty",
+          "startSeconds": 1.040000000000001,
+          "endSeconds": 1.5200000000000014,
+          "confidence": 0.9797351029184129,
+          "charStart": 18,
+          "charLength": 9
+        },
+        {
+          "text": "from",
+          "startSeconds": 1.6199999999999992,
+          "endSeconds": 1.7400000000000002,
+          "confidence": 0.9947301596403122,
+          "charStart": 28,
+          "charLength": 4
+        },
+        {
+          "text": "a",
+          "startSeconds": 1.8199999999999985,
+          "endSeconds": 1.8400000000000016,
+          "confidence": 0.9989434480667114,
+          "charStart": 33,
+          "charLength": 1
+        },
+        {
+          "text": "power",
+          "startSeconds": 1.9000000000000004,
+          "endSeconds": 2.1800000000000015,
+          "confidence": 0.999979305267334,
+          "charStart": 35,
+          "charLength": 5
+        },
+        {
+          "text": "none",
+          "startSeconds": 2.299999999999999,
+          "endSeconds": 2.4399999999999995,
+          "confidence": 0.9995393306016922,
+          "charStart": 41,
+          "charLength": 4
+        },
+        {
+          "text": "of",
+          "startSeconds": 2.4799999999999986,
+          "endSeconds": 2.540000000000001,
+          "confidence": 0.9999762773513794,
+          "charStart": 46,
+          "charLength": 2
+        },
+        {
+          "text": "them",
+          "startSeconds": 2.5999999999999996,
+          "endSeconds": 2.700000000000001,
+          "confidence": 0.9555564373731613,
+          "charStart": 49,
+          "charLength": 4
+        },
+        {
+          "text": "fully",
+          "startSeconds": 2.8400000000000016,
+          "endSeconds": 3.08,
+          "confidence": 0.9864063501358032,
+          "charStart": 54,
+          "charLength": 5
+        },
+        {
+          "text": "understood.",
+          "startSeconds": 3.160000000000002,
+          "endSeconds": 3.639999999999999,
+          "confidence": 0.9775340735912323,
+          "charStart": 60,
+          "charLength": 11
+        }
+      ],
+      "alignmentMethod": "wav2vec2-base-960h quantized ONNX CTC Viterbi, independently checked by small.en ASR",
+      "frameResolutionSeconds": 0.02,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "6b3aae0594bbc5a11ad81eec7f2d0939785a017ca39f3f287073d570096ea152"
+    },
+    {
+      "lineId": "MEM_14__b7",
+      "sceneId": "MEM_14",
+      "commandId": "b7",
+      "commandIndex": 27,
+      "speaker": "NARRATOR",
+      "characterSpeaker": "",
+      "text": "Yet the fourth had already decided.",
+      "scriptText": "Yet the fourth had already decided.",
+      "textSHA256": "a4c4a4644272669cbbfb2652775ecd2a92410e371857a9144c008b866390a84f",
+      "emotion": "DoubtingHistorian",
+      "correctionId": "",
+      "condition": "",
+      "postLineBeatSeconds": 0.35,
+      "sourceCommit": "11584b7c925bdb912188355c3f5cd45d6d295fbd",
+      "recordingId": "MEM_14__b7",
+      "reuseExisting": false,
+      "ready": true,
+      "audio": "Chronicle/Audio/Dialogue/Narrator/MEM_14__b7",
+      "durationSeconds": 2.0,
+      "words": [
+        {
+          "text": "Yet",
+          "startSeconds": 0.09999999999999787,
+          "endSeconds": 0.23999999999999844,
+          "confidence": 0.9509121378262838,
+          "charStart": 0,
+          "charLength": 3
+        },
+        {
+          "text": "the",
+          "startSeconds": 0.2799999999999976,
+          "endSeconds": 0.379999999999999,
+          "confidence": 0.9351322650909424,
+          "charStart": 4,
+          "charLength": 3
+        },
+        {
+          "text": "fourth",
+          "startSeconds": 0.4599999999999973,
+          "endSeconds": 0.7799999999999976,
+          "confidence": 0.9614026447137197,
+          "charStart": 8,
+          "charLength": 6
+        },
+        {
+          "text": "had",
+          "startSeconds": 0.8599999999999994,
+          "endSeconds": 0.9599999999999973,
+          "confidence": 0.9992492993672689,
+          "charStart": 15,
+          "charLength": 3
+        },
+        {
+          "text": "already",
+          "startSeconds": 1.0399999999999991,
+          "endSeconds": 1.3599999999999994,
+          "confidence": 0.9990317055157253,
+          "charStart": 19,
+          "charLength": 7
+        },
+        {
+          "text": "decided.",
+          "startSeconds": 1.4199999999999982,
+          "endSeconds": 1.879999999999999,
+          "confidence": 0.8580785755600248,
+          "charStart": 27,
+          "charLength": 8
+        }
+      ],
+      "alignmentMethod": "wav2vec2-base-960h quantized ONNX CTC Viterbi, independently checked by small.en ASR",
+      "frameResolutionSeconds": 0.02,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "067caddcaa76c1936dc560652d143176da91904dd405cce3a537034d3794da67"
+    },
+    {
+      "lineId": "MEM_14__b8",
+      "sceneId": "MEM_14",
+      "commandId": "b8",
+      "commandIndex": 29,
+      "speaker": "NARRATOR",
+      "characterSpeaker": "HEXER",
+      "text": "You know what happens if the connection refuses to break.",
+      "scriptText": "You know what happens if the connection refuses to break.",
+      "textSHA256": "f9acca7376b7d0e957562c25b126d1571248f9bbe35ccb059390138f6e7fabbe",
+      "emotion": "DoubtingHistorian",
+      "correctionId": "",
+      "condition": "",
+      "postLineBeatSeconds": 0.4,
+      "sourceCommit": "11584b7c925bdb912188355c3f5cd45d6d295fbd",
+      "recordingId": "MEM_14__b8",
+      "reuseExisting": false,
+      "ready": true,
+      "audio": "Chronicle/Audio/Dialogue/Narrator/MEM_14__b8",
+      "durationSeconds": 2.84,
+      "words": [
+        {
+          "text": "You",
+          "startSeconds": 0.10000000000000142,
+          "endSeconds": 0.1999999999999993,
+          "confidence": 0.9995770255724589,
+          "charStart": 0,
+          "charLength": 3
+        },
+        {
+          "text": "know",
+          "startSeconds": 0.259999999999998,
+          "endSeconds": 0.379999999999999,
+          "confidence": 0.959874615073204,
+          "charStart": 4,
+          "charLength": 4
+        },
+        {
+          "text": "what",
+          "startSeconds": 0.4400000000000013,
+          "endSeconds": 0.5599999999999987,
+          "confidence": 0.95894855260849,
+          "charStart": 9,
+          "charLength": 4
+        },
+        {
+          "text": "happens",
+          "startSeconds": 0.620000000000001,
+          "endSeconds": 0.9199999999999982,
+          "confidence": 0.9995810559817723,
+          "charStart": 14,
+          "charLength": 7
+        },
+        {
+          "text": "if",
+          "startSeconds": 1.0199999999999996,
+          "endSeconds": 1.0599999999999987,
+          "confidence": 0.9998759627342224,
+          "charStart": 22,
+          "charLength": 2
+        },
+        {
+          "text": "the",
+          "startSeconds": 1.1400000000000006,
+          "endSeconds": 1.1999999999999993,
+          "confidence": 0.9997823238372803,
+          "charStart": 25,
+          "charLength": 3
+        },
+        {
+          "text": "connection",
+          "startSeconds": 1.259999999999998,
+          "endSeconds": 1.6799999999999997,
+          "confidence": 0.9823417723178863,
+          "charStart": 29,
+          "charLength": 10
+        },
+        {
+          "text": "refuses",
+          "startSeconds": 1.759999999999998,
+          "endSeconds": 2.259999999999998,
+          "confidence": 0.9812380416052682,
+          "charStart": 40,
+          "charLength": 7
+        },
+        {
+          "text": "to",
+          "startSeconds": 2.34,
+          "endSeconds": 2.4400000000000013,
+          "confidence": 0.9984251856803894,
+          "charStart": 48,
+          "charLength": 2
+        },
+        {
+          "text": "break.",
+          "startSeconds": 2.5,
+          "endSeconds": 2.719999999999999,
+          "confidence": 0.9784645199775696,
+          "charStart": 51,
+          "charLength": 6
+        }
+      ],
+      "alignmentMethod": "wav2vec2-base-960h quantized ONNX CTC Viterbi, independently checked by small.en ASR",
+      "frameResolutionSeconds": 0.02,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "d5b89f98ba5021e65124a7a74132c8cac8b74c705050bc3407747f63ed80c124"
+    },
+    {
+      "lineId": "MEM_14__b9",
+      "sceneId": "MEM_14",
+      "commandId": "b9",
+      "commandIndex": 31,
+      "speaker": "NARRATOR",
+      "characterSpeaker": "FOURTH COMPANION",
+      "text": "No. I know what happens if we do nothing.",
+      "scriptText": "No. I know what happens if we do nothing.",
+      "textSHA256": "866e3cf095b571926bebda8ec8f3092554fc4c7df0811e0fb476db2a40a00579",
+      "emotion": "DoubtingHistorian",
+      "correctionId": "",
+      "condition": "",
+      "postLineBeatSeconds": 0.4,
+      "sourceCommit": "11584b7c925bdb912188355c3f5cd45d6d295fbd",
+      "recordingId": "MEM_14__b9",
+      "reuseExisting": false,
+      "ready": true,
+      "audio": "Chronicle/Audio/Dialogue/Narrator/MEM_14__b9",
+      "durationSeconds": 3.1,
+      "words": [
+        {
+          "text": "No.",
+          "startSeconds": 0.09999999999999787,
+          "endSeconds": 0.21999999999999886,
+          "confidence": 0.9999862611293793,
+          "charStart": 0,
+          "charLength": 3
+        },
+        {
+          "text": "I",
+          "startSeconds": 1.1799999999999997,
+          "endSeconds": 1.1999999999999993,
+          "confidence": 0.9999964237213135,
+          "charStart": 4,
+          "charLength": 1
+        },
+        {
+          "text": "know",
+          "startSeconds": 1.3000000000000007,
+          "endSeconds": 1.4400000000000013,
+          "confidence": 0.9805648922920227,
+          "charStart": 6,
+          "charLength": 4
+        },
+        {
+          "text": "what",
+          "startSeconds": 1.5199999999999996,
+          "endSeconds": 1.6400000000000006,
+          "confidence": 0.9998448342084885,
+          "charStart": 11,
+          "charLength": 4
+        },
+        {
+          "text": "happens",
+          "startSeconds": 1.6999999999999993,
+          "endSeconds": 2.0599999999999987,
+          "confidence": 0.9612488661493573,
+          "charStart": 16,
+          "charLength": 7
+        },
+        {
+          "text": "if",
+          "startSeconds": 2.16,
+          "endSeconds": 2.219999999999999,
+          "confidence": 0.9961649775505066,
+          "charStart": 24,
+          "charLength": 2
+        },
+        {
+          "text": "we",
+          "startSeconds": 2.280000000000001,
+          "endSeconds": 2.379999999999999,
+          "confidence": 0.9984013736248016,
+          "charStart": 27,
+          "charLength": 2
+        },
+        {
+          "text": "do",
+          "startSeconds": 2.460000000000001,
+          "endSeconds": 2.5599999999999987,
+          "confidence": 0.9999793469905853,
+          "charStart": 30,
+          "charLength": 2
+        },
+        {
+          "text": "nothing.",
+          "startSeconds": 2.6799999999999997,
+          "endSeconds": 2.9800000000000004,
+          "confidence": 0.9988487448011126,
+          "charStart": 33,
+          "charLength": 8
+        }
+      ],
+      "alignmentMethod": "wav2vec2-base-960h quantized ONNX CTC Viterbi, independently checked by small.en ASR",
+      "frameResolutionSeconds": 0.02,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "9f21878e036396a73eaed9dbb5558e0282fecdf0308822e3e1e71151f8701983"
+    },
+    {
+      "lineId": "MEM_14__fix_CORR_05",
+      "sceneId": "MEM_14",
+      "commandId": "fix:CORR_05",
+      "commandIndex": 34,
+      "speaker": "NARRATOR",
+      "characterSpeaker": "",
+      "text": "Someone attempted to erase them deliberately.",
+      "scriptText": "",
+      "textSHA256": "ca90945bf36119fc4b1e82ca49ff026649ab1b5f1895318e1c25e5573d35e27c",
+      "emotion": "DoubtingHistorian",
+      "correctionId": "CORR_05",
+      "condition": "",
+      "postLineBeatSeconds": 0.5,
+      "sourceCommit": "11584b7c925bdb912188355c3f5cd45d6d295fbd",
+      "recordingId": "MEM_14__fix_CORR_05",
+      "reuseExisting": false,
+      "ready": true,
+      "audio": "Chronicle/Audio/Dialogue/Narrator/MEM_14__fix_CORR_05",
+      "durationSeconds": 2.74,
+      "words": [
+        {
+          "text": "Someone",
+          "startSeconds": 0.10000000000000142,
+          "endSeconds": 0.4200000000000017,
+          "confidence": 0.9994729501860482,
+          "charStart": 0,
+          "charLength": 7
+        },
+        {
+          "text": "attempted",
+          "startSeconds": 0.4800000000000004,
+          "endSeconds": 0.9600000000000009,
+          "confidence": 0.9788608286115859,
+          "charStart": 8,
+          "charLength": 9
+        },
+        {
+          "text": "to",
+          "startSeconds": 1.0600000000000023,
+          "endSeconds": 1.1400000000000006,
+          "confidence": 0.9999959170818329,
+          "charStart": 18,
+          "charLength": 2
+        },
+        {
+          "text": "erase",
+          "startSeconds": 1.2800000000000011,
+          "endSeconds": 1.6400000000000006,
+          "confidence": 0.7934824870200827,
+          "charStart": 21,
+          "charLength": 5
+        },
+        {
+          "text": "them",
+          "startSeconds": 1.7600000000000016,
+          "endSeconds": 1.879999999999999,
+          "confidence": 0.9753557592630386,
+          "charStart": 27,
+          "charLength": 4
+        },
+        {
+          "text": "deliberately.",
+          "startSeconds": 2.039999999999999,
+          "endSeconds": 2.700000000000003,
+          "confidence": 0.9803096999724706,
+          "charStart": 32,
+          "charLength": 13
+        }
+      ],
+      "alignmentMethod": "wav2vec2-base-960h quantized ONNX CTC Viterbi, independently checked by small.en ASR",
+      "frameResolutionSeconds": 0.02,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "1d731464c8ad3326195c3b08f24efb77a599c895cb12f73767194096a084b7ad"
+    }
+  ],
+  "events": [
+    {
+      "commandIndex": 0,
+      "op": "OpenBook",
+      "commandId": "",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0,
+      "blocking": true,
+      "animationOrSoundCue": "IllustrationLeftTextRight"
+    },
+    {
+      "commandIndex": 1,
+      "op": "WriteText",
+      "commandId": "b1",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0.15,
+      "blocking": true,
+      "text": "CHAPTER V  ·  HEXER",
+      "spoken": false
+    },
+    {
+      "commandIndex": 2,
+      "op": "WriteText",
+      "commandId": "b2",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0.5,
+      "blocking": true,
+      "text": "The Impossible Solution",
+      "spoken": false
+    },
+    {
+      "commandIndex": 3,
+      "op": "ShowIllustration",
+      "commandId": "diagram",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0.6,
+      "blocking": false
+    },
+    {
+      "commandIndex": 4,
+      "op": "SpawnActor",
+      "commandId": "h",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0,
+      "blocking": true
+    },
+    {
+      "commandIndex": 5,
+      "op": "SpawnActor",
+      "commandId": "f4",
+      "condition": "!fact:FACT_FOURTH_COMPANION",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0,
+      "blocking": true
+    },
+    {
+      "commandIndex": 6,
+      "op": "SpawnActor",
+      "commandId": "f4",
+      "condition": "fact:FACT_FOURTH_COMPANION",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0,
+      "blocking": true
+    },
+    {
+      "commandIndex": 7,
+      "op": "SpawnActor",
+      "commandId": "core",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0,
+      "blocking": true
+    },
+    {
+      "commandIndex": 8,
+      "op": "SpawnActor",
+      "commandId": "l1",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0,
+      "blocking": true
+    },
+    {
+      "commandIndex": 9,
+      "op": "SpawnActor",
+      "commandId": "l2",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0,
+      "blocking": true
+    },
+    {
+      "commandIndex": 10,
+      "op": "SpawnActor",
+      "commandId": "l3",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0,
+      "blocking": true
+    },
+    {
+      "commandIndex": 11,
+      "op": "ShowNarration",
+      "commandId": "b3",
+      "condition": "!fact:FACT_FOURTH_COMPANION",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0.35,
+      "blocking": true,
+      "lineId": "MEM_14__b3",
+      "audio": "Chronicle/Audio/Dialogue/Narrator/MEM_14__b3",
+      "durationSeconds": 5.92
+    },
+    {
+      "commandIndex": 12,
+      "op": "ShowNarration",
+      "commandId": "b4",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0.35,
+      "blocking": true,
+      "lineId": "MEM_14__b4",
+      "audio": "Chronicle/Audio/Dialogue/Narrator/MEM_14__b4",
+      "durationSeconds": 4.36
+    },
+    {
+      "commandIndex": 13,
+      "op": "ShowNarration",
+      "commandId": "b5",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0.35,
+      "blocking": true,
+      "lineId": "MEM_14__b5",
+      "audio": "Chronicle/Audio/Dialogue/Narrator/MEM_14__b5",
+      "durationSeconds": 2.5
+    },
+    {
+      "commandIndex": 14,
+      "op": "FadeIllustrationCharacter",
+      "commandId": "l1",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 1.5,
+      "blocking": false
+    },
+    {
+      "commandIndex": 15,
+      "op": "FadeIllustrationCharacter",
+      "commandId": "l2",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 2.5,
+      "blocking": false
+    },
+    {
+      "commandIndex": 16,
+      "op": "FadeIllustrationCharacter",
+      "commandId": "l3",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 3.5,
+      "blocking": false
+    },
+    {
+      "commandIndex": 17,
+      "op": "AnimateIllustration",
+      "commandId": "core",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 3.5,
+      "blocking": false
+    },
+    {
+      "commandIndex": 18,
+      "op": "TurnPage",
+      "commandId": "",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0,
+      "blocking": true
+    },
+    {
+      "commandIndex": 19,
+      "op": "ShowIllustration",
+      "commandId": "diagram",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0.6,
+      "blocking": false
+    },
+    {
+      "commandIndex": 20,
+      "op": "SpawnActor",
+      "commandId": "h",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0,
+      "blocking": true
+    },
+    {
+      "commandIndex": 21,
+      "op": "SpawnActor",
+      "commandId": "f4",
+      "condition": "!fact:FACT_FOURTH_COMPANION",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0,
+      "blocking": true
+    },
+    {
+      "commandIndex": 22,
+      "op": "SpawnActor",
+      "commandId": "f4",
+      "condition": "fact:FACT_FOURTH_COMPANION",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0,
+      "blocking": true
+    },
+    {
+      "commandIndex": 23,
+      "op": "SpawnActor",
+      "commandId": "core",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0,
+      "blocking": true
+    },
+    {
+      "commandIndex": 24,
+      "op": "AnimateIllustration",
+      "commandId": "core",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 4,
+      "blocking": false
+    },
+    {
+      "commandIndex": 25,
+      "op": "WriteText",
+      "commandId": "corr:CORR_05",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0.4,
+      "blocking": true,
+      "lineId": "MEM_14__corr_CORR_05",
+      "audio": "Chronicle/Audio/Dialogue/Narrator/MEM_14__corr_CORR_05",
+      "durationSeconds": 1.96
+    },
+    {
+      "commandIndex": 26,
+      "op": "ShowNarration",
+      "commandId": "b6",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0.35,
+      "blocking": true,
+      "lineId": "MEM_14__b6",
+      "audio": "Chronicle/Audio/Dialogue/Narrator/MEM_14__b6",
+      "durationSeconds": 3.76
+    },
+    {
+      "commandIndex": 27,
+      "op": "ShowNarration",
+      "commandId": "b7",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0.35,
+      "blocking": true,
+      "lineId": "MEM_14__b7",
+      "audio": "Chronicle/Audio/Dialogue/Narrator/MEM_14__b7",
+      "durationSeconds": 2.0
+    },
+    {
+      "commandIndex": 28,
+      "op": "AnimateIllustration",
+      "commandId": "h",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 2.0357144,
+      "blocking": false
+    },
+    {
+      "commandIndex": 29,
+      "op": "WriteText",
+      "commandId": "b8",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0.4,
+      "blocking": true,
+      "lineId": "MEM_14__b8",
+      "audio": "Chronicle/Audio/Dialogue/Narrator/MEM_14__b8",
+      "durationSeconds": 2.84
+    },
+    {
+      "commandIndex": 30,
+      "op": "AnimateIllustration",
+      "commandId": "f4",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 1.4642857,
+      "blocking": false
+    },
+    {
+      "commandIndex": 31,
+      "op": "WriteText",
+      "commandId": "b9",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0.4,
+      "blocking": true,
+      "lineId": "MEM_14__b9",
+      "audio": "Chronicle/Audio/Dialogue/Narrator/MEM_14__b9",
+      "durationSeconds": 3.1
+    },
+    {
+      "commandIndex": 32,
+      "op": "PauseWriting",
+      "commandId": "",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0.8,
+      "blocking": true
+    },
+    {
+      "commandIndex": 33,
+      "op": "CrossOutText",
+      "commandId": "CORR_05",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0,
+      "blocking": true
+    },
+    {
+      "commandIndex": 34,
+      "op": "WriteCorrection",
+      "commandId": "CORR_05",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0.5,
+      "blocking": true,
+      "lineId": "MEM_14__fix_CORR_05",
+      "audio": "Chronicle/Audio/Dialogue/Narrator/MEM_14__fix_CORR_05",
+      "durationSeconds": 2.74,
+      "animationOrSoundCue": "CORR_05"
+    },
+    {
+      "commandIndex": 35,
+      "op": "SaveCorrection",
+      "commandId": "CORR_05",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0,
+      "blocking": true
+    },
+    {
+      "commandIndex": 36,
+      "op": "Wait",
+      "commandId": "",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0.8,
+      "blocking": true
+    },
+    {
+      "commandIndex": 37,
+      "op": "DiscoverFact",
+      "commandId": "FACT_FOURTH_COMPANION",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0,
+      "blocking": true
+    },
+    {
+      "commandIndex": 38,
+      "op": "DiscoverFact",
+      "commandId": "FACT_ERASURE_PLAN",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0,
+      "blocking": true
+    },
+    {
+      "commandIndex": 39,
+      "op": "FinishScene",
+      "commandId": "",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0,
+      "blocking": true
+    }
+  ],
+  "absoluteSceneTimes": null,
+  "note": "Word timestamps are measured within each final clip. Scene waits, branching, correction locks, page turns, skips, and archive replays remain controlled by Claude's existing sequencer. Do not flatten conditional alternatives into simultaneous speech."
+}

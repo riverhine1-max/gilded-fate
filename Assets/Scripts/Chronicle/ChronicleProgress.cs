@@ -110,6 +110,25 @@ namespace GildedFate.Chronicle
         }
 
         // ---------- unlocks ----------
+        /// <summary>Admin testing: opens every story without fabricating runs, wins, readings or lore discoveries.</summary>
+        public ChronicleUnlockResult UnlockAllForDevelopment()
+        {
+            Ensure();
+            var result = new ChronicleUnlockResult();
+            foreach (var memory in ChronicleCatalog.Memories)
+            {
+                if (IsUnlocked(memory.id)) continue;
+                unlockedMemories.Add(memory.id); result.newMemories.Add(memory.id);
+                if (!pendingNotices.Contains(memory.id)) pendingNotices.Add(memory.id);
+            }
+            if (!secretUnlocked)
+            {
+                secretUnlocked = true; result.secretUnlocked = true;
+                if (!pendingNotices.Contains(ChronicleCatalog.SecretChapterId)) pendingNotices.Add(ChronicleCatalog.SecretChapterId);
+            }
+            return result;
+        }
+
         /// <summary>Evaluates every rule and unlocks what is earned. Safe to call repeatedly; each memory unlocks once.</summary>
         public ChronicleUnlockResult RefreshUnlocks()
         {

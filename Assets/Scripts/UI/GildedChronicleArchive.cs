@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using GildedFate.Audio;
@@ -16,6 +16,7 @@ namespace GildedFate.UI
     public sealed partial class GildedMainMenu
     {
         private ChronicleArchiveController archive;
+        private Texture2D chronicleArchiveIcon;
         private bool archiveFlipActive, archiveSyncBook, archiveClosing;
         private float archiveClosingAt;
         private int archiveOutSpread, archiveOutReadingSpread;
@@ -25,7 +26,7 @@ namespace GildedFate.UI
         private readonly ChronicleSceneState archiveInkState = new();
         private readonly List<(string title, string sub, bool big, float at)> chronicleToasts = new();
 
-        private static readonly Color ArchiveInk = new(.16f, .10f, .06f), ArchiveDim = new(.42f, .33f, .22f), ArchiveRed = new(.78f, .08f, .08f), ArchiveGold = new(.62f, .42f, .10f);
+        private static readonly Color ArchiveInk = new(.10f, .055f, .025f), ArchiveDim = new(.24f, .15f, .08f), ArchiveRed = new(.68f, .035f, .025f), ArchiveGold = new(.34f, .21f, .07f);
         private static string ChronicleRoman(int n) => new[] { "", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X" }[Mathf.Clamp(n, 0, 10)];
 
         // ---------------- entering and leaving ----------------
@@ -35,7 +36,7 @@ namespace GildedFate.UI
             var progress = profile.chronicle; progress.Ensure();
             archive = new ChronicleArchiveController(progress);
             archiveReadings.Clear(); archiveFlipActive = archiveSyncBook = archiveClosing = false;
-            chronicleHost = chronicleHost ?? ChronicleBookStageHost.Create(1600, 900);
+            chronicleHost = chronicleHost ?? ChronicleBookStageHost.Create(2400, 1350);
             if (chronicleHost != null)
             {
                 chronicleHost.SetActive(true);
@@ -151,12 +152,12 @@ namespace GildedFate.UI
 
         private void DrawChronicleArchiveCore(float w, float h)
         {
-            Fill(new Rect(0, 0, w, h), new Color(.02f, .015f, .02f, 1f));
+            DrawChronicleAtmosphere(w, h);
             var dest = new Rect((w - 1600f * Mathf.Min(w / 1600f, h / 900f)) * .5f, (h - 900f * Mathf.Min(w / 1600f, h / 900f)) * .5f, 1600f * Mathf.Min(w / 1600f, h / 900f), 900f * Mathf.Min(w / 1600f, h / 900f));
             Rect left, right; var alpha = 1f; var show = true;
             if (chronicleHost != null)
             {
-                if (Event.current.type == EventType.Repaint) GUI.DrawTexture(dest, chronicleHost.Texture, ScaleMode.StretchToFill, false);
+                if (Event.current.type == EventType.Repaint) GUI.DrawTexture(dest, chronicleHost.Texture, ScaleMode.StretchToFill, true);
                 var frame = chronicleHost.Rig.Frame; show = frame.overlayVisible; alpha = frame.overlayAlpha;
                 if (chronicleHost.TryGetPageViewportRect(ChroniclePageSide.Left, out var lv) && chronicleHost.TryGetPageViewportRect(ChroniclePageSide.Right, out var rv)) { left = ChronicleGuiRect(dest, lv); right = ChronicleGuiRect(dest, rv); }
                 else { show = false; left = right = default; }
@@ -171,10 +172,14 @@ namespace GildedFate.UI
             if (show) DrawArchivePages(left, right, alpha);
 
             var caption = new GUIStyle(ReadableStyle(13, true)) { alignment = TextAnchor.MiddleLeft, normal = { textColor = new Color(.85f, .72f, .45f) } };
-            GUI.Label(new Rect(34, 22, 420, 24), "THE CHRONICLE OF BROKEN FATE", caption);
-            var back = new Rect(34, h - 76, 148, 46); DrawButtonFrame(back, back.Contains(PointerPosition) && !archiveClosing, archiveClosing);
+            if (!chronicleArchiveIcon) chronicleArchiveIcon = Resources.Load<Texture2D>("Chronicle/UI/ChronicleArchiveIcon");
+            if (chronicleArchiveIcon) GUI.DrawTexture(new Rect(30, 10, 48, 48), chronicleArchiveIcon, ScaleMode.ScaleToFit, true);
+            SetChronicleTextInk(caption,caption.normal.textColor);
+            GUI.Label(new Rect(chronicleArchiveIcon ? 88 : 34, 22, 420, 24), "THE CHRONICLE OF BROKEN FATE", caption);
+            var back = new Rect(34, h - 76, 148, 46); DrawButtonFrame(back, false, archiveClosing);
             var wasEnabled = GUI.enabled; GUI.enabled = wasEnabled && !archiveClosing;
-            if (GUI.Button(back, "BACK", buttonStyle)) ApplyArchiveResult(archive.Back());
+            var backStyle=new GUIStyle(buttonStyle);SetChronicleTextInk(backStyle,backStyle.normal.textColor);
+            if (GUI.Button(back, "BACK", backStyle)) ApplyArchiveResult(archive.Back());
             GUI.enabled = wasEnabled;
             DrawMenuNavigationHint(w, h, "← →  Turn page    ↑ ↓  Select    Enter  Open / Read    Esc  Back", "D-pad  Select    LB / RB  Turn page    A  Open    B  Back");
         }
@@ -186,6 +191,10 @@ namespace GildedFate.UI
             var spread = outgoing ? archiveOutSpread : archive.Spread;
             var readId = outgoing ? archiveOutReadingId : archive.ReadingId; var readIndex = outgoing ? archiveOutReadingSpread : archive.ReadingSpread;
             var enabled = GUI.enabled; GUI.enabled = enabled && alpha > .95f && !outgoing && !archiveClosing;   // no clicks on a page that is mid-turn
+            // Quiet the parchment beneath the ink while retaining the wrinkles,
+            // border artwork and exactly the same content rectangles.
+            var wash=new Color(1f,.94f,.80f,.18f*alpha);
+            Fill(left,wash);Fill(right,wash);
             if (!string.IsNullOrEmpty(readId)) DrawArchiveReading(left, right, alpha, readId, readIndex);
             else if (spread == ChronicleArchiveController.ContentsSpread) DrawArchiveContents(left, right, alpha);
             else if (spread == ChronicleArchiveController.SecretSpread) DrawArchiveSecret(left, right, alpha);
@@ -198,13 +207,14 @@ namespace GildedFate.UI
         {
             var key = size * 64 + (italic ? 32 : 0) + (int)anchor;
             if (archiveStyles.TryGetValue(key, out var s)) return s;
-            s = new GUIStyle(GUI.skin.label) { font = headingFont ? headingFont : bodyFont, fontSize = size, wordWrap = true, richText = false, alignment = anchor, fontStyle = italic ? FontStyle.Italic : FontStyle.Normal };
+            if (!chronicleHandwritingFont) chronicleHandwritingFont = Resources.Load<Font>("Chronicle/Fonts/ChronicleHandwriting");
+            s = new GUIStyle(GUI.skin.label) { font = chronicleHandwritingFont ? chronicleHandwritingFont : bodyFont, fontSize = size, wordWrap = true, richText = false, alignment = anchor, fontStyle = FontStyle.Normal };
             archiveStyles[key] = s; return s;
         }
 
         private float ArchiveText(Rect page, float y, string text, int size, Color ink, float alpha, bool italic = false, TextAnchor anchor = TextAnchor.UpperLeft, float after = 8f)
         {
-            var style = ArchiveStyle(Mathf.Max(8, size), italic, anchor); style.normal.textColor = new Color(ink.r, ink.g, ink.b, ink.a * alpha);
+            var style = ArchiveStyle(Mathf.Max(8, size), italic, anchor); SetChronicleTextInk(style, new Color(ink.r, ink.g, ink.b, ink.a * alpha));
             var height = style.CalcHeight(new GUIContent(text), page.width);
             GUI.Label(new Rect(page.x, y, page.width, height + 2f), text, style);
             return y + height + after;
@@ -233,7 +243,7 @@ namespace GildedFate.UI
             var over = r.Contains(PointerPosition);
             if (!controllerNavigation && over && archive.Focus != focusIndex && focusIndex >= 0) archive.SetFocusIndex(focusIndex);
             var focused = archive.Focus == focusIndex && (controllerNavigation || over);
-            if (focused) Outline(r, new Color(.95f, .72f, .25f, .95f), 2);
+            if (focused && controllerNavigation) Outline(r, new Color(.34f, .21f, .07f, .95f), 2);
             return GUI.Button(r, "", GUIStyle.none);
         }
 
@@ -241,7 +251,7 @@ namespace GildedFate.UI
         {
             if (string.IsNullOrEmpty(id)) return null;
             if (archiveReadings.TryGetValue(id, out var cached)) return cached;
-            var reading = ChronicleArchive.Reading(id, profile.chronicle); archiveReadings[id] = reading; return reading;
+            var reading = ChronicleArchive.Reading(id, profile.chronicle, ChronicleWritingMetrics()); archiveReadings[id] = reading; return reading;
         }
 
         // ---- contents spread ----
@@ -264,8 +274,8 @@ namespace GildedFate.UI
             {
                 var r = new Rect(left.x, top + i * rowH, left.width, rowH - 4f * u);
                 Fill(r, new Color(.2f, .12f, .05f, .08f * alpha));
-                var label = ArchiveStyle(Mathf.Max(8, Mathf.RoundToInt(14 * u)), false, TextAnchor.MiddleLeft); label.normal.textColor = new Color(ArchiveDim.r, ArchiveDim.g, ArchiveDim.b, alpha);
-                var value = ArchiveStyle(Mathf.Max(8, Mathf.RoundToInt(14 * u)), false, TextAnchor.MiddleRight); value.normal.textColor = new Color(ArchiveInk.r, ArchiveInk.g, ArchiveInk.b, alpha);
+                var label = ArchiveStyle(Mathf.Max(8, Mathf.RoundToInt(14 * u)), false, TextAnchor.MiddleLeft); SetChronicleTextInk(label, new Color(ArchiveDim.r, ArchiveDim.g, ArchiveDim.b, alpha));
+                var value = ArchiveStyle(Mathf.Max(8, Mathf.RoundToInt(14 * u)), false, TextAnchor.MiddleRight); SetChronicleTextInk(value, new Color(ArchiveInk.r, ArchiveInk.g, ArchiveInk.b, alpha));
                 GUI.Label(new Rect(r.x + 8 * u, r.y, r.width * .5f, r.height), rows[i].Item1, label); GUI.Label(new Rect(r.x + r.width * .4f, r.y, r.width * .6f - 8 * u, r.height), rows[i].Item2, value);
                 if (ArchiveHit(r, ChronicleArchiveController.ContentsOptionStart + i)) ApplyArchiveResult(archive.Accept());
             }
@@ -278,11 +288,12 @@ namespace GildedFate.UI
             {
                 var r = new Rect(right.x, y + i * rh, right.width, rh - 4f * u); var secret = i == 9;
                 var row = secret ? null : v.chapters[i]; var open = secret ? v.secret != ChronicleSecretState.Locked : row.visible;
-                Fill(r, secret && v.secret == ChronicleSecretState.Unlocked ? new Color(.3f, .8f, .55f, .16f * alpha) : new Color(.2f, .12f, .05f, (open ? .12f : .05f) * alpha));
+                var selected=GUI.enabled&&(controllerNavigation?archive.Focus==i:r.Contains(PointerPosition));
+                Fill(r,selected?new Color(.20f,.12f,.05f,.24f*alpha):secret && v.secret == ChronicleSecretState.Unlocked ? new Color(.3f, .8f, .55f, .16f * alpha) : new Color(.2f, .12f, .05f, (open ? .12f : .05f) * alpha));
                 var size = Mathf.Max(9, Mathf.RoundToInt(17 * u));
-                var roman = ArchiveStyle(size, false, TextAnchor.MiddleLeft); roman.normal.textColor = new Color(ArchiveGold.r, ArchiveGold.g, ArchiveGold.b, alpha);
-                var title = ArchiveStyle(size, false, TextAnchor.MiddleLeft); title.normal.textColor = open ? new Color(ArchiveInk.r, ArchiveInk.g, ArchiveInk.b, alpha) : new Color(ArchiveDim.r, ArchiveDim.g, ArchiveDim.b, alpha * .8f);
-                var count = ArchiveStyle(Mathf.Max(8, size - 2), false, TextAnchor.MiddleRight); count.normal.textColor = new Color(ArchiveDim.r, ArchiveDim.g, ArchiveDim.b, alpha);
+                var roman = ArchiveStyle(size, false, TextAnchor.MiddleLeft); SetChronicleTextInk(roman, new Color(ArchiveGold.r, ArchiveGold.g, ArchiveGold.b, alpha));
+                var title = ArchiveStyle(size, false, TextAnchor.MiddleLeft); SetChronicleTextInk(title, open ? new Color(ArchiveInk.r, ArchiveInk.g, ArchiveInk.b, alpha) : new Color(ArchiveDim.r, ArchiveDim.g, ArchiveDim.b, alpha * .8f));
+                var count = ArchiveStyle(Mathf.Max(8, size - 2), false, TextAnchor.MiddleRight); SetChronicleTextInk(count, new Color(ArchiveDim.r, ArchiveDim.g, ArchiveDim.b, alpha));
                 GUI.Label(new Rect(r.x + 8 * u, r.y, 46 * u, r.height), ChronicleRoman(secret ? 10 : row.number), roman);
                 var name = secret ? (v.secret == ChronicleSecretState.Locked ? "???" : "The One Who Remembers") : row.title;
                 GUI.Label(new Rect(r.x + 58 * u, r.y, r.width - 150 * u, r.height), name, title);
@@ -312,13 +323,13 @@ namespace GildedFate.UI
                 var locked = m.state == ChronicleEntryState.Locked;
                 Fill(card, new Color(.2f, .12f, .05f, (locked ? .05f : .12f) * alpha)); Fill(new Rect(card.x, card.y, 5 * u, card.height), new Color(heroColor.r, heroColor.g, heroColor.b, locked ? .35f * alpha : alpha));
                 var cx = card.x + 16 * u; var cw = card.width - 24 * u; var cy = card.y + 6 * u;
-                var hero = ArchiveStyle(Mathf.Max(8, Mathf.RoundToInt(13 * u)), false, TextAnchor.UpperLeft); hero.normal.textColor = new Color(ArchiveDim.r, ArchiveDim.g, ArchiveDim.b, alpha);
+                var hero = ArchiveStyle(Mathf.Max(8, Mathf.RoundToInt(13 * u)), false, TextAnchor.UpperLeft); SetChronicleTextInk(hero, new Color(ArchiveDim.r, ArchiveDim.g, ArchiveDim.b, alpha));
                 GUI.Label(new Rect(cx, cy, cw * .6f, 18 * u), ChronicleCatalog.HeroName(m.hero).ToUpperInvariant(), hero);
                 var status = locked ? "LOCKED" : m.isNew ? "NEW" : "WATCHED";
-                var chip = ArchiveStyle(Mathf.Max(8, Mathf.RoundToInt(12 * u)), false, TextAnchor.UpperRight); chip.normal.textColor = m.isNew ? new Color(.1f, .5f, .3f, alpha) : new Color(ArchiveDim.r, ArchiveDim.g, ArchiveDim.b, alpha);
+                var chip = ArchiveStyle(Mathf.Max(8, Mathf.RoundToInt(12 * u)), false, TextAnchor.UpperRight); SetChronicleTextInk(chip, m.isNew ? new Color(.1f, .5f, .3f, alpha) : new Color(ArchiveDim.r, ArchiveDim.g, ArchiveDim.b, alpha));
                 GUI.Label(new Rect(cx + cw * .5f, cy, cw * .5f, 18 * u), status, chip);
                 cy += 20 * u;
-                var titleStyle2 = ArchiveStyle(Mathf.Max(9, Mathf.RoundToInt(20 * u)), false, TextAnchor.UpperLeft); titleStyle2.normal.textColor = locked ? new Color(ArchiveDim.r, ArchiveDim.g, ArchiveDim.b, alpha * .8f) : new Color(ArchiveInk.r, ArchiveInk.g, ArchiveInk.b, alpha);
+                var titleStyle2 = ArchiveStyle(Mathf.Max(9, Mathf.RoundToInt(20 * u)), false, TextAnchor.UpperLeft); SetChronicleTextInk(titleStyle2, locked ? new Color(ArchiveDim.r, ArchiveDim.g, ArchiveDim.b, alpha * .8f) : new Color(ArchiveInk.r, ArchiveInk.g, ArchiveInk.b, alpha));
                 GUI.Label(new Rect(cx, cy, cw, 28 * u), locked ? "A memory not yet recovered" : m.title, titleStyle2);
                 if (locked) ArchiveText(new Rect(cx, cy, cw, 40 * u), cy + 28 * u, m.hint, Mathf.RoundToInt(15 * u), ArchiveDim, alpha, true, TextAnchor.UpperLeft, 0);
                 else
@@ -334,9 +345,8 @@ namespace GildedFate.UI
 
         private void DrawArchiveSmallButton(Rect r, string label)
         {
-            var hot = r.Contains(PointerPosition) && !controllerNavigation;
-            Fill(r, hot ? new Color(.62f, .42f, .10f, .22f) : new Color(.62f, .42f, .10f, .10f)); Outline(r, new Color(ArchiveGold.r, ArchiveGold.g, ArchiveGold.b, .8f), 1);
-            var s = ArchiveStyle(Mathf.Max(8, Mathf.RoundToInt(r.height * .5f)), false, TextAnchor.MiddleCenter); s.normal.textColor = ArchiveInk; GUI.Label(r, label, s);
+            Fill(r, new Color(.62f, .42f, .10f, .10f)); Outline(r, new Color(ArchiveGold.r, ArchiveGold.g, ArchiveGold.b, .8f), 1);
+            var s = ArchiveStyle(Mathf.Max(8, Mathf.RoundToInt(r.height * .5f)), false, TextAnchor.MiddleCenter); SetChronicleTextInk(s, ArchiveInk); GUI.Label(r, label, s);
         }
 
         // ---- reading a memory ----
@@ -375,7 +385,7 @@ namespace GildedFate.UI
             {
                 var button = new Rect(right.x, right.yMax - 60 * u, right.width, 48 * u);
                 Fill(button, new Color(.3f, .8f, .55f, .2f * alpha)); Outline(button, new Color(.1f, .5f, .3f, alpha), 2);
-                var s = ArchiveStyle(Mathf.Max(9, Mathf.RoundToInt(20 * u)), false, TextAnchor.MiddleCenter); s.normal.textColor = new Color(.05f, .3f, .2f, alpha);
+                var s = ArchiveStyle(Mathf.Max(9, Mathf.RoundToInt(20 * u)), false, TextAnchor.MiddleCenter); SetChronicleTextInk(s, new Color(.05f, .3f, .2f, alpha));
                 GUI.Label(button, state == ChronicleSecretState.Unlocked ? "OPEN THE FINAL CHAPTER" : "READ IT AGAIN", s);
                 if (ArchiveHit(button, 0)) ApplyArchiveResult(archive.BeginSecret());
             }
@@ -420,9 +430,17 @@ namespace GildedFate.UI
             return c.TotalUnlocked + " / " + ChronicleCatalog.MemoryCount + " MEMORIES" + (fresh > 0 ? "  ·  " + fresh + " NEW" : c.secretUnlocked && !c.secretCompleted ? "  ·  A FINAL CHAPTER" : "");
         }
 
-        // Drawn with plain fills only: the hub draws its art inside a clipped group, where rotated lines would land in the wrong place.
+        // Use the supplied book artwork in the Archive's Chronicle banner.
         private void HubArtChronicle(Rect r)
         {
+            if (!chronicleArchiveIcon) chronicleArchiveIcon = Resources.Load<Texture2D>("Chronicle/UI/ChronicleArchiveIcon");
+            if (chronicleArchiveIcon)
+            {
+                var size = Mathf.Min(r.width, r.height) * .96f;
+                ShardSoft(r.center, size * 1.3f, new Color(.72f, .44f, .12f, .14f));
+                GUI.DrawTexture(new Rect(r.center.x - size * .5f, r.center.y - size * .5f, size, size), chronicleArchiveIcon, ScaleMode.ScaleToFit, true);
+                return;
+            }
             var c = new Vector2(r.center.x, r.center.y + r.height * .04f); var arm = Mathf.Min(r.width, r.height) * .36f;
             var gold = new Color(1f, .8f, .4f, .95f); var emerald = new Color(.4f, .95f, .7f);
             ShardSoft(c, arm * 5.2f, new Color(.3f, .9f, .6f, .16f));

@@ -78,6 +78,8 @@ namespace GildedFate.UI
             if(!playgroundActive){pgBackup=JsonUtility.ToJson(run);pgSavedNode=currentNode;pgSavedEnemy=currentEnemy;}
             playgroundActive=true;SaveService.Suspended=true;ProfileService.Suspended=true;
             run.NewRun(pgHero,Random.Range(1,int.MaxValue));run.sandbox=true;run.act=pgAct;
+            // Match the selected themed opponent rather than a randomly rolled backdrop.
+            if(!string.IsNullOrEmpty(first.theme)&&!NeutralContent.IsNeutral(first.id))run.actThemes[run.act-1]=first.theme;
             run.cards.Clear();foreach(var pair in pgDeck)for(var i=0;i<pair.Value;i++)run.AddCard(pair.Key,pgUpgraded.Contains(pair.Key));
             run.relics.Clear();foreach(var r in pgRelics)run.AcquireRelic(r);
             run.shards.Clear();if(pgShard>=0&&pgShard<WorldContent.FateShards.Length)run.AddShard(WorldContent.FateShards[pgShard].id);
@@ -88,7 +90,7 @@ namespace GildedFate.UI
             BeginCombat(first,kind==NodeKind.Boss?2:kind==NodeKind.Elite?1:0);
             var mult=PgHpMults[Mathf.Clamp(pgHpMultIndex,0,PgHpMults.Length-1)];
             for(var i=0;i<combat.EnemyCount;i++){var f=combat.EnemyAt(i);f.maxHp=Mathf.Max(1,Mathf.RoundToInt(f.maxHp*mult));f.hp=f.maxHp;}
-            if(first.boss&&pgBossPhase>1){combat.enemy.hp=Mathf.Max(1,Mathf.RoundToInt(combat.enemy.maxHp*(pgBossPhase==2?.6f:.3f)));combat.RefreshEnemyState();}
+            if(first.boss&&pgBossPhase>1){combat.enemy.hp=Mathf.Max(1,Mathf.RoundToInt(combat.enemy.maxHp*(pgBossPhase==2?.6f:.3f)));combat.RefreshEnemyState(true);}
             combat.player.strength+=pgStrength;combat.energy=pgEnergy;
             combat.events.Clear();foreach(var c in combat.hand)combat.events.Add(new CombatEvent(CombatEventKind.Draw,1,true,c));
             ResetCombatPresentation();lastBossPhase=combat.bossPhase;bossIntroTime=0;
@@ -144,6 +146,7 @@ namespace GildedFate.UI
             profile.totalMarks=Mathf.Max(profile.totalMarks,Mathf.Max(wanderer,profile.heroMarks.Sum()));
         }
         private void PgUnlockDebt(){profile.EnsureMeta();for(var i=0;i<3;i++)profile.fateDebtUnlocked[i]=FateDebt.Count;}
+        private void PgUnlockChronicles(){profile.EnsureMeta();profile.chronicle.UnlockAllForDevelopment();archiveReadings.Clear();}
         // Admin unlocks are never sent to Steam (see SyncAchievementsToSteam).
         private void PgUnlockAchievements(){profile.EnsureMeta();foreach(var a in AchievementCatalog.All)if(!profile.achievements.Contains(a.id))profile.achievements.Add(a.id);}
         private void PgAddMarks(int amount){profile.EnsureMeta();for(var i=0;i<3;i++)profile.heroMarks[i]+=amount;profile.totalMarks+=amount*3;}
@@ -152,13 +155,17 @@ namespace GildedFate.UI
             profile.EnsureMeta();
             profile.heroMarks=new int[3];profile.totalMarks=0;profile.fateDebtUnlocked=new int[3];profile.fateDebtBestWin=new[]{-1,-1,-1};profile.winsByHero=new int[3];
             profile.totalGilds=0;profile.dailyRunsCompleted=0;profile.bossesDefeatedIds.Clear();profile.achievements.Clear();profile.runHistory.Clear();profile.dailyRecords.Clear();
+            profile.chronicle.ResetAll();
+            archive=null;archiveReadings.Clear();chronicleToasts.Clear();
+            archiveFlipActive=archiveSyncBook=archiveClosing=false;
+            archiveOutReadingId="";archiveOutSpread=archiveOutReadingSpread=0;
             for(var i=0;i<3;i++)selectedFateDebt[i]=0;
-            BindMetaUnlocks();profile.adminUnlocked=false;ProfileService.Save(profile);pgAdminNote="PROGRESS RESET · fresh unlocks, Fate Debt, achievements and records. Settings kept.";Sfx(SoundCue.UiBack);
+            BindMetaUnlocks();profile.adminUnlocked=false;ProfileService.Save(profile);pgAdminNote="PROGRESS RESET · fresh unlocks, Fate Debt, achievements, records and Chronicle. Settings kept.";Sfx(SoundCue.UiBack);
         }
         private void DrawPlaygroundAdmin(float w,float h)
         {
             Fill(new Rect(0,0,w,h),new Color(0,0,0,.72f));
-            var r=new Rect(w*.5f-330,120,660,560);Fill(r,new Color(.03f,.018f,.02f,.98f));Outline(r,new Color(1f,.42f,.32f),2);Outline(new Rect(r.x+7,r.y+7,r.width-14,r.height-14),new Color(.35f,.18f,.14f),1);
+            var r=new Rect(w*.5f-330,80,660,646);Fill(r,new Color(.03f,.018f,.02f,.98f));Outline(r,new Color(1f,.42f,.32f),2);Outline(new Rect(r.x+7,r.y+7,r.width-14,r.height-14),new Color(.35f,.18f,.14f),1);
             GUI.Label(new Rect(r.x,r.y+18,r.width,36),"ADMIN PANEL",new GUIStyle(titleStyle){fontSize=26});
             GUI.Label(new Rect(r.x,r.y+52,r.width,20),"Changes your real save on this computer · Editor / Development Build only",new GUIStyle(footerStyle){fontSize=12,normal={textColor=new Color(1f,.6f,.5f)}});
             var label=new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=13,fontStyle=FontStyle.Bold,alignment=TextAnchor.MiddleLeft,normal={textColor=new Color(.92f,.88f,.8f)}};
@@ -167,23 +174,56 @@ namespace GildedFate.UI
             GUI.Label(new Rect(x,y,bw,22),$"CARDS UNLOCKED   {unlocked} / {lockable} locked cards opened",label);y+=24;
             GUI.Label(new Rect(x,y,bw,22),$"FATE MARKS   Vanguard {profile.heroMarks[0]} · Hexer {profile.heroMarks[1]} · Reaper {profile.heroMarks[2]} · Total {profile.totalMarks}",label);y+=24;
             GUI.Label(new Rect(x,y,bw,22),$"FATE DEBT OPEN   Vanguard {FateDebt.Roman(profile.fateDebtUnlocked[0])} · Hexer {FateDebt.Roman(profile.fateDebtUnlocked[1])} · Reaper {FateDebt.Roman(profile.fateDebtUnlocked[2])}",label);y+=24;
-            GUI.Label(new Rect(x,y,bw,22),$"ACHIEVEMENTS   {profile.achievements.Count} / {AchievementCatalog.All.Length}",label);y+=36;
+            GUI.Label(new Rect(x,y,bw,22),$"ACHIEVEMENTS   {profile.achievements.Count} / {AchievementCatalog.All.Length}",label);y+=24;
+            GUI.Label(new Rect(x,y,bw,22),$"CHRONICLE STORIES   {profile.chronicle.TotalUnlocked} / {GildedFate.Chronicle.ChronicleCatalog.MemoryCount} · Chapter X {(profile.chronicle.secretUnlocked?"open":"locked")}",label);y+=36;
             var big=new Rect(x,y,bw,52);DrawButtonFrame(big,big.Contains(PointerPosition),false);
-            if(GUI.Button(big,"UNLOCK EVERYTHING",buttonStyle)){PgUnlockCards();PgUnlockDebt();PgUnlockAchievements();PgSaveProfile("EVERYTHING UNLOCKED · all cards, Fate Debt X for every hero, all achievements.");}
+            if(GUI.Button(big,"UNLOCK EVERYTHING",buttonStyle)){PgUnlockCards();PgUnlockDebt();PgUnlockAchievements();PgUnlockChronicles();PgSaveProfile("EVERYTHING UNLOCKED · all cards, Fate Debt X, achievements and Chronicle stories, including Chapter X.");}
             y+=62;var half=(bw-12)*.5f;
             if(PgButton(new Rect(x,y,half,36),"UNLOCK ALL CARDS",false,12)){PgUnlockCards();PgSaveProfile("ALL CARDS UNLOCKED · they now appear in rewards, shops, events and the Collection.");}
             if(PgButton(new Rect(x+half+12,y,half,36),"UNLOCK ALL FATE DEBT",false,12)){PgUnlockDebt();PgSaveProfile("FATE DEBT I–X OPEN FOR EVERY HERO · pick it on Character Select.");}
             y+=44;
             if(PgButton(new Rect(x,y,half,36),"UNLOCK ALL ACHIEVEMENTS",false,12)){PgUnlockAchievements();PgSaveProfile("ALL ACHIEVEMENTS UNLOCKED (local only, never sent to Steam).");}
             if(PgButton(new Rect(x+half+12,y,half,36),"+100 FATE MARKS (EACH HERO)",false,12)){PgAddMarks(100);PgSaveProfile("+100 FATE MARKS for every hero · unlock tiers one step at a time.");}
-            y+=56;
+            y+=44;
+            if(PgButton(new Rect(x,y,bw,36),"UNLOCK ALL CHRONICLE STORIES",false,12)){PgUnlockChronicles();PgSaveProfile("ALL CHRONICLE STORIES UNLOCKED · all 27 memories and Chapter X are available under Archive → Chronicles.");}
+            y+=48;
             var armed=Time.unscaledTime<pgResetArmedUntil;
             if(PgButton(new Rect(x,y,bw,38),armed?"CLICK AGAIN TO CONFIRM RESET":"RESET PROGRESS (FRESH SAVE)",armed,12)){if(armed){pgResetArmedUntil=-10;PgResetProgress();}else pgResetArmedUntil=Time.unscaledTime+3f;}
             y+=50;
             GUI.Label(new Rect(x,y,bw,44),string.IsNullOrEmpty(pgAdminNote)?"Relics are never locked; pick any relic for a test fight in the Playground list.":pgAdminNote,new GUIStyle(footerStyle){fontSize=13,wordWrap=true,normal={textColor=string.IsNullOrEmpty(pgAdminNote)?new Color(.7f,.68f,.62f):new Color(.6f,1f,.7f)}});
-            var close=new Rect(r.center.x-110,r.yMax-66,220,46);DrawButtonFrame(close,close.Contains(PointerPosition),false);if(GUI.Button(close,"CLOSE",buttonStyle))pgAdminOpen=false;
+            var close=new Rect(r.center.x-110,r.yMax-66,220,46);DrawButtonFrame(close,close.Contains(PointerPosition),false);if(GUI.Button(close,"CLOSE",buttonStyle))ClosePlaygroundAdmin();
+        }
+        private bool PlaygroundAdminOpen=>screen==ScreenMode.Playground&&pgAdminOpen;
+        private void OpenPlaygroundAdmin()
+        {
+            pgAdminOpen=true;pgAdminNote="";pgResetArmedUntil=-10;
+            GUIUtility.hotControl=GUIUtility.keyboardControl=0;
+        }
+        private void ClosePlaygroundAdmin()
+        {
+            pgAdminOpen=false;pgResetArmedUntil=-10;
+            GUIUtility.hotControl=GUIUtility.keyboardControl=0;
         }
         private void DrawPlayground(float w,float h)
+        {
+            var modal=pgAdminOpen;var enabled=GUI.enabled;
+            var pointer=guiPointerPosition;var mouse=Event.current.mousePosition;
+            try
+            {
+                if(modal)
+                {
+                    // Keep the setup visible but remove its pointer, keyboard and
+                    // scroll input before any of its controls can process events.
+                    GUI.enabled=false;
+                    guiPointerPosition=Event.current.mousePosition=new Vector2(-100000,-100000);
+                }
+                DrawPlaygroundSetup(w,h);
+            }
+            finally { GUI.enabled=enabled;guiPointerPosition=pointer;Event.current.mousePosition=mouse; }
+            if(pgAdminOpen)DrawPlaygroundAdmin(w,h);
+            if((modal||pgAdminOpen)&&(Event.current.isMouse||Event.current.isKey||Event.current.type==EventType.ScrollWheel))Event.current.Use();
+        }
+        private void DrawPlaygroundSetup(float w,float h)
         {
             Fill(new Rect(0,0,w,h),new Color(.012f,.01f,.016f,1f));
             Heading(w,"PLAYGROUND","ADMIN SANDBOX · NOT IN RELEASE BUILDS · NOTHING HERE IS SAVED");
@@ -194,7 +234,7 @@ namespace GildedFate.UI
             GUI.Label(new Rect(x,y,420,20),"HERO",label);y+=22;
             for(var i=0;i<3;i++){var hero=(HeroId)i;if(PgButton(new Rect(x+i*142,y,136,30),hero.ToString().ToUpperInvariant(),pgHero==hero)&&pgHero!=hero){pgHero=hero;ResetPlaygroundDeck();}}
             y+=44;GUI.Label(new Rect(x,y,420,20),"ENEMIES · up to 4 normals, or 1 elite / boss",label);y+=22;
-            var options=new List<string>{""};options.AddRange(WorldContent.Enemies.Select(e=>e.id));
+            var options=new List<string>{""};options.AddRange(WorldContent.ActiveEnemies.Select(e=>e.id));
             for(var slot=0;slot<4;slot++)
             {
                 var id=pgEnemies[slot];var def=WorldContent.Enemies.FirstOrDefault(e=>e.id==id);
@@ -262,13 +302,13 @@ namespace GildedFate.UI
             if(!string.IsNullOrEmpty(pgResult))GUI.Label(new Rect(w*.5f-400,h-116,800,24),pgResult,new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=14,fontStyle=FontStyle.Bold,normal={textColor=new Color(1f,.85f,.55f)}});
             var start=new Rect(w*.5f-150,h-84,300,52);DrawButtonFrame(start,start.Contains(PointerPosition),false);if(GUI.Button(start,"START FIGHT",buttonStyle))StartPlaygroundFight();
             var back=new Rect(34,h-76,148,46);DrawButtonFrame(back,back.Contains(PointerPosition),false);if(GUI.Button(back,"EXIT",buttonStyle))ExitPlayground();
-            var admin=new Rect(w-214,h-76,180,46);DrawButtonFrame(admin,admin.Contains(PointerPosition),false);if(GUI.Button(admin,"ADMIN PANEL",buttonStyle)){pgAdminOpen=true;pgAdminNote="";}
-            var escape=Keyboard.current?.escapeKey.wasPressedThisFrame==true||Gamepad.current?.buttonEast.wasPressedThisFrame==true;
-            if(pgAdminOpen){DrawPlaygroundAdmin(w,h);if(escape)pgAdminOpen=false;return;}
-            if(escape)ExitPlayground();
+            var admin=new Rect(w-214,h-76,180,46);DrawButtonFrame(admin,admin.Contains(PointerPosition),false);if(GUI.Button(admin,"ADMIN PANEL",buttonStyle))OpenPlaygroundAdmin();
         }
 #else
         private const bool playgroundActive=false;
+        private const bool PlaygroundAdminOpen=false;
+        private void ClosePlaygroundAdmin(){}
+        private void ExitPlayground(){screen=ScreenMode.Menu;}
         private void UpdatePlayground(){}
         private void DrawPlayground(float w,float h){screen=ScreenMode.Menu;}
         private void DrawPlaygroundCombatHud(float w){}

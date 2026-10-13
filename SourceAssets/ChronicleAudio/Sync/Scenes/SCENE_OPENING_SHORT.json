@@ -1,0 +1,387 @@
+{
+  "schemaVersion": 1,
+  "sceneId": "SCENE_OPENING_SHORT",
+  "title": "The Chronicle of Broken Fate (short)",
+  "sourceCommit": "11584b7c925bdb912188355c3f5cd45d6d295fbd",
+  "lines": [
+    {
+      "lineId": "SCENE_OPENING_SHORT__b1",
+      "sceneId": "SCENE_OPENING_SHORT",
+      "commandId": "b1",
+      "commandIndex": 7,
+      "speaker": "NARRATOR",
+      "characterSpeaker": "",
+      "text": "Before the world was broken, there was a time when tomorrow belonged to no one.",
+      "scriptText": "Before the world was broken, there was a time when tomorrow belonged to no one.",
+      "textSHA256": "0ec762bd428f4b0bdc99b763381faaabef86a3cfc908e0d1987ec8237a5abe1b",
+      "emotion": "ConfidentHistorian",
+      "correctionId": "",
+      "condition": "",
+      "postLineBeatSeconds": 0.35,
+      "sourceCommit": "11584b7c925bdb912188355c3f5cd45d6d295fbd",
+      "recordingId": "OPENING_001",
+      "reuseExisting": true,
+      "ready": true,
+      "audio": "Chronicle/Audio/Dialogue/Narrator/OPENING_001",
+      "durationSeconds": 4.977604166666667,
+      "words": [
+        {
+          "text": "Before",
+          "charStart": 0,
+          "charLength": 6,
+          "startSeconds": 0.17999999999999994,
+          "endSeconds": 0.48
+        },
+        {
+          "text": "the",
+          "charStart": 7,
+          "charLength": 3,
+          "startSeconds": 0.52,
+          "endSeconds": 0.5800000000000001
+        },
+        {
+          "text": "world",
+          "charStart": 11,
+          "charLength": 5,
+          "startSeconds": 0.6399999999999999,
+          "endSeconds": 0.8600000000000001
+        },
+        {
+          "text": "was",
+          "charStart": 17,
+          "charLength": 3,
+          "startSeconds": 0.94,
+          "endSeconds": 1.04
+        },
+        {
+          "text": "broken,",
+          "charStart": 21,
+          "charLength": 7,
+          "startSeconds": 1.1,
+          "endSeconds": 1.48
+        },
+        {
+          "text": "there",
+          "charStart": 29,
+          "charLength": 5,
+          "startSeconds": 2.1,
+          "endSeconds": 2.24
+        },
+        {
+          "text": "was",
+          "charStart": 35,
+          "charLength": 3,
+          "startSeconds": 2.28,
+          "endSeconds": 2.36
+        },
+        {
+          "text": "a",
+          "charStart": 39,
+          "charLength": 1,
+          "startSeconds": 2.42,
+          "endSeconds": 2.44
+        },
+        {
+          "text": "time",
+          "charStart": 41,
+          "charLength": 4,
+          "startSeconds": 2.52,
+          "endSeconds": 2.8
+        },
+        {
+          "text": "when",
+          "charStart": 46,
+          "charLength": 4,
+          "startSeconds": 2.88,
+          "endSeconds": 2.98
+        },
+        {
+          "text": "tomorrow",
+          "charStart": 51,
+          "charLength": 8,
+          "startSeconds": 3.08,
+          "endSeconds": 3.5199999999999996
+        },
+        {
+          "text": "belonged",
+          "charStart": 60,
+          "charLength": 8,
+          "startSeconds": 3.66,
+          "endSeconds": 4.04
+        },
+        {
+          "text": "to",
+          "charStart": 69,
+          "charLength": 2,
+          "startSeconds": 4.1,
+          "endSeconds": 4.16
+        },
+        {
+          "text": "no",
+          "charStart": 72,
+          "charLength": 2,
+          "startSeconds": 4.24,
+          "endSeconds": 4.38
+        },
+        {
+          "text": "one.",
+          "charStart": 75,
+          "charLength": 4,
+          "startSeconds": 4.56,
+          "endSeconds": 4.72
+        }
+      ],
+      "alignmentMethod": "wav2vec2-base-960h full precision ONNX CTC Viterbi forced alignment; independent small.en ASR",
+      "frameResolutionSeconds": 0.02,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "abe413656ec33120375380d9c19c96602ba8ac34ccd8e8eadf4b3b65ca0d2bc8"
+    },
+    {
+      "lineId": "SCENE_OPENING_SHORT__b2",
+      "sceneId": "SCENE_OPENING_SHORT",
+      "commandId": "b2",
+      "commandIndex": 8,
+      "speaker": "NARRATOR",
+      "characterSpeaker": "",
+      "text": "Three names endured.",
+      "scriptText": "Three names endured.",
+      "textSHA256": "4ca0d06f77aadf29902397ee6fd5aa3477d4be559c032c502737a6845337c95c",
+      "emotion": "ConfidentHistorian",
+      "correctionId": "",
+      "condition": "",
+      "postLineBeatSeconds": 0.35,
+      "sourceCommit": "11584b7c925bdb912188355c3f5cd45d6d295fbd",
+      "recordingId": "OPENING_010",
+      "reuseExisting": true,
+      "ready": true,
+      "audio": "Chronicle/Audio/Dialogue/Narrator/OPENING_010",
+      "durationSeconds": 2.78,
+      "words": [
+        {
+          "text": "Three",
+          "charStart": 0,
+          "charLength": 5,
+          "startSeconds": 0.46,
+          "endSeconds": 0.66
+        },
+        {
+          "text": "names",
+          "charStart": 6,
+          "charLength": 5,
+          "startSeconds": 0.74,
+          "endSeconds": 1.04
+        },
+        {
+          "text": "endured.",
+          "charStart": 12,
+          "charLength": 8,
+          "startSeconds": 1.14,
+          "endSeconds": 1.64
+        }
+      ],
+      "alignmentMethod": "wav2vec2-base-960h quantized ONNX CTC Viterbi forced alignment; independent small.en ASR",
+      "frameResolutionSeconds": 0.02,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "9af655bc3f144eee741818b55290070beaf20c44ccf0ba0de1b09b40650600c0"
+    },
+    {
+      "lineId": "SCENE_OPENING_SHORT__b3",
+      "sceneId": "SCENE_OPENING_SHORT",
+      "commandId": "b3",
+      "commandIndex": 12,
+      "speaker": "NARRATOR",
+      "characterSpeaker": "",
+      "text": "Vanguard. Hexer. Reaper.",
+      "scriptText": "Vanguard. Hexer. Reaper.",
+      "textSHA256": "e25650fe761a262b93b2b96deb9db5e617cfa624cd277669d5a79762290d83ae",
+      "emotion": "ConfidentHistorian",
+      "correctionId": "",
+      "condition": "",
+      "postLineBeatSeconds": 0.35,
+      "sourceCommit": "11584b7c925bdb912188355c3f5cd45d6d295fbd",
+      "recordingId": "SCENE_OPENING_SHORT__b3",
+      "reuseExisting": false,
+      "ready": true,
+      "audio": "Chronicle/Audio/Dialogue/Narrator/SCENE_OPENING_SHORT__b3",
+      "durationSeconds": 5.040020833333333,
+      "words": [
+        {
+          "text": "Vanguard.",
+          "charStart": 0,
+          "charLength": 9,
+          "startSeconds": 0.6000000000000001,
+          "endSeconds": 1.2200000000000002
+        },
+        {
+          "text": "Hexer.",
+          "charStart": 10,
+          "charLength": 6,
+          "startSeconds": 2.5,
+          "endSeconds": 2.94
+        },
+        {
+          "text": "Reaper.",
+          "charStart": 17,
+          "charLength": 7,
+          "startSeconds": 4.109999999999999,
+          "endSeconds": 4.49
+        }
+      ],
+      "alignmentMethod": "Exact PCM concatenation of the three accepted opening name recordings; original measured word intervals shifted by exact sample counts. Hexer is verified in its unchanged original parent context.",
+      "frameResolutionSeconds": 0.02,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "ecd50f013495480bcfb88f80333e2291bccaf19ed473f0873db4a5dc8239b41f"
+    }
+  ],
+  "events": [
+    {
+      "commandIndex": 0,
+      "op": "Wait",
+      "commandId": "",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0.5,
+      "blocking": true
+    },
+    {
+      "commandIndex": 1,
+      "op": "PlayAudio",
+      "commandId": "page_rustle",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0,
+      "blocking": false,
+      "animationOrSoundCue": "page_rustle"
+    },
+    {
+      "commandIndex": 2,
+      "op": "OpenBook",
+      "commandId": "",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0,
+      "blocking": true,
+      "animationOrSoundCue": "IllustrationLeftTextRight"
+    },
+    {
+      "commandIndex": 3,
+      "op": "ShowIllustration",
+      "commandId": "field",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0.6,
+      "blocking": false
+    },
+    {
+      "commandIndex": 4,
+      "op": "SpawnActor",
+      "commandId": "v",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0,
+      "blocking": true
+    },
+    {
+      "commandIndex": 5,
+      "op": "SpawnActor",
+      "commandId": "h",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0,
+      "blocking": true
+    },
+    {
+      "commandIndex": 6,
+      "op": "SpawnActor",
+      "commandId": "r",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0,
+      "blocking": true
+    },
+    {
+      "commandIndex": 7,
+      "op": "ShowNarration",
+      "commandId": "b1",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0.35,
+      "blocking": true,
+      "lineId": "SCENE_OPENING_SHORT__b1",
+      "audio": "Chronicle/Audio/Dialogue/Narrator/OPENING_001",
+      "durationSeconds": 4.977604166666667
+    },
+    {
+      "commandIndex": 8,
+      "op": "ShowNarration",
+      "commandId": "b2",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0.35,
+      "blocking": true,
+      "lineId": "SCENE_OPENING_SHORT__b2",
+      "audio": "Chronicle/Audio/Dialogue/Narrator/OPENING_010",
+      "durationSeconds": 2.78
+    },
+    {
+      "commandIndex": 9,
+      "op": "FadeIllustrationCharacter",
+      "commandId": "v",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0.6,
+      "blocking": false
+    },
+    {
+      "commandIndex": 10,
+      "op": "FadeIllustrationCharacter",
+      "commandId": "h",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0.6,
+      "blocking": false
+    },
+    {
+      "commandIndex": 11,
+      "op": "FadeIllustrationCharacter",
+      "commandId": "r",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0.6,
+      "blocking": false
+    },
+    {
+      "commandIndex": 12,
+      "op": "ShowNarration",
+      "commandId": "b3",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0.35,
+      "blocking": true,
+      "lineId": "SCENE_OPENING_SHORT__b3",
+      "audio": "Chronicle/Audio/Dialogue/Narrator/SCENE_OPENING_SHORT__b3",
+      "durationSeconds": 5.040020833333333
+    },
+    {
+      "commandIndex": 13,
+      "op": "CloseBook",
+      "commandId": "",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0,
+      "blocking": true,
+      "animationOrSoundCue": "CloseBook"
+    },
+    {
+      "commandIndex": 14,
+      "op": "FinishScene",
+      "commandId": "",
+      "condition": "",
+      "relativeTo": "Completion of prior blocking command; existing ChronicleSequencer is authoritative.",
+      "scriptBeatSeconds": 0,
+      "blocking": true
+    }
+  ],
+  "absoluteSceneTimes": null,
+  "note": "Word timestamps are measured within each final clip. Scene waits, branching, correction locks, page turns, skips, and archive replays remain controlled by Claude's existing sequencer. Do not flatten conditional alternatives into simultaneous speech."
+}

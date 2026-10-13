@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf24bef85d3730445b65046aac3c228a, type: 3}
+  m_Name: ChronicleBookRigConfig
+  m_EditorClassIdentifier: Assembly-CSharp::GildedFate.ChronicleBook.ChronicleBookRigConfig
+  openState: CHR_Open
+  closeState: CHR_Close
+  turnForwardState: CHR_PageTurn_RL
+  turnBackState: CHR_PageTurn_LR
+  idleState: CHR_Idle_Open
+  correctionState: CHR_Reaction_Subtle
+  majorMagicState: CHR_Reaction_Subtle
+  animatorLayer: 0
+  crossFadeSeconds: 0
+  spreadParameter: 
+  openClip: {fileID: 5268339791115078036, guid: 135cc8a5038af102467400a5a5ea33f2, type: 3}
+  closeClip: {fileID: -6142887785185672917, guid: 135cc8a5038af102467400a5a5ea33f2, type: 3}
+  turnForwardClip: {fileID: 1102559714941056265, guid: 135cc8a5038af102467400a5a5ea33f2, type: 3}
+  turnBackClip: {fileID: -6580742729267019300, guid: 135cc8a5038af102467400a5a5ea33f2, type: 3}
+  correctionClip: {fileID: -7370613690317254845, guid: 135cc8a5038af102467400a5a5ea33f2, type: 3}
+  majorMagicClip: {fileID: -7370613690317254845, guid: 135cc8a5038af102467400a5a5ea33f2, type: 3}
+  openSeconds: 1.6
+  closeSeconds: 1.3
+  turnSeconds: 0.9
+  correctionSeconds: 0.6
+  majorMagicSeconds: 1.1
+  leftPageAnchorName: PageAnchor_Left
+  rightPageAnchorName: PageAnchor_Right
+  pageSize: {x: 0.24, y: 0.34}
+  cameraDistance: 1.12
+  cameraTarget: {x: 0, y: 0.04, z: 0}

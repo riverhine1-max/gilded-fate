@@ -126,9 +126,20 @@ namespace GildedFate.Map
         {
             if(GameContent.Relics.All(r=>r.id!=id)||relics.Contains(id))return false;relics.Add(id);if(id=="perfected_thread"){perfectedSelectionPending=true;perfectedSelectionStep=0;NormalizePerfectedSelection();}return true;
         }
-        public bool AddShard(string id)
+        public bool AddShard(string id,int replaceIndex=-1)
         {
-            if(shards.Count>=ShardCapacity||WorldContent.FateShards.All(s=>s.id!=id))return false;EnsureShardSlots();var slot=Enumerable.Range(0,ShardCapacity).First(i=>shards.All(s=>s.slot!=i));shards.Add(new FateShardState{id=id,slot=slot});return true;
+            if(WorldContent.FateShards.All(s=>s.id!=id)||shards.Count>ShardCapacity)return false;
+            if(replaceIndex>=0)
+            {
+                if(replaceIndex>=shards.Count||shards[replaceIndex].active)return false;
+                EnsureShardSlots();
+                // Replace only after validation, preserving the chosen physical socket.
+                shards[replaceIndex]=new FateShardState{id=id,slot=shards[replaceIndex].slot};return true;
+            }
+            if(shards.Count>=ShardCapacity)return false;
+            EnsureShardSlots();
+            var slot=Enumerable.Range(0,ShardCapacity).First(i=>shards.All(s=>s.slot!=i));
+            shards.Add(new FateShardState{id=id,slot=slot});return true;
         }
         public void FinishActiveShard()
         {
@@ -272,7 +283,7 @@ namespace GildedFate.Map
             pendingCardOfferIds=PickIds(pool,3,seed^act*3571);pendingChoicesNeeded=1;stage=RunStage.FateweaveCard;
         }
         private void OfferRareDestinies(){pendingCardOfferIds.Clear();foreach(var origin in new[]{CardOrigin.Knight,CardOrigin.Arcane,CardOrigin.Reaper,CardOrigin.Wanderer}){var pool=MetaUnlocks.Filter(GameContent.Cards.Where(c=>c.origin==origin&&c.rarity==Rarity.Rare),1).ToArray();pendingCardOfferIds.Add(pool[Math.Abs(seed^act*97+(int)origin*31)%pool.Length].id);}pendingChoicesNeeded=1;stage=RunStage.FateweaveCard;}
-        private void GrantRandomRelic(Rarity rarity,int count){var pool=GameContent.Relics.Where(r=>r.rarity==rarity&&!relics.Contains(r.id)).ToList();for(var i=0;i<count&&pool.Count>0;i++){var index=Math.Abs(seed^act*193+i*71)%pool.Count;AcquireRelic(pool[index].id);pool.RemoveAt(index);}}
+        private void GrantRandomRelic(Rarity rarity,int count){var pool=GameContent.Relics.Where(r=>r.rarity==rarity&&!relics.Contains(r.id)&&!(pendingRelicRewards?.Contains(r.id)??false)).ToList();for(var i=0;i<count&&pool.Count>0;i++){var index=Math.Abs(seed^act*193+i*71)%pool.Count;OfferRelic(pool[index].id);pool.RemoveAt(index);}}
         private CardOrigin OwnOrigin()=>hero==HeroId.Vanguard?CardOrigin.Knight:hero==HeroId.Hexer?CardOrigin.Arcane:CardOrigin.Reaper;private CardOrigin OtherOrigin()=>hero==HeroId.Vanguard?CardOrigin.Arcane:hero==HeroId.Hexer?CardOrigin.Reaper:CardOrigin.Knight;
         private static List<string> PickIds(IEnumerable<string> source,int count,int seed){var pool=source.Distinct().ToList();var rng=new Random(seed);var result=new List<string>();while(result.Count<count&&pool.Count>0){var index=rng.Next(pool.Count);result.Add(pool[index]);pool.RemoveAt(index);}return result;}
         private static bool BindingEligible(BindingDef binding,CardDef card)

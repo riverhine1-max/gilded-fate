@@ -1,0 +1,1760 @@
+{
+  "schemaVersion": 1,
+  "requests": [
+    {
+      "lineId": "OPENING_001",
+      "speaker": "NARRATOR",
+      "voiceId": "30fc8796-ceb6-4a66-b3a7-4a145ef7f346",
+      "voiceType": "preset",
+      "exactSpokenText": "Before the world was broken, there was a time when tomorrow belonged to no one.",
+      "textSHA256": "0ec762bd428f4b0bdc99b763381faaabef86a3cfc908e0d1987ec8237a5abe1b",
+      "performanceDirection": "Masculine, 35–45, low-mid baritone, neutral English with subtle British influence. Calm, thoughtful, intimate human delivery. Normal natural pace, as explicitly requested by the user, with natural breaths and restrained emotional pauses. No trailer announcer, wizard or robotic reading. Keep the same locked preset voice throughout.",
+      "emotion": "reflective_calm",
+      "file": "Dialogue/Narrator/OPENING_001.wav",
+      "status": "RECORDED_AND_AUTOMATICALLY_ALIGNED_LISTENING_REVIEW_PENDING",
+      "sampleRate": 48000,
+      "channels": 1,
+      "preferredBitDepth": 24,
+      "durationSeconds": 4.977604166666667,
+      "words": [
+        {
+          "text": "Before",
+          "charStart": 0,
+          "charLength": 6,
+          "startSeconds": 0.17999999999999994,
+          "endSeconds": 0.48
+        },
+        {
+          "text": "the",
+          "charStart": 7,
+          "charLength": 3,
+          "startSeconds": 0.52,
+          "endSeconds": 0.5800000000000001
+        },
+        {
+          "text": "world",
+          "charStart": 11,
+          "charLength": 5,
+          "startSeconds": 0.6399999999999999,
+          "endSeconds": 0.8600000000000001
+        },
+        {
+          "text": "was",
+          "charStart": 17,
+          "charLength": 3,
+          "startSeconds": 0.94,
+          "endSeconds": 1.04
+        },
+        {
+          "text": "broken,",
+          "charStart": 21,
+          "charLength": 7,
+          "startSeconds": 1.1,
+          "endSeconds": 1.48
+        },
+        {
+          "text": "there",
+          "charStart": 29,
+          "charLength": 5,
+          "startSeconds": 2.1,
+          "endSeconds": 2.24
+        },
+        {
+          "text": "was",
+          "charStart": 35,
+          "charLength": 3,
+          "startSeconds": 2.28,
+          "endSeconds": 2.36
+        },
+        {
+          "text": "a",
+          "charStart": 39,
+          "charLength": 1,
+          "startSeconds": 2.42,
+          "endSeconds": 2.44
+        },
+        {
+          "text": "time",
+          "charStart": 41,
+          "charLength": 4,
+          "startSeconds": 2.52,
+          "endSeconds": 2.8
+        },
+        {
+          "text": "when",
+          "charStart": 46,
+          "charLength": 4,
+          "startSeconds": 2.88,
+          "endSeconds": 2.98
+        },
+        {
+          "text": "tomorrow",
+          "charStart": 51,
+          "charLength": 8,
+          "startSeconds": 3.08,
+          "endSeconds": 3.5199999999999996
+        },
+        {
+          "text": "belonged",
+          "charStart": 60,
+          "charLength": 8,
+          "startSeconds": 3.66,
+          "endSeconds": 4.04
+        },
+        {
+          "text": "to",
+          "charStart": 69,
+          "charLength": 2,
+          "startSeconds": 4.1,
+          "endSeconds": 4.16
+        },
+        {
+          "text": "no",
+          "charStart": 72,
+          "charLength": 2,
+          "startSeconds": 4.24,
+          "endSeconds": 4.38
+        },
+        {
+          "text": "one.",
+          "charStart": 75,
+          "charLength": 4,
+          "startSeconds": 4.56,
+          "endSeconds": 4.72
+        }
+      ],
+      "speakDirections": false,
+      "rewriteText": false,
+      "speechRate": 0
+    },
+    {
+      "lineId": "OPENING_002",
+      "speaker": "NARRATOR",
+      "voiceId": "30fc8796-ceb6-4a66-b3a7-4a145ef7f346",
+      "voiceType": "preset",
+      "exactSpokenText": "A kingdom stood beneath an unbroken sky. Its people built monuments to the past, and dreamed of futures they could not yet see.",
+      "textSHA256": "d064282defbb2e1b08b021c1536bd3094fd6bcc1b4c2df8d665010f71066c5f7",
+      "performanceDirection": "Masculine, 35–45, low-mid baritone, neutral English with subtle British influence. Calm, thoughtful, intimate human delivery. Normal natural pace, as explicitly requested by the user, with natural breaths and restrained emotional pauses. No trailer announcer, wizard or robotic reading. Keep the same locked preset voice throughout.",
+      "emotion": "reflective_calm",
+      "file": "Dialogue/Narrator/OPENING_002.wav",
+      "status": "RECORDED_AND_AUTOMATICALLY_ALIGNED_LISTENING_REVIEW_PENDING",
+      "sampleRate": 48000,
+      "channels": 1,
+      "preferredBitDepth": 24,
+      "durationSeconds": 9.138854166666667,
+      "words": [
+        {
+          "text": "A",
+          "charStart": 0,
+          "charLength": 1,
+          "startSeconds": 0.32000000000000006,
+          "endSeconds": 0.3400000000000001
+        },
+        {
+          "text": "kingdom",
+          "charStart": 2,
+          "charLength": 7,
+          "startSeconds": 0.3999999999999999,
+          "endSeconds": 0.8
+        },
+        {
+          "text": "stood",
+          "charStart": 10,
+          "charLength": 5,
+          "startSeconds": 1.0,
+          "endSeconds": 1.2400000000000002
+        },
+        {
+          "text": "beneath",
+          "charStart": 16,
+          "charLength": 7,
+          "startSeconds": 1.3199999999999998,
+          "endSeconds": 1.6
+        },
+        {
+          "text": "an",
+          "charStart": 24,
+          "charLength": 2,
+          "startSeconds": 1.6800000000000002,
+          "endSeconds": 1.7200000000000002
+        },
+        {
+          "text": "unbroken",
+          "charStart": 27,
+          "charLength": 8,
+          "startSeconds": 1.8199999999999998,
+          "endSeconds": 2.28
+        },
+        {
+          "text": "sky.",
+          "charStart": 36,
+          "charLength": 4,
+          "startSeconds": 2.4,
+          "endSeconds": 2.76
+        },
+        {
+          "text": "Its",
+          "charStart": 41,
+          "charLength": 3,
+          "startSeconds": 3.46,
+          "endSeconds": 3.58
+        },
+        {
+          "text": "people",
+          "charStart": 45,
+          "charLength": 6,
+          "startSeconds": 3.6399999999999997,
+          "endSeconds": 3.9400000000000004
+        },
+        {
+          "text": "built",
+          "charStart": 52,
+          "charLength": 5,
+          "startSeconds": 4.06,
+          "endSeconds": 4.26
+        },
+        {
+          "text": "monuments",
+          "charStart": 58,
+          "charLength": 9,
+          "startSeconds": 4.36,
+          "endSeconds": 4.86
+        },
+        {
+          "text": "to",
+          "charStart": 68,
+          "charLength": 2,
+          "startSeconds": 4.92,
+          "endSeconds": 5.02
+        },
+        {
+          "text": "the",
+          "charStart": 71,
+          "charLength": 3,
+          "startSeconds": 5.08,
+          "endSeconds": 5.16
+        },
+        {
+          "text": "past,",
+          "charStart": 75,
+          "charLength": 5,
+          "startSeconds": 5.2,
+          "endSeconds": 5.54
+        },
+        {
+          "text": "and",
+          "charStart": 81,
+          "charLength": 3,
+          "startSeconds": 5.98,
+          "endSeconds": 6.08
+        },
+        {
+          "text": "dreamed",
+          "charStart": 85,
+          "charLength": 7,
+          "startSeconds": 6.14,
+          "endSeconds": 6.46
+        },
+        {
+          "text": "of",
+          "charStart": 93,
+          "charLength": 2,
+          "startSeconds": 6.54,
+          "endSeconds": 6.58
+        },
+        {
+          "text": "futures",
+          "charStart": 96,
+          "charLength": 7,
+          "startSeconds": 6.68,
+          "endSeconds": 7.16
+        },
+        {
+          "text": "they",
+          "charStart": 104,
+          "charLength": 4,
+          "startSeconds": 7.26,
+          "endSeconds": 7.380000000000001
+        },
+        {
+          "text": "could",
+          "charStart": 109,
+          "charLength": 5,
+          "startSeconds": 7.42,
+          "endSeconds": 7.58
+        },
+        {
+          "text": "not",
+          "charStart": 115,
+          "charLength": 3,
+          "startSeconds": 7.66,
+          "endSeconds": 7.82
+        },
+        {
+          "text": "yet",
+          "charStart": 119,
+          "charLength": 3,
+          "startSeconds": 7.92,
+          "endSeconds": 8.12
+        },
+        {
+          "text": "see.",
+          "charStart": 123,
+          "charLength": 4,
+          "startSeconds": 8.28,
+          "endSeconds": 8.58
+        }
+      ],
+      "speakDirections": false,
+      "rewriteText": false,
+      "speechRate": 0
+    },
+    {
+      "lineId": "OPENING_003",
+      "speaker": "NARRATOR",
+      "voiceId": "30fc8796-ceb6-4a66-b3a7-4a145ef7f346",
+      "voiceType": "preset",
+      "exactSpokenText": "Then came a traveler.",
+      "textSHA256": "c888f0d177f48bd7c58caa43250fe82134477e5bd18e23b9a0ea7e65642e3a9f",
+      "performanceDirection": "Masculine, 35–45, low-mid baritone, neutral English with subtle British influence. Calm, thoughtful, intimate human delivery. Normal natural pace, as explicitly requested by the user, with natural breaths and restrained emotional pauses. No trailer announcer, wizard or robotic reading. Keep the same locked preset voice throughout.",
+      "emotion": "reflective_calm",
+      "file": "Dialogue/Narrator/OPENING_003.wav",
+      "status": "RECORDED_AND_AUTOMATICALLY_ALIGNED_LISTENING_REVIEW_PENDING",
+      "sampleRate": 48000,
+      "channels": 1,
+      "preferredBitDepth": 24,
+      "durationSeconds": 1.4406041666666667,
+      "words": [
+        {
+          "text": "Then",
+          "charStart": 0,
+          "charLength": 4,
+          "startSeconds": 0.28,
+          "endSeconds": 0.43999999999999995
+        },
+        {
+          "text": "came",
+          "charStart": 5,
+          "charLength": 4,
+          "startSeconds": 0.6200000000000001,
+          "endSeconds": 0.8200000000000001
+        },
+        {
+          "text": "a",
+          "charStart": 10,
+          "charLength": 1,
+          "startSeconds": 0.8799999999999999,
+          "endSeconds": 0.8999999999999999
+        },
+        {
+          "text": "traveler.",
+          "charStart": 12,
+          "charLength": 9,
+          "startSeconds": 0.96,
+          "endSeconds": 1.42
+        }
+      ],
+      "speakDirections": false,
+      "rewriteText": false,
+      "speechRate": 0
+    },
+    {
+      "lineId": "OPENING_004",
+      "speaker": "NARRATOR",
+      "voiceId": "30fc8796-ceb6-4a66-b3a7-4a145ef7f346",
+      "voiceType": "preset",
+      "exactSpokenText": "He spoke of worlds beyond our own. Of roads not yet traveled. Of lives that might have been.",
+      "textSHA256": "8b7336a523b03bdd72bb9a28f56974c308a400b200db30705a4f80560c14d268",
+      "performanceDirection": "Masculine, 35–45, low-mid baritone, neutral English with subtle British influence. Calm, thoughtful, intimate human delivery. Normal natural pace, as explicitly requested by the user, with natural breaths and restrained emotional pauses. No trailer announcer, wizard or robotic reading. Keep the same locked preset voice throughout.",
+      "emotion": "reflective_calm",
+      "file": "Dialogue/Narrator/OPENING_004.wav",
+      "status": "RECORDED_AND_AUTOMATICALLY_ALIGNED_LISTENING_REVIEW_PENDING",
+      "sampleRate": 48000,
+      "channels": 1,
+      "preferredBitDepth": 24,
+      "durationSeconds": 10.3,
+      "words": [
+        {
+          "text": "He",
+          "charStart": 0,
+          "charLength": 2,
+          "startSeconds": 0.45999999999999996,
+          "endSeconds": 0.54
+        },
+        {
+          "text": "spoke",
+          "charStart": 3,
+          "charLength": 5,
+          "startSeconds": 0.6200000000000001,
+          "endSeconds": 0.8999999999999999
+        },
+        {
+          "text": "of",
+          "charStart": 9,
+          "charLength": 2,
+          "startSeconds": 0.98,
+          "endSeconds": 1.04
+        },
+        {
+          "text": "worlds",
+          "charStart": 12,
+          "charLength": 6,
+          "startSeconds": 1.1400000000000001,
+          "endSeconds": 1.48
+        },
+        {
+          "text": "beyond",
+          "charStart": 19,
+          "charLength": 6,
+          "startSeconds": 1.56,
+          "endSeconds": 1.8599999999999999
+        },
+        {
+          "text": "our",
+          "charStart": 26,
+          "charLength": 3,
+          "startSeconds": 2.02,
+          "endSeconds": 2.12
+        },
+        {
+          "text": "own.",
+          "charStart": 30,
+          "charLength": 4,
+          "startSeconds": 2.26,
+          "endSeconds": 2.38
+        },
+        {
+          "text": "Of",
+          "charStart": 35,
+          "charLength": 2,
+          "startSeconds": 4.5,
+          "endSeconds": 4.54
+        },
+        {
+          "text": "roads",
+          "charStart": 38,
+          "charLength": 5,
+          "startSeconds": 4.66,
+          "endSeconds": 5.06
+        },
+        {
+          "text": "not",
+          "charStart": 44,
+          "charLength": 3,
+          "startSeconds": 5.54,
+          "endSeconds": 5.66
+        },
+        {
+          "text": "yet",
+          "charStart": 48,
+          "charLength": 3,
+          "startSeconds": 5.72,
+          "endSeconds": 5.88
+        },
+        {
+          "text": "traveled.",
+          "charStart": 52,
+          "charLength": 9,
+          "startSeconds": 5.96,
+          "endSeconds": 6.4
+        },
+        {
+          "text": "Of",
+          "charStart": 62,
+          "charLength": 2,
+          "startSeconds": 8.44,
+          "endSeconds": 8.48
+        },
+        {
+          "text": "lives",
+          "charStart": 65,
+          "charLength": 5,
+          "startSeconds": 8.6,
+          "endSeconds": 9.02
+        },
+        {
+          "text": "that",
+          "charStart": 71,
+          "charLength": 4,
+          "startSeconds": 9.1,
+          "endSeconds": 9.22
+        },
+        {
+          "text": "might",
+          "charStart": 76,
+          "charLength": 5,
+          "startSeconds": 9.28,
+          "endSeconds": 9.46
+        },
+        {
+          "text": "have",
+          "charStart": 82,
+          "charLength": 4,
+          "startSeconds": 9.5,
+          "endSeconds": 9.62
+        },
+        {
+          "text": "been.",
+          "charStart": 87,
+          "charLength": 5,
+          "startSeconds": 9.66,
+          "endSeconds": 9.94
+        }
+      ],
+      "speakDirections": false,
+      "rewriteText": false,
+      "speechRate": 0
+    },
+    {
+      "lineId": "OPENING_005",
+      "speaker": "NARRATOR",
+      "voiceId": "30fc8796-ceb6-4a66-b3a7-4a145ef7f346",
+      "voiceType": "preset",
+      "exactSpokenText": "To some, he offered knowledge. To others, hope.",
+      "textSHA256": "32531a09310e39bbca4cc4a9eccf16aa446a3a034177ffc31d9ef55052350150",
+      "performanceDirection": "Masculine, 35–45, low-mid baritone, neutral English with subtle British influence. Calm, thoughtful, intimate human delivery. Normal natural pace, as explicitly requested by the user, with natural breaths and restrained emotional pauses. No trailer announcer, wizard or robotic reading. Keep the same locked preset voice throughout.",
+      "emotion": "reflective_calm",
+      "file": "Dialogue/Narrator/OPENING_005.wav",
+      "status": "RECORDED_AND_AUTOMATICALLY_ALIGNED_LISTENING_REVIEW_PENDING",
+      "sampleRate": 48000,
+      "channels": 1,
+      "preferredBitDepth": 24,
+      "durationSeconds": 3.902979166666667,
+      "words": [
+        {
+          "text": "To",
+          "charStart": 0,
+          "charLength": 2,
+          "startSeconds": 0.22,
+          "endSeconds": 0.32
+        },
+        {
+          "text": "some,",
+          "charStart": 3,
+          "charLength": 5,
+          "startSeconds": 0.38,
+          "endSeconds": 0.58
+        },
+        {
+          "text": "he",
+          "charStart": 9,
+          "charLength": 2,
+          "startSeconds": 0.72,
+          "endSeconds": 0.8
+        },
+        {
+          "text": "offered",
+          "charStart": 12,
+          "charLength": 7,
+          "startSeconds": 0.88,
+          "endSeconds": 1.12
+        },
+        {
+          "text": "knowledge.",
+          "charStart": 20,
+          "charLength": 10,
+          "startSeconds": 1.2,
+          "endSeconds": 1.56
+        },
+        {
+          "text": "To",
+          "charStart": 31,
+          "charLength": 2,
+          "startSeconds": 2.46,
+          "endSeconds": 2.54
+        },
+        {
+          "text": "others,",
+          "charStart": 34,
+          "charLength": 7,
+          "startSeconds": 2.64,
+          "endSeconds": 2.88
+        },
+        {
+          "text": "hope.",
+          "charStart": 42,
+          "charLength": 5,
+          "startSeconds": 3.34,
+          "endSeconds": 3.52
+        }
+      ],
+      "speakDirections": false,
+      "rewriteText": false,
+      "speechRate": 0
+    },
+    {
+      "lineId": "OPENING_006",
+      "speaker": "NARRATOR",
+      "voiceId": "30fc8796-ceb6-4a66-b3a7-4a145ef7f346",
+      "voiceType": "preset",
+      "exactSpokenText": "But somewhere between the future he promised and the future he desired, something changed.",
+      "textSHA256": "ec0fe073a804bf286e292053556071d94381eba46fc741ca42cd5ce8ab16ba61",
+      "performanceDirection": "Masculine, 35–45, low-mid baritone, neutral English with subtle British influence. Calm, thoughtful, intimate human delivery. Normal natural pace, as explicitly requested by the user, with natural breaths and restrained emotional pauses. No trailer announcer, wizard or robotic reading. Keep the same locked preset voice throughout.",
+      "emotion": "reflective_calm",
+      "file": "Dialogue/Narrator/OPENING_006.wav",
+      "status": "RECORDED_AND_AUTOMATICALLY_ALIGNED_LISTENING_REVIEW_PENDING",
+      "sampleRate": 48000,
+      "channels": 1,
+      "preferredBitDepth": 24,
+      "durationSeconds": 6.201833333333333,
+      "words": [
+        {
+          "text": "But",
+          "charStart": 0,
+          "charLength": 3,
+          "startSeconds": 0.46,
+          "endSeconds": 0.58
+        },
+        {
+          "text": "somewhere",
+          "charStart": 4,
+          "charLength": 9,
+          "startSeconds": 0.66,
+          "endSeconds": 1.02
+        },
+        {
+          "text": "between",
+          "charStart": 14,
+          "charLength": 7,
+          "startSeconds": 1.08,
+          "endSeconds": 1.38
+        },
+        {
+          "text": "the",
+          "charStart": 22,
+          "charLength": 3,
+          "startSeconds": 1.46,
+          "endSeconds": 1.52
+        },
+        {
+          "text": "future",
+          "charStart": 26,
+          "charLength": 6,
+          "startSeconds": 1.56,
+          "endSeconds": 1.92
+        },
+        {
+          "text": "he",
+          "charStart": 33,
+          "charLength": 2,
+          "startSeconds": 1.98,
+          "endSeconds": 2.06
+        },
+        {
+          "text": "promised",
+          "charStart": 36,
+          "charLength": 8,
+          "startSeconds": 2.14,
+          "endSeconds": 2.54
+        },
+        {
+          "text": "and",
+          "charStart": 45,
+          "charLength": 3,
+          "startSeconds": 3.22,
+          "endSeconds": 3.3
+        },
+        {
+          "text": "the",
+          "charStart": 49,
+          "charLength": 3,
+          "startSeconds": 3.36,
+          "endSeconds": 3.42
+        },
+        {
+          "text": "future",
+          "charStart": 53,
+          "charLength": 6,
+          "startSeconds": 3.46,
+          "endSeconds": 3.78
+        },
+        {
+          "text": "he",
+          "charStart": 60,
+          "charLength": 2,
+          "startSeconds": 3.84,
+          "endSeconds": 3.9
+        },
+        {
+          "text": "desired,",
+          "charStart": 63,
+          "charLength": 8,
+          "startSeconds": 3.98,
+          "endSeconds": 4.5
+        },
+        {
+          "text": "something",
+          "charStart": 72,
+          "charLength": 9,
+          "startSeconds": 5.04,
+          "endSeconds": 5.36
+        },
+        {
+          "text": "changed.",
+          "charStart": 82,
+          "charLength": 8,
+          "startSeconds": 5.48,
+          "endSeconds": 5.94
+        }
+      ],
+      "speakDirections": false,
+      "rewriteText": false,
+      "speechRate": 0
+    },
+    {
+      "lineId": "OPENING_007",
+      "speaker": "NARRATOR",
+      "voiceId": "30fc8796-ceb6-4a66-b3a7-4a145ef7f346",
+      "voiceType": "preset",
+      "exactSpokenText": "The world did not end in fire or darkness.",
+      "textSHA256": "a117c948fcc2f56767a588d1de5cd27706a88806caa8b7fa8da5343beeb3a0f5",
+      "performanceDirection": "Masculine, 35–45, low-mid baritone, neutral English with subtle British influence. Calm, thoughtful, intimate human delivery. Normal natural pace, as explicitly requested by the user, with natural breaths and restrained emotional pauses. No trailer announcer, wizard or robotic reading. Keep the same locked preset voice throughout.",
+      "emotion": "growing_unease",
+      "file": "Dialogue/Narrator/OPENING_007.wav",
+      "status": "RECORDED_AND_AUTOMATICALLY_ALIGNED_LISTENING_REVIEW_PENDING",
+      "sampleRate": 48000,
+      "channels": 1,
+      "preferredBitDepth": 24,
+      "durationSeconds": 3.077166666666667,
+      "words": [
+        {
+          "text": "The",
+          "charStart": 0,
+          "charLength": 3,
+          "startSeconds": 0.48,
+          "endSeconds": 0.56
+        },
+        {
+          "text": "world",
+          "charStart": 4,
+          "charLength": 5,
+          "startSeconds": 0.6,
+          "endSeconds": 0.86
+        },
+        {
+          "text": "did",
+          "charStart": 10,
+          "charLength": 3,
+          "startSeconds": 0.94,
+          "endSeconds": 1.06
+        },
+        {
+          "text": "not",
+          "charStart": 14,
+          "charLength": 3,
+          "startSeconds": 1.1,
+          "endSeconds": 1.22
+        },
+        {
+          "text": "end",
+          "charStart": 18,
+          "charLength": 3,
+          "startSeconds": 1.36,
+          "endSeconds": 1.48
+        },
+        {
+          "text": "in",
+          "charStart": 22,
+          "charLength": 2,
+          "startSeconds": 1.6,
+          "endSeconds": 1.64
+        },
+        {
+          "text": "fire",
+          "charStart": 25,
+          "charLength": 4,
+          "startSeconds": 1.78,
+          "endSeconds": 2.1
+        },
+        {
+          "text": "or",
+          "charStart": 30,
+          "charLength": 2,
+          "startSeconds": 2.24,
+          "endSeconds": 2.28
+        },
+        {
+          "text": "darkness.",
+          "charStart": 33,
+          "charLength": 9,
+          "startSeconds": 2.36,
+          "endSeconds": 2.82
+        }
+      ],
+      "speakDirections": false,
+      "rewriteText": false,
+      "speechRate": 0
+    },
+    {
+      "lineId": "OPENING_008",
+      "speaker": "NARRATOR",
+      "voiceId": "30fc8796-ceb6-4a66-b3a7-4a145ef7f346",
+      "voiceType": "preset",
+      "exactSpokenText": "It broke in ways that no ordinary eye could see.",
+      "textSHA256": "2a8512dee603f275ee93c8a72b8796adad36db649c130f6e5b360ae71115e038",
+      "performanceDirection": "Masculine, 35–45, low-mid baritone, neutral English with subtle British influence. Calm, thoughtful, intimate human delivery. Normal natural pace, as explicitly requested by the user, with natural breaths and restrained emotional pauses. No trailer announcer, wizard or robotic reading. Keep the same locked preset voice throughout.",
+      "emotion": "growing_unease",
+      "file": "Dialogue/Narrator/OPENING_008.wav",
+      "status": "RECORDED_AND_AUTOMATICALLY_ALIGNED_LISTENING_REVIEW_PENDING",
+      "sampleRate": 48000,
+      "channels": 1,
+      "preferredBitDepth": 24,
+      "durationSeconds": 6.08,
+      "words": [
+        {
+          "text": "It",
+          "charStart": 0,
+          "charLength": 2,
+          "startSeconds": 1.26,
+          "endSeconds": 1.32
+        },
+        {
+          "text": "broke",
+          "charStart": 3,
+          "charLength": 5,
+          "startSeconds": 1.4,
+          "endSeconds": 1.64
+        },
+        {
+          "text": "in",
+          "charStart": 9,
+          "charLength": 2,
+          "startSeconds": 1.72,
+          "endSeconds": 1.76
+        },
+        {
+          "text": "ways",
+          "charStart": 12,
+          "charLength": 4,
+          "startSeconds": 1.86,
+          "endSeconds": 2.14
+        },
+        {
+          "text": "that",
+          "charStart": 17,
+          "charLength": 4,
+          "startSeconds": 2.24,
+          "endSeconds": 2.36
+        },
+        {
+          "text": "no",
+          "charStart": 22,
+          "charLength": 2,
+          "startSeconds": 2.48,
+          "endSeconds": 2.62
+        },
+        {
+          "text": "ordinary",
+          "charStart": 25,
+          "charLength": 8,
+          "startSeconds": 2.9,
+          "endSeconds": 3.24
+        },
+        {
+          "text": "eye",
+          "charStart": 34,
+          "charLength": 3,
+          "startSeconds": 3.48,
+          "endSeconds": 3.56
+        },
+        {
+          "text": "could",
+          "charStart": 38,
+          "charLength": 5,
+          "startSeconds": 3.66,
+          "endSeconds": 3.84
+        },
+        {
+          "text": "see.",
+          "charStart": 44,
+          "charLength": 4,
+          "startSeconds": 3.92,
+          "endSeconds": 4.04
+        }
+      ],
+      "speakDirections": false,
+      "rewriteText": false,
+      "speechRate": 0
+    },
+    {
+      "lineId": "OPENING_009",
+      "speaker": "NARRATOR",
+      "voiceId": "30fc8796-ceb6-4a66-b3a7-4a145ef7f346",
+      "voiceType": "preset",
+      "exactSpokenText": "Time lost its direction. Memory lost its certainty. The paths of fate scattered into countless pieces.",
+      "textSHA256": "af2b2ccf74dd3842117825df230ded84c4ecde8eba62f03c23927c5ad62af054",
+      "performanceDirection": "Masculine, 35–45, low-mid baritone, neutral English with subtle British influence. Calm, thoughtful, intimate human delivery. Normal natural pace, as explicitly requested by the user, with natural breaths and restrained emotional pauses. No trailer announcer, wizard or robotic reading. Keep the same locked preset voice throughout.",
+      "emotion": "growing_unease",
+      "file": "Dialogue/Narrator/OPENING_009.wav",
+      "status": "RECORDED_AND_AUTOMATICALLY_ALIGNED_LISTENING_REVIEW_PENDING",
+      "sampleRate": 48000,
+      "channels": 1,
+      "preferredBitDepth": 24,
+      "durationSeconds": 8.039708333333333,
+      "words": [
+        {
+          "text": "Time",
+          "charStart": 0,
+          "charLength": 4,
+          "startSeconds": 0.4,
+          "endSeconds": 0.78
+        },
+        {
+          "text": "lost",
+          "charStart": 5,
+          "charLength": 4,
+          "startSeconds": 0.9,
+          "endSeconds": 1.14
+        },
+        {
+          "text": "its",
+          "charStart": 10,
+          "charLength": 3,
+          "startSeconds": 1.24,
+          "endSeconds": 1.34
+        },
+        {
+          "text": "direction.",
+          "charStart": 14,
+          "charLength": 10,
+          "startSeconds": 1.42,
+          "endSeconds": 1.92
+        },
+        {
+          "text": "Memory",
+          "charStart": 25,
+          "charLength": 6,
+          "startSeconds": 2.54,
+          "endSeconds": 2.92
+        },
+        {
+          "text": "lost",
+          "charStart": 32,
+          "charLength": 4,
+          "startSeconds": 3.02,
+          "endSeconds": 3.26
+        },
+        {
+          "text": "its",
+          "charStart": 37,
+          "charLength": 3,
+          "startSeconds": 3.38,
+          "endSeconds": 3.5
+        },
+        {
+          "text": "certainty.",
+          "charStart": 41,
+          "charLength": 10,
+          "startSeconds": 3.58,
+          "endSeconds": 4.12
+        },
+        {
+          "text": "The",
+          "charStart": 52,
+          "charLength": 3,
+          "startSeconds": 4.84,
+          "endSeconds": 4.92
+        },
+        {
+          "text": "paths",
+          "charStart": 56,
+          "charLength": 5,
+          "startSeconds": 4.98,
+          "endSeconds": 5.34
+        },
+        {
+          "text": "of",
+          "charStart": 62,
+          "charLength": 2,
+          "startSeconds": 5.42,
+          "endSeconds": 5.46
+        },
+        {
+          "text": "fate",
+          "charStart": 65,
+          "charLength": 4,
+          "startSeconds": 5.58,
+          "endSeconds": 5.84
+        },
+        {
+          "text": "scattered",
+          "charStart": 70,
+          "charLength": 9,
+          "startSeconds": 6.12,
+          "endSeconds": 6.5
+        },
+        {
+          "text": "into",
+          "charStart": 80,
+          "charLength": 4,
+          "startSeconds": 6.56,
+          "endSeconds": 6.72
+        },
+        {
+          "text": "countless",
+          "charStart": 85,
+          "charLength": 9,
+          "startSeconds": 6.82,
+          "endSeconds": 7.28
+        },
+        {
+          "text": "pieces.",
+          "charStart": 95,
+          "charLength": 7,
+          "startSeconds": 7.34,
+          "endSeconds": 7.72
+        }
+      ],
+      "speakDirections": false,
+      "rewriteText": false,
+      "speechRate": 0
+    },
+    {
+      "lineId": "OPENING_010",
+      "speaker": "NARRATOR",
+      "voiceId": "30fc8796-ceb6-4a66-b3a7-4a145ef7f346",
+      "voiceType": "preset",
+      "exactSpokenText": "Three names endured.",
+      "textSHA256": "4ca0d06f77aadf29902397ee6fd5aa3477d4be559c032c502737a6845337c95c",
+      "performanceDirection": "Masculine, 35–45, low-mid baritone, neutral English with subtle British influence. Calm, thoughtful, intimate human delivery. Normal natural pace, as explicitly requested by the user, with natural breaths and restrained emotional pauses. No trailer announcer, wizard or robotic reading. Keep the same locked preset voice throughout.",
+      "emotion": "respectful_measured",
+      "file": "Dialogue/Narrator/OPENING_010.wav",
+      "status": "RECORDED_AND_AUTOMATICALLY_ALIGNED_LISTENING_REVIEW_PENDING",
+      "sampleRate": 48000,
+      "channels": 1,
+      "preferredBitDepth": 24,
+      "durationSeconds": 2.78,
+      "words": [
+        {
+          "text": "Three",
+          "charStart": 0,
+          "charLength": 5,
+          "startSeconds": 0.46,
+          "endSeconds": 0.66
+        },
+        {
+          "text": "names",
+          "charStart": 6,
+          "charLength": 5,
+          "startSeconds": 0.74,
+          "endSeconds": 1.04
+        },
+        {
+          "text": "endured.",
+          "charStart": 12,
+          "charLength": 8,
+          "startSeconds": 1.14,
+          "endSeconds": 1.64
+        }
+      ],
+      "speakDirections": false,
+      "rewriteText": false,
+      "speechRate": 0
+    },
+    {
+      "lineId": "OPENING_011",
+      "speaker": "NARRATOR",
+      "voiceId": "30fc8796-ceb6-4a66-b3a7-4a145ef7f346",
+      "voiceType": "preset",
+      "exactSpokenText": "Vanguard.",
+      "textSHA256": "ffb54cefab632aa7d95452097a0fd7bd9a492a6345e8cb0940679ac56585423f",
+      "performanceDirection": "Masculine, 35–45, low-mid baritone, neutral English with subtle British influence. Calm, thoughtful, intimate human delivery. Normal natural pace, as explicitly requested by the user, with natural breaths and restrained emotional pauses. No trailer announcer, wizard or robotic reading. Keep the same locked preset voice throughout.",
+      "emotion": "respectful_measured",
+      "file": "Dialogue/Narrator/OPENING_011.wav",
+      "status": "RECORDED_AND_AUTOMATICALLY_ALIGNED_LISTENING_REVIEW_PENDING",
+      "sampleRate": 48000,
+      "channels": 1,
+      "preferredBitDepth": 24,
+      "durationSeconds": 1.79,
+      "words": [
+        {
+          "text": "Vanguard.",
+          "charStart": 0,
+          "charLength": 9,
+          "startSeconds": 0.6000000000000001,
+          "endSeconds": 1.2200000000000002
+        }
+      ],
+      "speakDirections": false,
+      "rewriteText": false,
+      "speechRate": 0
+    },
+    {
+      "lineId": "OPENING_012",
+      "speaker": "NARRATOR",
+      "voiceId": "30fc8796-ceb6-4a66-b3a7-4a145ef7f346",
+      "voiceType": "preset",
+      "exactSpokenText": "Hexer.",
+      "textSHA256": "94185179a119c7fe2c8c3bc468cd4401974476bd3fbdebbb20356e4ddbe0587d",
+      "performanceDirection": "Masculine, 35–45, low-mid baritone, neutral English with subtle British influence. Calm, thoughtful, intimate human delivery. Normal natural pace, as explicitly requested by the user, with natural breaths and restrained emotional pauses. No trailer announcer, wizard or robotic reading. Keep the same locked preset voice throughout.",
+      "emotion": "respectful_measured",
+      "file": "Dialogue/Narrator/OPENING_012.wav",
+      "status": "RECORDED_AND_AUTOMATICALLY_ALIGNED_LISTENING_REVIEW_PENDING",
+      "sampleRate": 48000,
+      "channels": 1,
+      "preferredBitDepth": 24,
+      "durationSeconds": 1.52,
+      "words": [
+        {
+          "text": "Hexer.",
+          "charStart": 0,
+          "charLength": 6,
+          "startSeconds": 0.56,
+          "endSeconds": 1.0
+        }
+      ],
+      "speakDirections": false,
+      "rewriteText": false,
+      "speechRate": 0
+    },
+    {
+      "lineId": "OPENING_013",
+      "speaker": "NARRATOR",
+      "voiceId": "30fc8796-ceb6-4a66-b3a7-4a145ef7f346",
+      "voiceType": "preset",
+      "exactSpokenText": "Reaper.",
+      "textSHA256": "24cdb2e42225cbb1458c68bf0f285b7c671eebf53d2b2c427389e852e0e7e408",
+      "performanceDirection": "Masculine, 35–45, low-mid baritone, neutral English with subtle British influence. Calm, thoughtful, intimate human delivery. Normal natural pace, as explicitly requested by the user, with natural breaths and restrained emotional pauses. No trailer announcer, wizard or robotic reading. Keep the same locked preset voice throughout.",
+      "emotion": "respectful_measured",
+      "file": "Dialogue/Narrator/OPENING_013.wav",
+      "status": "RECORDED_AND_AUTOMATICALLY_ALIGNED_LISTENING_REVIEW_PENDING",
+      "sampleRate": 48000,
+      "channels": 1,
+      "preferredBitDepth": 24,
+      "durationSeconds": 1.4300208333333333,
+      "words": [
+        {
+          "text": "Reaper.",
+          "charStart": 0,
+          "charLength": 7,
+          "startSeconds": 0.5,
+          "endSeconds": 0.8799999999999999
+        }
+      ],
+      "speakDirections": false,
+      "rewriteText": false,
+      "speechRate": 0
+    },
+    {
+      "lineId": "OPENING_014",
+      "speaker": "NARRATOR",
+      "voiceId": "30fc8796-ceb6-4a66-b3a7-4a145ef7f346",
+      "voiceType": "preset",
+      "exactSpokenText": "Across the broken world, their stories continued.",
+      "textSHA256": "3fe00a28176261ab683ac14f2b48aeecb7e02cdf7a571097e64726ad50608183",
+      "performanceDirection": "Masculine, 35–45, low-mid baritone, neutral English with subtle British influence. Calm, thoughtful, intimate human delivery. Normal natural pace, as explicitly requested by the user, with natural breaths and restrained emotional pauses. No trailer announcer, wizard or robotic reading. Keep the same locked preset voice throughout.",
+      "emotion": "respectful_measured",
+      "file": "Dialogue/Narrator/OPENING_014.wav",
+      "status": "RECORDED_AND_AUTOMATICALLY_ALIGNED_LISTENING_REVIEW_PENDING",
+      "sampleRate": 48000,
+      "channels": 1,
+      "preferredBitDepth": 24,
+      "durationSeconds": 3.59,
+      "words": [
+        {
+          "text": "Across",
+          "charStart": 0,
+          "charLength": 6,
+          "startSeconds": 0.32000000000000006,
+          "endSeconds": 0.6000000000000001
+        },
+        {
+          "text": "the",
+          "charStart": 7,
+          "charLength": 3,
+          "startSeconds": 0.6799999999999999,
+          "endSeconds": 0.76
+        },
+        {
+          "text": "broken",
+          "charStart": 11,
+          "charLength": 6,
+          "startSeconds": 0.8,
+          "endSeconds": 1.12
+        },
+        {
+          "text": "world,",
+          "charStart": 18,
+          "charLength": 6,
+          "startSeconds": 1.2200000000000002,
+          "endSeconds": 1.52
+        },
+        {
+          "text": "their",
+          "charStart": 25,
+          "charLength": 5,
+          "startSeconds": 1.96,
+          "endSeconds": 2.12
+        },
+        {
+          "text": "stories",
+          "charStart": 31,
+          "charLength": 7,
+          "startSeconds": 2.2,
+          "endSeconds": 2.6
+        },
+        {
+          "text": "continued.",
+          "charStart": 39,
+          "charLength": 10,
+          "startSeconds": 2.7,
+          "endSeconds": 3.3
+        }
+      ],
+      "speakDirections": false,
+      "rewriteText": false,
+      "speechRate": 0
+    },
+    {
+      "lineId": "OPENING_015",
+      "speaker": "NARRATOR",
+      "voiceId": "30fc8796-ceb6-4a66-b3a7-4a145ef7f346",
+      "voiceType": "preset",
+      "exactSpokenText": "Perhaps one of them will find the truth.",
+      "textSHA256": "f0ad3950c907246b4a39386b00d1f43b4299ab846d7f9434b42868725315b689",
+      "performanceDirection": "Masculine, 35–45, low-mid baritone, neutral English with subtle British influence. Calm, thoughtful, intimate human delivery. Normal natural pace, as explicitly requested by the user, with natural breaths and restrained emotional pauses. No trailer announcer, wizard or robotic reading. Keep the same locked preset voice throughout.",
+      "emotion": "quiet_hope",
+      "file": "Dialogue/Narrator/OPENING_015.wav",
+      "status": "RECORDED_AND_AUTOMATICALLY_ALIGNED_LISTENING_REVIEW_PENDING",
+      "sampleRate": 48000,
+      "channels": 1,
+      "preferredBitDepth": 24,
+      "durationSeconds": 1.9990833333333333,
+      "words": [
+        {
+          "text": "Perhaps",
+          "charStart": 0,
+          "charLength": 7,
+          "startSeconds": 0.24,
+          "endSeconds": 0.54
+        },
+        {
+          "text": "one",
+          "charStart": 8,
+          "charLength": 3,
+          "startSeconds": 0.68,
+          "endSeconds": 0.76
+        },
+        {
+          "text": "of",
+          "charStart": 12,
+          "charLength": 2,
+          "startSeconds": 0.8,
+          "endSeconds": 0.86
+        },
+        {
+          "text": "them",
+          "charStart": 15,
+          "charLength": 4,
+          "startSeconds": 0.92,
+          "endSeconds": 1.0
+        },
+        {
+          "text": "will",
+          "charStart": 20,
+          "charLength": 4,
+          "startSeconds": 1.06,
+          "endSeconds": 1.2
+        },
+        {
+          "text": "find",
+          "charStart": 25,
+          "charLength": 4,
+          "startSeconds": 1.24,
+          "endSeconds": 1.42
+        },
+        {
+          "text": "the",
+          "charStart": 30,
+          "charLength": 3,
+          "startSeconds": 1.48,
+          "endSeconds": 1.54
+        },
+        {
+          "text": "truth.",
+          "charStart": 34,
+          "charLength": 6,
+          "startSeconds": 1.6,
+          "endSeconds": 1.84
+        }
+      ],
+      "speakDirections": false,
+      "rewriteText": false,
+      "speechRate": 0
+    },
+    {
+      "lineId": "OPENING_016",
+      "speaker": "NARRATOR",
+      "voiceId": "30fc8796-ceb6-4a66-b3a7-4a145ef7f346",
+      "voiceType": "preset",
+      "exactSpokenText": "Perhaps one of them will bring this tale to its final page.",
+      "textSHA256": "f7d3edb5da5038082f2ffdf9948c586ee5af292ec92b1111a788082351330570",
+      "performanceDirection": "Masculine, 35–45, low-mid baritone, neutral English with subtle British influence. Calm, thoughtful, intimate human delivery. Normal natural pace, as explicitly requested by the user, with natural breaths and restrained emotional pauses. No trailer announcer, wizard or robotic reading. Keep the same locked preset voice throughout.",
+      "emotion": "quiet_hope",
+      "file": "Dialogue/Narrator/OPENING_016.wav",
+      "status": "RECORDED_AND_AUTOMATICALLY_ALIGNED_LISTENING_REVIEW_PENDING",
+      "sampleRate": 48000,
+      "channels": 1,
+      "preferredBitDepth": 24,
+      "durationSeconds": 4.066666666666666,
+      "words": [
+        {
+          "text": "Perhaps",
+          "charStart": 0,
+          "charLength": 7,
+          "startSeconds": 0.3999999999999999,
+          "endSeconds": 0.6799999999999999
+        },
+        {
+          "text": "one",
+          "charStart": 8,
+          "charLength": 3,
+          "startSeconds": 0.8400000000000001,
+          "endSeconds": 0.94
+        },
+        {
+          "text": "of",
+          "charStart": 12,
+          "charLength": 2,
+          "startSeconds": 0.98,
+          "endSeconds": 1.04
+        },
+        {
+          "text": "them",
+          "charStart": 15,
+          "charLength": 4,
+          "startSeconds": 1.1,
+          "endSeconds": 1.2000000000000002
+        },
+        {
+          "text": "will",
+          "charStart": 20,
+          "charLength": 4,
+          "startSeconds": 1.2599999999999998,
+          "endSeconds": 1.44
+        },
+        {
+          "text": "bring",
+          "charStart": 25,
+          "charLength": 5,
+          "startSeconds": 1.48,
+          "endSeconds": 1.62
+        },
+        {
+          "text": "this",
+          "charStart": 31,
+          "charLength": 4,
+          "startSeconds": 1.7000000000000002,
+          "endSeconds": 1.8399999999999999
+        },
+        {
+          "text": "tale",
+          "charStart": 36,
+          "charLength": 4,
+          "startSeconds": 1.92,
+          "endSeconds": 2.22
+        },
+        {
+          "text": "to",
+          "charStart": 41,
+          "charLength": 2,
+          "startSeconds": 2.56,
+          "endSeconds": 2.64
+        },
+        {
+          "text": "its",
+          "charStart": 44,
+          "charLength": 3,
+          "startSeconds": 2.74,
+          "endSeconds": 2.84
+        },
+        {
+          "text": "final",
+          "charStart": 48,
+          "charLength": 5,
+          "startSeconds": 2.94,
+          "endSeconds": 3.2800000000000002
+        },
+        {
+          "text": "page.",
+          "charStart": 54,
+          "charLength": 5,
+          "startSeconds": 3.38,
+          "endSeconds": 3.8
+        }
+      ],
+      "speakDirections": false,
+      "rewriteText": false,
+      "speechRate": 0
+    },
+    {
+      "lineId": "OPENING_017",
+      "speaker": "NARRATOR",
+      "voiceId": "30fc8796-ceb6-4a66-b3a7-4a145ef7f346",
+      "voiceType": "preset",
+      "exactSpokenText": "Although...",
+      "textSHA256": "f131bc2bf96849192ec218de4c48d54080daa231746c6f2dcf3c55e89ce745b3",
+      "performanceDirection": "Masculine, 35–45, low-mid baritone, neutral English with subtle British influence. Calm, thoughtful, intimate human delivery. Normal natural pace, as explicitly requested by the user, with natural breaths and restrained emotional pauses. No trailer announcer, wizard or robotic reading. Keep the same locked preset voice throughout.",
+      "emotion": "hesitation",
+      "file": "Dialogue/Narrator/OPENING_017.wav",
+      "status": "RECORDED_AND_AUTOMATICALLY_ALIGNED_LISTENING_REVIEW_PENDING",
+      "sampleRate": 48000,
+      "channels": 1,
+      "preferredBitDepth": 24,
+      "durationSeconds": 2.4,
+      "words": [
+        {
+          "text": "Although...",
+          "charStart": 0,
+          "charLength": 11,
+          "startSeconds": 1.48,
+          "endSeconds": 1.88
+        }
+      ],
+      "speakDirections": false,
+      "rewriteText": false,
+      "speechRate": 0
+    },
+    {
+      "lineId": "OPENING_018",
+      "speaker": "NARRATOR",
+      "voiceId": "30fc8796-ceb6-4a66-b3a7-4a145ef7f346",
+      "voiceType": "preset",
+      "exactSpokenText": "No. That is how the story was written.",
+      "textSHA256": "4c1caa6b85fcf769a716eadd0f1351875eb7e4d0bace088bb652b5dc7cbd457e",
+      "performanceDirection": "Masculine, 35–45, low-mid baritone, neutral English with subtle British influence. Calm, thoughtful, intimate human delivery. Normal natural pace, as explicitly requested by the user, with natural breaths and restrained emotional pauses. No trailer announcer, wizard or robotic reading. Keep the same locked preset voice throughout.",
+      "emotion": "small_realization",
+      "file": "Dialogue/Narrator/OPENING_018.wav",
+      "status": "RECORDED_AND_AUTOMATICALLY_ALIGNED_LISTENING_REVIEW_PENDING",
+      "sampleRate": 48000,
+      "channels": 1,
+      "preferredBitDepth": 24,
+      "durationSeconds": 2.5186041666666665,
+      "words": [
+        {
+          "text": "No.",
+          "charStart": 0,
+          "charLength": 3,
+          "startSeconds": 0.2,
+          "endSeconds": 0.36
+        },
+        {
+          "text": "That",
+          "charStart": 4,
+          "charLength": 4,
+          "startSeconds": 0.66,
+          "endSeconds": 0.8
+        },
+        {
+          "text": "is",
+          "charStart": 9,
+          "charLength": 2,
+          "startSeconds": 0.88,
+          "endSeconds": 0.92
+        },
+        {
+          "text": "how",
+          "charStart": 12,
+          "charLength": 3,
+          "startSeconds": 1.0,
+          "endSeconds": 1.1
+        },
+        {
+          "text": "the",
+          "charStart": 16,
+          "charLength": 3,
+          "startSeconds": 1.2,
+          "endSeconds": 1.28
+        },
+        {
+          "text": "story",
+          "charStart": 20,
+          "charLength": 5,
+          "startSeconds": 1.32,
+          "endSeconds": 1.68
+        },
+        {
+          "text": "was",
+          "charStart": 26,
+          "charLength": 3,
+          "startSeconds": 1.8,
+          "endSeconds": 1.9
+        },
+        {
+          "text": "written.",
+          "charStart": 30,
+          "charLength": 8,
+          "startSeconds": 1.98,
+          "endSeconds": 2.26
+        }
+      ],
+      "speakDirections": false,
+      "rewriteText": false,
+      "speechRate": 0
+    },
+    {
+      "lineId": "OPENING_019",
+      "speaker": "NARRATOR",
+      "voiceId": "30fc8796-ceb6-4a66-b3a7-4a145ef7f346",
+      "voiceType": "preset",
+      "exactSpokenText": "The rest remains to be discovered.",
+      "textSHA256": "789bbe9515efa5ffcc5cc0fe1224d6bf949c8a3b8778c94742f971e3eaea66e5",
+      "performanceDirection": "Masculine, 35–45, low-mid baritone, neutral English with subtle British influence. Calm, thoughtful, intimate human delivery. Normal natural pace, as explicitly requested by the user, with natural breaths and restrained emotional pauses. No trailer announcer, wizard or robotic reading. Keep the same locked preset voice throughout.",
+      "emotion": "curious_unresolved",
+      "file": "Dialogue/Narrator/OPENING_019.wav",
+      "status": "RECORDED_AND_AUTOMATICALLY_ALIGNED_LISTENING_REVIEW_PENDING",
+      "sampleRate": 48000,
+      "channels": 1,
+      "preferredBitDepth": 24,
+      "durationSeconds": 2.479375,
+      "words": [
+        {
+          "text": "The",
+          "charStart": 0,
+          "charLength": 3,
+          "startSeconds": 0.48,
+          "endSeconds": 0.54
+        },
+        {
+          "text": "rest",
+          "charStart": 4,
+          "charLength": 4,
+          "startSeconds": 0.6000000000000001,
+          "endSeconds": 0.8200000000000001
+        },
+        {
+          "text": "remains",
+          "charStart": 9,
+          "charLength": 7,
+          "startSeconds": 1.1,
+          "endSeconds": 1.46
+        },
+        {
+          "text": "to",
+          "charStart": 17,
+          "charLength": 2,
+          "startSeconds": 1.54,
+          "endSeconds": 1.6
+        },
+        {
+          "text": "be",
+          "charStart": 20,
+          "charLength": 2,
+          "startSeconds": 1.6600000000000001,
+          "endSeconds": 1.7200000000000002
+        },
+        {
+          "text": "discovered.",
+          "charStart": 23,
+          "charLength": 11,
+          "startSeconds": 1.7999999999999998,
+          "endSeconds": 2.24
+        }
+      ],
+      "speakDirections": false,
+      "rewriteText": false,
+      "speechRate": 0
+    },
+    {
+      "lineId": "NARRATOR_001",
+      "speaker": "NARRATOR",
+      "voiceId": "30fc8796-ceb6-4a66-b3a7-4a145ef7f346",
+      "voiceType": "preset",
+      "exactSpokenText": "And there, at last, the tale came to—",
+      "textSHA256": "4ce000a5a983dc562b63a9431588e416524a79f3b892de7302e4850790dcf20f",
+      "performanceDirection": "Masculine, 35–45, low-mid baritone, neutral English with subtle British influence. Calm, thoughtful, intimate human delivery. Normal natural pace, as explicitly requested by the user, with natural breaths and restrained emotional pauses. No trailer announcer, wizard or robotic reading. Keep the same locked preset voice throughout.",
+      "emotion": "interrupted",
+      "file": "Dialogue/Narrator/NARRATOR_001.wav",
+      "status": "RECORDED_AND_AUTOMATICALLY_ALIGNED_LISTENING_REVIEW_PENDING",
+      "sampleRate": 48000,
+      "channels": 1,
+      "preferredBitDepth": 24,
+      "durationSeconds": 4.4,
+      "words": [
+        {
+          "text": "And",
+          "charStart": 0,
+          "charLength": 3,
+          "startSeconds": 0.3,
+          "endSeconds": 0.38
+        },
+        {
+          "text": "there,",
+          "charStart": 4,
+          "charLength": 6,
+          "startSeconds": 0.42,
+          "endSeconds": 0.7
+        },
+        {
+          "text": "at",
+          "charStart": 11,
+          "charLength": 2,
+          "startSeconds": 1.18,
+          "endSeconds": 1.22
+        },
+        {
+          "text": "last,",
+          "charStart": 14,
+          "charLength": 5,
+          "startSeconds": 1.32,
+          "endSeconds": 1.66
+        },
+        {
+          "text": "the",
+          "charStart": 20,
+          "charLength": 3,
+          "startSeconds": 2.54,
+          "endSeconds": 2.62
+        },
+        {
+          "text": "tale",
+          "charStart": 24,
+          "charLength": 4,
+          "startSeconds": 2.7,
+          "endSeconds": 3.06
+        },
+        {
+          "text": "came",
+          "charStart": 29,
+          "charLength": 4,
+          "startSeconds": 3.22,
+          "endSeconds": 3.5
+        },
+        {
+          "text": "to—",
+          "charStart": 34,
+          "charLength": 3,
+          "startSeconds": 3.66,
+          "endSeconds": 4.0
+        }
+      ],
+      "speakDirections": false,
+      "rewriteText": false,
+      "speechRate": 0
+    },
+    {
+      "lineId": "BEING_001",
+      "speaker": "BEING",
+      "voiceId": null,
+      "voiceType": null,
+      "exactSpokenText": "Not yet.",
+      "textSHA256": "46438371960f0974b3c15f54488a09d835f9c48094ef97ad65355a1765ae921f",
+      "performanceDirection": "Ancient masculine-leaning deep bass, mostly neutral accent. Extremely calm, patient, compassionate and absolutely certain. Approximately 80–100 words per minute, preserving clarity. No growling, aggression or extreme distortion. One clear primary performance with only subtle short dark resonance.",
+      "emotion": "quiet_absolute",
+      "file": "Dialogue/Being/BEING_001.wav",
+      "status": "AWAITING_VOICE_SELECTION_AND_REAL_RECORDING",
+      "sampleRate": 48000,
+      "channels": 1,
+      "preferredBitDepth": 24,
+      "durationSeconds": null,
+      "words": [],
+      "speakDirections": false,
+      "rewriteText": false
+    },
+    {
+      "lineId": "NARRATOR_002",
+      "speaker": "NARRATOR",
+      "voiceId": "30fc8796-ceb6-4a66-b3a7-4a145ef7f346",
+      "voiceType": "preset",
+      "exactSpokenText": "I did not write that.",
+      "textSHA256": "9c7b58158745e2fec1031f840f2676a53afc8d6f595038d7b9b37dd545535130",
+      "performanceDirection": "Masculine, 35–45, low-mid baritone, neutral English with subtle British influence. Calm, thoughtful, intimate human delivery. Normal natural pace, as explicitly requested by the user, with natural breaths and restrained emotional pauses. No trailer announcer, wizard or robotic reading. Keep the same locked preset voice throughout.",
+      "emotion": "confusion",
+      "file": "Dialogue/Narrator/NARRATOR_002.wav",
+      "status": "RECORDED_AND_AUTOMATICALLY_ALIGNED_LISTENING_REVIEW_PENDING",
+      "sampleRate": 48000,
+      "channels": 1,
+      "preferredBitDepth": 24,
+      "durationSeconds": 1.67,
+      "words": [
+        {
+          "text": "I",
+          "charStart": 0,
+          "charLength": 1,
+          "startSeconds": 0.10000000000000009,
+          "endSeconds": 0.1399999999999999
+        },
+        {
+          "text": "did",
+          "charStart": 2,
+          "charLength": 3,
+          "startSeconds": 0.21999999999999997,
+          "endSeconds": 0.3600000000000001
+        },
+        {
+          "text": "not",
+          "charStart": 6,
+          "charLength": 3,
+          "startSeconds": 0.45999999999999996,
+          "endSeconds": 0.6599999999999999
+        },
+        {
+          "text": "write",
+          "charStart": 10,
+          "charLength": 5,
+          "startSeconds": 0.78,
+          "endSeconds": 1.02
+        },
+        {
+          "text": "that.",
+          "charStart": 16,
+          "charLength": 5,
+          "startSeconds": 1.12,
+          "endSeconds": 1.44
+        }
+      ],
+      "speakDirections": false,
+      "rewriteText": false,
+      "speechRate": 0
+    },
+    {
+      "lineId": "NARRATOR_003",
+      "speaker": "NARRATOR",
+      "voiceId": "30fc8796-ceb6-4a66-b3a7-4a145ef7f346",
+      "voiceType": "preset",
+      "exactSpokenText": "Then there is more.",
+      "textSHA256": "075b92db138a129b0ea86aa59fd807a44f757b168bbd3109b743f5fd981523fa",
+      "performanceDirection": "Masculine, 35–45, low-mid baritone, neutral English with subtle British influence. Calm, thoughtful, intimate human delivery. Normal natural pace, as explicitly requested by the user, with natural breaths and restrained emotional pauses. No trailer announcer, wizard or robotic reading. Keep the same locked preset voice throughout.",
+      "emotion": "realization",
+      "file": "Dialogue/Narrator/NARRATOR_003.wav",
+      "status": "RECORDED_AND_AUTOMATICALLY_ALIGNED_LISTENING_REVIEW_PENDING",
+      "sampleRate": 48000,
+      "channels": 1,
+      "preferredBitDepth": 24,
+      "durationSeconds": 1.5,
+      "words": [
+        {
+          "text": "Then",
+          "charStart": 0,
+          "charLength": 4,
+          "startSeconds": 0.32000000000000006,
+          "endSeconds": 0.48
+        },
+        {
+          "text": "there",
+          "charStart": 5,
+          "charLength": 5,
+          "startSeconds": 0.56,
+          "endSeconds": 0.72
+        },
+        {
+          "text": "is",
+          "charStart": 11,
+          "charLength": 2,
+          "startSeconds": 0.78,
+          "endSeconds": 0.8400000000000001
+        },
+        {
+          "text": "more.",
+          "charStart": 14,
+          "charLength": 5,
+          "startSeconds": 0.94,
+          "endSeconds": 1.2799999999999998
+        }
+      ],
+      "speakDirections": false,
+      "rewriteText": false,
+      "speechRate": 0
+    }
+  ]
+}

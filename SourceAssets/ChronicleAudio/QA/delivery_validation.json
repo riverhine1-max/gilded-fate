@@ -1,0 +1,18 @@
+{
+  "allSceneBindingsPresent": true,
+  "scenes": 30,
+  "bindings": 244,
+  "uniqueRecordings": 242,
+  "canonicalTextUnchanged": true,
+  "wordCoverageComplete": true,
+  "measuredIntervalsMonotonic": true,
+  "sampleRate": 48000,
+  "monoDialogue": true,
+  "pcm24Container": true,
+  "noClipping": true,
+  "alignmentResolutionSeconds": 0.02,
+  "gainOnlyFinalization": true,
+  "manualListeningReview": "PENDING",
+  "unityEditorVerification": "NOT_RUN",
+  "blenderRevalidation": "Original Blender 4.0.2 reports preserved; Blender unavailable during this packaging session."
+}

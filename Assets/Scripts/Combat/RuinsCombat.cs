@@ -392,12 +392,12 @@ namespace GildedFate.Combat
             if(o.id==GildedRuinsContent.Treasury)
             {
                 // Emergency Reserve takes priority the moment it becomes legal, so the player sees the intent change.
-                if(PlayerPhaseReplan&&m.planned!="gr_emergency_reserve"&&!m.flag&&m.counter>0&&f.hp*100<35*f.maxHp)ReplanAt(index);
+                if(PlayerPhaseReplan&&m.planned!="gr_emergency_reserve"&&!m.flag&&m.counter>0&&ThresholdHp(index)*100<35*f.maxHp)ReplanAt(index);
                 return true;
             }
             if(o.id!=GildedRuinsContent.Procession)return true;
             var t1=(f.maxHp*2+2)/3;var t2=f.maxHp/3;
-            var target=f.hp<=t2?3:f.hp<=t1?2:1;
+            var target=ThresholdHp(index)<=t2?3:ThresholdHp(index)<=t1?2:1;
             while(m.phase<target)
             {
                 // The Procession changes form: no heal, Strength, Fortify or Block. Gold it already holds stays held.

@@ -1,0 +1,31 @@
+{
+  "renderer": "4.0.2",
+  "size": [
+    960,
+    720
+  ],
+  "samples": 16,
+  "source": "Evaluated baked skeletal actions from the delivered .blend",
+  "sequences": {
+    "Page_RL": {
+      "projected_bounds": [
+        0.1853538602590561,
+        0.048689402639865875,
+        0.8218867182731628,
+        0.8222830295562744
+      ],
+      "lens_mm": 42.08106231689453,
+      "pass": true
+    },
+    "Open_Close": {
+      "projected_bounds": [
+        0.15373212099075317,
+        0.04799305647611618,
+        0.8159976005554199,
+        0.8637622594833374
+      ],
+      "lens_mm": 45.66087341308594,
+      "pass": true
+    }
+  }
+}

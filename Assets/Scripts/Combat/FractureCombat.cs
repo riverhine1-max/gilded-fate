@@ -409,7 +409,7 @@ namespace GildedFate.Combat
             switch(o.id)
             {
                 case FracturedRealmContent.Splitling:
-                    if(!m.flag&&f.hp<=f.maxHp/2)
+                    if(!m.flag&&ThresholdHp(index)<=f.maxHp/2)
                     {
                         // Splits exactly once. No heal, Strength or Block. Fewer Echoes if the board is full; never retried.
                         m.flag=true;m.phase=2;m.step=0;m.hold=false;
@@ -427,7 +427,7 @@ namespace GildedFate.Combat
                 case FracturedRealmContent.Colossus:
                 {
                     var t1=Frac(f.maxHp,69,104);var t2=f.maxHp*34/104;
-                    var target=f.hp<=t2?3:f.hp<=t1?2:1;
+                    var target=ThresholdHp(index)<=t2?3:ThresholdHp(index)<=t1?2:1;
                     while(m.phase<target)
                     {
                         m.phase++;m.step=0;m.hold=false;var phase=m.phase;
@@ -439,14 +439,14 @@ namespace GildedFate.Combat
                 case FracturedRealmContent.Sovereign:
                 {
                     var t1=Frac(f.maxHp,130,190);var t2=Frac(f.maxHp,70,190);
-                    if((m.counter&1)==0&&f.hp<=t1){m.counter|=1;SovereignSplit(index,m,"BLADE");}
-                    if((m.counter&2)==0&&f.hp<=t2){m.counter|=2;SovereignSplit(index,m,"WARD");}
+                    if((m.counter&1)==0&&ThresholdHp(index)<=t1){m.counter|=1;SovereignSplit(index,m,"BLADE");}
+                    if((m.counter&2)==0&&ThresholdHp(index)<=t2){m.counter|=2;SovereignSplit(index,m,"WARD");}
                     return true;
                 }
                 case FracturedRealmContent.Unmade:
                 {
                     var t1=Frac(f.maxHp,274,410);var t2=Frac(f.maxHp,137,410);
-                    var target=f.hp<=t2?3:f.hp<=t1?2:1;
+                    var target=ThresholdHp(index)<=t2?3:ThresholdHp(index)<=t1?2:1;
                     while(m.phase<target)
                     {
                         // Transformation only: no heal, Strength, Fortify or Block. Pending replay and Echo are cleared.

@@ -47,14 +47,14 @@ namespace GildedFate.Editor
             var failures = new List<string>();
             Expect("cards", GameContent.Cards.Length, 282, failures);
             Expect("relics", GameContent.Relics.Length, 90, failures);
-            Expect("enemies", WorldContent.Enemies.Length, 17, failures);
+            Expect("enemy definitions (including archived saves)", WorldContent.Enemies.Length, 169, failures);
             Expect("Fate Shards", WorldContent.FateShards.Length, 30, failures);
             Expect("Bindings", WorldContent.Bindings.Length, 11, failures);
             Expect("Fateweaves", WorldContent.Fateweaves.Length, 18, failures);
             Expect("events (50 classic + 19 multi-step)", WorldContent.Events.Length, 69, failures);
-            Expect("normal enemies", System.Array.FindAll(WorldContent.Enemies,x=>!x.elite&&!x.boss).Length, 10, failures);
-            Expect("elite enemies", System.Array.FindAll(WorldContent.Enemies,x=>x.elite).Length, 4, failures);
-            Expect("boss enemies", System.Array.FindAll(WorldContent.Enemies,x=>x.boss).Length, 3, failures);
+            Expect("normal enemy definitions", System.Array.FindAll(WorldContent.Enemies,x=>!x.elite&&!x.boss).Length, 123, failures);
+            Expect("elite enemy definitions", System.Array.FindAll(WorldContent.Enemies,x=>x.elite).Length, 34, failures);
+            Expect("boss enemy definitions", System.Array.FindAll(WorldContent.Enemies,x=>x.boss).Length, 12, failures);
             Unique("card", System.Array.ConvertAll(GameContent.Cards, x => x.id), failures);
             Unique("relic", System.Array.ConvertAll(GameContent.Relics, x => x.id), failures);
             Unique("enemy", System.Array.ConvertAll(WorldContent.Enemies, x => x.id), failures);
@@ -86,11 +86,15 @@ namespace GildedFate.Editor
             }
 
             LastPassed=failures.Count==0;
+            System.IO.Directory.CreateDirectory("Logs");
+            System.IO.File.WriteAllText("Logs/ProductionQualityGate.json",JsonUtility.ToJson(new QualityReport{passed=LastPassed,failures=failures},true));
             if (LastPassed)
-                Debug.Log("[Gilded Fate Quality Gate] PASS · 282 uniquely illustrated cards · 90 relics · 3 heroes · 17 enemies · transparent actor art · 69 events · Chronicle 27 memories + opening + finale");
+                Debug.Log("[Gilded Fate Quality Gate] PASS · 282 uniquely illustrated cards · 90 relics · 3 heroes · 169 enemy definitions · transparent actor art · 69 events · Chronicle 27 memories + opening + finale");
             else
                 Debug.LogError("[Gilded Fate Quality Gate] FAIL\n" + string.Join("\n", failures));
         }
+
+        [System.Serializable] private sealed class QualityReport { public bool passed;public List<string> failures=new(); }
 
         private static void Expect(string label, int actual, int expected, List<string> failures)
         {
@@ -118,7 +122,15 @@ namespace GildedFate.Editor
             }
             foreach(var card in GameContent.Cards)if(!mapped.Contains(card.id))failures.Add("Unillustrated card: "+card.id);
             foreach(HeroId hero in System.Enum.GetValues(typeof(HeroId)))ValidateCutout(GildedArtCatalog.HeroResource(hero),failures);
-            foreach(var enemy in WorldContent.Enemies)ValidateCutout(GildedArtCatalog.EnemyResource(enemy.id),failures);
+            foreach(var enemy in WorldContent.ActiveEnemies)
+            {
+                if(NeutralContent.IsNeutral(enemy.id))
+                {
+                    foreach(var theme in ActThemes.ForAct(NeutralContent.ActOf(enemy.id)))
+                        if(theme!=ActThemes.Vault)ValidateCutout(GildedArtCatalog.EnemyResource(NeutralContent.VariantArtId(enemy.id,theme)),failures);
+                }
+                else ValidateCutout(GildedArtCatalog.EnemyResource(enemy.id),failures);
+            }
         }
 
         private static void ValidateCutout(string resource,List<string> failures)
@@ -144,9 +156,10 @@ namespace GildedFate.Editor
             var battleCry=System.Array.Find(GameContent.Cards,c=>c.id=="battle_cry");var temporaryStrength=new CombatState();temporaryStrength.Begin(HeroId.Vanguard,guards,60,0,80,80,null,"gilded_sentry",9);temporaryStrength.PlayFree(battleCry);temporaryStrength.EndTurn();if(temporaryStrength.player.strength!=0)failures.Add("Battle Cry temporary Strength did not expire");
             var ember=System.Array.Find(GameContent.Cards,c=>c.id=="ember_ritual");var invocation=System.Array.Find(GameContent.Cards,c=>c.id=="invocation");var ritual=new CombatState();ritual.Begin(HeroId.Hexer,guards,60,0,68,68,new[]{"cracked_prism"});ritual.PlayFree(ember);ritual.PlayFree(invocation);if(ritual.sigils.Count!=1||ritual.enemy.burn!=2||ritual.resonance!=3)failures.Add("Sigil activation, Burn, or Resonance flow failed");
             var retaliate=new CombatState();retaliate.Begin(HeroId.Vanguard,guards,60,0,80,80,null,"vault_rat",7);retaliate.retaliation=5;retaliate.player.block=0;retaliate.EndTurn();if(retaliate.enemy.hp!=55||retaliate.retaliation!=0)failures.Add("Retaliate must consume once per Attack, even without Block");
-            var hollow=new CombatState();hollow.Begin(HeroId.Vanguard,guards,180,2,200,200,null,"hollow_king",21);hollow.enemy.hp=119;hollow.RefreshEnemyState();if(hollow.bossPhase!=2||hollow.spectralWeapons!=2||hollow.enemy.block!=14)failures.Add("Hollow King phase mechanics failed");
-            var mother=new CombatState();mother.Begin(HeroId.Vanguard,guards,205,2,200,200,null,"vault_mother",18);mother.enemy.hp=130;mother.RefreshEnemyState();if(mother.bossPhase!=2||mother.vaultWards!=0||mother.enemy.block!=18)failures.Add("Vault Mother visible-Block phase mechanics failed");
-            var dealer=new CombatState();dealer.Begin(HeroId.Hexer,guards,170,2,200,200,null,"last_dealer",20);dealer.enemy.hp=55;dealer.RefreshEnemyState();if(dealer.bossPhase!=3||dealer.cursePressure!=5)failures.Add("Last Dealer phase mechanics failed");
+            // Explicit planning is needed here: normal combat preserves the announced intent until it resolves.
+            var hollow=new CombatState();hollow.Begin(HeroId.Vanguard,guards,180,2,200,200,null,"hollow_king",21);hollow.enemy.hp=119;hollow.RefreshEnemyState(true);if(hollow.bossPhase!=2||hollow.spectralWeapons!=2||hollow.enemy.block!=14)failures.Add("Hollow King phase mechanics failed");
+            var mother=new CombatState();mother.Begin(HeroId.Vanguard,guards,205,2,200,200,null,"vault_mother",18);mother.enemy.hp=130;mother.RefreshEnemyState(true);if(mother.bossPhase!=2||mother.vaultWards!=0||mother.enemy.block!=18)failures.Add("Vault Mother visible-Block phase mechanics failed");
+            var dealer=new CombatState();dealer.Begin(HeroId.Hexer,guards,170,2,200,200,null,"last_dealer",20);dealer.enemy.hp=55;dealer.RefreshEnemyState(true);if(dealer.bossPhase!=3||dealer.cursePressure!=5)failures.Add("Last Dealer phase mechanics failed");
         }
     }
 }

@@ -7,6 +7,7 @@ namespace GildedFate.Core
     public static class RewardRules
     {
         public const int NormalRelicChance=3,EliteRelicChance=50,EliteShardChance=7,TreasureShardChance=12,MerchantShardChance=5;
+        public static bool CompletesRun(NodeKind kind,int act)=>kind==NodeKind.Boss&&act>=3;
         // Act 2 encounters pay more and roll better cards. Act 3 pays more again; Act 1 uses the original table.
         public const int Act3NormalRelicChance=5,Act3EliteRelicChance=60,Act3EliteShardChance=11;
         public const int Act2NormalRelicChance=4,Act2EliteRelicChance=55,Act2EliteShardChance=9;
@@ -34,7 +35,7 @@ namespace GildedFate.Core
         }
         public static bool DropsShard(NodeKind kind,int roll)=>DropsShard(kind,roll,1);
         public static bool DropsShard(NodeKind kind,int roll,int act)
-        {ValidateRoll(roll);return roll<(kind==NodeKind.Elite?(act==3?Act3EliteShardChance:act==2?Act2EliteShardChance:EliteShardChance):kind==NodeKind.Treasure?TreasureShardChance:kind==NodeKind.Merchant?MerchantShardChance:0);}
+        {ValidateRoll(roll);if(kind==NodeKind.Boss)return act is 1 or 2;return roll<(kind==NodeKind.Elite?(act==3?Act3EliteShardChance:act==2?Act2EliteShardChance:EliteShardChance):kind==NodeKind.Treasure?TreasureShardChance:kind==NodeKind.Merchant?MerchantShardChance:0);}
         public static Rarity RelicRarity(int roll)
         {ValidateRoll(roll);return roll<55?Rarity.Common:roll<87?Rarity.Uncommon:Rarity.Rare;}
         public static CardDef[] Cards(HeroId hero,NodeKind kind,Random random)=>Cards(hero,kind,random,1);

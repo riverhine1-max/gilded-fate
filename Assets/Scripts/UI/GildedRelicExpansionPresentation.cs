@@ -81,7 +81,7 @@ namespace GildedFate.UI
             foreach(var id in new[]{"funeral_bell","grave_lantern","hollow_hourglass","the_golden_cycle","fates_convergence","crown_of_many_paths","soul_of_the_chimera"})
             {
                 if(!combat.relics.Contains(id))continue;var relic=GameContent.Relics.First(x=>x.id==id);var detail=combat.RelicProgress(id);var shortText=detail.Split(' ')[0];
-                chips.Add(new CombatEffectChip("REL",relic.name,relic.text+"\n\n"+detail,1,color,true,shortText));
+                chips.Add(new CombatEffectChip("REL",relic.name,relic.Description+"\n\n"+detail,1,color,true,shortText));
             }
         }
         private string RelicCardDetail(CardDef c)

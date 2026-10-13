@@ -1,0 +1,5 @@
+*.fbx -filter -diff -merge -text
+*.png -filter -diff -merge -text
+*.ttf -filter -diff -merge -text
+*.wav -filter -diff -merge -text
+*.blend -filter -diff -merge -text

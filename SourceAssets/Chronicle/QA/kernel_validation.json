@@ -1,0 +1,11 @@
+{
+  "test_scope": "Revised pure mathematical kernel; actual Blender validation is separate",
+  "cases": {
+    "page_arc_above_stacks": true,
+    "bound_edge_stationary": true,
+    "front_back_islands_disjoint": true,
+    "settled_page_height_variation_below_1mm": true,
+    "turn_clips_keep_open": true
+  },
+  "passed": true
+}

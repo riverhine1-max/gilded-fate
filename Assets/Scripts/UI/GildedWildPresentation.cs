@@ -23,12 +23,20 @@ namespace GildedFate.UI
             if(NeutralContent.IsNeutral(id))
             {
                 var variant=NeutralContent.VariantArtId(id,run?.CurrentTheme);
-                return variant!=id&&Resources.Load<Texture2D>(GildedArtCatalog.EnemyResource(variant))!=null?variant:id;
+                if(variant!=id&&Resources.Load<Texture2D>(GildedArtCatalog.EnemyResource(variant))!=null)return variant;
+                // Playground can pair a neutral with an unrelated act or the legacy Vault.
+                // Use an available illustration from the neutral's own act in that case.
+                foreach(var theme in ActThemes.ForAct(NeutralContent.ActOf(id)))
+                {
+                    variant=NeutralContent.VariantArtId(id,theme);
+                    if(Resources.Load<Texture2D>(GildedArtCatalog.EnemyResource(variant))!=null)return variant;
+                }
+                return id;
             }
             if(combat!=null&&screen==ScreenMode.Combat&&id==HollowwoodContent.Parasite)
             {
                 var pm=index>=0?combat.MindAt(index):null;
-                return pm!=null&&pm.state=="EXPOSED"?id+"_phase2":id;
+                return pm!=null&&pm.state=="EXPOSED"&&Resources.Load<Texture2D>(GildedArtCatalog.EnemyResource(id+"_phase2"))?id+"_phase2":id;
             }
             if(id!=AshenWildsContent.Alpha&&id!=DrownedQuarterContent.Magistrate&&id!=CrimsonFoundryContent.Saint&&id!=HollowwoodContent.Heartroot&&id!=ShatteredObservatoryContent.Curator&&id!=GildedRuinsContent.Procession&&id!=BlackCathedralContent.Bishop&&id!=FracturedRealmContent.Unmade&&id!=GildedThroneContent.Sovereign||combat==null||screen!=ScreenMode.Combat)return id;
             var boss=combat.WildBossIndex;var phase=boss>=0?combat.MindAt(boss)?.phase??1:1;

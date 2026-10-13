@@ -1,0 +1,226 @@
+{
+  "blender": "4.0.2",
+  "native": {
+    "opened": true,
+    "actions": {
+      "CHR_Close": {
+        "frames": [
+          1.0,
+          109.0
+        ],
+        "duration_s": 1.8
+      },
+      "CHR_Idle_Open": {
+        "frames": [
+          1.0,
+          181.0
+        ],
+        "duration_s": 3.0
+      },
+      "CHR_Open": {
+        "frames": [
+          1.0,
+          151.0
+        ],
+        "duration_s": 2.5
+      },
+      "CHR_PageTurn_Cinematic_RL": {
+        "frames": [
+          1.0,
+          91.0
+        ],
+        "duration_s": 1.5
+      },
+      "CHR_PageTurn_LR": {
+        "frames": [
+          1.0,
+          55.0
+        ],
+        "duration_s": 0.9
+      },
+      "CHR_PageTurn_RL": {
+        "frames": [
+          1.0,
+          55.0
+        ],
+        "duration_s": 0.9
+      },
+      "CHR_Pose_Closed": {
+        "frames": [
+          1.0,
+          2.0
+        ],
+        "duration_s": 0.016666666666666666
+      },
+      "CHR_Pose_Open": {
+        "frames": [
+          1.0,
+          2.0
+        ],
+        "duration_s": 0.016666666666666666
+      },
+      "CHR_Reaction_Subtle": {
+        "frames": [
+          1.0,
+          37.0
+        ],
+        "duration_s": 0.6
+      }
+    },
+    "all_images_packed": true
+  },
+  "exports": [
+    {
+      "filename": "Chronicle.fbx",
+      "bytes": 18486844,
+      "meshes": 38,
+      "armatures": 1,
+      "bones": 108,
+      "actions": [
+        "CHR_Rig|CHR_Rig|CHR_Close",
+        "CHR_Rig|CHR_Rig|CHR_Idle_Open",
+        "CHR_Rig|CHR_Rig|CHR_Open",
+        "CHR_Rig|CHR_Rig|CHR_PageTurn_Cinematic_RL",
+        "CHR_Rig|CHR_Rig|CHR_PageTurn_LR",
+        "CHR_Rig|CHR_Rig|CHR_PageTurn_RL",
+        "CHR_Rig|CHR_Rig|CHR_Pose_Closed",
+        "CHR_Rig|CHR_Rig|CHR_Pose_Open",
+        "CHR_Rig|CHR_Rig|CHR_Reaction_Subtle"
+      ],
+      "pass": true,
+      "bounds_blender_m": [
+        0.630887508392334,
+        0.3999999761581421,
+        0.0518635418266058
+      ]
+    },
+    {
+      "filename": "CHR_Close.fbx",
+      "bytes": 1287852,
+      "meshes": 0,
+      "armatures": 1,
+      "bones": 108,
+      "actions": [
+        "CHR_Rig|Scene",
+        "CHR_Root|Scene",
+        "LeftPageContentAnchor|Scene",
+        "RightPageContentAnchor|Scene"
+      ],
+      "pass": true
+    },
+    {
+      "filename": "CHR_Idle_Open.fbx",
+      "bytes": 1664700,
+      "meshes": 0,
+      "armatures": 1,
+      "bones": 108,
+      "actions": [
+        "CHR_Rig|Scene",
+        "CHR_Root|Scene",
+        "LeftPageContentAnchor|Scene",
+        "RightPageContentAnchor|Scene"
+      ],
+      "pass": true
+    },
+    {
+      "filename": "CHR_Open.fbx",
+      "bytes": 1505884,
+      "meshes": 0,
+      "armatures": 1,
+      "bones": 108,
+      "actions": [
+        "CHR_Rig|Scene",
+        "CHR_Root|Scene",
+        "LeftPageContentAnchor|Scene",
+        "RightPageContentAnchor|Scene"
+      ],
+      "pass": true
+    },
+    {
+      "filename": "CHR_PageTurn_Cinematic_RL.fbx",
+      "bytes": 1277084,
+      "meshes": 0,
+      "armatures": 1,
+      "bones": 108,
+      "actions": [
+        "CHR_Rig|Scene",
+        "CHR_Root|Scene",
+        "LeftPageContentAnchor|Scene",
+        "RightPageContentAnchor|Scene"
+      ],
+      "pass": true
+    },
+    {
+      "filename": "CHR_PageTurn_LR.fbx",
+      "bytes": 1043292,
+      "meshes": 0,
+      "armatures": 1,
+      "bones": 108,
+      "actions": [
+        "CHR_Rig|Scene",
+        "CHR_Root|Scene",
+        "LeftPageContentAnchor|Scene",
+        "RightPageContentAnchor|Scene"
+      ],
+      "pass": true
+    },
+    {
+      "filename": "CHR_PageTurn_RL.fbx",
+      "bytes": 1042716,
+      "meshes": 0,
+      "armatures": 1,
+      "bones": 108,
+      "actions": [
+        "CHR_Rig|Scene",
+        "CHR_Root|Scene",
+        "LeftPageContentAnchor|Scene",
+        "RightPageContentAnchor|Scene"
+      ],
+      "pass": true
+    },
+    {
+      "filename": "CHR_Pose_Closed.fbx",
+      "bytes": 656716,
+      "meshes": 0,
+      "armatures": 1,
+      "bones": 108,
+      "actions": [
+        "CHR_Rig|Scene",
+        "CHR_Root|Scene",
+        "LeftPageContentAnchor|Scene",
+        "RightPageContentAnchor|Scene"
+      ],
+      "pass": true
+    },
+    {
+      "filename": "CHR_Pose_Open.fbx",
+      "bytes": 656716,
+      "meshes": 0,
+      "armatures": 1,
+      "bones": 108,
+      "actions": [
+        "CHR_Rig|Scene",
+        "CHR_Root|Scene",
+        "LeftPageContentAnchor|Scene",
+        "RightPageContentAnchor|Scene"
+      ],
+      "pass": true
+    },
+    {
+      "filename": "CHR_Reaction_Subtle.fbx",
+      "bytes": 889916,
+      "meshes": 0,
+      "armatures": 1,
+      "bones": 108,
+      "actions": [
+        "CHR_Rig|Scene",
+        "CHR_Root|Scene",
+        "LeftPageContentAnchor|Scene",
+        "RightPageContentAnchor|Scene"
+      ],
+      "pass": true
+    }
+  ],
+  "unity_editor_tested": false,
+  "all_export_checks_pass": true
+}

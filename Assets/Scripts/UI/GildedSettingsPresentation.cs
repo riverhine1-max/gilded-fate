@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using GildedFate.Audio;
+using GildedFate.ChronicleBook;
 using GildedFate.Saving;
 using UnityEngine;
 
@@ -19,7 +20,7 @@ namespace GildedFate.UI
         // Page order is fixed: verification and saved focus depend on Accessibility staying page 3.
         private static readonly string[] SettingsPageNames={"GRAPHICS","AUDIO","GAMEPLAY","ACCESSIBILITY","CONTROLS"};
         private static readonly string[] SettingsPageArt={"Settings_Display","Settings_Audio","Settings_Gameplay","Settings_Accessibility","Settings_Controls"};
-        private static readonly string[] SettingsPageHelp={"Window, resolution, brightness and image quality.","Music, effects, interface volume and focus.","Game speed, feedback, tooltips and turn flow.","Contrast, text size, motion and flashing.","Button prompts and the full control layout."};
+        private static readonly string[] SettingsPageHelp={"Window, resolution, brightness and image quality.","Music, narration, effects, interface volume and focus.","Game speed, feedback, tooltips and turn flow.","Contrast, text size, motion and flashing.","Button prompts and the full control layout."};
         private const int SettingsPageCount=5;
         private int settingsFocusIndex;
         private bool settingsOverview;
@@ -64,6 +65,7 @@ namespace GildedFate.UI
                 new[]{
                     Range("MASTER VOLUME","Overall volume. At 0%, all audio is muted.",()=>profile.master,v=>profile.master=v),
                     Range("MUSIC","Background music volume.",()=>profile.music,v=>profile.music=v),
+                    Range("NARRATION","Chronicle voices. At 0%, narration is muted and all story text remains readable.",()=>ChronicleDialogueAudio.VoiceVolume,v=>ChronicleDialogueAudio.VoiceVolume=v),
                     Range("EFFECTS","Combat, card and world sound effects.",()=>profile.effects,v=>profile.effects=v),
                     Range("UI","Menu selection and interface sounds.",()=>profile.ui,v=>profile.ui=v),
                     ToggleRow("MUTE IN BACKGROUND","Silence the game while another window has focus.",()=>profile.muteInBackground,v=>profile.muteInBackground=v)},
@@ -93,7 +95,7 @@ namespace GildedFate.UI
             };
             // Defaults come from a fresh profile, read through the same getters.
             var saved=profile;profile=new PlayerProfile();
-            foreach(var page in settingsRows)foreach(var row in page)row.reset=row.get();
+            foreach(var page in settingsRows)foreach(var row in page)row.reset=row.name=="NARRATION"?1:row.get();
             profile=saved;
             return settingsRows[Mathf.Clamp(settingsPage,0,SettingsPageCount-1)];
         }

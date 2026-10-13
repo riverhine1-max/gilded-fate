@@ -114,7 +114,7 @@ namespace GildedFate.UI
             CombatCheck(bossOffers.Length==3,"Boss reward screen offers three existing Boss relics");
             foreach(var relic in GameContent.Relics.Where(r=>r.rarity==Rarity.Boss))
             {
-                var area=new Rect(0,0,262,132);var layout=FitReadableText(FormatCardRules(relic.text),area,17,14);
+                var area=new Rect(0,0,262,132);var layout=FitReadableText(FormatCardRules(relic.Description),area,17,14);
                 CombatCheck(layout.Height<=area.height-2&&layout.widest<=area.width-4,"Boss relic description fits its reward tile: "+relic.id);
             }
             var bossSave=JsonUtility.ToJson(run);var reloaded=JsonUtility.FromJson<RunModel>(bossSave);

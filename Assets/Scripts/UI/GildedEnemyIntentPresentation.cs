@@ -13,10 +13,19 @@ namespace GildedFate.UI
         private sealed class IntentIconMotion {public string signature;public int oldIcon;public float changedAt;}
         private readonly Dictionary<string,IntentIconMotion> intentIconMotions=new();
         private readonly HashSet<EnemyActionType> warnedIntentTypes=new();
-        private void InvalidateEnemyIntents(){intentPreviews=null;}
+        private bool enemyIntentActionHeld;
+        private void HoldExecutingEnemyIntents()
+        {
+            intentPreviewCombat=combat;
+            intentPreviews=combat.PreviewEnemyIntents();
+            enemyIntentActionHeld=true;
+        }
+        private void ReleaseExecutingEnemyIntents()
+        { enemyIntentActionHeld=false; intentPreviews=null; }
+        private void InvalidateEnemyIntents(){if(!enemyIntentActionHeld)intentPreviews=null;}
         private List<EnemyIntentAction> EnemyIntents(int owner)
         {
-            if(intentPreviewCombat!=combat){intentPreviewCombat=combat;intentPreviews=null;intentIconMotions.Clear();}
+            if(intentPreviewCombat!=combat){intentPreviewCombat=combat;enemyIntentActionHeld=false;intentPreviews=null;intentIconMotions.Clear();}
             intentPreviews??=combat.PreviewEnemyIntents();
             return intentPreviews[Mathf.Clamp(owner,0,intentPreviews.Length-1)];
         }

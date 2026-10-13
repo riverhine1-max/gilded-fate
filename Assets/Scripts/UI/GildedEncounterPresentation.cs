@@ -155,6 +155,7 @@ namespace GildedFate.UI
                     DrawActorHealthBar(health,combat.enemy,false);
                     var cell=GroupCell(index);DrawEffectStrip(GroupEffectArea(index),EnemyEffectChips(index),false);
                     DrawEnemyIntentGroup(index);DrawMinionBadge(index,portrait);DrawWildCounter(index,portrait);DrawWildForecast(index,portrait);
+                    RegisterEnemyOverview(index,portrait,currentEnemy.name,ActorEffectSummary(EnemyEffectChips(index))+WildTooltipSuffix(index));
                     if(CombatInspectionAllowed&&portrait.Contains(combatPointer))
                         SetCombatEffectTooltip(currentEnemy.name,ActorEffectSummary(EnemyEffectChips(index))+WildTooltipSuffix(index),portrait.center);
                 });

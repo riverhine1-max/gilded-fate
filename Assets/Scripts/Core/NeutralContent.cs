@@ -40,8 +40,18 @@ namespace GildedFate.Core
             ActThemes.BlackCathedral or ActThemes.FracturedRealm or ActThemes.GildedThrone=>3,
             _=>0
         };
-        // The picture for the current theme. The base id is the fallback when a variant is not present.
-        public static string VariantArtId(string id,string theme)=>IsNeutral(id)&&!string.IsNullOrEmpty(theme)?id+"_"+theme:id;
+        // Elite gameplay IDs include "elite", but their authored image filenames do not.
+        public static string VariantArtId(string id,string theme)
+        {
+            var artId=id switch
+            {
+                Wayfarer=>"act1_neutral_wayfarer",
+                Deepcrawler=>"act2_neutral_deepcrawler",
+                Worldbreaker=>"act3_neutral_worldbreaker",
+                _=>id
+            };
+            return IsNeutral(id)&&!string.IsNullOrEmpty(theme)?artId+"_"+theme:id;
+        }
 
         // Neutral-theme formations join every theme of their own act (and no other act). Mixed formations
         // belong to one theme and pair a neutral with that theme's own enemies.

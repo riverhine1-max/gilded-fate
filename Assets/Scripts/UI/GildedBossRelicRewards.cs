@@ -30,9 +30,9 @@ namespace GildedFate.UI
                 var art=new Rect(r.center.x-76,r.y+19,152,152);DrawRelicPedestal(art);DrawRelicArt(art,Array.IndexOf(GameContent.Relics,relic));
                 DrawReadableText(new Rect(r.x+16,r.y+180,r.width-32,58),FitReadableText(relic.name,new Rect(0,0,r.width-32,58),21,17,true));
                 var rules=new Rect(r.x+23,r.y+247,r.width-46,132);
-                DrawReadableText(rules,FitReadableText(FormatCardRules(relic.text),rules,17,14));
+                DrawReadableText(rules,FitReadableText(FormatCardRules(relic.Description),rules,17,14));
                 GUI.Label(new Rect(r.x+10,r.yMax-36,r.width-20,24),run.encounterRewards.bossRelicClaimed?"CLAIMED":"CLAIM RELIC",footerStyle);
-                if(hot)SetRunHudTooltip(r,relic.name,relic.text);
+                if(hot)SetRunHudTooltip(r,relic.name,relic.Description);
                 if(!acquisitionActive&&!run.encounterRewards.bossRelicClaimed&&GUI.Button(r,"",GUIStyle.none))ClaimBossRelicChoice(relic);
             }
         }

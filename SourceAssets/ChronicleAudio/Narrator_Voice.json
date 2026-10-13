@@ -1,0 +1,17 @@
+{
+  "speaker": "NARRATOR",
+  "name": "Arthur",
+  "voice_id": "30fc8796-ceb6-4a66-b3a7-4a145ef7f346",
+  "voice_type": "preset",
+  "selectionSource": "User said: Author do author; interpreted as Arthur from the offered samples.",
+  "otherWidgetSelectionsIgnored": true,
+  "sampleLineId": "OPENING_001",
+  "model": "seed_audio",
+  "deliveryTarget": "Normal natural pace as explicitly requested by the user; handwriting follows measured words, never a fixed speed.",
+  "sampleStatus": "NORMAL_PACE_RECORDED_AND_AUTOMATICALLY_ALIGNED",
+  "sampleJobId": "791a09be-f6e4-4e63-94d0-2a6c042db687",
+  "draftSampleJobId": "791a09be-f6e4-4e63-94d0-2a6c042db687",
+  "speechRate": 0,
+  "rejectedSlowSampleJobId": "87cf3eee-10d0-4b54-a353-5ae9b8398a9b",
+  "normalNarratorLinesCreated": 22
+}

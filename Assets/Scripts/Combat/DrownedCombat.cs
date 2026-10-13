@@ -283,7 +283,7 @@ namespace GildedFate.Combat
             if(CheckFoundryThresholds(index))return;
             if(o.id==DrownedQuarterContent.Hulk)
             {
-                if(m.state=="SHELLED"&&f.hp<=30)
+                if(m.state=="SHELLED"&&ThresholdHp(index)<=30)
                 {
                     // Permanent and once only. No heal, no Strength, no Block.
                     m.state="EXPOSED";m.step=0;InEnemyContext(index,()=>EmitHook("barnacle_hulk_shell_break"));
@@ -293,7 +293,7 @@ namespace GildedFate.Combat
             else if(o.id==DrownedQuarterContent.Magistrate)
             {
                 // 2/3 and 1/3 of maximum health: 146 and 73 at the base 220.
-                var target=f.hp*3<=f.maxHp?3:f.hp*3<=f.maxHp*2?2:1;
+                var target=ThresholdHp(index)*3<=f.maxHp?3:ThresholdHp(index)*3<=f.maxHp*2?2:1;
                 while(m.phase<target)
                 {
                     m.phase++;m.step=0;

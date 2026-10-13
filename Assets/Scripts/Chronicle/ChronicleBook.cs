@@ -171,12 +171,17 @@ namespace GildedFate.Chronicle
     }
 
     /// <summary>Connects the sequencer to any book rig. This is the whole of what story playback knows about the book.</summary>
-    public sealed class ChronicleRigStage : IChronicleStage
+    public sealed class ChronicleRigStage : IChronicleStage, IChronicleDialogueStage
     {
         readonly IChronicleBookRig rig;
         public Action<string, float> audio; public Action stopAudio; public Action<string, float, float, float> magic;
         public Action<string> sceneStarted; public Action<string, bool> sceneEnded;
         public Action<ChronicleBookAction> onBookAction;   // lets the game play page-turn and cover sounds
+        public Func<string,string,string,string,ChronicleNarratorState,ChronicleDialoguePlayback> dialogue;
+        public Action<bool> pauseDialogue;
+        public void SetDialoguePaused(bool paused) => pauseDialogue?.Invoke(paused);
+        public ChronicleDialoguePlayback BeginDialogue(string sceneId,string commandId,string text,string speaker,ChronicleNarratorState narrator)
+            => dialogue?.Invoke(sceneId,commandId,text,speaker,narrator);
 
         public ChronicleRigStage(IChronicleBookRig rig) { this.rig = rig ?? throw new ArgumentNullException(nameof(rig)); }
         public float BookActionDuration(ChronicleBookAction action) => rig.DurationOf(action);

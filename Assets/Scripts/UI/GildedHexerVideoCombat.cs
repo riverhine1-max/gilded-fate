@@ -81,7 +81,7 @@ namespace GildedFate.UI
         {
             if(!HexerVideoEnabled)return;
             var clip=HexerCardAnimation(card);
-            StartHexerVideo(clip,AnimationSeconds(clip=="FirstRitual"?1.25f:clip=="FinisherAttack"?1f:.8f),50);
+            StartHexerVideo(clip,AnimationSeconds(HeroActionTiming.PlaybackSeconds(clip)),50);
             if(card.kind==CardKind.Attack)hexerAttackVariant++;
             if(combat.memory.echoArmed>0)QueueHexerVideo("EchoTrigger",Time.unscaledTime+travel+.1f,AnimationSeconds(.7f),65);
         }

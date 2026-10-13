@@ -370,7 +370,7 @@ namespace GildedFate.Combat
             var o=opponents[index];var m=o.mind;var f=o.fighter;
             if(o.id!=CrimsonFoundryContent.Saint)return CheckHollowThresholds(index);
             // 2/3 and 1/3 of maximum health: 200 and 100 at the base 300.
-            var target=f.hp*3<=f.maxHp?3:f.hp*3<=f.maxHp*2?2:1;
+            var target=ThresholdHp(index)*3<=f.maxHp?3:ThresholdHp(index)*3<=f.maxHp*2?2:1;
             while(m.phase<target)
             {
                 m.phase++;m.step=0;m.hold=false;

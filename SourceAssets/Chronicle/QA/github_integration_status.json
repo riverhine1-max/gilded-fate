@@ -1,0 +1,28 @@
+{
+  "assetStatus": "ACTUAL_BLENDER_ASSET_BUILT_AND_VALIDATED",
+  "originalBlenderVersion": "4.0.2",
+  "retestedInBlenderThisPackagingRun": false,
+  "closedOpenMidTurnVerifiedInOriginalBuild": true,
+  "nineClipsVerifiedInOriginalBuild": true,
+  "videoFullDecodePassedThisPackagingRun": true,
+  "videosH264YUV420PFastStart": true,
+  "priorChronicleCSharpTests": {
+    "passed": 137,
+    "failed": 0
+  },
+  "unityEditorImportTested": false,
+  "actualNarrationRecordingsCreated": 22,
+  "actualWordTimestampsCreated": 182,
+  "foleyAndMusicRecordingsCreated": 0,
+  "repositoryUpload": "NOT_PUBLISHED: main FBX request exceeds the MCP 16 MiB transfer limit",
+  "completion": "Book validated; 19 opening and three prototype Narrator recordings generated at normal native pace and automatically aligned. Being, Foley, music, final listening review and Unity Editor validation remain pending.",
+  "githubCommitPublished": false,
+  "branchUpdated": false,
+  "uploadedUncommittedBlob": "CHR_Close.fbx",
+  "openingNarrationLinesCreated": 19,
+  "narratorPrototypeLinesCreated": 3,
+  "narratorVoice": "Arthur",
+  "narratorSpeechRate": 0,
+  "exactTextAutomaticChecksPassed": true,
+  "manualListeningReviewComplete": false
+}

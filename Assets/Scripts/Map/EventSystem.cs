@@ -23,11 +23,18 @@ namespace GildedFate.Map
             var pool=EventContent.All.Where(e=>Rollable(run,e)&&(e.repeatable||!run.seenEventIds.Contains(e.id))&&EventViable(run,e)).ToList();
             if(pool.Count==0)pool=EventContent.All.Where(e=>Rollable(run,e)&&EventViable(run,e)).ToList();
             if(pool.Count==0)return EventContent.All.First();
-            var total=pool.Sum(e=>(int)e.frequency);var roll=PositiveHash(run.seed,run.act,run.floor,7919)%Math.Max(1,total);
-            foreach(var candidate in pool){roll-=(int)candidate.frequency;if(roll<0)return candidate;}
+            var total=pool.Sum(e=>EventWeight(e,run.act));var roll=PositiveHash(run.seed,run.act,run.floor,7919)%Math.Max(1,total);
+            foreach(var candidate in pool){roll-=EventWeight(candidate,run.act);if(roll<0)return candidate;}
             return pool[0];
         }
 
+        public static int EventWeight(EventDefinition definition,int act)
+        {
+            var choices=definition.choices.Concat((definition.scenes??Array.Empty<EventSceneDef>()).SelectMany(scene=>scene.choices));
+            var grants=choices.Any(c=>c.effects.Concat(c.chanceEffects).Concat(c.failEffects).Any(e=>e.kind is EventEffectKind.RewardShards or EventEffectKind.GrantRandomShards or EventEffectKind.Fatewheel));
+            // Keep rarity weighting, with a modest boost that grows each act.
+            return (int)definition.frequency*(grants?115+15*Math.Max(1,Math.Min(3,act)):100);
+        }
         public static bool BeginEvent(RunModel run,EventDefinition definition)
         {
             if(run==null||definition==null)return false;
@@ -205,7 +212,7 @@ namespace GildedFate.Map
             {
                 var parts=entry.Split(':');if(parts.Length!=2)continue;
                 if(parts[0]=="gold"&&int.TryParse(parts[1],out var amount))run.gold+=amount;
-                else if(parts[0]=="relic"&&Enum.TryParse<Rarity>(parts[1],out var rarity)){var relic=PickRelic(run,new EventEffectDef{kind=EventEffectKind.GrantRelic,rarity=rarity});if(relic!=null)run.AcquireRelic(relic.id);else run.gold+=rarity==Rarity.Rare?120:rarity==Rarity.Uncommon?80:50;}
+                else if(parts[0]=="relic"&&Enum.TryParse<Rarity>(parts[1],out var rarity)){var relic=PickRelic(run,new EventEffectDef{kind=EventEffectKind.GrantRelic,rarity=rarity});if(relic!=null)run.OfferRelic(relic.id);else run.gold+=rarity==Rarity.Rare?120:rarity==Rarity.Uncommon?80:50;}
             }
             run.eventBank.Clear();
         }
@@ -333,7 +340,7 @@ namespace GildedFate.Map
                     case EventEffectKind.GrantRandomCard:
                         var grantedCard=PickRandomCard(run,effect,"grant-card");if(grantedCard!=null)run.AddCard(grantedCard.id,effect.upgraded);break;
                     case EventEffectKind.GrantRelic:
-                        var relic=PickRelic(run,effect);if(relic!=null)run.AcquireRelic(relic.id);break;
+                        var relic=PickRelic(run,effect);if(relic!=null)run.OfferRelic(relic.id);break;
                     case EventEffectKind.RemoveRelic:
                         var relicId=run.pendingEventSelectionIds.FirstOrDefault(id=>run.relics.Contains(id));if(!string.IsNullOrEmpty(relicId))run.relics.Remove(relicId);break;
                     case EventEffectKind.RewardShards:
@@ -371,7 +378,7 @@ namespace GildedFate.Map
         {
             if(run.pendingEventShardDecisions.Count>0)
             {
-                foreach(var decision in run.pendingEventShardDecisions){var parts=decision.Split(new[]{"=>"},StringSplitOptions.None);if(parts.Length!=2||parts[1]=="discard")continue;var old=run.shards.FirstOrDefault(s=>s.id==parts[1]);if(old!=null)run.shards.Remove(old);if(run.shards.Count<RunModel.ShardCapacity)run.AddShard(parts[0]);}
+                foreach(var decision in run.pendingEventShardDecisions){var parts=decision.Split(new[]{"=>"},StringSplitOptions.None);if(parts.Length!=2||parts[1]=="discard")continue;var old=run.shards.FirstOrDefault(s=>s.id==parts[1]);if(old!=null)run.AddShard(parts[0],run.shards.IndexOf(old));else if(run.shards.Count<RunModel.ShardCapacity)run.AddShard(parts[0]);}
                 return;
             }
             var ids=run.pendingEventSelectionIds.Where(id=>WorldContent.FateShards.Any(s=>s.id==id)).ToList();if(ids.Count==0)ids=run.pendingEventOfferIds.Where(id=>WorldContent.FateShards.Any(s=>s.id==id)).ToList();foreach(var id in ids)if(run.shards.Count<RunModel.ShardCapacity)run.AddShard(id);
@@ -396,14 +403,14 @@ namespace GildedFate.Map
                 case 0:UpgradeRandom(run,2);run.pendingEventResult="FATEWHEEL · 2 RANDOM CARDS UPGRADED";break;
                 case 1:if(run.pendingEventOfferIds.Count>0)ApplyShardGrants(run);else{var shard=PickShardIds(run,1,"wheel").FirstOrDefault();if(shard!=null&&run.shards.Count<RunModel.ShardCapacity)run.AddShard(shard);}run.pendingEventResult="FATEWHEEL · FATE SHARD";break;
                 case 2:run.gold+=80;run.pendingEventResult="FATEWHEEL · GAIN 80 GOLD";break;
-                case 3:var relic=PickRelic(run,new EventEffectDef{kind=EventEffectKind.GrantRelic,rarity=Rarity.Common});if(relic!=null)run.AcquireRelic(relic.id);run.pendingEventResult="FATEWHEEL · COMMON RELIC";break;
+                case 3:var relic=PickRelic(run,new EventEffectDef{kind=EventEffectKind.GrantRelic,rarity=Rarity.Common});if(relic!=null)run.OfferRelic(relic.id);run.pendingEventResult="FATEWHEEL · COMMON RELIC";break;
                 case 4:run.AddCard(PickCurse(run,"wheel"));run.pendingEventResult="FATEWHEEL · A CURSE ENTERS THE DECK";break;
                 default:run.pendingEventResult="FATEWHEEL · THE WHEEL STOPS BETWEEN FATES";break;
             }
         }
         private static int FatewheelOutcome(RunModel run)
         {
-            var weights=EventContent.FatewheelWeights;var roll=PositiveHash(run.seed,run.act,run.floor,4049)%weights.Sum();for(var outcome=0;outcome<weights.Length;outcome++){roll-=weights[outcome];if(roll<0)return outcome;}return weights.Length-1;
+            var weights=EventContent.FatewheelWeights.ToArray();weights[1]+=3*Math.Max(1,Math.Min(3,run.act));var roll=PositiveHash(run.seed,run.act,run.floor,4049)%weights.Sum();for(var outcome=0;outcome<weights.Length;outcome++){roll-=weights[outcome];if(roll<0)return outcome;}return weights.Length-1;
         }
 
         private static void Transform(RunModel run,RunCard card)
@@ -473,7 +480,7 @@ namespace GildedFate.Map
         private static IEnumerable<RelicDef> RemovableRelics(RunModel run)=>GameContent.Relics.Where(r=>r.rarity==Rarity.Common&&r.id is not ("gilded_buckle" or "cracked_prism")&&run.relics.Contains(r.id));
         private static IEnumerable<RelicDef> RelicPool(RunModel run,EventEffectDef effect)
         {
-            var pool=GameContent.Relics.Where(r=>!run.relics.Contains(r.id)&&r.rarity is not (Rarity.Boss or Rarity.Special));
+            var pool=GameContent.Relics.Where(r=>!run.relics.Contains(r.id)&&!(run.pendingRelicRewards?.Contains(r.id)??false)&&r.rarity is not (Rarity.Boss or Rarity.Special));
             if(effect.id=="common_uncommon")return pool.Where(r=>r.rarity is Rarity.Common or Rarity.Uncommon);
             return pool.Where(r=>r.rarity==effect.rarity);
         }

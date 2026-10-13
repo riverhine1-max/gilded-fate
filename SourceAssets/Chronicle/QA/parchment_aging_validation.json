@@ -1,0 +1,7 @@
+{
+  "scope": "Additional edge aging compared with the previous delivered atlas; RGB pixel comparison",
+  "writing_safe_field_maximum_rgb_change": 0,
+  "changed_pixels": 624634,
+  "maximum_channel_change": 79,
+  "pass": true
+}

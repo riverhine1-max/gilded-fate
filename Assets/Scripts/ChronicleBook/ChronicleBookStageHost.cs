@@ -6,8 +6,8 @@ namespace GildedFate.ChronicleBook
     /// <summary>
     /// Owns everything needed to see the book: an isolated layer, a camera rendered by hand into a RenderTexture (the same
     /// pattern the combat stage uses), and whichever rig is available. The finished model is used if it has been added to
-    /// Resources/Chronicle, otherwise the temporary book. The reading camera looks straight down, so the pages are true
-    /// rectangles and the page text, drawn by the game's normal UI on top, lines up exactly.
+    /// Resources/Chronicle, otherwise the temporary book. Page overlays follow the animated paper surfaces and fit
+    /// inside their projection, including the reading camera's perspective.
     /// </summary>
     public sealed class ChronicleBookStageHost
     {
@@ -20,6 +20,8 @@ namespace GildedFate.ChronicleBook
 
         GameObject root; ChronicleProceduralBook procedural; ChronicleAnimatorBookRig finished;
         readonly Vector3[] corners = new Vector3[4];
+        readonly Vector3[] otherCorners = new Vector3[4];
+        readonly Vector2[] projected = new Vector2[4];
         float baseDistance = 11.5f; Vector3 target = new Vector3(0f, .2f, 0f);
 
         /// <summary>Returns null if no rig could be built (for example the shader is missing); callers then skip the Chronicle gracefully.</summary>
@@ -29,7 +31,7 @@ namespace GildedFate.ChronicleBook
             // Far from anything else in the scene, and on its own layer, so no other camera ever sees the book.
             host.root = new GameObject("Gilded Fate · Chronicle book stage");
             host.root.transform.position = new Vector3(0f, 4000f, 0f);
-            Object.DontDestroyOnLoad(host.root);
+            if (Application.isPlaying) Object.DontDestroyOnLoad(host.root);
 
             host.finished = ChronicleAnimatorBookRig.TryCreate(host.root.transform, Layer);
             if (host.finished)
@@ -40,16 +42,16 @@ namespace GildedFate.ChronicleBook
             else
             {
                 host.procedural = ChronicleProceduralBook.Create(host.root.transform, Layer);
-                if (!host.procedural) { Object.Destroy(host.root); return null; }
+                if (!host.procedural) { DestroyStageObject(host.root); return null; }
                 host.Rig = host.procedural; host.Surface = host.procedural;
             }
 
-            host.Texture = new RenderTexture(width, height, 24, RenderTextureFormat.ARGB32) { name = "Gilded Fate · Chronicle book", antiAliasing = 2, useMipMap = false, autoGenerateMips = false };
+            host.Texture = new RenderTexture(width, height, 24, RenderTextureFormat.ARGB32) { name = "Gilded Fate · Chronicle book", antiAliasing = 4, useMipMap = false, autoGenerateMips = false };
             host.Texture.Create();
             var cameraHost = new GameObject("Chronicle reading camera"); cameraHost.transform.SetParent(host.root.transform, false);
             host.Camera = cameraHost.AddComponent<Camera>();
             host.Camera.targetTexture = host.Texture; host.Camera.fieldOfView = 24f;
-            host.Camera.clearFlags = CameraClearFlags.SolidColor; host.Camera.backgroundColor = new Color(.02f, .015f, .02f, 1f);
+            host.Camera.clearFlags = CameraClearFlags.SolidColor; host.Camera.backgroundColor = new Color(.02f, .015f, .02f, 0f);
             host.Camera.cullingMask = 1 << Layer; host.Camera.nearClipPlane = .1f; host.Camera.farClipPlane = 60f;
             host.Camera.allowHDR = false; host.Camera.allowMSAA = true;
             host.Camera.enabled = false;   // rendered by hand in Tick, so it never depends on camera scheduling
@@ -79,20 +81,49 @@ namespace GildedFate.ChronicleBook
         {
             rect = default;
             if (Surface == null || !Camera || !Surface.TryGetPageCorners(side, corners)) return false;
-            Vector2 min = new Vector2(float.MaxValue, float.MaxValue), max = new Vector2(float.MinValue, float.MinValue);
-            foreach (var c in corners)
+            // Imported mesh names may use the book's own left/right rather than the reader's.
+            // Keep story layouts and Archive navigation on their intended screen side.
+            var other = side == ChroniclePageSide.Left ? ChroniclePageSide.Right : ChroniclePageSide.Left;
+            if (Surface.TryGetPageCorners(other, otherCorners))
             {
-                var v = Camera.WorldToViewportPoint(c);
-                min = Vector2.Min(min, new Vector2(v.x, v.y)); max = Vector2.Max(max, new Vector2(v.x, v.y));
+                var x = 0f; var otherX = 0f;
+                for (var i = 0; i < corners.Length; i++)
+                {
+                    x += Camera.WorldToViewportPoint(corners[i]).x;
+                    otherX += Camera.WorldToViewportPoint(otherCorners[i]).x;
+                }
+                if (side == ChroniclePageSide.Left ? x > otherX : x < otherX)
+                    System.Array.Copy(otherCorners, corners, corners.Length);
             }
-            rect = new Rect(min.x, min.y, max.x - min.x, max.y - min.y);
-            return rect.width > 0f && rect.height > 0f;
+            for (var i = 0; i < corners.Length; i++)
+            {
+                var v = Camera.WorldToViewportPoint(corners[i]);
+                if (v.z <= 0f) return false;
+                projected[i] = new Vector2(v.x, v.y);
+            }
+            // Fit a rectangle inside the perspective trapezoid, rather than around it.
+            System.Array.Sort(projected, (a, b) => a.y.CompareTo(b.y));
+            var bottomLeft = Mathf.Min(projected[0].x, projected[1].x);
+            var bottomRight = Mathf.Max(projected[0].x, projected[1].x);
+            var topLeft = Mathf.Min(projected[2].x, projected[3].x);
+            var topRight = Mathf.Max(projected[2].x, projected[3].x);
+            var xMin = Mathf.Max(0f, Mathf.Max(bottomLeft, topLeft));
+            var xMax = Mathf.Min(1f, Mathf.Min(bottomRight, topRight));
+            var yMin = Mathf.Max(0f, projected[1].y);
+            var yMax = Mathf.Min(1f, projected[2].y);
+            rect = Rect.MinMaxRect(xMin, yMin, xMax, yMax);
+            return xMax > xMin && yMax > yMin;
+        }
+
+        static void DestroyStageObject(Object value)
+        {
+            if (Application.isPlaying) Object.Destroy(value); else Object.DestroyImmediate(value);
         }
 
         public void Dispose()
         {
-            if (Texture) { Texture.Release(); Object.Destroy(Texture); }
-            if (root) Object.Destroy(root);
+            if (Texture) { Texture.Release(); DestroyStageObject(Texture); }
+            if (root) DestroyStageObject(root);
             Rig = null; Surface = null;
         }
     }

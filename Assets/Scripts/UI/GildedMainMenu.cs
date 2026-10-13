@@ -273,6 +273,7 @@ namespace GildedFate.UI
             EndHotButtonFrame();
             if(screen!=previousScreen){previousScreen=screen;transitionAlpha=1f;if(screen==ScreenMode.Map)mapInputReadyAt=Time.unscaledTime+.22f;ArmScreenInputGuard();if(!captureMode){screenControllerIndex=0;controllerScreen=screen;}}
             UpdateHexerVideos();UpdateVanguardVideos();UpdateReaperVideos();
+            if(chronicleMilestoneActive){AdvanceChronicleMilestone(Time.unscaledDeltaTime);return;}
             if(runStartActive){if(!runStartCaptureFrozen)AdvanceRunStart(Time.unscaledDeltaTime);return;}
             if(chronicleActive){AdvanceChronicle(Time.unscaledDeltaTime);return;} // the Chronicle overlay (GildedChroniclePresentation.cs)
             TickChronicleArchive(Time.unscaledDeltaTime); // the open book while THE CHRONICLE archive is on screen
@@ -311,7 +312,7 @@ namespace GildedFate.UI
 
         private void UpdateControllerNavigation()
         {
-            menuInputConsumed=false;if(captureMode)return;
+            menuInputConsumed=false;if(captureMode)return;ResumePendingRelicReward();
             var input=ReadMenuNavigation();
             combatNavigationInput=input;
             if(RouteMenuNavigation(input)||screen==ScreenMode.Combat)return;
@@ -401,6 +402,7 @@ namespace GildedFate.UI
             if(screen==ScreenMode.RunResult)
             {if(back){Sfx(SoundCue.UiBack);screen=ScreenMode.Menu;return;}if(delta!=0)MoveScreenController(delta,2);if(accept){if(screenControllerIndex==0){selectingNewRun=true;selectedHero=HeroId.Vanguard;heroSelectionTime=Time.unscaledTime;screen=ScreenMode.CharacterSelect;}else screen=ScreenMode.Menu;}return;}
             if(screen==ScreenMode.Settings&&back){ProfileService.Save(profile);screen=settingsReturnScreen;return;}
+            if(screen==ScreenMode.Playground&&back){ExitPlayground();return;}
             if(back)screen=ScreenMode.Menu;
         }
 
@@ -443,7 +445,7 @@ namespace GildedFate.UI
             if(back){if(upgrading){run.stage=cardServiceReturnScreen==ScreenMode.Event?RunStage.Event:RunStage.Sanctuary;SaveService.Save(run);screen=cardServiceReturnScreen;}else{SaveMerchantState();screen=ScreenMode.Merchant;}return;}
             run.EnsureCardInstances();var entries=run.cards.Where(saved=>saved.BuildDefinition()!=null&&(!upgrading||saved.BuildDefinition().rarity is not (Rarity.Curse or Rarity.Status))).ToArray();if(entries.Length==0)return;
             if(delta!=0)MoveScreenController(delta,entries.Length);screenControllerIndex=Mathf.Clamp(screenControllerIndex,0,entries.Length-1);
-            if(!accept)return;var target=entries[screenControllerIndex];if(upgrading){if(target.upgraded)return;var shown=GameContent.Upgrade(target.BuildDefinition());if(run.UpgradeCard(target)){banner=shown.name+" NOW BEARS THE GOLDEN RUNE";Advance();}}
+            if(!accept)return;var target=entries[screenControllerIndex];if(upgrading){if(target.upgraded)return;var shown=GameContent.Upgrade(target.BuildDefinition());if(run.UpgradeCard(target)){banner=shown.name+" NOW BEARS THE GOLDEN RUNE";SaveService.Save(run);BeginModificationAcquisition(target.BuildDefinition(),Advance);}}
             else CompleteMerchantRemoval(target);
         }
 
@@ -475,7 +477,6 @@ namespace GildedFate.UI
             if(bodyFont)GUI.skin.font=bodyFont;
             BuildStyles();
             hoveredCardHelp=null;
-            if(acquisitionActive&&(Event.current.type==EventType.MouseDown||Event.current.type==EventType.MouseUp||Event.current.type==EventType.KeyDown))Event.current.Use();
             if(captureMode&&!typographyAudited&&Event.current.type==EventType.Repaint)AuditCardTypography();
             // Author every screen against one coherent canvas, then fit that canvas to the
             // current Game view. This keeps the large cards and menu together at any aspect.
@@ -487,6 +488,7 @@ namespace GildedFate.UI
             guiPointerReady=true;
             var w = Screen.width / uiScale;
             var h = Screen.height / uiScale;
+            if(chronicleMilestoneActive&&DrawChronicleMilestone(w,h))return;
             HandleReplaceRunPointer(w,h);SwallowEarlyPointerInput();
             DrawBackdrop(w, h);
             if(chronicleActive&&DrawChronicle(w,h))return;
@@ -497,10 +499,13 @@ namespace GildedFate.UI
                 var enabled=GUI.enabled;GUI.enabled=false;DrawCharacterSelect(w,h);GUI.enabled=enabled;
                 DrawRunStartTransition(w,h);return;
             }
+            // Acquisitions own the entire input layer. An offered relic must receive
+            // its click before the event is consumed; no underlying screen gets it.
+            if(acquisitionActive){DrawAcquisitionModal(w,h);return;}
             if(Event.current.type==EventType.Repaint)combatHudTargets.Clear();
             if(runPauseOpen&&screen!=ScreenMode.Settings){DrawRunHud(w);DrawUnifiedPauseMenu(w,h,false);return;}
             if(routeInspectionOpen){DrawRouteInspection(w,h);return;}
-            if(PerfectedScreenOpen&&inspectedCard==null){DrawPerfectedSelection(w,h);return;}
+            if(PerfectedScreenOpen&&inspectedCard==null&&!acquisitionActive){DrawPerfectedSelection(w,h);return;}
             if(inspectedCard!=null){DrawCardInspection(w,h,inspectedCard);DrawScreenCardKeywordHelp(w,h);return;}
             if(severedCard!=null){DrawLocationBackdrop(w,h,0);DrawRunDock(w);DrawSeveredThread(w,h);return;}
             if(ShardDiscoveryOpen||acquisitionActive||replaceRunConfirmOpen)GUI.enabled=false;
@@ -1038,7 +1043,7 @@ namespace GildedFate.UI
 
         private void CheckCombat()
         {
-            if(!combat.IsOver)return;
+            if(!combat.IsOver||run.closed)return;
             if(PlaygroundCheckCombat())return; // admin sandbox: never touches the run or profile
             run.immortalThreadUsed=combat.ImmortalThreadUsed;
             var receipt=run.runId+":"+run.act+":"+currentNode.floor+":"+currentNode.lane;
@@ -1054,10 +1059,11 @@ namespace GildedFate.UI
             if(!combat.AnyEnemyAlive&&combat.player.hp>0)
             {
                 combat.ReturnAllSeizedGold();run.hp=combat.player.hp;run.gold=Mathf.Max(0,run.gold-combat.goldLost);
-                var gain=RewardRules.BaseGold(currentNode.kind,run.act);if(currentEnemy?.id=="collector")gain+=combat.stolenGold+10;gain+=combat.RuinsRewardBonus;if(run.relics.Contains("lucky_coin"))gain=Mathf.CeilToInt(gain*1.15f);gain=FateDebtGold(gain);run.pendingCombatGold=gain;run.combatGoldClaimed=false;
-                run.RollEncounterRewards(currentNode.kind);
                 if(newResult){profile.enemiesDefeated+=combat.NonMinionTotal;if(currentNode.kind==NodeKind.Combat)run.normalCombatsCompleted++;if(currentNode.kind==NodeKind.Elite)profile.elitesDefeated++;if(currentNode.kind==NodeKind.Boss)profile.bossesDefeated++;}
                 TrackCombatMeta(true);
+                if(RewardRules.CompletesRun(currentNode.kind,run.act)){run.ClearFinalEncounterRewards();CompleteRun();return;}
+                var gain=RewardRules.BaseGold(currentNode.kind,run.act);if(currentEnemy?.id=="collector")gain+=combat.stolenGold+10;gain+=combat.RuinsRewardBonus;if(run.relics.Contains("lucky_coin"))gain=Mathf.CeilToInt(gain*1.15f);gain=FateDebtGold(gain);run.pendingCombatGold=gain;run.combatGoldClaimed=false;
+                run.RollEncounterRewards(currentNode.kind);
                 run.AddEncounterCardChoices(combat.bonusCardRewards);rewardRevealTime=profile.reduceMotion?0:1.15f;
                 run.stage=RunStage.CardReward;screen=ScreenMode.Reward;
                 ProfileService.Save(profile);SaveService.Save(run);
@@ -1065,7 +1071,9 @@ namespace GildedFate.UI
             else
             {
                 run.hp=0;if(newResult)profile.losses++;TrackCombatMeta(false);if(newResult)FinalizeRunMeta(false);profile.RegisterCompletedRun(run.runId);runResultVictory=false;
+                run.closed=true;
                 ProfileService.Save(profile);SaveService.Clear();screen=ScreenMode.RunResult;
+                if(newResult)BeginChronicleMilestone(true,false,null);
             }
         }
         private void DrawReward(float w,float h)
@@ -1214,13 +1222,13 @@ namespace GildedFate.UI
                     }
                     break;
                 case EventType.MouseDrag:
-                    if(GUIUtility.hotControl==id){scroll=Mathf.Clamp((e.mousePosition.y-rail.y-scrollRailGrab)/travel*max,0,max);e.Use();}
+                    if(GUI.enabled&&GUIUtility.hotControl==id){scroll=Mathf.Clamp((e.mousePosition.y-rail.y-scrollRailGrab)/travel*max,0,max);e.Use();}
                     break;
                 case EventType.MouseUp:
                     if(GUIUtility.hotControl==id){GUIUtility.hotControl=0;e.Use();}
                     break;
             }
-            var grabbed=GUIUtility.hotControl==id;var hovered=grabbed||hit.Contains(e.mousePosition);
+            var grabbed=GUI.enabled&&GUIUtility.hotControl==id;var hovered=GUI.enabled&&(grabbed||hit.Contains(e.mousePosition));
             thumb=new Rect(rail.x-2,rail.y+travel*(scroll/max),rail.width+4,thumbH);
             Fill(rail,new Color(.12f,.11f,.09f,.82f));Fill(hovered?new Rect(thumb.x-1,thumb.y,thumb.width+2,thumb.height):thumb,hovered?new Color(1f,.74f,.32f,.98f):new Color(.84f,.61f,.24f,.92f));
         }
@@ -1239,7 +1247,7 @@ namespace GildedFate.UI
         {
             var accent=RarityAccent(relic.rarity);Fill(r,new Color(.03f,.034f,.047f,.98f));Outline(r,accent,relic.rarity is Rarity.Rare or Rarity.Boss?3:1);var icon=Mathf.Min(r.width-16,r.height*(showDescription?.44f:.58f));var art=new Rect(r.center.x-icon*.5f,r.y+8,icon,icon);DrawRelicArt(art,index);
             var name=new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=14,wordWrap=true,normal={textColor=new Color(.97f,.93f,.81f)}};GUI.Label(new Rect(r.x+6,art.yMax+4,r.width-12,32),relic.name,name);
-            if(showDescription){var body=new GUIStyle(footerStyle){fontSize=15,wordWrap=true,normal={textColor=new Color(.94f,.91f,.84f)}};GUI.Label(new Rect(r.x+15,art.yMax+39,r.width-30,r.yMax-art.yMax-47),relic.text,body);}
+            if(showDescription){var body=new GUIStyle(footerStyle){fontSize=15,wordWrap=true,normal={textColor=new Color(.94f,.91f,.84f)}};GUI.Label(new Rect(r.x+15,art.yMax+39,r.width-30,r.yMax-art.yMax-47),relic.Description,body);}
             else{var rarity=new GUIStyle(footerStyle){fontSize=12,normal={textColor=Color.Lerp(accent,Color.white,.5f)}};GUI.Label(new Rect(r.x+4,r.yMax-20,r.width-8,16),relic.rarity.ToString().ToUpperInvariant(),rarity);}
         }
 
@@ -1253,10 +1261,10 @@ namespace GildedFate.UI
             Fill(new Rect(0,0,w,h),new Color(0,0,0,.76f));var index=System.Array.IndexOf(GameContent.Relics,relic);var accent=RarityAccent(relic.rarity);
             var name=new GUIStyle(titleStyle){fontSize=24,wordWrap=true,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(1f,.82f,.42f)}};
             var body=new GUIStyle(subtitleStyle){font=bodyFont,fontSize=18,wordWrap=true,alignment=TextAnchor.UpperLeft,normal={textColor=new Color(.94f,.91f,.84f)}};
-            const float width=520;var nameHeight=Mathf.Max(36,name.CalcHeight(new GUIContent(relic.name),width-64));var bodyHeight=body.CalcHeight(new GUIContent(relic.text),width-64)+8;
+            const float width=520;var nameHeight=Mathf.Max(36,name.CalcHeight(new GUIContent(relic.name),width-64));var bodyHeight=body.CalcHeight(new GUIContent(relic.Description),width-64)+8;
             var artSize=Mathf.Clamp(h-nameHeight-bodyHeight-260,100,240);var height=32+artSize+18+nameHeight+12+bodyHeight+85;
             var r=new Rect((w-width)*.5f,(h-height)*.5f,width,height);Fill(r,new Color(.025f,.028f,.04f,.995f));Outline(r,accent,3);var art=new Rect(r.center.x-artSize*.5f,r.y+24,artSize,artSize);DrawRelicArt(art,index);
-            GUI.Label(new Rect(r.x+32,art.yMax+18,r.width-64,nameHeight),relic.name,name);GUI.Label(new Rect(r.x+32,art.yMax+30+nameHeight,r.width-64,bodyHeight),relic.text,body);var rarity=new GUIStyle(subtitleStyle){fontSize=12};rarity.normal.textColor=accent;GUI.Label(new Rect(r.x+30,r.yMax-82,r.width-60,22),relic.rarity.ToString().ToUpperInvariant()+" RELIC",rarity);
+            GUI.Label(new Rect(r.x+32,art.yMax+18,r.width-64,nameHeight),relic.name,name);GUI.Label(new Rect(r.x+32,art.yMax+30+nameHeight,r.width-64,bodyHeight),relic.Description,body);var rarity=new GUIStyle(subtitleStyle){fontSize=12};rarity.normal.textColor=accent;GUI.Label(new Rect(r.x+30,r.yMax-82,r.width-60,22),relic.rarity.ToString().ToUpperInvariant()+" RELIC",rarity);
             var close=new Rect(r.x+105,r.yMax-55,r.width-210,35);DrawButtonFrame(close,close.Contains(PointerPosition),false);if(GUI.Button(close,"RETURN TO GALLERY",buttonStyle)){Sfx(SoundCue.UiHover);inspectedRelic=null;}
         }
 
@@ -1349,7 +1357,7 @@ namespace GildedFate.UI
                 var saved=entries[index];var current=saved.BuildDefinition();var available=!upgrading||!saved.upgraded;var shown=upgrading&&available?GameContent.Upgrade(current):current;var row=index/columns;var col=index%columns;var r=new Rect(startX+col*(cardW+gap),row*rowStep+5-cardServiceScroll,cardW,cardH);if(r.yMax<0||r.y>viewport.height)continue;DrawCard(r,shown);RegisterCardKeywordHelp(new Rect(viewport.x+r.x,viewport.y+r.y,r.width,r.height),shown,controllerNavigation&&screenControllerIndex==index);if(controllerNavigation&&screenControllerIndex==index)Outline(new Rect(r.x-4,r.y-4,r.width+8,r.height+8),Gold,4);if(!available){Fill(r,new Color(0,0,0,.61f));GUI.Label(new Rect(r.x,r.center.y-15,r.width,30),"ALREADY UPGRADED",new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=12,fontStyle=FontStyle.Bold,normal={textColor=new Color(.72f,.7f,.65f)}});}GUI.enabled=available;if(GUI.Button(r,"",GUIStyle.none))selected=saved;GUI.enabled=true;
             }
             GUI.EndGroup();DrawScrollRail(viewport,ref cardServiceScroll,contentHeight,entries.Length+" PHYSICAL CARDS  ·  SCROLL");
-            if(selected!=null){Sfx(upgrading?SoundCue.Upgrade:SoundCue.RemoveCard);if(upgrading){var shown=GameContent.Upgrade(selected.BuildDefinition());if(run.UpgradeCard(selected)){banner=shown.name+" NOW BEARS THE GOLDEN RUNE";Advance();}}else CompleteMerchantRemoval(selected);}
+            if(selected!=null){Sfx(upgrading?SoundCue.Upgrade:SoundCue.RemoveCard);if(upgrading){var shown=GameContent.Upgrade(selected.BuildDefinition());if(run.UpgradeCard(selected)){banner=shown.name+" NOW BEARS THE GOLDEN RUNE";SaveService.Save(run);BeginModificationAcquisition(selected.BuildDefinition(),Advance);}}else CompleteMerchantRemoval(selected);}
             var cancel=new Rect(34,h-62,160,36);DrawButtonFrame(cancel,cancel.Contains(PointerPosition),false);if(GUI.Button(cancel,"CANCEL",buttonStyle)){if(upgrading){run.stage=cardServiceReturnScreen==ScreenMode.Event?RunStage.Event:RunStage.Sanctuary;SaveService.Save(run);screen=cardServiceReturnScreen;}else{SaveMerchantState();screen=ScreenMode.Merchant;}}
         }
 
@@ -1443,23 +1451,23 @@ namespace GildedFate.UI
         }
 
         private void BeginEventChoice(EventChoiceDef choice)
-        {var cardsBefore=SnapshotCardCopies();var relicsBefore=SnapshotRelics();var shardsBefore=SnapshotShards();if(EventSystem.BeginChoice(run,choice)){collectionPage=screenControllerIndex=0;cardChoiceScroll=0;Sfx(SoundCue.UiConfirm);AfterEventInteraction(cardsBefore,relicsBefore,shardsBefore);}}
+        {var changedBefore=SnapshotCardChanges();var cardsBefore=SnapshotCardCopies();var relicsBefore=SnapshotRelics();var shardsBefore=SnapshotShards();if(EventSystem.BeginChoice(run,choice)){collectionPage=screenControllerIndex=0;cardChoiceScroll=0;Sfx(SoundCue.UiConfirm);AfterEventInteraction(cardsBefore,relicsBefore,shardsBefore,changedBefore);}}
 
-        private void AfterEventInteraction(HashSet<string> cardsBefore=null,HashSet<string> relicsBefore=null,HashSet<string> shardsBefore=null)
+        private void AfterEventInteraction(HashSet<string> cardsBefore=null,HashSet<string> relicsBefore=null,HashSet<string> shardsBefore=null,Dictionary<string,string> changedBefore=null)
         {
-            SaveService.Save(run);screen=run.stage==RunStage.EventSelection?ScreenMode.EventSelection:run.stage==RunStage.EventResult?ScreenMode.EventResult:ScreenMode.Event;if(screen==ScreenMode.EventResult){gildedFlash=1f;Sfx(SoundCue.Resonance);}if(cardsBefore!=null||relicsBefore!=null||shardsBefore!=null)PresentNewRunAcquisitions(cardsBefore,relicsBefore,shardsBefore);
+            SaveService.Save(run);screen=run.stage==RunStage.EventSelection?ScreenMode.EventSelection:run.stage==RunStage.EventResult?ScreenMode.EventResult:ScreenMode.Event;if(screen==ScreenMode.EventResult){gildedFlash=1f;Sfx(SoundCue.Resonance);}if(cardsBefore!=null||relicsBefore!=null||shardsBefore!=null)PresentChangedRunCards(changedBefore,()=>PresentNewRunAcquisitions(cardsBefore,relicsBefore,shardsBefore));
         }
         private bool ChooseEventCardWithAcquisition(RunCard card)
         {
-            var cardsBefore=SnapshotCardCopies();var relicsBefore=SnapshotRelics();var shardsBefore=SnapshotShards();if(!EventSystem.ChooseCard(run,card))return false;AfterEventInteraction(cardsBefore,relicsBefore,shardsBefore);return true;
+            var changedBefore=SnapshotCardChanges();var cardsBefore=SnapshotCardCopies();var relicsBefore=SnapshotRelics();var shardsBefore=SnapshotShards();if(!EventSystem.ChooseCard(run,card))return false;AfterEventInteraction(cardsBefore,relicsBefore,shardsBefore,changedBefore);return true;
         }
         private bool ChooseEventOfferWithAcquisition(string offerId)
         {
-            var cardsBefore=SnapshotCardCopies();var relicsBefore=SnapshotRelics();var shardsBefore=SnapshotShards();if(!EventSystem.ChooseOffer(run,offerId))return false;AfterEventInteraction(cardsBefore,relicsBefore,shardsBefore);return true;
+            var changedBefore=SnapshotCardChanges();var cardsBefore=SnapshotCardCopies();var relicsBefore=SnapshotRelics();var shardsBefore=SnapshotShards();if(!EventSystem.ChooseOffer(run,offerId))return false;AfterEventInteraction(cardsBefore,relicsBefore,shardsBefore,changedBefore);return true;
         }
         private bool ChooseEventShardReplacementWithAcquisition(string newShardId,string replacementId)
         {
-            var cardsBefore=SnapshotCardCopies();var relicsBefore=SnapshotRelics();var shardsBefore=SnapshotShards();if(!EventSystem.ChooseShardReplacement(run,newShardId,replacementId))return false;AfterEventInteraction(cardsBefore,relicsBefore,shardsBefore);return true;
+            var changedBefore=SnapshotCardChanges();var cardsBefore=SnapshotCardCopies();var relicsBefore=SnapshotRelics();var shardsBefore=SnapshotShards();if(!EventSystem.ChooseShardReplacement(run,newShardId,replacementId))return false;AfterEventInteraction(cardsBefore,relicsBefore,shardsBefore,changedBefore);return true;
         }
 
         private void DrawEventSelection(float w,float h)
@@ -1569,7 +1577,7 @@ namespace GildedFate.UI
             {
                 var overflow=RunRelicSlotRect(shown);
                 GUI.Label(overflow,"+"+(run.relics.Count-shown),new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=14,alignment=TextAnchor.MiddleCenter,normal={textColor=Gold}});
-                var detail=string.Join("\n\n",run.relics.Skip(shown).Select(id=>GameContent.Relics.FirstOrDefault(r=>r.id==id)).Where(r=>r!=null).Select(r=>r.name+"\n"+r.text));
+                var detail=string.Join("\n\n",run.relics.Skip(shown).Select(id=>GameContent.Relics.FirstOrDefault(r=>r.id==id)).Where(r=>r!=null).Select(r=>r.name+"\n"+r.Description));
                 RegisterCombatHudTarget("relic:overflow",9,overflow,"MORE RELICS",detail);
                 if(overflow.Contains(pointer))SetRunHudTooltip(overflow,"MORE RELICS",detail);
             }
@@ -1646,9 +1654,27 @@ namespace GildedFate.UI
             // Migrate old unfinished elite/boss reward screens into the card reward flow.
             if(currentNode?.kind!=NodeKind.Treasure){run.RollEncounterRewards(currentNode?.kind??NodeKind.Combat);run.stage=RunStage.CardReward;screen=ScreenMode.Reward;SaveService.Save(run);DrawReward(w,h);return;}
             DrawFullBackdrop(rewardBackground,w,h,.24f);DrawRunDock(w);Heading(w,"TREASURE RECOVERED","A RELIC FROM THE SEALED VAULT");
-            if(!ShardDiscoveryOpen)Choice(new Rect(w*.35f,h*.34f,w*.3f,200),run.treasureRelicClaimedReceipt==run.RoomReceipt?"CONTINUE":"CLAIM RELIC",run.treasureRelicClaimedReceipt==run.RoomReceipt?"Relic collected. Return to your ascent.":"Take the relic and return to your ascent.",GrantRelic);if(!ShardDiscoveryOpen&&!acquisitionActive)DrawRelicPedestal(new Rect(w*.5f-45,h*.34f-92,90,90));
+            if(ShardDiscoveryOpen)return;
+            if(run.treasureRelicClaimedReceipt==run.RoomReceipt){Choice(new Rect(w*.35f,h*.34f,w*.3f,200),"CONTINUE","Relic collected. Return to your ascent.",GrantRelic);return;}
+            var relic=TreasureRelicOffer();
+            if(relic==null){Choice(new Rect(w*.35f,h*.34f,w*.3f,200),"CONTINUE","Every available relic is already yours.",GrantRelic);return;}
+            var tile=new Rect(w*.5f-185,h*.25f,370,440);DrawRelicTile(tile,relic,System.Array.IndexOf(GameContent.Relics,relic),true);
+            GUI.Label(new Rect(tile.x,tile.yMax-30,tile.width,26),menuUsesGamepad?"A · TAKE RELIC":"CLICK TO TAKE RELIC",footerStyle);
+            if(controllerNavigation)Outline(tile,Gold,3);
+            if(!acquisitionActive&&GUI.Button(tile,"",GUIStyle.none))GrantRelic();
         }
-        private void EnterFateweave(){if(run.act>=3){CompleteRun();return;}run.BeginNextAct();run.BeginFateweave();rewardRevealTime=profile.reduceMotion?0:1.4f;SaveService.Save(run);screen=ScreenMode.Fateweave;Sfx(SoundCue.Fateweave);}
+        private void EnterFateweave()
+        {
+            if(run.act>=3){CompleteRun();return;}
+            var completedAct=run.act;var completedRun=run.runId;
+            // Advance() reaches here only after gold, card, relic and perfected choices are resolved.
+            BeginChronicleMilestone(false,true,()=>
+            {
+                if(run.runId!=completedRun||run.act!=completedAct)return;
+                run.BeginNextAct();run.BeginFateweave();rewardRevealTime=profile.reduceMotion?0:1.4f;
+                SaveService.Save(run);screen=ScreenMode.Fateweave;Sfx(SoundCue.Fateweave);
+            });
+        }
 
         private void DrawBindingSelect(float w,float h)
         {
@@ -1698,17 +1724,29 @@ namespace GildedFate.UI
             }
             GUI.EndGroup();DrawScrollRail(viewport,ref cardChoiceScroll,contentHeight,(bindingMode?eligible.Length+" ELIGIBLE / ":"")+choices.Length+" PHYSICAL CARDS · FIRST ADDED FIRST");if(selected!=null)choose(selected);if(choices.Length==0)GUI.Label(new Rect(w*.25f,h*.4f,w*.5f,80),"No eligible unmodified card copies remain for this strand.",new GUIStyle(subtitleStyle){fontSize=20,wordWrap=true});
         }
+        private RelicDef TreasureRelicOffer()
+        {
+            var available=GameContent.Relics.Where(r=>r.rarity is not (Rarity.Boss or Rarity.Special)&&!run.relics.Contains(r.id)).ToArray();
+            return available.Length==0?null:available[(run.floor*7)%available.Length];
+        }
         private void GrantRelic()
         {
             if(acquisitionActive||ShardDiscoveryOpen)return;
             if(run.treasureRelicClaimedReceipt==run.RoomReceipt){Advance();return;}
             var available=GameContent.Relics.Where(r=>r.rarity is not (Rarity.Boss or Rarity.Special)&&!run.relics.Contains(r.id)).ToArray();
             if(available.Length==0){run.treasureRelicClaimedReceipt=run.RoomReceipt;SaveService.Save(run);Advance();return;}
-            var relic=available[(run.floor*7)%available.Length];run.treasureRelicClaimedReceipt=run.RoomReceipt;
+            var relic=TreasureRelicOffer();run.treasureRelicClaimedReceipt=run.RoomReceipt;
             if(run.AcquireRelic(relic.id))profile.relicsCollected++;
             ProfileService.Save(profile);SaveService.Save(run);BeginRelicAcquisition(relic,Advance);
         }
-        private void CompleteRun(){if(profile.completedRunIds==null||!profile.completedRunIds.Contains(run.runId))FinalizeRunMeta(true);if(profile.RegisterCompletedRun(run.runId)){profile.wins++;if(profile.fastestVictory<=0||run.elapsedSeconds<profile.fastestVictory)profile.fastestVictory=run.elapsedSeconds;}runResultVictory=true;ProfileService.Save(profile);SaveService.Clear();screen=ScreenMode.RunResult;}
+        private void CompleteRun()
+        {
+            run.closed=true;var newResult=profile.completedRunIds==null||!profile.completedRunIds.Contains(run.runId);
+            if(newResult)FinalizeRunMeta(true);
+            if(profile.RegisterCompletedRun(run.runId)){profile.wins++;if(profile.fastestVictory<=0||run.elapsedSeconds<profile.fastestVictory)profile.fastestVictory=run.elapsedSeconds;}
+            runResultVictory=true;ProfileService.Save(profile);SaveService.Clear();screen=ScreenMode.RunResult;
+            if(newResult)BeginChronicleMilestone(true,true,null);
+        }
 
         private void DrawRunResult(float w,float h)
         {
@@ -1745,7 +1783,7 @@ namespace GildedFate.UI
         }
         private void Choice(Rect r,string name,string text,System.Action action,int controllerIndex=-1,string unavailable=null){if(unavailable!=null)text=unavailable;var over=ScreenChoiceHot(r,controllerIndex)&&unavailable==null;if(over)Fill(new Rect(r.x-7,r.y-7,r.width+14,r.height+14),new Color(1f,.56f,.12f,.11f));Fill(r,over?new Color(.085f,.06f,.025f,.98f):new Color(.018f,.026f,.04f,.98f));Outline(r,over?new Color(1f,.84f,.55f):new Color(.73f,.61f,.39f),over?3:2);Outline(new Rect(r.x+7,r.y+7,r.width-14,r.height-14),new Color(.26f,.2f,.11f,.8f),1);Fill(new Rect(r.x+18,r.y+7,r.width-36,2),new Color(.9f,.78f,.53f,.5f));var n=new GUIStyle(titleStyle){fontSize=24,wordWrap=true,normal={textColor=new Color(.98f,.93f,.78f)}};GUI.Label(new Rect(r.x+16,r.y+18,r.width-32,58),name,n);var b=new GUIStyle(footerStyle){fontSize=17,wordWrap=true,normal={textColor=new Color(.94f,.91f,.84f)}};GUI.Label(new Rect(r.x+22,r.y+82,r.width-44,r.height-98),text,b);if(unavailable!=null)Fill(r,new Color(0,0,0,.5f));if(GUI.Button(r,"",GUIStyle.none)){if(unavailable!=null)Sfx(SoundCue.UiDenied);else{Sfx(SoundCue.UiConfirm);action();}}}
 
-        private void Advance(){if(ShardDiscoveryOpen)return;if(run.pendingBonusCardRewards>0){run.pendingBonusCardRewards--;run.NextBonusCardReward();rewardRevealTime=profile.reduceMotion?0:1.15f;run.stage=RunStage.CardReward;SaveService.Save(run);screen=ScreenMode.Reward;return;}if(currentNode?.kind==NodeKind.Boss){run.RollEncounterRewards(NodeKind.Boss);run.encounterRewards.cardClaimed=true;if(!run.encounterRewards.bossRelicClaimed&&run.BossRelicOffers().Length>0){run.stage=RunStage.RelicReward;screen=ScreenMode.RelicReward;screenControllerIndex=0;SaveService.Save(run);return;}if(run.perfectedSelectionPending)return;EnterFateweave();return;}if(currentNode!=null)run.AdvanceFrom(currentNode);SaveService.Save(run);mapFocusFloor=-1;screen=run.floor>=run.ActFloorCount?ScreenMode.Menu:ScreenMode.Map;}
+        private void Advance(){if(currentNode!=null&&RewardRules.CompletesRun(currentNode.kind,run.act)){run.ClearFinalEncounterRewards();CompleteRun();return;}if(ShardDiscoveryOpen)return;if(run.pendingBonusCardRewards>0){run.pendingBonusCardRewards--;run.NextBonusCardReward();rewardRevealTime=profile.reduceMotion?0:1.15f;run.stage=RunStage.CardReward;SaveService.Save(run);screen=ScreenMode.Reward;return;}if(currentNode?.kind==NodeKind.Boss){run.RollEncounterRewards(NodeKind.Boss);run.encounterRewards.cardClaimed=true;if(!run.encounterRewards.bossRelicClaimed&&run.BossRelicOffers().Length>0){run.stage=RunStage.RelicReward;screen=ScreenMode.RelicReward;screenControllerIndex=0;SaveService.Save(run);return;}if(run.perfectedSelectionPending)return;EnterFateweave();return;}if(currentNode!=null)run.AdvanceFrom(currentNode);SaveService.Save(run);mapFocusFloor=-1;screen=run.floor>=run.ActFloorCount?ScreenMode.Menu:ScreenMode.Map;}
         private void HealthBar(Rect r,int hp,int max,string label){Fill(new Rect(r.x-3,r.y-3,r.width+6,r.height+6),new Color(0,0,0,.7f));Fill(r,new Color(.075f,.018f,.025f));var fill=new Rect(r.x+2,r.y+2,(r.width-4)*Mathf.Clamp01(hp/(float)max),r.height-4);Fill(fill,new Color(.68f,.08f,.105f));Fill(new Rect(fill.x,fill.y,fill.width,Mathf.Max(2,fill.height*.18f)),new Color(1f,.38f,.28f,.58f));Outline(r,new Color(.86f,.62f,.24f),2);var s=new GUIStyle(footerStyle){fontSize=Mathf.Clamp(Mathf.RoundToInt(r.height*.45f),12,15),fontStyle=FontStyle.Bold,normal={textColor=Color.white}};GUI.Label(r,$"{label}   {Mathf.Max(0,hp)}/{max}",s);}
         private static bool IsRunScreen(ScreenMode mode)=>mode is ScreenMode.Map or ScreenMode.Combat or ScreenMode.Reward or ScreenMode.Merchant or ScreenMode.Sanctuary or ScreenMode.Event or ScreenMode.EventSelection or ScreenMode.EventResult or ScreenMode.Treasure or ScreenMode.RelicReward or ScreenMode.CardUpgrade or ScreenMode.CardRemove or ScreenMode.BindingSelect or ScreenMode.BindingCard or ScreenMode.Fateweave or ScreenMode.FateweaveCard;
         private bool ShowsPersistentRunHud=>!string.IsNullOrEmpty(run.runId)&&!run.closed&&(IsRunScreen(screen)||screen==ScreenMode.Collection&&viewingRunDeck||screen==ScreenMode.Settings&&(IsRunScreen(settingsReturnScreen)||settingsReturnScreen==ScreenMode.Collection&&viewingRunDeck));
@@ -1778,6 +1816,7 @@ namespace GildedFate.UI
         private void RestoreRunStage()
         {
             currentNode=run.nodes.FirstOrDefault(n=>n.floor==run.activeNodeFloor&&n.lane==run.activeNodeLane);if(run.stage is RunStage.Fateweave or RunStage.FateweaveCard){ResumeFateweave();return;}if(run.stage==RunStage.Map||currentNode==null){run.stage=RunStage.Map;screen=ScreenMode.Map;return;}
+            if(RewardRules.CompletesRun(currentNode.kind,run.act)&&run.stage is RunStage.CardReward or RunStage.RelicReward){run.ClearFinalEncounterRewards();CompleteRun();return;}
             if(run.stage==RunStage.Combat){var enemy=WorldContent.Enemies.FirstOrDefault(e=>e.id==run.activeEnemyId);if(enemy==null){run.stage=RunStage.Map;screen=ScreenMode.Map;}else if(run.hasCombatCheckpoint&&run.combatCheckpoint!=null&&run.combatCheckpoint.TryRestore(out var restored,out _)){currentEnemy=enemy;combat=restored;screen=ScreenMode.Combat;RestoreCombatPresentation();}else BeginCombat(enemy,enemy.boss?2:enemy.elite?1:0,enemy.boss&&!profile.reduceMotion?1.4f:0);return;}
             if(run.stage==RunStage.Merchant||run.stage==RunStage.CardRemove){merchantSold.Clear();foreach(var id in run.merchantSold)merchantSold.Add(id);merchantRemoved=run.merchantRemoved;merchantHealed=run.merchantHealed;screen=run.stage==RunStage.CardRemove?ScreenMode.CardRemove:ScreenMode.Merchant;return;}
             if(run.stage==RunStage.Sanctuary){screen=ScreenMode.Sanctuary;return;}if(run.stage==RunStage.CardUpgrade){cardServiceReturnScreen=currentNode.kind==NodeKind.Event?ScreenMode.Event:ScreenMode.Sanctuary;screen=ScreenMode.CardUpgrade;return;}if(run.stage==RunStage.BindingSelect){screen=ScreenMode.BindingSelect;return;}if(run.stage==RunStage.BindingCard){screen=ScreenMode.BindingCard;return;}if(run.stage==RunStage.Fateweave){screen=ScreenMode.Fateweave;return;}if(run.stage==RunStage.FateweaveCard){screen=ScreenMode.FateweaveCard;return;}

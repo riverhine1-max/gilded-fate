@@ -36,12 +36,15 @@ namespace GildedFate.UI
         private readonly Dictionary<string,Texture2D> authoredArt=new();
         private Texture2D LoadAuthoredArt(string resource)
         {
-            if(authoredArt.TryGetValue(resource,out var texture))return texture;
+            var previouslyRequested=authoredArt.TryGetValue(resource,out var texture);
+            if(previouslyRequested&&texture)return texture;
             texture=Resources.Load<Texture2D>(resource);
             // QA builds only: -gfMetaArt <folder> supplies art not yet imported into the test player.
             if(!texture&&captureMode){var dir=CommandValue("-gfMetaArt");var file=string.IsNullOrEmpty(dir)?"":System.IO.Path.Combine(dir,System.IO.Path.GetFileName(resource)+".png");if(file!=""&&System.IO.File.Exists(file)){texture=new Texture2D(2,2,TextureFormat.RGBA32,false);texture.LoadImage(System.IO.File.ReadAllBytes(file));texture.wrapMode=TextureWrapMode.Clamp;}}
-            authoredArt.Add(resource,texture);
-            if(!texture)Debug.LogWarning("[Gilded Fate Art] Missing authored illustration: "+resource);
+            // Retry missing resources after an artwork import; a cached miss must not
+            // keep a newly added enemy invisible for the remainder of the session.
+            authoredArt[resource]=texture;
+            if(!texture&&!previouslyRequested)Debug.LogWarning("[Gilded Fate Art] Missing authored illustration: "+resource);
             return texture;
         }
 

@@ -164,6 +164,7 @@ namespace GildedFate.UI
             GameAudio.ClearCombat();
             ResetPlayerStatusPlayback();
             if(combatSequence!=null)StopCoroutine(combatSequence);
+            ReleaseExecutingEnemyIntents();
             handViews.Clear();cardMotions.Clear();combatNumbers.Clear();ResetNumberLanes();PrewarmCombatTextures();hoverView=dragView=selectedView=null;
             cardPreviewCache.Clear();effectValueCache.Clear();effectPulseUntil.Clear();combatHistory.Clear();combatHistoryOpen=false;
             combatBusy=cardDragging=controllerTargeting=false;movingCard=pileOpen=controllerHandIndex=controllerFocusedCardId=-1;pilePage=controllerShardIndex=0;pileScroll=0;
@@ -199,7 +200,7 @@ namespace GildedFate.UI
                     var physical=mouse.position.ReadValue();
                     var point=guiPointerReady?guiPointerPosition:CanvasPointFromPhysical(physical,Screen.height,CombatScale);
                     HandleCombatPointer(point,mouse.leftButton.wasPressedThisFrame,mouse.leftButton.isPressed,mouse.leftButton.wasReleasedThisFrame);
-                    if(mouse.rightButton.wasPressedThisFrame){if(inspectedCard!=null){PrepareCardInspection(inspectedCard);SelectInspectionVersion(true);}else if(dragView!=null||selectedView!=null){dragView=selectedView=null;cardDragging=false;}else if(pileOpen<0&&hoverView!=null)InspectUpgrade(hoverView.card);}
+                    if(mouse.rightButton.wasPressedThisFrame){dragView=selectedView=null;cardDragging=false;}
                 }
                 if(Keyboard.current?.spaceKey.wasPressedThisFrame==true&&CanAcceptCombatInput&&pileOpen<0)QueueEndTurn();
                 if(GildShortcutPressed)TryGild();
@@ -286,7 +287,7 @@ namespace GildedFate.UI
             if(controllerTargeting)
             {
                 if(cancel){controllerTargeting=false;selectedView=null;ReconcileCombatHandFocus();ShowInputHint("Back to hand · choose a card");}
-                else if(left||right)FocusLivingTarget(right?1:-1);
+                else if(left||right||input.y!=0)FocusLivingTarget(right||input.y>0?1:-1);
                 else if(accept&&selectedView!=null){controllerTargeting=false;QueueCardPlay(selectedView);}return;
             }
             if(HandleCombatHudNavigation(input))return;
@@ -428,9 +429,14 @@ namespace GildedFate.UI
             var power=card.kind==CardKind.Power;var important=gilded||card.rarity==Rarity.Rare||power;
             var travel=AnimationSeconds(profile.reduceMotion?.09f:important?.32f:.23f);
             var impact=CardImpactPoint(card);
-            MoveCard(card,view.position,impact,travel,view.scale,power?.85f:.91f,view.angle,0,play:true);
+            // Decode before starting the card flight. Cold clips no longer play their
+            // wind-up after the damage/Block has already appeared.
             PlayHexerCard(card,travel);PlayVanguardCard(card,travel);PlayReaperCard(card,travel);
-            playerActionKind=card.effect;playerAction=1;Sfx(combat.RequiresEnemyTarget(card)?AttackSound(card):SoundCue.CardPickup,combatSound:true);
+            yield return WaitForHeroVideoFrame();
+            travel=Mathf.Max(travel,HeroVideoSecondsToPose());
+            MoveCard(card,view.position,impact,travel,view.scale,power?.85f:.91f,view.angle,0,play:true);
+            playerActionKind=card.effect;playerAction=1;
+            Sfx(combat.RequiresEnemyTarget(card)?AttackSound(card):SoundCue.CardPickup,combatSound:true,delay:combat.RequiresEnemyTarget(card)?travel:0);
             yield return new WaitForSecondsRealtime(travel);
             while(combatPauseOpen)yield return null;
             FinalVfxNoteCardPlay(card,gilded);
@@ -451,6 +457,7 @@ namespace GildedFate.UI
                 var ritualLead=card.id=="first_ritual"?AnimationSeconds(.72f):0;
                 yield return new WaitForSecondsRealtime(Mathf.Max(settling,Mathf.Max(AnimationSeconds(important?.52f:.33f),ritualLead)));
                 yield return ResolvePendingCardChoices(card);
+                yield return WaitForHeroVideoRecovery();
             }
             movingCard=-1;
             yield return FinishCombatIfNeeded();
@@ -477,6 +484,7 @@ namespace GildedFate.UI
             yield return new WaitForSecondsRealtime(Mathf.Max(discardTime,AnimationSeconds(.28f)));
             if(!combat.IsOver&&combat.phase==CombatPhase.Enemy)
             {
+                HoldExecutingEnemyIntents();
                 enemyAction=1;var anticipate=currentEnemy?.boss==true?.65f:combat.intent==IntentKind.Special?.48f:.30f;
                 if(combat.IntentDealsDamage)Sfx(SoundCue.EnemyAttack,pan:.25f,combatSound:true);
                 BeginEnemyTurnAnimation(profile.reduceMotion?.14f:anticipate); // GildedEnemyAnimation.cs: intent-matched telegraph
@@ -484,7 +492,13 @@ namespace GildedFate.UI
                 while(combatPauseOpen)yield return null;
                 combat.ResolveEnemyTurn();SaveCombatCheckpoint();UpdateBossPhaseVisual();
                 var effectTime=ConsumeCombatEvents(combat.TakeEvents());
-                yield return new WaitForSecondsRealtime(Mathf.Max(profile.instantEnemyTurns?effectTime*.5f:effectTime,EnemyTurnSeconds(.44f)));
+                yield return new WaitForSecondsRealtime(Mathf.Max(effectTime,EnemyTurnSeconds(.44f)));
+                while(vitalBeats.Count>0)yield return null;
+                // Keep the action just performed visible for one full real second.
+                // This reading beat is independent of fast/instant animation settings.
+                var remaining=1f;
+                while(remaining>0){yield return null;if(!IsRunInspectionPaused)remaining-=Time.unscaledDeltaTime;}
+                ReleaseExecutingEnemyIntents();
             }
             if(!combat.IsOver&&combat.phase==CombatPhase.EnemyResolved)
             {
@@ -520,11 +534,6 @@ namespace GildedFate.UI
             var vanguardAttack=run.hero==HeroId.Vanguard&&played?.kind==CardKind.Attack;
             var vanguardHits=vanguardAttack?facts.Where(f=>!f.playerSide&&f.hitId>0&&f.card?.instanceId==played.instanceId&&f.kind is CombatEventKind.Damage or CombatEventKind.Block).Select(f=>f.hitId).Distinct().Count():0;
             var hitGap=Mathf.Max(.09f,AnimationSeconds(vanguardHits>1?.46f:CombatHitTiming.DefaultHitGap));var hitOffsets=CombatHitTiming.PresentationOffsets(facts,hitGap);
-            if(vanguardAttack)
-            {
-                var firstHit=System.Array.FindIndex(facts,f=>!f.playerSide&&f.hitId>0&&f.card?.instanceId==played.instanceId&&f.kind is CombatEventKind.Damage or CombatEventKind.Block);
-                if(firstHit>=0){var lead=AnimationSeconds(.16f);for(var i=firstHit;i<hitOffsets.Length;i++)hitOffsets[i]+=lead;}
-            }
             var factIndex=0;
             ScheduleRetaliateReturns(facts,hitOffsets,now);
             ScheduleHexerVideoReceipts(facts,hitOffsets,now);
@@ -662,7 +671,7 @@ namespace GildedFate.UI
             combatEffectTooltipTitle=combatEffectTooltipDetail=null;DrawCombatStats(w,h);
             DrawTargetGuide();
             Fill(new Rect(0,h-138,w,138),new Color(.005f,.009f,.017f,.18f));
-            var hint=Time.unscaledTime<hintUntil?inputHint:combatBusy?"":controllerNavigation?(menuUsesGamepad?"STICK / D-PAD · A PLAY · B BACK · R3 INSPECT · X TOP BAR · LB EFFECTS · Y END TURN":"ARROWS  SELECT CARD · ENTER  PLAY · BACKSPACE  CANCEL"):"DRAG A CARD TO PLAY · RIGHT-CLICK TO CANCEL";
+            var hint=Time.unscaledTime<hintUntil?inputHint:combatBusy?"":controllerNavigation?(menuUsesGamepad?"STICK / D-PAD · A PLAY · B BACK · R3 INSPECT · X TOP BAR · UP / LB ENEMIES · Y END TURN":"ARROWS SELECT CARD · UP ENEMIES · ENTER PLAY · BACKSPACE CANCEL"):"DRAG A CARD TO PLAY · RIGHT-CLICK TO CANCEL";
             GUI.Label(new Rect(w*.5f-330,h-292,660,26),hint,new GUIStyle(footerStyle){fontSize=14,normal={textColor=new Color(.88f,.83f,.7f)}});
             DrawGildControl();DrawCombatHand();DrawCombatMotions();DrawRetaliateReturns();DrawCombatControls();DrawCombatNativeHitTargets();DrawCombatNumbers();DrawCardKeywordHelp(w,h);DrawCombatEffectTooltip(w,h);DrawPersistentRunTooltip(w,h);
             if(!profile.reduceFlashing&&gildedFlash>0)Fill(new Rect(0,0,w,h),new Color(1,.7f,.25f,gildedFlash*.12f));
@@ -1105,7 +1114,7 @@ namespace GildedFate.UI
         private void DrawEnemyIntentAndEffects()
         {
             DrawEnemyIntentGroup(0);
-            var foe=EnemyPortraitRect;if(combat.wildCombat){DrawWildCounter(0,foe);DrawWildForecast(0,foe);}DrawSeizedGoldHud();
+            var foe=EnemyPortraitRect;RegisterEnemyOverview(0,foe,currentEnemy?.name??"ENEMY",ActorEffectSummary(EnemyEffectChips())+WildTooltipSuffix(0));if(combat.wildCombat){DrawWildCounter(0,foe);DrawWildForecast(0,foe);}DrawSeizedGoldHud();
             if(CombatInspectionAllowed&&foe.Contains(combatPointer))
                 SetCombatEffectTooltip(currentEnemy?.name??"ENEMY",ActorEffectSummary(EnemyEffectChips())+WildTooltipSuffix(0),foe.center);
         }

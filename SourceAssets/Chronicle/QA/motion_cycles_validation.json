@@ -1,0 +1,61 @@
+{
+  "blender": "4.0.2",
+  "checks": {
+    "Closed_endpoints": {
+      "pass": true,
+      "samples": [
+        {
+          "clip": "CHR_Open",
+          "progress": 0,
+          "maximum_vertex_error_m": 0.0
+        },
+        {
+          "clip": "CHR_Close",
+          "progress": 1,
+          "maximum_vertex_error_m": 0.0
+        },
+        {
+          "clip": "CHR_Pose_Closed",
+          "progress": 0,
+          "maximum_vertex_error_m": 0.0
+        }
+      ]
+    },
+    "Open_endpoints": {
+      "pass": true,
+      "samples": [
+        {
+          "clip": "CHR_Open",
+          "progress": 1,
+          "maximum_vertex_error_m": 0.0
+        },
+        {
+          "clip": "CHR_Close",
+          "progress": 0,
+          "maximum_vertex_error_m": 0.0
+        },
+        {
+          "clip": "CHR_Pose_Open",
+          "progress": 0,
+          "maximum_vertex_error_m": 0.0
+        }
+      ]
+    },
+    "opening_closing_reverse_path": {
+      "pass": true,
+      "maximum_vertex_error_m": 8.077584536839883e-05,
+      "tolerance_m": 0.00015,
+      "samples_per_clip": 41
+    },
+    "finite_animated_geometry": {
+      "pass": true
+    },
+    "page_turn_reverse_path": {
+      "pass": true,
+      "maximum_vertex_error_m": 1.8431718463976653e-07,
+      "samples_per_clip": 41
+    }
+  },
+  "all_checks_pass": true,
+  "scope": "Evaluated vertex endpoints and reverse trajectories; no exhaustive triangle collision test."
+}

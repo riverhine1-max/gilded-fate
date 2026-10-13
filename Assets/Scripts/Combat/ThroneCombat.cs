@@ -370,12 +370,12 @@ namespace GildedFate.Combat
             if(o.id==GildedThroneContent.Warden)
             {
                 // Emergency Treasury takes priority the moment it becomes legal, so the player sees the intent change.
-                if(PlayerPhaseReplan&&m.planned!="gt_emergency"&&!m.flag&&m.counter>0&&f.hp*100<35*f.maxHp)ReplanAt(index);
+                if(PlayerPhaseReplan&&m.planned!="gt_emergency"&&!m.flag&&m.counter>0&&ThresholdHp(index)*100<35*f.maxHp)ReplanAt(index);
                 return true;
             }
             if(o.id!=GildedThroneContent.Sovereign)return true;
             var t1=Frac(f.maxHp,288,430);var t2=Frac(f.maxHp,144,430);
-            var target=f.hp<=t2?3:f.hp<=t1?2:1;
+            var target=ThresholdHp(index)<=t2?3:ThresholdHp(index)<=t1?2:1;
             while(m.phase<target)
             {
                 // Transformation only: no heal, Strength, Fortify or Block. Phase 1 Minions withdraw; the Sovereign gains nothing.

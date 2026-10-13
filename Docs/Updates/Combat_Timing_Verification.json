@@ -1,0 +1,122 @@
+{
+  "nativeUnity": {
+    "checks": 245,
+    "failures": [],
+    "observations": [
+      "Vanguard BasicAttack: effect at source 1.333s; pose 1.30s",
+      "Vanguard Block: effect at source 0.875s; pose 0.85s",
+      "Vanguard HeavyAttack: effect at source 1.875s; pose 1.85s",
+      "Vanguard MajorFinisherAttack: effect at source 1.750s; pose 1.70s",
+      "Vanguard Block: effect at source 0.917s; pose 0.85s",
+      "Hexer BasicMagicalAttack: effect at source 1.833s; pose 1.80s",
+      "Hexer BasicDefensiveSkill: effect at source 0.875s; pose 0.85s",
+      "Hexer PowerfulSigilAttack: effect at source 1.750s; pose 1.70s",
+      "Hexer FinisherAttack: effect at source 1.833s; pose 1.80s",
+      "Hexer BasicDefensiveSkill: effect at source 0.875s; pose 0.85s",
+      "Reaper BasicScytheAttack: effect at source 1.333s; pose 1.30s",
+      "Reaper DefensiveAnimation: effect at source 1.167s; pose 1.15s",
+      "Reaper HeavyAttack: effect at source 1.833s; pose 1.80s",
+      "Reaper MajorFinisherAttack: effect at source 1.917s; pose 1.90s",
+      "Reaper DefensiveAnimation: effect at source 1.167s; pose 1.15s",
+      "Group enemy intent reading hold: 1.736s; instant=False",
+      "Group enemy intent reading hold: 1.807s; instant=True"
+    ]
+  },
+  "chronicleRegression": {
+    "passed": 158,
+    "failed": 0
+  },
+  "compilation": {
+    "runtimeErrors": 0,
+    "editorErrors": 0,
+    "existingWarnings": [
+      "Unused controllerShardIndex field",
+      "Obsolete FindFirstObjectByType in Chronicle dev console"
+    ]
+  },
+  "playerSavesUnchanged": true,
+  "saveHashes": {
+    "gilded_fate_profile.json": "e1fde60c052df12987a1dc6b30dc1ebb452ebae344ec5e8854a6b871a6113027",
+    "gilded_fate_run.json": "919bef560d4b912da9fe2a16575610c35a7b63dc4bd8630815aa29958db974eb",
+    "gilded_fate_profile.json.bak": "1748259d245560589142fafc766684a4b32519ee2b501093e8e5fdaf49784a3e",
+    "gilded_fate_run.json.bak": "76db0946575c9f16db93784c6b52878ff2bb90fe9b8b31d57f112bf8af8aa957"
+  },
+  "modifiedFiles": [
+    {
+      "path": "Assets/Editor/CombatActionTimingVerification.cs",
+      "sha256": "7212ec15265603835658aeed217ae510c1f2e9788e0c6c2d8318c689681d4f35"
+    },
+    {
+      "path": "Assets/Editor/CombatActionTimingVerification.cs.meta",
+      "sha256": "6a58b1f795b200dc2d02d070cc370f8e610aa954e9e800d997815eaa7218fa59"
+    },
+    {
+      "path": "Assets/Resources/Chronicle/Audio/DialogueIndex.json",
+      "sha256": "94ee96572ecf65c36bbd8aabbd3e13f2e140accda3d7e14f42d33d06e8dd3134"
+    },
+    {
+      "path": "Assets/Scripts/Chronicle/ChronicleMilestoneScenes.cs",
+      "sha256": "5d1840d42878a62cb6c48fe0650edf7b7b36d43dea31070c0b14f010d8723145"
+    },
+    {
+      "path": "Assets/Scripts/UI/GildedChronicleMilestones.cs",
+      "sha256": "86c26de3b5269861306d60dc35d312985402b488ad0b418258f5c6c264cf8eba"
+    },
+    {
+      "path": "Assets/Scripts/UI/GildedCombatPresentation.cs",
+      "sha256": "1f2fc4d7e3e608d141fbc709e833480154df0ebda2712bc453e6c94ae7e0943b"
+    },
+    {
+      "path": "Assets/Scripts/UI/GildedEnemyIntentPresentation.cs",
+      "sha256": "3125eafeb43b0797a73e2ddad27955c434cb4d08489985ced66508f3dcb1bcd2"
+    },
+    {
+      "path": "Assets/Scripts/UI/GildedHeroActionTiming.cs",
+      "sha256": "bbe1f758f4e5f043fd49ec2cc7dbe726c283895dd6066cb8ef5aec6de36194c2"
+    },
+    {
+      "path": "Assets/Scripts/UI/GildedHeroActionTiming.cs.meta",
+      "sha256": "72776b061ee2c8cd1ee38bc26637b4ef70b9d93188bc4e83293a94021dd768ec"
+    },
+    {
+      "path": "Assets/Scripts/UI/GildedHexerVideoCombat.cs",
+      "sha256": "e8a2f6cd3117b14b874be7c9e01dbce9eabdfa90f3616e87a6e56b040bb17209"
+    },
+    {
+      "path": "Assets/Scripts/UI/GildedReaperVideoCombat.cs",
+      "sha256": "64fedae78a7f30c9b66df2ea876490f1346d26967db648a29a61ea11440e1c55"
+    },
+    {
+      "path": "Assets/Scripts/UI/GildedStoryEndPolish.cs",
+      "sha256": "446d98dcc29b965ae1b027f2e198744d36c8a07689d55cc4bc0b83618a7c554c"
+    },
+    {
+      "path": "Assets/Scripts/UI/GildedVanguardVideoCombat.cs",
+      "sha256": "33aae13609c5885a0852628d8a7b64527872bc8da2fb2e67fa4d2f08c69e574f"
+    },
+    {
+      "path": "Assets/Scripts/UI/HeroActionTiming.cs",
+      "sha256": "6773ad62ebff2b8a99c6759c208c1e4dbfa21d0a564a799ddeecbfd04a1702cf"
+    },
+    {
+      "path": "Assets/Scripts/UI/HeroActionTiming.cs.meta",
+      "sha256": "3f4f8fa4c1de1c70a20bc29964f699bc01735f2ba849ebd82cbf29f1d9d66248"
+    },
+    {
+      "path": "Assets/Scripts/UI/HexerVideoSurface.cs",
+      "sha256": "ba467a85e7eb0096a4880adbf03d582832624adecfb99d251941ed6058efb2b4"
+    },
+    {
+      "path": "Assets/Scripts/UI/ReaperVideoSurface.cs",
+      "sha256": "f8e43ca09e2a85c60cd9078ddcd7f7a86be6c829a84f357473496fd6c7490188"
+    },
+    {
+      "path": "Assets/Scripts/UI/VanguardVideoSurface.cs",
+      "sha256": "940d8967face31e9c6080ebca334daea0d91e30d8e52f18e31b8b9940afd066b"
+    },
+    {
+      "path": "Assets/Tests/EditMode/ChronicleMilestoneTests.cs",
+      "sha256": "46c0b93a09ea96ac012a698958e239dd41d69389a7c9650c5cad55736cbc8f6b"
+    }
+  ]
+}

@@ -26,6 +26,8 @@ namespace GildedFate.UI
         public string CurrentName=>Active?.Clip?.Name??"Preparing";
         public string ActionName=>action.Clip?.Name;
         public double ActionTime=>action.Player.time;
+        public bool ActionReady=>action.FrameReady&&!action.Failed;
+        public float SecondsToPose(float sourceSeconds)=>Mathf.Max(0,(sourceSeconds-(float)action.Player.time)/Mathf.Max(.1f,action.Player.playbackSpeed));
         public bool ActionPlaying=>action.Clip!=null&&!action.Ended&&!action.Failed;
         private Channel Active=>action.FrameReady&&!action.Ended&&!action.Failed?action:idle.FrameReady&&!idle.Failed?idle:null;
         public bool Ready=>Active!=null&&keyMaterial;

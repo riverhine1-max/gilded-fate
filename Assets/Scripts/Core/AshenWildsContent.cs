@@ -14,7 +14,7 @@ namespace GildedFate.Core
         // still serves Acts 2 and 3 until their themes exist. Act 2 rolls the Vault or one of three themes.
         public static string[] ForAct(int act)=>act switch
         {
-            1=>new[]{GildedRuins,AshenWilds,DrownedQuarter},
+            1=>new[]{AshenWilds,DrownedQuarter},
             2=>new[]{Vault,CrimsonFoundry,Hollowwood,ShatteredObservatory},
             _=>new[]{Vault,BlackCathedral,FracturedRealm,GildedThrone}
         };

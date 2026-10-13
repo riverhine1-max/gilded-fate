@@ -4,7 +4,7 @@ namespace GildedFate.UI
 {
     // Storybook + run-end polish. Event: page-turn reveal sweep when an event opens,
     // faint drifting dust over the illustration, gold thread underline on hovered choices.
-    // Run result: victory crown glow burst + falling gold motes; defeat title crack + glass shards.
+    // Run result: victory crown glow burst + falling gold motes; defeat glass shards below the title.
     // Soft texture generated once (HideAndDontSave). Honors reduceMotion / reducedVfx / reduceFlashing.
     public sealed partial class GildedMainMenu
     {
@@ -102,17 +102,8 @@ namespace GildedFate.UI
             {
                 var grow=profile.reduceMotion?1f:Mathf.Clamp01((t-.15f)/.45f);
                 if(grow<=0)return;
-                var crackCol=new Color(.82f,.9f,1f,.8f);var dark=new Color(0,0,0,.55f);
-                for(var s=0;s<5;s++)
-                {
-                    var prev=new Vector2(c.x+(StoryEndHash(s,11)-.5f)*title.width*.2f,title.y+4);var segs=5;
-                    for(var j=1;j<=segs;j++)
-                    {
-                        var f=j/(float)segs;if(f>grow+.001f)break;
-                        var p=new Vector2(prev.x+(StoryEndHash(s*9+j,12)-.5f)*46f+(s-2)*12f,title.y+4+f*(title.height-6));
-                        StoryEndLine(prev+new Vector2(1,1),p+new Vector2(1,1),2f,dark);StoryEndLine(prev,p,1.4f,crackCol);prev=p;
-                    }
-                }
+                // Keep the defeat heading clean; the old random crack paths crossed
+                // its letters and looked like a persistent pale scribble.
                 if(!profile.reduceFlashing&&!profile.reduceMotion&&t>.15f&&t<.4f)StoryEndDot(c,120,new Color(.85f,.92f,1f,.3f*(1-(t-.15f)/.25f)));
                 if(profile.reduceMotion)return;
                 var shards=profile.reducedVfx?3:6;var saved=GUI.matrix;

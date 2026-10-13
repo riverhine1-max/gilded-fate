@@ -10,8 +10,10 @@ namespace GildedFate.Chronicle
     {
         public float textWidth = 470f, textHeight = 590f, fontSize = 22f, lineHeight = 31f, paragraphGap = 14f;
         public Func<string, float, float> measure = (text, size) => text.Length * size * .5f;
+        public Func<string, float, float, float> measureHeight;
+        public bool uniformTextSize, autoPageTurns;
 
-        public float ScaleFor(ChronicleTextStyle style) => style == ChronicleTextStyle.Heading ? 1.4f : style == ChronicleTextStyle.Ending ? 1.6f : 1f;
+        public float ScaleFor(ChronicleTextStyle style) => uniformTextSize ? 1f : style == ChronicleTextStyle.Heading ? 1.4f : style == ChronicleTextStyle.Ending ? 1.6f : 1f;
         public float LineHeightFor(ChronicleTextStyle style) => lineHeight * ScaleFor(style);
     }
 
@@ -69,7 +71,8 @@ namespace GildedFate.Chronicle
         }
 
         /// <summary>Height a passage takes, including the gap after it.</summary>
-        public static float HeightOf(string text, ChroniclePageMetrics m, ChronicleTextStyle style) => LineCount(text, m, style) * m.LineHeightFor(style) + m.paragraphGap;
+        public static float HeightOf(string text, ChroniclePageMetrics m, ChronicleTextStyle style) =>
+            (m.measureHeight != null ? m.measureHeight(text, m.fontSize * m.ScaleFor(style), m.textWidth) : LineCount(text, m, style) * m.LineHeightFor(style)) + m.paragraphGap;
     }
 
     /// <summary>Tracks how much of each page's text area is used so passages flow onto the next page or are flagged as overflowing.</summary>
@@ -95,10 +98,10 @@ namespace GildedFate.Chronicle
         {
             block.text = ChronicleMarkup.Parse(raw, block.pauses);
             block.lineStarts = ChronicleLayout.Wrap(block.text, metrics.textWidth, metrics.fontSize * metrics.ScaleFor(block.style), metrics.measure);
-            block.cursor = 0; block.carry = 0f; block.hold = 0f; block.complete = block.text.Length == 0;
+            block.strokeIndex = -1; block.strokeProgress = 0f; block.cursor = 0; block.carry = 0f; block.hold = 0f; block.complete = block.text.Length == 0;
         }
 
-        public static void Complete(ChronicleTextBlock block) { block.cursor = block.text.Length; block.complete = true; block.carry = 0f; block.hold = 0f; }
+        public static void Complete(ChronicleTextBlock block) { block.strokeIndex = -1; block.strokeProgress = 0f; block.cursor = block.text.Length; block.complete = true; block.carry = 0f; block.hold = 0f; }
 
         public static void Step(ChronicleTextBlock block, float dt, ChronicleNarratorStyle narrator, ChronicleSettings settings)
         {
@@ -123,6 +126,8 @@ namespace GildedFate.Chronicle
                 block.hold = PauseAfter(block, block.cursor, narrator);
                 if (block.cursor >= block.text.Length) { block.complete = true; block.carry = 0f; block.hold = 0f; }
             }
+            block.strokeIndex = !block.complete && block.hold <= 0f ? block.cursor : -1;
+            block.strokeProgress = block.strokeIndex >= 0 ? Math.Min(1f, block.carry * cps) : 0f;
         }
 
         /// <summary>Seconds the pen rests after writing the character just before <paramref name="index"/>.</summary>

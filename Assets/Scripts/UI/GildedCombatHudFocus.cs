@@ -14,7 +14,26 @@ namespace GildedFate.UI
             public int group,command,index;
         }
         private readonly List<CombatHudTarget> combatHudTargets=new(96);
-        private bool combatHudInspectActive;
+        private bool combatHudInspectActive,combatEnemyOverview;
+        private void RegisterEnemyOverview(int index,Rect portrait,string title,string detail)
+        {
+            if(!combat.IsLivingTarget(index))return;
+            var actions=string.Join("\n\n",EnemyIntents(index).Select(a=>a.title+" · "+a.ValueText+"\n"+a.detail));
+            RegisterCombatHudTarget("enemy:"+index+":body",2+index,portrait,title,detail+"\n\nNEXT ACTION\n"+actions,5,index);
+        }
+        private bool OpenCombatEnemyFocus()
+        {
+            if(!OpenCombatHudFocus(2))return false;
+            combatEnemyOverview=true;
+            var order=combat.BattleOrder();
+            var first=order.FirstOrDefault(i=>combat.IsLivingTarget(i));
+            if(!combat.IsLivingTarget(combatTargetIndex))combatTargetIndex=first;
+            combatHudFocusKey="enemy:"+combatTargetIndex+":body";return true;
+        }
+        private void MoveCombatEnemyFocus(int delta)
+        {
+            FocusLivingTarget(delta);combatHudFocusKey="enemy:"+combatTargetIndex+":body";
+        }
         private string combatHudFocusKey;
         private void RegisterCombatHudTarget(string key,int group,Rect rect,string title,string detail,int command=0,int index=0)
         {
@@ -34,7 +53,7 @@ namespace GildedFate.UI
         private bool OpenCombatHudFocus(int group=1)
         {
             if(combatBusy||choicePresented||dragView!=null||controllerTargeting||combatPauseOpen||ShardDiscoveryOpen||inspectedCard!=null||combatHudTargets.Count==0)return false;
-            combatHudInspectActive=true;controllerNavigation=true;selectedView=hoverView=null;
+            combatEnemyOverview=false;combatHudInspectActive=true;controllerNavigation=true;selectedView=hoverView=null;
             var first=combatHudTargets.FindIndex(t=>t.group==group);
             combatHudFocusKey=combatHudTargets[Mathf.Max(0,first)].key;return true;
         }
@@ -55,7 +74,8 @@ namespace GildedFate.UI
         {
             var i=CombatHudFocusIndex;if(i<0)return;var target=combatHudTargets[i];if(target.command==0)return;
             combatHudInspectActive=false;
-            if(target.command==1)OpenRunDeck();
+            if(target.command==5){combatHudInspectActive=true;combatEnemyOverview=true;combatTargetIndex=target.index;}
+            else if(target.command==1)OpenRunDeck();
             else if(target.command==2)OpenRouteInspection();
             else if(target.command==3)ToggleRunSettings();
             else if(target.command==4&&target.index>=0&&target.index<run.shards.Count)
@@ -76,12 +96,20 @@ namespace GildedFate.UI
             }
             if(input.page<0||input.hud)
             {
-                if(combatHudInspectActive)combatHudInspectActive=false;else OpenCombatHudFocus();
+                if(combatHudInspectActive)combatHudInspectActive=false;else OpenCombatEnemyFocus();
                 return true;
             }
             if(input.page>0&&!combatHudInspectActive)return OpenCombatHudFocus(8);
-            if(!combatHudInspectActive)return false;
+            if(!combatHudInspectActive)return input.y<0&&OpenCombatEnemyFocus();
             if(input.back){combatHudInspectActive=false;return true;}
+            if(combatEnemyOverview)
+            {
+                if(!combat.IsLivingTarget(combatTargetIndex))MoveCombatEnemyFocus(1);
+                if(input.x!=0)MoveCombatEnemyFocus(input.x);
+                if(input.y>0){combatHudInspectActive=false;ReconcileCombatHandFocus();}
+                else if(input.y<0||input.accept){combatEnemyOverview=false;MoveCombatHudFocus(1,false);}
+                return true;
+            }
             if(input.x!=0)MoveCombatHudFocus(input.x,false);
             if(input.y!=0)MoveCombatHudFocus(input.y,true);
             if(input.accept)ConfirmCombatHudFocus();
@@ -90,6 +118,7 @@ namespace GildedFate.UI
         private void DrawCombatHudFocus(float w,float h)
         {
             if(!combatHudInspectActive||screen!=ScreenMode.Combat||routeInspectionOpen)return;
+            if(combatEnemyOverview&&!combat.IsLivingTarget(combatTargetIndex))MoveCombatEnemyFocus(1);
             var i=CombatHudFocusIndex;if(i<0){combatHudInspectActive=false;return;}
             var target=combatHudTargets[i];var r=target.rect;const float reach=7;
             UpdateControllerShatter(target.command==4?target.index:-1); // hold Y on a focused shard (GildedShardReliquary.cs)
@@ -103,7 +132,7 @@ namespace GildedFate.UI
             SetCombatEffectTooltip(target.title,detail,r.center);
             DrawCombatEffectTooltip(w,h);
             var shatterHint=target.command==4?(menuUsesGamepad?"    HOLD Y · SHATTER":"    HOLD H · SHATTER"):"";
-            GUI.Label(new Rect(22,h-27,720,20),(menuUsesGamepad?"D-PAD / STICK · INSPECT    UP/DOWN · GROUP    A · CONFIRM    B · HAND":"ARROWS · INSPECT    UP/DOWN · GROUP    ENTER · CONFIRM    BACKSPACE · HAND")+shatterHint,
+            GUI.Label(new Rect(22,h-27,720,20),(combatEnemyOverview?(menuUsesGamepad?"LEFT/RIGHT · ENEMY    A / UP · DETAILS    B / DOWN · HAND":"LEFT/RIGHT · ENEMY    ENTER / UP · DETAILS    BACKSPACE / DOWN · HAND"):(menuUsesGamepad?"D-PAD / STICK · INSPECT    UP/DOWN · GROUP    A · CONFIRM    B · HAND":"ARROWS · INSPECT    UP/DOWN · GROUP    ENTER · CONFIRM    BACKSPACE · HAND"))+shatterHint,
                 new GUIStyle(footerStyle){fontSize=12,alignment=TextAnchor.MiddleLeft,normal={textColor=Gold}});
         }
     }

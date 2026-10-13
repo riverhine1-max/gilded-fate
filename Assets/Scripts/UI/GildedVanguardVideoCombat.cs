@@ -81,7 +81,7 @@ namespace GildedFate.UI
                 if(fact.playerSide||fact.hitId<=0||fact.card?.instanceId!=played.instanceId||fact.kind is not (CombatEventKind.Damage or CombatEventKind.Block)||!seen.Add(fact.hitId))continue;
                 if(hit++==0)continue; // The card-play animation owns the opening hit.
                 var clip=vanguardAttackVariant%2==0?"BasicAttack":"AlternateAttack";vanguardAttackVariant++;
-                var delay=Mathf.Max(0,now+offsets[i]-Time.unscaledTime-AnimationSeconds(.22f));
+                var delay=Mathf.Max(0,now+offsets[i]-Time.unscaledTime-HeroVideoPoseDelay("Vanguard",clip,AnimationSeconds(.62f)));
                 QueueVanguardVideo(clip,AnimationSeconds(.62f),50+hit,delay,true);
             }
         }

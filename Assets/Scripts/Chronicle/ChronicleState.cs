@@ -16,7 +16,10 @@ namespace GildedFate.Chronicle
         public bool struck, isCorrectionText, complete, overflow, erased;
         public float strikeProgress, eraseProgress;   // erased passages fade away instead of being struck in red
         public int cursor;                 // characters written so far
+        public int strokeIndex = -1;
+        public float strokeProgress;
         public float carry, hold;          // handwriting timing
+        [NonSerialized] public ChronicleDialoguePlayback dialogue;
         public int[] lineStarts = new int[0];
         public List<ChroniclePause> pauses = new List<ChroniclePause>();
         public int VisibleLength => complete ? text.Length : cursor;

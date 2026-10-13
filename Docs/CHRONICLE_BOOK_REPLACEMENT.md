@@ -50,3 +50,7 @@ duration for each action, so the model's clip lengths and the story stay in step
 - The overlay is a flat rectangle over a straight-down view. If the finished book needs an angled reading camera or curved reading pages,
   page content would have to be rendered onto the page surface instead; that is a larger step and is not built.
 - Only one flipping sheet is shown at a time.
+
+## Finished asset supplied, October 2026
+
+The authored Blender project is `SourceAssets/Chronicle/Gilded_Fate_Chronicle.blend`. The combined runtime FBX and texture maps are under `Assets/Resources/Chronicle`. `ChronicleFinishedBookAssets` automatically creates the prefab, materials, Animator controller and rig config when Unity imports the new files, and checks them before a build. To regenerate, use **Gilded Fate > Chronicle > Rebuild Finished Book Assets**. Nine imported states use their `CHR_` action names. Page anchors and camera framing use meter-scale dimensions. The reusable turning sheet is hidden before resetting; covers remain fully open throughout a page turn. The actual Unity import/render requires verification in Unity. Blender/source/export verification reports are included. Narration integration and its pending recording status are documented in `Docs/CHRONICLE_VOICE_SYNC.md`.

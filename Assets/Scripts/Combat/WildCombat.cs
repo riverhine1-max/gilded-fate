@@ -9,7 +9,7 @@ namespace GildedFate.Combat
     // Stored on each CombatOpponent so it saves with the combat checkpoint.
     [Serializable] public sealed class WildMind
     {
-        public int uid,ownerUid=-1,step,step2,phase=1,diedTurn=-1,summonedTurn=-1,plannedValue,counter,held;
+        public int uid,ownerUid=-1,step,step2,phase=1,diedTurn=-1,summonedTurn=-1,pendingPhaseHp,plannedValue,counter,held;
         public string state="",planned="",lastMove="",prior="",lastSeed="",queue="",pair="",lastPair="";
         // flag: per-enemy one-shot (Forgemaster Reassemble used, Iron Saint resummon used, must-vent);
         // hold: the planned move is an override that keeps the pattern position.
@@ -21,7 +21,7 @@ namespace GildedFate.Combat
     // Every action resolves inside the normal enemy turn: no interrupts, no hidden
     // retaliation. Intents are chosen when the player's turn begins and only change
     // when a rule explicitly says so (a Mourning Elk's packmate dies, a Minion-based
-    // move loses its last Minion, an elite or boss crosses an HP threshold).
+    // move loses its last Minion, an elite crosses an HP threshold; bosses finish their announced action first).
     public sealed partial class CombatState
     {
         public const int MaxBattlefieldBodies=4;
@@ -470,13 +470,33 @@ namespace GildedFate.Combat
                     if(mk.planned is "rc_command" or "nourish" or "pm_command" or "alpha_command" or "cinder_howl" or "feed_pack" or "protective_snarl"||opponents[k].id==AshenWildsContent.Packmother||DrownedReplanOnDeath(k))ReplanAt(k);
                 }
         }
-        private void ReplanAt(int index)=>InEnemyContext(index,PlanWildIntent);
+        private void ReplanAt(int index)
+        {
+            // A boss must finish its visible plan, including when a minion dies.
+            if(WildDef(EnemyIdAt(index))?.boss==true&&!string.IsNullOrEmpty(MindAt(index)?.planned))return;
+            InEnemyContext(index,PlanWildIntent);
+        }
+        private int ThresholdHp(int index)
+        {
+            var f=EnemyAt(index);var m=MindAt(index);
+            return WildDef(EnemyIdAt(index))?.boss==true&&m.pendingPhaseHp>0?Math.Min(f.hp,m.pendingPhaseHp):f.hp;
+        }
         private void CheckWildThresholds(int index)
+        {
+            var m=MindAt(index);
+            if(WildDef(EnemyIdAt(index))?.boss==true&&!string.IsNullOrEmpty(m.planned))
+            {
+                // Save the lowest crossed health even if the announced move heals the boss.
+                var hp=EnemyAt(index).hp;m.pendingPhaseHp=m.pendingPhaseHp>0?Math.Min(m.pendingPhaseHp,hp):hp;return;
+            }
+            ApplyWildThresholds(index);m.pendingPhaseHp=0;
+        }
+        private void ApplyWildThresholds(int index)
         {
             var o=opponents[index];var m=o.mind;var f=o.fighter;
             if(o.id==AshenWildsContent.Hart)
             {
-                var next=f.hp*3<=f.maxHp?"BARE":f.hp*3<=f.maxHp*2?"SPLINTERED":"CROWNED";
+                var next=ThresholdHp(index)*3<=f.maxHp?"BARE":ThresholdHp(index)*3<=f.maxHp*2?"SPLINTERED":"CROWNED";
                 if(next!=m.state&&(m.state=="CROWNED"||m.state=="SPLINTERED"&&next=="BARE"))
                 {
                     // Transformation only: no heal, no Strength.
@@ -486,7 +506,7 @@ namespace GildedFate.Combat
             }
             else if(o.id==AshenWildsContent.Alpha)
             {
-                var target=f.hp*3<=f.maxHp?3:f.hp*3<=f.maxHp*2?2:1;
+                var target=ThresholdHp(index)*3<=f.maxHp?3:ThresholdHp(index)*3<=f.maxHp*2?2:1;
                 while(m.phase<target)
                 {
                     m.phase++;m.step=0;

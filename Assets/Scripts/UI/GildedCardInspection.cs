@@ -18,10 +18,10 @@ namespace GildedFate.UI
             inspectionUpgrade=GameContent.InspectionVariant(card,true);
         }
         private void SelectInspectionVersion(bool upgraded){inspectionShowUpgrade=upgraded&&GameContent.HasUpgradePreview(inspectionSource);inspectionComparison=inspectionShowUpgrade;}
-        private void InspectUpgrade(CardDef card){inspectedCard=card;PrepareCardInspection(card);SelectInspectionVersion(true);}
+        private void InspectUpgrade(CardDef card){if(screen==ScreenMode.Combat)return;inspectedCard=card;PrepareCardInspection(card);SelectInspectionVersion(true);}
         private void RegisterInspectionInput(Rect area,CardDef card)
         {
-            if(inspectedCard!=null||acquisitionActive||ShardDiscoveryOpen||card==null)return;
+            if(screen==ScreenMode.Combat||inspectedCard!=null||acquisitionActive||ShardDiscoveryOpen||card==null)return;
             if(Event.current.type==EventType.MouseDown&&Event.current.button==1&&area.Contains(PointerPosition)){InspectUpgrade(card);Event.current.Use();}
         }
         private void DrawInspectableCardModal(float w,float h,CardDef card)
@@ -36,7 +36,6 @@ namespace GildedFate.UI
             {
                 var removed=UpgradeComparison.Removed(inspectionBase.text,inspectionUpgrade.text);
                 var details="GREEN · UPGRADE CHANGES";
-                if(inspectionBase.cost!=inspectionUpgrade.cost)details+="\n\nEnergy: "+inspectionBase.cost+" → <color=#83EEA1>"+inspectionUpgrade.cost+"</color>";
                 if(removed.Length>0)details+="\n\nRemoved:\n<color=#83EEA1>"+removed+"</color>";
                 var side=new Rect(Mathf.Max(20,r.x-260),r.y+80,235,Mathf.Max(220,r.yMax-r.y-110));
                 // Long change lists shrink to fit the panel instead of running off its bottom edge.

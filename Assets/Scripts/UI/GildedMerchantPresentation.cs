@@ -85,7 +85,7 @@ namespace GildedFate.UI
             for(var i=0;i<2;i++)
             {
                 var relic=GameContent.Relics.First(r=>r.id==run.merchantRelicIds[i]);var key="relic:"+relic.id;var r=ShopRelicRect(i);var sold=run.merchantSold.Contains(key)||run.relics.Contains(relic.id);var hot=!MerchantBusy&&ScreenChoiceHot(r,7+i);ShopThread(r,hot);
-                if(!sold){var shown=hot?new Rect(r.x-5,r.y-9,r.width+10,r.height+10):r;var old=GUI.color;if(run.gold<120)GUI.color=new Color(.73f,.73f,.73f,1);DrawRelicArt(shown,Array.IndexOf(GameContent.Relics,relic));GUI.color=old;if(hot)SetRunHudTooltip(WithPriceBand(r),relic.name,relic.text);if(!MerchantBusy&&GUI.Button(r,"",GUIStyle.none))BuyShopRelic(i);}ShopPrice(r,120,key,sold);
+                if(!sold){var shown=hot?new Rect(r.x-5,r.y-9,r.width+10,r.height+10):r;var old=GUI.color;if(run.gold<120)GUI.color=new Color(.73f,.73f,.73f,1);DrawRelicArt(shown,Array.IndexOf(GameContent.Relics,relic));GUI.color=old;if(hot)SetRunHudTooltip(WithPriceBand(r),relic.name,relic.Description);if(!MerchantBusy&&GUI.Button(r,"",GUIStyle.none))BuyShopRelic(i);}ShopPrice(r,120,key,sold);
             }
             if(!string.IsNullOrEmpty(run.merchantShardId))
             {

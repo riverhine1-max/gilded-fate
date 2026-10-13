@@ -17,7 +17,43 @@ namespace GildedFate.UI
         private FateShardDef acquisitionShard;
         private FateweaveDef acquisitionFateweave;
         private float acquisitionStarted,acquisitionDuration;
-        private bool acquisitionActive,acquisitionPerfected;
+        private bool acquisitionActive,acquisitionPerfected,acquisitionAwaitingClaim;
+        private Action relicOfferComplete;
+        private const float ModificationPreviewSeconds=1.75f,AcquisitionFlightSeconds=.55f;
+        private void BeginOfferedRelicAcquisition(RelicDef relic,Action complete)
+        {
+            if(relic==null||acquisitionActive)return;
+            acquisitionKind=AcquisitionKind.Relic;acquisitionRelic=relic;acquisitionCard=null;
+            acquisitionActive=acquisitionAwaitingClaim=true;acquisitionStarted=Time.unscaledTime;
+            acquisitionDuration=1.05f;relicOfferComplete=complete;
+        }
+        private void ClaimPresentedRelic()
+        {
+            if(!acquisitionAwaitingClaim||acquisitionRelic==null||!run.ClaimOfferedRelic(acquisitionRelic.id))return;
+            acquisitionAwaitingClaim=false;profile.relicsCollected++;
+            Saving.ProfileService.Save(profile);Saving.SaveService.Save(run);
+            acquisitionStarted=Time.unscaledTime;Sfx(SoundCue.RewardRelic);
+            var complete=relicOfferComplete;relicOfferComplete=null;
+            acquisitionSequence=StartCoroutine(FinishAcquisition(complete));
+        }
+        private void ResumePendingRelicReward()
+        {
+            if(acquisitionActive||run.pendingRelicRewards?.Count>0!=true||!ShowsPersistentRunHud||screen==ScreenMode.Combat)return;
+            var relic=GameContent.Relics.FirstOrDefault(r=>r.id==run.pendingRelicRewards[0]);
+            BeginOfferedRelicAcquisition(relic,()=>{});
+        }
+        private Dictionary<string,string> SnapshotCardChanges()=>run.cards.ToDictionary(c=>c.persistentId,c=>JsonUtility.ToJson(c));
+        private void PresentChangedRunCards(Dictionary<string,string> before,Action complete)
+        {
+            var changed=run.cards.Where(c=>before!=null&&before.TryGetValue(c.persistentId,out var prior)&&prior!=JsonUtility.ToJson(c))
+                .Select(c=>c.BuildDefinition()).Where(c=>c!=null&&(c.upgraded||c.IsModified||c.perfected)).ToList();
+            PresentModificationSequence(changed,complete);
+        }
+        private void PresentModificationSequence(List<CardDef> cards,Action complete)
+        {
+            if(cards.Count==0){complete?.Invoke();return;}
+            var next=cards[0];cards.RemoveAt(0);BeginModificationAcquisition(next,()=>PresentModificationSequence(cards,complete));
+        }
         private Coroutine acquisitionSequence;
 
         private void BeginCardAcquisition(CardDef card,Action complete)
@@ -34,7 +70,7 @@ namespace GildedFate.UI
         }
         private void BeginModificationAcquisition(CardDef card,Action complete,bool perfected=false)
         {
-            if(card==null||(!card.IsModified&&!card.perfected)||acquisitionActive)return;
+            if(card==null||(!card.IsModified&&!card.perfected&&!card.upgraded)||acquisitionActive)return;
             acquisitionPerfected=perfected||!card.IsModified&&card.perfected;BeginAcquisition(AcquisitionKind.Modification,card,null,complete);
         }
         private void BeginFateweavePull(FateweaveDef fateweave,Action complete)
@@ -49,7 +85,7 @@ namespace GildedFate.UI
         private void PresentNewRunAcquisitions(HashSet<string> previousCards,HashSet<string> previousRelics,HashSet<string> previousShards,Action complete=null)
         {
             var cards=run.cards.Where(card=>previousCards==null||!previousCards.Contains(card.persistentId)).Select(card=>card.BuildDefinition()).Where(card=>card!=null).ToList();
-            var relics=run.relics.Where(id=>previousRelics==null||!previousRelics.Contains(id)).Select(id=>GameContent.Relics.FirstOrDefault(relic=>relic.id==id)).Where(relic=>relic!=null).ToList();
+            var relics=run.relics.Concat(run.pendingRelicRewards??new()).Distinct().Where(id=>previousRelics==null||!previousRelics.Contains(id)).Select(id=>GameContent.Relics.FirstOrDefault(relic=>relic.id==id)).Where(relic=>relic!=null).ToList();
             var shards=previousShards==null?new List<FateShardDef>():run.shards.Where(state=>!previousShards.Contains(state.id)).Select(state=>WorldContent.FateShards.FirstOrDefault(shard=>shard.id==state.id)).Where(shard=>shard!=null).ToList();
             PresentAcquisitionSequence(cards,shards,relics,complete);
         }
@@ -57,13 +93,14 @@ namespace GildedFate.UI
         {
             if(cards.Count>0){var next=cards[0];cards.RemoveAt(0);BeginCardAcquisition(next,()=>PresentAcquisitionSequence(cards,shards,relics,complete));return;}
             if(shards.Count>0){var next=shards[0];shards.RemoveAt(0);BeginShardAcquisition(next,()=>PresentAcquisitionSequence(cards,shards,relics,complete));return;}
-            if(relics.Count>0){var next=relics[0];relics.RemoveAt(0);BeginRelicAcquisition(next,()=>PresentAcquisitionSequence(cards,shards,relics,complete));return;}
+            if(relics.Count>0){var next=relics[0];relics.RemoveAt(0);if(run.pendingRelicRewards?.Contains(next.id)==true)BeginOfferedRelicAcquisition(next,()=>PresentAcquisitionSequence(cards,shards,relics,complete));
+                else BeginRelicAcquisition(next,()=>PresentAcquisitionSequence(cards,shards,relics,complete));return;}
             complete?.Invoke();
         }
         private void BeginAcquisition(AcquisitionKind kind,CardDef card,RelicDef relic,Action complete)
         {
-            acquisitionKind=kind;acquisitionCard=card;acquisitionRelic=relic;acquisitionActive=true;acquisitionStarted=Time.unscaledTime;
-            acquisitionDuration=profile.reduceMotion?.42f:profile.fastMode?.68f:kind is AcquisitionKind.Modification or AcquisitionKind.Fateweave?1.32f:kind==AcquisitionKind.Shard?1.18f:1.05f;
+            acquisitionAwaitingClaim=false;acquisitionKind=kind;acquisitionCard=card;acquisitionRelic=relic;acquisitionActive=true;acquisitionStarted=Time.unscaledTime;
+            acquisitionDuration=kind==AcquisitionKind.Modification?ModificationPreviewSeconds+AcquisitionFlightSeconds:profile.reduceMotion?.42f:profile.fastMode?.68f:kind is AcquisitionKind.Modification or AcquisitionKind.Fateweave?1.32f:kind==AcquisitionKind.Shard?1.18f:1.05f;
             Sfx(kind switch{AcquisitionKind.Relic=>SoundCue.RewardRelic,AcquisitionKind.Shard=>SoundCue.RewardShard,AcquisitionKind.Modification=>SoundCue.Binding,AcquisitionKind.Fateweave=>SoundCue.Fateweave,_=>card?.rarity==Rarity.Curse?SoundCue.Debuff:SoundCue.RewardCard});
             if(acquisitionSequence!=null)StopCoroutine(acquisitionSequence);acquisitionSequence=StartCoroutine(FinishAcquisition(complete));
         }
@@ -75,15 +112,31 @@ namespace GildedFate.UI
 
         private string CombatRewardTitle => currentNode?.kind==NodeKind.Boss?"THE VAULT YIELDS":currentNode?.kind==NodeKind.Elite?"A GUARDIAN FALLS":"VICTORY";
 
+        private void DrawAcquisitionModal(float w,float h)
+        {
+            DrawFullBackdrop(rewardBackground,w,h,.28f);
+            var enabled=GUI.enabled;
+            try { GUI.enabled=true;DrawAcquisitionPresentation(w,h); }
+            finally { GUI.enabled=enabled; }
+            // The waiting TAKE button has now handled its mouse event. Animated
+            // departures and unused clicks/keys remain exclusive to this modal.
+            if(Event.current.isMouse||Event.current.isKey||Event.current.type==EventType.ScrollWheel)Event.current.Use();
+        }
+
         private void DrawAcquisitionPresentation(float w,float h)
         {
-            if(!acquisitionActive)return;var t=Mathf.Clamp01((Time.unscaledTime-acquisitionStarted)/Mathf.Max(.01f,acquisitionDuration));var reveal=Mathf.SmoothStep(0,1,Mathf.Clamp01(t/.25f));var depart=Mathf.SmoothStep(0,1,Mathf.Clamp01((t-.72f)/.28f));
+            if(!acquisitionActive)return;
+            var elapsed=Time.unscaledTime-acquisitionStarted;
+            var t=acquisitionAwaitingClaim?.45f:Mathf.Clamp01(elapsed/Mathf.Max(.01f,acquisitionDuration));
+            var reveal=Mathf.SmoothStep(0,1,Mathf.Clamp01(t/.25f));
+            var depart=acquisitionKind==AcquisitionKind.Modification?Mathf.SmoothStep(0,1,Mathf.Clamp01((elapsed-ModificationPreviewSeconds)/AcquisitionFlightSeconds)):Mathf.SmoothStep(0,1,Mathf.Clamp01((t-.72f)/.28f));
             Fill(new Rect(0,0,w,h),new Color(0,0,0,.66f*reveal*(1-depart*.35f)));var center=new Vector2(w*.5f,h*.48f);var target=AcquisitionTarget(w);var position=Vector2.Lerp(center,target,depart);var scale=Mathf.Lerp(.72f,.13f,depart)*Mathf.Lerp(.78f,1f,reveal);
             if((acquisitionKind==AcquisitionKind.Card||acquisitionKind==AcquisitionKind.Modification)&&acquisitionCard!=null)
             {
-                var modified=acquisitionKind==AcquisitionKind.Modification;var matrix=GUI.matrix;var cardScale=modified?scale*1.04f:scale;GUI.matrix=matrix*Matrix4x4.TRS(new Vector3(position.x,position.y,0),Quaternion.identity,new Vector3(cardScale,cardScale,1));DrawCard(new Rect(-150,-205,300,410),acquisitionCard);GUI.matrix=matrix;
+                var modified=acquisitionKind==AcquisitionKind.Modification;var matrix=GUI.matrix;var cardScale=modified?Mathf.Lerp(.94f,.13f,depart)*Mathf.Lerp(.78f,1f,reveal):scale;GUI.matrix=matrix*Matrix4x4.TRS(new Vector3(position.x,position.y,0),Quaternion.identity,new Vector3(cardScale,cardScale,1));DrawCard(new Rect(-150,-205,300,410),acquisitionCard);GUI.matrix=matrix;
                 if(modified)
                 {
+                    var upgraded=acquisitionCard.upgraded&&!acquisitionCard.IsModified&&!acquisitionCard.perfected;
                     var fate=!acquisitionPerfected&&acquisitionCard.specialModificationKind==SpecialModificationKind.Fateweave;
                     var attachment=CardAttachments(acquisitionCard).FirstOrDefault(a=>acquisitionPerfected?a.title.StartsWith("PERFECTED"):a.binding);
                     var accent=acquisitionPerfected?new Color(1f,.84f,.40f):fate?new Color(1f,.63f,.24f):new Color(.32f,.87f,1f);
@@ -93,9 +146,9 @@ namespace GildedFate.UI
                     if(!profile.reduceMotion&&!profile.reducedVfx)for(var i=0;i<12;i++){var a=i*Mathf.PI*2/12+shimmer;var radius=(42+65*(1-reveal))*(1-depart);var p=iconCenter+new Vector2(Mathf.Cos(a)*radius,Mathf.Sin(a)*radius);Fill(new Rect(p.x-2,p.y-2,4,4),new Color(accent.r,accent.g,accent.b,(1-depart)*.65f));}
                     if(depart<.4f)
                     {
-                        GUI.Label(new Rect(w*.20f,h*.10f,w*.60f,46),acquisitionPerfected?"PERFECTED":fate?"FATEWOVEN":"BINDING ENGRAVED",new GUIStyle(titleStyle){fontSize=31,normal={textColor=accent}});
-                        GUI.Label(new Rect(w*.26f,h*.74f,w*.48f,32),attachment?.title??"CARD MODIFIED",new GUIStyle(titleStyle){fontSize=22,normal={textColor=Color.Lerp(accent,Color.white,.25f)}});
-                        GUI.Label(new Rect(w*.25f,h*.79f,w*.50f,h*.18f),attachment?.detail??"",new GUIStyle(footerStyle){fontSize=15,wordWrap=true,alignment=TextAnchor.UpperCenter,normal={textColor=new Color(.94f,.92f,.86f)}});
+                        GUI.Label(new Rect(w*.20f,h*.10f,w*.60f,46),upgraded?"CARD UPGRADED":acquisitionPerfected?"PERFECTED":fate?"FATEWOVEN":"BINDING ENGRAVED",new GUIStyle(titleStyle){fontSize=31,normal={textColor=accent}});
+                        GUI.Label(new Rect(w*.26f,h*.74f,w*.48f,32),attachment?.title??(upgraded?acquisitionCard.name:"CARD MODIFIED"),new GUIStyle(titleStyle){fontSize=22,normal={textColor=Color.Lerp(accent,Color.white,.25f)}});
+                        GUI.Label(new Rect(w*.25f,h*.79f,w*.50f,h*.18f),attachment?.detail??(upgraded?"The upgraded card returns to your deck.":""),new GUIStyle(footerStyle){fontSize=15,wordWrap=true,alignment=TextAnchor.UpperCenter,normal={textColor=new Color(.94f,.92f,.86f)}});
                     }
                 }
                 else if(depart<.4f){GUI.Label(new Rect(w*.24f,h*.13f,w*.52f,44),acquisitionCard.rarity==Rarity.Curse?"CURSE ADDED":"CARD ADDED",new GUIStyle(titleStyle){fontSize=31,normal={textColor=acquisitionCard.rarity==Rarity.Curse?new Color(1f,.35f,.48f):Gold}});GUI.Label(new Rect(w*.28f,h*.79f,w*.44f,38),"The card has entered your deck.",new GUIStyle(subtitleStyle){fontSize=13});}
@@ -103,7 +156,15 @@ namespace GildedFate.UI
             else if(acquisitionKind==AcquisitionKind.Relic&&acquisitionRelic!=null)
             {
                 var index=System.Array.FindIndex(GameContent.Relics,r=>r.id==acquisitionRelic.id);var size=220*scale/.72f;var art=new Rect(position.x-size*.5f,position.y-size*.5f,size,size);if(!profile.reduceMotion)art.y+=Mathf.Sin(shimmer*2.2f)*5*(1-depart);DrawRelicArt(art,index);
-                if(depart<.4f){GUI.Label(new Rect(w*.22f,h*.14f,w*.56f,46),"RELIC ACQUIRED",new GUIStyle(titleStyle){fontSize=31,normal={textColor=Gold}});GUI.Label(new Rect(w*.25f,h*.68f,w*.5f,42),acquisitionRelic.name,new GUIStyle(titleStyle){fontSize=25,normal={textColor=new Color(1f,.87f,.55f)}});GUI.Label(new Rect(w*.29f,h*.74f,w*.42f,75),acquisitionRelic.text,new GUIStyle(footerStyle){fontSize=16,wordWrap=true,alignment=TextAnchor.UpperCenter,normal={textColor=new Color(.94f,.92f,.86f)}});}
+                if(depart<.4f){GUI.Label(new Rect(w*.22f,h*.14f,w*.56f,46),acquisitionAwaitingClaim?"RELIC DISCOVERED":"RELIC ACQUIRED",new GUIStyle(titleStyle){fontSize=31,normal={textColor=Gold}});GUI.Label(new Rect(w*.25f,h*.68f,w*.5f,42),acquisitionRelic.name,new GUIStyle(titleStyle){fontSize=25,normal={textColor=new Color(1f,.87f,.55f)}});GUI.Label(new Rect(w*.29f,h*.74f,w*.42f,75),acquisitionRelic.Description,new GUIStyle(footerStyle){fontSize=16,wordWrap=true,alignment=TextAnchor.UpperCenter,normal={textColor=new Color(.94f,.92f,.86f)}});}
+                if(acquisitionAwaitingClaim)
+                {
+                    var enabled=GUI.enabled;GUI.enabled=true;
+                    if(GUI.Button(art,"",GUIStyle.none))ClaimPresentedRelic();
+                    var take=new Rect(w*.5f-150,h*.87f,300,46);DrawButtonFrame(take,controllerNavigation||take.Contains(PointerPosition),false);
+                    if(GUI.Button(take,menuUsesGamepad?"A · TAKE RELIC":"TAKE RELIC",buttonStyle))ClaimPresentedRelic();
+                    GUI.enabled=enabled;
+                }
             }
             else if(acquisitionKind==AcquisitionKind.Shard&&acquisitionShard!=null)
             {

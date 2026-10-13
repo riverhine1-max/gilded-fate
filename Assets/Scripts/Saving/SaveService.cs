@@ -13,6 +13,7 @@ namespace GildedFate.Saving
         public static string RecoveryNotice {get;private set;}="";
         private static string cachedStamp="";
         private static bool cachedHasRun;
+        private static bool lastReadValidated;
         private static bool preserveRecoveredBackup;
         public static string DirectoryPath
         {
@@ -36,7 +37,7 @@ namespace GildedFate.Saving
                     return cachedHasRun;
                 }
                 catch(Exception error) when(error is IOException||error is UnauthorizedAccessException)
-                {LastError="Could not access the saved run: "+error.Message;return false;}
+                {lastReadValidated=false;LastError="Could not access the saved run: "+error.Message;return false;}
             }
         }
         // True when save files exist but none can be read, so CONTINUE is hidden and the player should be told why.
@@ -44,7 +45,7 @@ namespace GildedFate.Saving
         {
             get
             {
-                try{return !HasRun&&(File.Exists(PathName)||File.Exists(PathName+".bak"));}
+                try{return !HasRun&&!lastReadValidated&&(File.Exists(PathName)||File.Exists(PathName+".bak"));}
                 catch(Exception error) when(error is IOException||error is UnauthorizedAccessException){return false;}
             }
         }
@@ -65,16 +66,19 @@ namespace GildedFate.Saving
             RecoveryNotice="";
             if(!AtomicSaveFile.TryRead(PathName,ParseRun,Validate,out var loaded,out var recovered,out var error))
             {
+                lastReadValidated=false;
                 LastError=string.IsNullOrEmpty(error)?"":"Could not load this run. The save files were preserved. "+error;
                 return null;
             }
+            // A valid completion marker (or already-recorded run) is not a damaged save.
+            lastReadValidated=true;
             LastError="";
             preserveRecoveredBackup=recovered;
             if(recovered)RecoveryNotice="Recovered the previous safe save after an interrupted or damaged save.";
             if(loaded.closed)return null;
             loaded.upgradedCards??=new();loaded.relics??=new();loaded.consumables??=new();loaded.merchantSold??=new();loaded.cards??=new();loaded.shards??=new();loaded.fateweaveSelections??=new();loaded.temporaryMultiCombatStatuses??=new();loaded.fateweaveOffers??=new();loaded.bindingOffers??=new();loaded.pendingCardOfferIds??=new();loaded.pendingSelectedCardIds??=new();loaded.EnsureEventState();loaded.EnsureFateweaveState();
             if(string.IsNullOrEmpty(loaded.runId))loaded.runId="legacy-"+loaded.seed;
-            loaded.EnsureCardInstances();
+            loaded.EnsureCardInstances();loaded.EnsureShardSlots();
             if(ProfileService.Load().completedRunIds?.Contains(loaded.runId)==true){RecoveryNotice="This run was already completed.";return null;}
             loaded.saveFormat=4;
             return loaded;

@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "reason": "Exact binary parts keep each connector request below its 16 MiB body limit. No change to model or animation bytes.",
+  "files": [
+    {
+      "target": "Assets/Resources/Chronicle/BookModel/Chronicle.fbx",
+      "size": 18486844,
+      "sha256": "393797af6373ed6b9263bfa9d56c1fd20162252304a033d659346863db6b5cdc",
+      "parts": [
+        {
+          "path": "SourceAssets/Chronicle/Transport/Chronicle.fbx/000.bin",
+          "size": 4194304,
+          "sha256": "7228a9d65871a91ad31361a6634c2bbb27d8439677ea1c7b431b2dd1703d37f6"
+        },
+        {
+          "path": "SourceAssets/Chronicle/Transport/Chronicle.fbx/001.bin",
+          "size": 4194304,
+          "sha256": "7a5faabd19cc118cff5f9d0277be8f139f03c643f763c9be1446b1b9375257d1"
+        },
+        {
+          "path": "SourceAssets/Chronicle/Transport/Chronicle.fbx/002.bin",
+          "size": 4194304,
+          "sha256": "4931f59badc4dbe3d55da6b9630a0ae6582e2b81b1aa7abe4c640937fe6ba13a"
+        },
+        {
+          "path": "SourceAssets/Chronicle/Transport/Chronicle.fbx/003.bin",
+          "size": 4194304,
+          "sha256": "be0b15bf3609cc28be42b76ac6b06a86461ab9760fc302cdcc11631e2d439778"
+        },
+        {
+          "path": "SourceAssets/Chronicle/Transport/Chronicle.fbx/004.bin",
+          "size": 1709628,
+          "sha256": "8b037740b97d529e0c2b7342df3b9e80acef2cbbbd5649b39c714b13c2260575"
+        }
+      ]
+    },
+    {
+      "target": "SourceAssets/Chronicle/Gilded_Fate_Chronicle.blend",
+      "size": 24154990,
+      "sha256": "62283dcab5c6d20be11c2e230e7a32f0b2845f57259acc882a92b96ef5c3a9b5",
+      "parts": [
+        {
+          "path": "SourceAssets/Chronicle/Transport/Gilded_Fate_Chronicle.blend/000.bin",
+          "size": 4194304,
+          "sha256": "74f9b919d58bd8cf3da4e02c300a4ed049affcf8d5f8dfd217314164e38ad700"
+        },
+        {
+          "path": "SourceAssets/Chronicle/Transport/Gilded_Fate_Chronicle.blend/001.bin",
+          "size": 4194304,
+          "sha256": "3723a55d0d18be051ba0c7623c6e364f6f076d0f2c2cd1450e039a844a1505e5"
+        },
+        {
+          "path": "SourceAssets/Chronicle/Transport/Gilded_Fate_Chronicle.blend/002.bin",
+          "size": 4194304,
+          "sha256": "8d93cbb4d9c8a1dac9227c69d06680eef11c93f2ea57eaa7ae838743c54d9805"
+        },
+        {
+          "path": "SourceAssets/Chronicle/Transport/Gilded_Fate_Chronicle.blend/003.bin",
+          "size": 4194304,
+          "sha256": "b9693ccd0ff661c64b90b054e0dba9b746476b9da3d7ad341678fa15d81e58b5"
+        },
+        {
+          "path": "SourceAssets/Chronicle/Transport/Gilded_Fate_Chronicle.blend/004.bin",
+          "size": 4194304,
+          "sha256": "f4a9383d6ebd8b3cf3050e6a4d4c23e01c170b630947a5ee4009cf202b8a2074"
+        },
+        {
+          "path": "SourceAssets/Chronicle/Transport/Gilded_Fate_Chronicle.blend/005.bin",
+          "size": 3183470,
+          "sha256": "a9092db91aed16331e179b6730a3379a14ade661fe6cacdb5c442f00e89cae4a"
+        }
+      ]
+    }
+  ]
+}

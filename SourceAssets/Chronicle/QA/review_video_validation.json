@@ -1,0 +1,83 @@
+[
+  {
+    "file": "PageTurn_RL.mp4",
+    "duration_seconds": 3.0,
+    "frames": 72,
+    "probe": {
+      "programs": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "width": 960,
+          "height": 720,
+          "nb_frames": "72"
+        }
+      ],
+      "format": {
+        "duration": "3.000000"
+      }
+    },
+    "processing": "Common crop for each fixed camera, Lanczos resize and light temporal noise reduction",
+    "crop_pixels": [
+      87,
+      110,
+      879,
+      704
+    ],
+    "complete_video_decode_pass": true
+  },
+  {
+    "file": "Chronicle_Page_Turn_Review.mp4",
+    "duration_seconds": 16.0,
+    "frames": 384,
+    "probe": {
+      "programs": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "width": 960,
+          "height": 720,
+          "nb_frames": "384"
+        }
+      ],
+      "format": {
+        "duration": "16.000000"
+      }
+    },
+    "processing": "Common crop for each fixed camera, Lanczos resize and light temporal noise reduction",
+    "crop_pixels": [
+      87,
+      110,
+      879,
+      704
+    ],
+    "complete_video_decode_pass": true
+  },
+  {
+    "file": "Chronicle_Open_Close_Review.mp4",
+    "duration_seconds": 12.0,
+    "frames": 288,
+    "probe": {
+      "programs": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "width": 960,
+          "height": 720,
+          "nb_frames": "288"
+        }
+      ],
+      "format": {
+        "duration": "12.000000"
+      }
+    },
+    "processing": "Common crop for each fixed camera, Lanczos resize and light temporal noise reduction",
+    "crop_pixels": [
+      47,
+      77,
+      885,
+      705
+    ],
+    "complete_video_decode_pass": true
+  }
+]

@@ -30,6 +30,14 @@ namespace GildedFate.Combat
             if(version<6)restored.RestoreLegacyAspectOwnership();
             foreach(var card in restored.AllOwnedCards())if(card.id=="grand_convergence")
             {var definition=GameContent.Find(card.id);card.text=definition.text;card.upgradeText=definition.upgradeText;}
+            // Checkpoints also contain printed descriptions. Refresh wording only, retaining
+            // all saved costs, values, physical identities and temporary combat modifiers.
+            foreach(var card in restored.AllOwnedCards())
+            {
+                var definition=GameContent.Find(card.id);if(definition==null)continue;
+                card.text=(card.upgraded?GameContent.Upgrade(definition):definition).text;
+                card.upgradeText=definition.upgradeText;
+            }
             return true;
         }
     }

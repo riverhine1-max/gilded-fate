@@ -1,0 +1,459 @@
+{
+  "blender_version": "4.0.2",
+  "checks": {
+    "covers_static_during_page_turn": {
+      "pass": true,
+      "max_vertex_drift_m": 0
+    },
+    "bound_page_edge": {
+      "pass": true,
+      "max_x_error_m": 1.8662831280380487e-09
+    },
+    "page_above_settled_sheets": {
+      "pass": true,
+      "minimum_clearance_m": 0.00026339613437652287,
+      "scope": "height clearance, not a complete triangle collision test"
+    },
+    "page_weights": {
+      "pass": true,
+      "maximum_weights": 4
+    },
+    "front_back_uv_islands": {
+      "pass": true,
+      "front": [
+        0.04,
+        0.46,
+        0.05,
+        0.95
+      ],
+      "back": [
+        0.54,
+        0.96,
+        0.05,
+        0.95
+      ],
+      "content_uv1": "0..1; independent material slots"
+    },
+    "uv_orientation": {
+      "pass": true,
+      "samples": [
+        {
+          "object": "PageSurface_Left",
+          "material_slot": 0,
+          "signed_content_uv_area": 0.0008960708235559167
+        },
+        {
+          "object": "PageSurface_Left",
+          "material_slot": 1,
+          "signed_content_uv_area": 0.0008960719858457367
+        },
+        {
+          "object": "PageSurface_Right",
+          "material_slot": 0,
+          "signed_content_uv_area": 0.0008960719858457367
+        },
+        {
+          "object": "PageSurface_Right",
+          "material_slot": 1,
+          "signed_content_uv_area": 0.0008960708235559167
+        },
+        {
+          "object": "TurningPage_01",
+          "material_slot": 0,
+          "signed_content_uv_area": 0.0008960719858457367
+        },
+        {
+          "object": "TurningPage_01",
+          "material_slot": 1,
+          "signed_content_uv_area": 0.0008960708235559167
+        }
+      ]
+    },
+    "Open_dimensions_m": [
+      0.630887508392334,
+      0.4000000059604645,
+      0.05186352785676718
+    ],
+    "Closed_dimensions_m": [
+      0.33692242577672005,
+      0.4000000059604645,
+      0.08923924760892987
+    ],
+    "textures_present": {
+      "pass": true
+    }
+  },
+  "objects": [
+    {
+      "name": "Cover_Front",
+      "vertices": 152,
+      "triangles": 300,
+      "materials": [
+        "MAT_Leather"
+      ],
+      "binding": "Cover_Front"
+    },
+    {
+      "name": "Cover_Back",
+      "vertices": 152,
+      "triangles": 300,
+      "materials": [
+        "MAT_Leather"
+      ],
+      "binding": "Cover_Back"
+    },
+    {
+      "name": "Front_EdgeRails",
+      "vertices": 738,
+      "triangles": 1464,
+      "materials": [
+        "MAT_Gold"
+      ],
+      "binding": "Cover_Front"
+    },
+    {
+      "name": "Front_Filigree",
+      "vertices": 3794,
+      "triangles": 7516,
+      "materials": [
+        "MAT_Gold"
+      ],
+      "binding": "Cover_Front"
+    },
+    {
+      "name": "Front_CornerEnamel",
+      "vertices": 32,
+      "triangles": 48,
+      "materials": [
+        "MAT_Emerald"
+      ],
+      "binding": "Cover_Front"
+    },
+    {
+      "name": "Corner_Front_01",
+      "vertices": 456,
+      "triangles": 884,
+      "materials": [
+        "MAT_Gold"
+      ],
+      "binding": "Cover_Front"
+    },
+    {
+      "name": "Corner_Front_02",
+      "vertices": 456,
+      "triangles": 884,
+      "materials": [
+        "MAT_Gold"
+      ],
+      "binding": "Cover_Front"
+    },
+    {
+      "name": "Corner_Front_03",
+      "vertices": 456,
+      "triangles": 884,
+      "materials": [
+        "MAT_Gold"
+      ],
+      "binding": "Cover_Front"
+    },
+    {
+      "name": "Corner_Front_04",
+      "vertices": 456,
+      "triangles": 884,
+      "materials": [
+        "MAT_Gold"
+      ],
+      "binding": "Cover_Front"
+    },
+    {
+      "name": "Emblem_FourStrands",
+      "vertices": 8416,
+      "triangles": 16760,
+      "materials": [
+        "MAT_Gold"
+      ],
+      "binding": "Cover_Front"
+    },
+    {
+      "name": "Emblem_EnamelChannels",
+      "vertices": 4128,
+      "triangles": 8240,
+      "materials": [
+        "MAT_Emerald"
+      ],
+      "binding": "Cover_Front"
+    },
+    {
+      "name": "Emblem_GemInsets",
+      "vertices": 40,
+      "triangles": 60,
+      "materials": [
+        "MAT_Emerald"
+      ],
+      "binding": "Cover_Front"
+    },
+    {
+      "name": "Back_EdgeRails",
+      "vertices": 738,
+      "triangles": 1464,
+      "materials": [
+        "MAT_Gold"
+      ],
+      "binding": "Cover_Back"
+    },
+    {
+      "name": "Back_Filigree",
+      "vertices": 3794,
+      "triangles": 7516,
+      "materials": [
+        "MAT_Gold"
+      ],
+      "binding": "Cover_Back"
+    },
+    {
+      "name": "Back_CornerEnamel",
+      "vertices": 32,
+      "triangles": 48,
+      "materials": [
+        "MAT_Emerald"
+      ],
+      "binding": "Cover_Back"
+    },
+    {
+      "name": "Corner_Back_01",
+      "vertices": 456,
+      "triangles": 884,
+      "materials": [
+        "MAT_Gold"
+      ],
+      "binding": "Cover_Back"
+    },
+    {
+      "name": "Corner_Back_02",
+      "vertices": 456,
+      "triangles": 884,
+      "materials": [
+        "MAT_Gold"
+      ],
+      "binding": "Cover_Back"
+    },
+    {
+      "name": "Corner_Back_03",
+      "vertices": 456,
+      "triangles": 884,
+      "materials": [
+        "MAT_Gold"
+      ],
+      "binding": "Cover_Back"
+    },
+    {
+      "name": "Corner_Back_04",
+      "vertices": 456,
+      "triangles": 884,
+      "materials": [
+        "MAT_Gold"
+      ],
+      "binding": "Cover_Back"
+    },
+    {
+      "name": "Spine_Shell",
+      "vertices": 306,
+      "triangles": 608,
+      "materials": [
+        "MAT_Leather"
+      ],
+      "binding": "deform controls"
+    },
+    {
+      "name": "Spine_Band_A",
+      "vertices": 442,
+      "triangles": 832,
+      "materials": [
+        "MAT_Gold"
+      ],
+      "binding": "deform controls"
+    },
+    {
+      "name": "Spine_Band_B",
+      "vertices": 442,
+      "triangles": 832,
+      "materials": [
+        "MAT_Gold"
+      ],
+      "binding": "deform controls"
+    },
+    {
+      "name": "Spine_Band_C",
+      "vertices": 442,
+      "triangles": 832,
+      "materials": [
+        "MAT_Gold"
+      ],
+      "binding": "deform controls"
+    },
+    {
+      "name": "Spine_Band_D",
+      "vertices": 442,
+      "triangles": 832,
+      "materials": [
+        "MAT_Gold"
+      ],
+      "binding": "deform controls"
+    },
+    {
+      "name": "PageStack_Left",
+      "vertices": 776,
+      "triangles": 1356,
+      "materials": [
+        "MAT_GildedEdges"
+      ],
+      "binding": "Cover_Front"
+    },
+    {
+      "name": "PageStack_Right",
+      "vertices": 776,
+      "triangles": 1356,
+      "materials": [
+        "MAT_GildedEdges"
+      ],
+      "binding": "Cover_Back"
+    },
+    {
+      "name": "PageSurface_Left",
+      "vertices": 3234,
+      "triangles": 6464,
+      "materials": [
+        "MAT_Parchment",
+        "MAT_Parchment_Back_Runtime"
+      ],
+      "binding": "Cover_Front"
+    },
+    {
+      "name": "PageSurface_Right",
+      "vertices": 3234,
+      "triangles": 6464,
+      "materials": [
+        "MAT_Parchment",
+        "MAT_Parchment_Back_Runtime"
+      ],
+      "binding": "Cover_Back"
+    },
+    {
+      "name": "TurningPage_01",
+      "vertices": 3234,
+      "triangles": 6464,
+      "materials": [
+        "MAT_Parchment",
+        "MAT_Parchment_Back_Runtime"
+      ],
+      "binding": "deform controls"
+    },
+    {
+      "name": "Binding_Rod_L",
+      "vertices": 646,
+      "triangles": 1268,
+      "materials": [
+        "MAT_Gold"
+      ],
+      "binding": "Cover_Front"
+    },
+    {
+      "name": "Binding_Rod_R",
+      "vertices": 646,
+      "triangles": 1268,
+      "materials": [
+        "MAT_Gold"
+      ],
+      "binding": "Cover_Back"
+    },
+    {
+      "name": "Spine_Hinge_L",
+      "vertices": 16,
+      "triangles": 28,
+      "materials": [
+        "MAT_Leather"
+      ],
+      "binding": "Cover_Front"
+    },
+    {
+      "name": "Spine_Hinge_R",
+      "vertices": 16,
+      "triangles": 28,
+      "materials": [
+        "MAT_Leather"
+      ],
+      "binding": "Cover_Back"
+    },
+    {
+      "name": "Binding_Center",
+      "vertices": 16,
+      "triangles": 28,
+      "materials": [
+        "MAT_Gold"
+      ],
+      "binding": "Root"
+    },
+    {
+      "name": "Bookmark_Ribbon",
+      "vertices": 100,
+      "triangles": 196,
+      "materials": [
+        "MAT_Bookmark"
+      ],
+      "binding": "Bookmark"
+    },
+    {
+      "name": "Bookmark_Pendant",
+      "vertices": 16,
+      "triangles": 28,
+      "materials": [
+        "MAT_Gold"
+      ],
+      "binding": "Bookmark"
+    },
+    {
+      "name": "Bookmark_Pendant_Enamel",
+      "vertices": 8,
+      "triangles": 12,
+      "materials": [
+        "MAT_Emerald"
+      ],
+      "binding": "Bookmark"
+    },
+    {
+      "name": "Bookmark_Hem",
+      "vertices": 200,
+      "triangles": 392,
+      "materials": [
+        "MAT_Gold"
+      ],
+      "binding": "Bookmark"
+    }
+  ],
+  "clips": {
+    "CHR_PageTurn_RL": {
+      "sampled_frames": 55,
+      "duration_s": 0.9
+    },
+    "CHR_PageTurn_LR": {
+      "sampled_frames": 55,
+      "duration_s": 0.9
+    },
+    "CHR_PageTurn_Cinematic_RL": {
+      "sampled_frames": 91,
+      "duration_s": 1.5
+    },
+    "CHR_Reaction_Subtle": {
+      "sampled_frames": 37,
+      "duration_s": 0.6
+    },
+    "CHR_Idle_Open": {
+      "sampled_frames": 181,
+      "duration_s": 3.0
+    }
+  },
+  "triangle_count": 80076,
+  "mesh_object_count": 38,
+  "bone_count": 108,
+  "all_numeric_checks_pass": true
+}

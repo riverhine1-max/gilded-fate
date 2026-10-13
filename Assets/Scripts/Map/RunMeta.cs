@@ -16,7 +16,11 @@ namespace GildedFate.Map
         // Act themes rolled at run start (index 0 = Act 1). Older saves have none and keep the Vault roster.
         public System.Collections.Generic.List<string> actThemes=new();
         public string lastEncounterId="";
-        public string ThemeForAct(int forAct)=>actThemes!=null&&forAct>=1&&forAct<=actThemes.Count?actThemes[forAct-1]??"":ActThemes.Vault;
+        public string ThemeForAct(int forAct)
+        {
+            var theme=actThemes!=null&&forAct>=1&&forAct<=actThemes.Count?actThemes[forAct-1]??"":ActThemes.Vault;
+            return theme==ActThemes.GildedRuins?ActThemes.Roll(forAct,seed):theme;
+        }
         public string CurrentTheme=>ThemeForAct(act);
         public void RollActThemes(){actThemes=new();for(var a=1;a<=3;a++)actThemes.Add(ActThemes.Roll(a,seed));}
         // Themed elite for a map node (stable for the node) and the theme's boss.

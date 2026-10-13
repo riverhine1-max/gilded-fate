@@ -19,7 +19,7 @@ namespace GildedFate.Combat
         public RemainingCardMemory remaining=new();
         public RelicCombatMemory relicExpansion=new();
         public int gildedWarlord,warlordReadyTurn,unmovable,conquestCadence,conquestAttacksThisTurn,brandOfRuin,extraSigilSlots;
-        public int skillsThisTurn,attacksThisTurn,powersInPlay,blockGainedThisTurn,blockGainsThisTurn,nextTurnEnergyPenalty,temporaryStrength,resolvedBossPhase=1,lastCardValue,livingArmor;
+        public int skillsThisTurn,attacksThisTurn,powersInPlay,blockGainedThisTurn,blockGainsThisTurn,nextTurnEnergyPenalty,temporaryStrength,resolvedBossPhase=1,pendingBossPhase,lastCardValue,livingArmor;
         public int unblockedDamageAttempted,markedConsumed,retainedEnergy,nextTurnDrawPenalty,nextCardCostPenalty,nextAttackCostReduction,nextSkillCostReduction,nextAttackBonus,nextAttackPenalty;
         public int battleTemper,ironBlood,warMachine,warMachineUses,patientWarrior,retributionPower,holdLinePower,relentless,onslaughtThreshold,indomitable;
         public int sigilMastery,grandConvergence,ashes,deathsGaze,embraceVoid,damnationStrength,battleRhythm,reserveEnergy,tacticalAdvantage,resourceful,overflowPower,chainReaction,againstAllOddsDraw,perfectForm;
@@ -406,7 +406,7 @@ namespace GildedFate.Combat
                 if(enemy.weak>0)enemy.weak--;if(enemy.hp>0&&enemy.burn>0)TriggerBurn(enemy.burn,false);Emit(CombatEventKind.StateSnapshot);
             });
             if(hadVulnerable&&player.vulnerable>0)player.vulnerable--; // Vulnerable lasts through the enemy phase that used it, then wears off one stack at a time
-            memory.wasAttackedLastTurn=memory.attackedThisEnemyTurn;phase=CombatPhase.EnemyResolved;
+            memory.wasAttackedLastTurn=memory.attackedThisEnemyTurn;phase=CombatPhase.EnemyResolved;RefreshEnemyState();
             if(IsOver){phase=CombatPhase.Finished;Emit(CombatEventKind.Death,0,player.hp<=0);}
         }
         public void EndTurn(){if(pendingPlay!=null)return;if(phase==CombatPhase.Player)EndPlayerTurn();if(phase==CombatPhase.Enemy)ResolveEnemyTurn();if(!IsOver&&phase==CombatPhase.EnemyResolved)NextTurn();}
@@ -677,7 +677,7 @@ namespace GildedFate.Combat
         private void PlanIntent()
         {
             if(IsWildContext){intentHits=1;PlanWildIntent();return;}
-            RefreshEnemyState();intentHits=1;
+            RefreshEnemyState(true);intentHits=1;
             switch(enemyId)
             {
                 case "vault_rat":SetIntent(turn%3==0?IntentKind.Special:IntentKind.Attack,turn%3==0?enemyBaseDamage-2:enemyBaseDamage,turn%3==0?"PILFER":"RUSTED BITE");mechanicTitle="OPPORTUNIST";mechanicText="Pilfer deals damage and steals 4 Gold.";break;
@@ -701,7 +701,24 @@ namespace GildedFate.Combat
             }
         }
         private void SetIntent(IntentKind kind,int value,string label,int hits=1){intent=kind;intentValue=Math.Max(0,value);intentLabel=label;intentHits=Math.Max(1,hits);}
-        public void RefreshEnemyState(){if(wildCombat){SweepWilds();return;}var next=enemy.hp>enemy.maxHp*2/3?1:enemy.hp>enemy.maxHp/3?2:3;if(enemy.hp<=0)return;bossPhase=next;while(memory.resolvedBossPhase<next){memory.resolvedBossPhase++;ApplyBossPhaseEntry(memory.resolvedBossPhase);}}
+        public void RefreshEnemyState(bool planning=false)
+        {
+            if(wildCombat)
+            {
+                // Explicit planning is used by phase previews and the playground only.
+                if(planning)for(var i=0;i<EnemyCount;i++)if(WildDef(EnemyIdAt(i))?.boss==true)MindAt(i).planned="";
+                SweepWilds();
+                if(planning)for(var i=0;i<EnemyCount;i++)if(IsLivingTarget(i)&&WildDef(EnemyIdAt(i))?.boss==true)InEnemyContext(i,PlanWildIntent);
+                return;
+            }
+            if(enemy.hp<=0)return;
+            var next=enemy.hp>enemy.maxHp*2/3?1:enemy.hp>enemy.maxHp/3?2:3;
+            memory.pendingBossPhase=Math.Max(memory.pendingBossPhase,next);
+            if(!planning&&(phase==CombatPhase.Player||phase==CombatPhase.Enemy))return;
+            bossPhase=Math.Max(bossPhase,memory.pendingBossPhase);
+            while(memory.resolvedBossPhase<bossPhase){memory.resolvedBossPhase++;ApplyBossPhaseEntry(memory.resolvedBossPhase);}
+            memory.pendingBossPhase=0;
+        }
         private void ApplyBossPhaseEntry(int next){if(enemyId=="hollow_king"){spectralWeapons=next==2?2:3;enemy.block+=next==2?14:18;if(next==3)enemy.strength+=2;}else if(enemyId=="vault_mother"){vaultWards=0;enemy.block+=next==2?18:24;if(next==3)enemy.strength++;}else if(enemyId=="last_dealer"){for(var i=0;i<(next==2?2:3);i++)AddRandomCurse(false);if(next==3)memory.nextTurnEnergyPenalty=1;}RefreshMechanicTelemetry();}
         private void BanishDiscardedCard(){for(var i=discard.Count-1;i>=0;i--){if(discard[i].origin==CardOrigin.Curse)continue;var card=discard[i];discard.RemoveAt(i);ExhaustCard(card);banishedCards++;return;}}
         private void RefreshMechanicTelemetry(){if(enemyId=="hollow_king")mechanicText=$"{spectralWeapons} spectral weapons strike separately.";else if(enemyId=="vault_mother"){vaultWards=0;mechanicText="Only the visible blue Block bar prevents damage; every third turn restores health.";}else if(enemyId=="last_dealer")mechanicText=$"{cursePressure} curses dealt · {banishedCards} cards banished.";else if(enemyId=="collector")mechanicText=$"Gold held: {stolenGold}.";}

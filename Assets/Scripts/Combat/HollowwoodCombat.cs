@@ -358,7 +358,7 @@ namespace GildedFate.Combat
                     }
                     return true;
                 case HollowwoodContent.Parasite:
-                    if(m.state=="HOSTED"&&f.hp<=(f.maxHp+1)/2)
+                    if(m.state=="HOSTED"&&ThresholdHp(index)<=(f.maxHp+1)/2)
                     {
                         m.state="EXPOSED";m.step=0;m.hold=false;InEnemyContext(index,()=>EmitHook("hollow_parasite_host_break"));
                         if(PlayerPhaseReplan)ReplanAt(index);
@@ -366,7 +366,7 @@ namespace GildedFate.Combat
                     return true;
                 case HollowwoodContent.WalkingGrove:
                 {
-                    var target=f.hp<=f.maxHp/3?3:f.hp<=f.maxHp*2/3?2:1;
+                    var target=ThresholdHp(index)<=f.maxHp/3?3:ThresholdHp(index)<=f.maxHp*2/3?2:1;
                     while(m.phase<target)
                     {
                         // Transformation only: no heal, Strength or Block.
@@ -379,7 +379,7 @@ namespace GildedFate.Combat
                 case HollowwoodContent.Heartroot:
                 {
                     var t1=(f.maxHp*2+2)/3;var t2=(f.maxHp+2)/3;
-                    var target=f.hp<=t2?3:f.hp<=t1?2:1;
+                    var target=ThresholdHp(index)<=t2?3:ThresholdHp(index)<=t1?2:1;
                     while(m.phase<target)
                     {
                         // The wood tears loose: no heal, Strength, Fortify or Block. Growth is reset by phase.

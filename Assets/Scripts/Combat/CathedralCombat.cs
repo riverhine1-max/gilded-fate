@@ -416,7 +416,7 @@ namespace GildedFate.Combat
             if(BlackCathedralContent.Find(o.id)==null)return CheckFractureThresholds(index);
             if(o.id!=BlackCathedralContent.Bishop)return true;
             var t1=(f.maxHp*2+2)/3;var t2=f.maxHp/3;
-            var target=f.hp<=t2?3:f.hp<=t1?2:1;
+            var target=ThresholdHp(index)<=t2?3:ThresholdHp(index)<=t1?2:1;
             while(m.phase<target)
             {
                 // Transformation only: no heal, Strength, Fortify or Block. The prior Judgment is cleared.

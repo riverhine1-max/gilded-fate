@@ -51,9 +51,14 @@ namespace GildedFate.UI
         private bool RouteMenuNavigation(MenuNavigation input)
         {
             if(runStartActive)return true;
+            if(PlaygroundAdminOpen)
+            {
+                if(input.back)ClosePlaygroundAdmin();
+                menuInputConsumed=true;return true;
+            }
             var context=screen+":"+run.pendingShardDiscoveryId+":"+run.shards.Count+":"+combatPauseOpen+":"+mapPauseOpen+":"+runPauseOpen;
             if(menuNavigationContext!=context){menuNavigationContext=context;pauseMenuIndex=shardDiscoveryIndex=0;hudNavigationIndex=-1;}
-            if(acquisitionActive){menuInputConsumed=input.Any;return true;}
+            if(acquisitionActive){if(acquisitionAwaitingClaim&&input.accept)ClaimPresentedRelic();menuInputConsumed=input.Any;return true;}
             if(ShardDiscoveryOpen){if(input.Any){controllerNavigation=true;HandleShardDiscoveryNavigation(input);}menuInputConsumed=true;return true;}
             if(ShardAttuneOpen){if(input.Any){controllerNavigation=true;HandleShardAttuneNavigation(input);}menuInputConsumed=true;return true;}
             if(screen==ScreenMode.Settings){if(input.Any){controllerNavigation=true;HandleSettingsNavigation(input);}menuInputConsumed=true;return true;}

@@ -1,0 +1,16 @@
+{
+  "allManifestFilesVerified": 225,
+  "textureMapsRead": 43,
+  "modelHeadersValid": true,
+  "installerDryRunWritesNothing": true,
+  "installerPreservesIndependentNewerSourceChange": true,
+  "installerConflictsStopBeforeWriting": true,
+  "blankTimingsRejected": true,
+  "emptyManualWordRows": 184,
+  "actualWavFiles": 22,
+  "actualMeasuredWordIntervals": 182,
+  "finalRecordingDurationAndHashesVerified": true,
+  "manualListeningReviewComplete": false,
+  "unityEditorTested": false,
+  "newBlenderSessionTested": false
+}

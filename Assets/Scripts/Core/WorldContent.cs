@@ -38,7 +38,9 @@ namespace GildedFate.Core
             E("golden_beast","THE GOLDEN BEAST",86,17,"Its tempo accelerates as blood is spilled.",true),E("collector","THE COLLECTOR",84,14,"Every strike steals gold—victory returns it with interest.",true),
             E("hollow_king","THE HOLLOW KING",180,21,"A fallen ruler commanding spectral weapons.",false,true),E("vault_mother","THE VAULT MOTHER",205,18,"Ancient flesh fused with the architecture of the Vault.",false,true),
             E("last_dealer","THE LAST DEALER",170,20,"A masked master who deals curses from a black hand.",false,true)
-        }.Concat(ThemeRosters.AllEnemies).ToArray();
+        }.Concat(ThemeRosters.AllEnemies).Concat(GildedRuinsContent.Enemies).ToArray();
+        // Archived definitions are only retained for existing saves; selection uses this roster.
+        public static EnemyDef[] ActiveEnemies=>Enemies.Where(e=>e.theme!=ActThemes.GildedRuins).ToArray();
         // Original Vault roster only: themed enemies are routed by their own theme.
         public static bool IsLegacy(EnemyDef e)=>e!=null&&string.IsNullOrEmpty(e.theme);
         public static readonly BindingDef[] Bindings={

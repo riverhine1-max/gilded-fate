@@ -19,6 +19,7 @@ namespace GildedFate.Map
     {
         public const int ShardCapacity=2;
         public EncounterRewards encounterRewards=new();
+        public List<string> pendingRelicRewards=new();
         public string activeEncounterId="",merchantShardReceipt="",merchantShardId="",pendingShardDiscoveryId="",treasureRelicClaimedReceipt="";
         public int pendingShardPrice;
         public List<string> activeEncounterEnemies=new();
@@ -26,7 +27,7 @@ namespace GildedFate.Map
         public string RoomReceipt=>runId+":"+act+":"+activeNodeFloor+":"+activeNodeLane;
         public void ResetRewardState()
         {
-            encounterRewards=new();activeEncounterId=merchantShardReceipt=merchantShardId=pendingShardDiscoveryId=treasureRelicClaimedReceipt="";
+            pendingRelicRewards=new();encounterRewards=new();activeEncounterId=merchantShardReceipt=merchantShardId=pendingShardDiscoveryId=treasureRelicClaimedReceipt="";
             activeEncounterEnemies=new();pendingShardPrice=normalCombatsCompleted=0;
         }
         private int RoomSeed(int salt)=>seed^act*104729^activeNodeFloor*397^activeNodeLane*7919^salt;
@@ -48,6 +49,7 @@ namespace GildedFate.Map
         }
         public void RollEncounterRewards(NodeKind kind)
         {
+            if(RewardRules.CompletesRun(kind,act)){ClearFinalEncounterRewards();return;}
             if(encounterRewards?.receipt==RoomReceipt){EnsureBossRelicOffers();return;}
             var random=new Random(RoomSeed(83443));var cards=RewardRules.Cards(hero,kind,random,act);
             var relic=RewardRules.Relic(kind,random,relics,act);
@@ -57,10 +59,17 @@ namespace GildedFate.Map
             if(encounterRewards.unboundDeck)encounterRewards.cards=RewardRules.UnboundCards(kind,new Random(RoomSeed(52457)),4,null,act).Select(c=>c.id).ToList();
             EnsureBossRelicOffers();
         }
+        public void ClearFinalEncounterRewards()
+        {
+            encounterRewards=new EncounterRewards{receipt=RoomReceipt,kind=NodeKind.Boss,
+                cardClaimed=true,relicClaimed=true,shardClaimed=true,bossRelicClaimed=true,bossRelicsRolled=true};
+            pendingCombatGold=pendingBonusCardRewards=0;combatGoldClaimed=true;
+            DeclineDiscoveredShard();
+        }
         private void EnsureBossRelicOffers()
         {
             var reward=encounterRewards;
-            if(reward==null||reward.receipt!=RoomReceipt||reward.kind!=NodeKind.Boss||reward.bossRelicsRolled)return;
+            if(reward==null||reward.receipt!=RoomReceipt||reward.kind!=NodeKind.Boss||reward.bossRelicsRolled||RewardRules.CompletesRun(reward.kind,act))return;
             reward.bossRelics=new();var random=new Random(RoomSeed(67391));
             var pool=GameContent.Relics.Where(r=>r.rarity==Rarity.Boss&&!relics.Contains(r.id)).ToList();
             while(reward.bossRelics.Count<3&&pool.Count>0){var index=random.Next(pool.Count);reward.bossRelics.Add(pool[index].id);pool.RemoveAt(index);}
@@ -124,6 +133,17 @@ namespace GildedFate.Map
         {
             var random=new Random(RoomSeed(45433));return RewardRules.DropsShard(NodeKind.Treasure,random.Next(100))?WorldContent.FateShards[random.Next(WorldContent.FateShards.Length)].id:"";
         }
+        public bool OfferRelic(string id)
+        {
+            pendingRelicRewards??=new();
+            if(relics.Contains(id)||pendingRelicRewards.Contains(id)||GameContent.Relics.All(r=>r.id!=id))return false;
+            pendingRelicRewards.Add(id);return true;
+        }
+        public bool ClaimOfferedRelic(string id)
+        {
+            if(pendingRelicRewards?.Contains(id)!=true||!AcquireRelic(id))return false;
+            pendingRelicRewards.Remove(id);return true;
+        }
         public bool OfferShard(string id,int price=0)
         {
             if(!string.IsNullOrEmpty(pendingShardDiscoveryId)||price<0||gold<price||WorldContent.FateShards.All(s=>s.id!=id))return false;
@@ -131,10 +151,9 @@ namespace GildedFate.Map
         }
         public bool TakeDiscoveredShard(int replaceIndex=-1)
         {
-            if(string.IsNullOrEmpty(pendingShardDiscoveryId)||gold<pendingShardPrice||shards.Count>ShardCapacity)return false;
+            if(string.IsNullOrEmpty(pendingShardDiscoveryId)||pendingShardPrice<0||gold<pendingShardPrice||shards.Count>ShardCapacity)return false;
             if(shards.Count==ShardCapacity&&(replaceIndex<0||replaceIndex>=shards.Count||shards[replaceIndex].active))return false;
-            if(shards.Count==ShardCapacity)shards.RemoveAt(replaceIndex);
-            var id=pendingShardDiscoveryId;if(!AddShard(id))return false;
+            var id=pendingShardDiscoveryId;if(!AddShard(id,shards.Count==ShardCapacity?replaceIndex:-1))return false;
             gold-=pendingShardPrice;if(pendingShardPrice>0)merchantSold.Add("shard:"+id);
             pendingShardDiscoveryId="";pendingShardPrice=0;return true;
         }
@@ -146,16 +165,19 @@ namespace GildedFate.Map
         }
         public void EnsureShardSlots()
         {
-            var occupied=new HashSet<int>();
+            var occupied=new HashSet<int>();var unassigned=new List<FateShardState>();
+            var capacity=Math.Max(ShardCapacity,shards.Count);
             foreach(var shard in shards)
             {
-                if(shard.slot<0||shard.slot>=Math.Max(ShardCapacity,shards.Count)||!occupied.Add(shard.slot))
-                {shard.slot=Enumerable.Range(0,Math.Max(ShardCapacity,shards.Count)).First(i=>!occupied.Contains(i));occupied.Add(shard.slot);}
+                if(shard.slot<0||shard.slot>=capacity||!occupied.Add(shard.slot))unassigned.Add(shard);
             }
+            // Reserve valid sockets first: an older unassigned item must not move an equipped shard.
+            foreach(var shard in unassigned)
+            {shard.slot=Enumerable.Range(0,capacity).First(i=>!occupied.Contains(i));occupied.Add(shard.slot);}
         }
         public void CopyRewardState(RunModel source)
         {
-            CopyMerchantState(source);
+            CopyMerchantState(source);pendingRelicRewards=new(source.pendingRelicRewards??new());
             encounterRewards=source.encounterRewards??new();activeEncounterId=source.activeEncounterId??"";
             activeEncounterEnemies=source.activeEncounterEnemies??new();normalCombatsCompleted=source.normalCombatsCompleted;
             merchantShardReceipt=source.merchantShardReceipt??"";merchantShardId=source.merchantShardId??"";
@@ -165,10 +187,16 @@ namespace GildedFate.Map
         public bool HasValidRewardState()
         {
             if(pendingShardPrice<0||normalCombatsCompleted<0)return false;
+            if(pendingRelicRewards!=null&&(pendingRelicRewards.Distinct().Count()!=pendingRelicRewards.Count||pendingRelicRewards.Any(id=>relics.Contains(id)||GameContent.Relics.All(r=>r.id!=id))))return false;
             if(!string.IsNullOrEmpty(pendingShardDiscoveryId)&&WorldContent.FateShards.All(s=>s.id!=pendingShardDiscoveryId))return false;
             if(!string.IsNullOrEmpty(merchantShardId)&&WorldContent.FateShards.All(s=>s.id!=merchantShardId))return false;
             if(activeEncounterEnemies?.Count>0&&(activeEncounterEnemies.Count>6||activeEncounterEnemies.Select((id,i)=>WorldContent.Enemies.FirstOrDefault(e=>e.id==id)).Any(e=>e==null||(e.elite||e.boss)&&string.IsNullOrEmpty(e.theme))))return false;
             if(encounterRewards==null||string.IsNullOrEmpty(encounterRewards.receipt))return true;
+            if(RewardRules.CompletesRun(encounterRewards.kind,act)&&encounterRewards.cards?.Count==0)
+                return encounterRewards.cardClaimed&&encounterRewards.relicClaimed&&encounterRewards.shardClaimed
+                    &&encounterRewards.bossRelicClaimed&&encounterRewards.bossRelicsRolled&&encounterRewards.bossRelics?.Count==0
+                    &&string.IsNullOrEmpty(encounterRewards.relicId)&&string.IsNullOrEmpty(encounterRewards.shardId)
+                    &&pendingCombatGold==0&&pendingBonusCardRewards==0&&combatGoldClaimed;
             if(encounterRewards.cards==null||encounterRewards.extraChoices<0||encounterRewards.extraChoices>4||encounterRewards.cards.Count!=3+(encounterRewards.unboundDeck?1:0)+encounterRewards.extraChoices||encounterRewards.cards.Distinct().Count()!=encounterRewards.cards.Count||encounterRewards.bonusIndex<0)return false;
             if(encounterRewards.cards.Any(id=>!GameContent.Cards.Any(c=>c.id==id&&(encounterRewards.unboundDeck
                 ?c.origin is CardOrigin.Knight or CardOrigin.Arcane or CardOrigin.Reaper or CardOrigin.Wanderer:c.hero==hero)
