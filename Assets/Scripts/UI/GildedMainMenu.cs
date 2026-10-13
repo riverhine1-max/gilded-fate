@@ -287,6 +287,9 @@ namespace GildedFate.UI
             UpdateCombatPresentation();
             UpdateCombat3D();
             UpdatePlayground();GildedFate.Saving.GildedSteam.Tick();
+#if UNITY_EDITOR || GILDED_CHRONICLE_QA
+            UpdateChronicleQa();
+#endif
             if(!captureMode&&profile!=null)AudioListener.pause=profile.muteInBackground&&!Application.isFocused;
             shimmer += Time.unscaledDeltaTime;
             if(run.gold!=observedGold){if(run.gold>observedGold&&goldCollectTime<=0){goldCollectAmount=run.gold-observedGold;goldCollectOrigin=new Vector2(CombatWidth*.64f,CombatHeight*.48f);goldCollectTime=profile.reduceMotion?.32f:1.08f;}observedGold=run.gold;}
@@ -403,6 +406,9 @@ namespace GildedFate.UI
             {if(back){Sfx(SoundCue.UiBack);screen=ScreenMode.Menu;return;}if(delta!=0)MoveScreenController(delta,2);if(accept){if(screenControllerIndex==0){selectingNewRun=true;selectedHero=HeroId.Vanguard;heroSelectionTime=Time.unscaledTime;screen=ScreenMode.CharacterSelect;}else screen=ScreenMode.Menu;}return;}
             if(screen==ScreenMode.Settings&&back){ProfileService.Save(profile);screen=settingsReturnScreen;return;}
             if(screen==ScreenMode.Playground&&back){ExitPlayground();return;}
+#if UNITY_EDITOR || GILDED_CHRONICLE_QA
+            if(screen==ScreenMode.ChronicleQa&&back){if(!chronicleActive)CloseChronicleQa();return;}
+#endif
             if(back)screen=ScreenMode.Menu;
         }
 
@@ -536,6 +542,9 @@ namespace GildedFate.UI
             if (screen == ScreenMode.Chronicle) { DrawChronicleArchive(w,h); DrawTransition(w,h); return; }
             if (screen == ScreenMode.Daily) { DrawDaily(w,h); DrawTransition(w,h); return; }
             if (screen == ScreenMode.Playground) { DrawPlayground(w,h); return; }
+#if UNITY_EDITOR || GILDED_CHRONICLE_QA
+            if (screen == ScreenMode.ChronicleQa) { DrawChronicleQa(w,h); return; }
+#endif
 
             if(menuHub!=MenuHub.None){DrawMenuHub(w,h);DrawTransition(w,h);return;}
             var contentW = Mathf.Min(720f, w * .66f);
@@ -1855,6 +1864,10 @@ private void DrawTransition(float w,float h){if(ShowsPersistentRunHud){if(ShowsN
 
 
         private struct Particle { public Vector2 position; public float speed; public float size; public float phase; }
-        private enum ScreenMode { Menu, CharacterSelect, Map, Combat, Reward, Collection, Merchant, Sanctuary, Event, EventSelection, EventResult, Treasure, RelicReward, Statistics, Settings, CardUpgrade, CardRemove, BindingSelect, BindingCard, Fateweave, FateweaveCard, Credits, RunResult, Records, Daily, Playground, Chronicle }
+        private enum ScreenMode { Menu, CharacterSelect, Map, Combat, Reward, Collection, Merchant, Sanctuary, Event, EventSelection, EventResult, Treasure, RelicReward, Statistics, Settings, CardUpgrade, CardRemove, BindingSelect, BindingCard, Fateweave, FateweaveCard, Credits, RunResult, Records, Daily, Playground, Chronicle
+#if UNITY_EDITOR || GILDED_CHRONICLE_QA
+            , ChronicleQa
+#endif
+        }
     }
 }

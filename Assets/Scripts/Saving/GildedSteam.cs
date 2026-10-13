@@ -15,11 +15,17 @@ namespace GildedFate.Saving
     {
 #if GILDED_STEAM
         private static bool ready;
-        public static void Init(){try{ready=SteamAPI.Init();}catch(System.Exception e){Debug.LogWarning("[Gilded Fate Steam] "+e.Message);ready=false;}}
-        public static void Tick(){if(ready)SteamAPI.RunCallbacks();}
+        // The Chronicle QA build never talks to Steam, whatever else is defined, so test progress can never reach a real achievement.
+#if UNITY_EDITOR || GILDED_CHRONICLE_QA
+        private static bool Blocked=>ChronicleQaMode.Active;
+#else
+        private const bool Blocked=false;
+#endif
+        public static void Init(){if(Blocked)return;try{ready=SteamAPI.Init();}catch(System.Exception e){Debug.LogWarning("[Gilded Fate Steam] "+e.Message);ready=false;}}
+        public static void Tick(){if(ready&&!Blocked)SteamAPI.RunCallbacks();}
         public static void Shutdown(){if(ready)SteamAPI.Shutdown();ready=false;}
-        public static void Unlock(string id){if(!ready)return;SteamUserStats.SetAchievement(id);SteamUserStats.StoreStats();}
-        public static bool Available=>ready;
+        public static void Unlock(string id){if(!ready||Blocked)return;SteamUserStats.SetAchievement(id);SteamUserStats.StoreStats();}
+        public static bool Available=>ready&&!Blocked;
 #else
         public static void Init(){}
         public static void Tick(){}

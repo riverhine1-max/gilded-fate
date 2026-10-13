@@ -20,13 +20,15 @@ namespace GildedFate.Editor
             return fallback;
         }
 
-        private static void Run(BuildTarget target,BuildTargetGroup group,string defaultPath)
+        private static void Run(BuildTarget target,BuildTargetGroup group,string defaultPath,string[] extraDefines=null,string productName=null)
         {
             var output=Path.GetFullPath(Arg("-gfOutput",defaultPath));
             var folder=Path.GetDirectoryName(output);if(!string.IsNullOrEmpty(folder))Directory.CreateDirectory(folder);
             if(EditorUserBuildSettings.activeBuildTarget!=target)EditorUserBuildSettings.SwitchActiveBuildTarget(group,target);
             PlayerSettings.SetScriptingBackend(NamedBuildTarget.FromBuildTargetGroup(group),group==BuildTargetGroup.WebGL?ScriptingImplementation.IL2CPP:ScriptingImplementation.Mono2x);
-            var options=new BuildPlayerOptions{scenes=Scenes,locationPathName=output,target=target,targetGroup=group,options=BuildOptions.None};
+            // Only the QA build renames the product (its own save/PlayerPrefs location, and a window title that cannot be mistaken for the release).
+            if(!string.IsNullOrEmpty(productName))PlayerSettings.productName=productName;
+            var options=new BuildPlayerOptions{scenes=Scenes,locationPathName=output,target=target,targetGroup=group,options=BuildOptions.None,extraScriptingDefines=extraDefines};
             var report=BuildPipeline.BuildPlayer(options);
             var summary=report.summary;
             Debug.Log($"[Gilded Fate CI] {target}: {summary.result} · {summary.totalSize/1048576f:0.0} MB · {summary.totalErrors} errors · {summary.totalTime}");
@@ -34,6 +36,11 @@ namespace GildedFate.Editor
         }
 
         public static void BuildWindows()=>Run(BuildTarget.StandaloneWindows64,BuildTargetGroup.Standalone,"Builds/Windows/GildedFate.exe");
+
+        // The Chronicle QA build: the normal game plus the Chronicle QA panel, with its own save folder and Steam switched off.
+        // The symbol is handed to this one build only. It is never written to ProjectSettings, so BuildWindows and every other
+        // target cannot pick it up (ci/verify-qa-config.sh and ci/verify-qa-build.sh check both facts).
+        public static void BuildWindowsQA()=>Run(BuildTarget.StandaloneWindows64,BuildTargetGroup.Standalone,"Builds/WindowsQA/GildedFateQA.exe",new[]{"GILDED_CHRONICLE_QA"},"Gilded Fate QA");
 
         public static void BuildLinux()=>Run(BuildTarget.StandaloneLinux64,BuildTargetGroup.Standalone,"Builds/Linux/GildedFate.x86_64");
 

@@ -29,6 +29,8 @@ namespace GildedFate.Chronicle
         readonly OverrideContext context = new OverrideContext();
 
         public ChronicleDevSession() { sandbox.Ensure(); context.inner = new ChronicleProgressContext(sandbox); }
+        /// <summary>Binds the session to an existing progress object. Used by the QA build, whose isolated QA profile plays the sandbox's role.</summary>
+        public ChronicleDevSession(ChronicleProgress progress) { sandbox = progress ?? new ChronicleProgress(); sandbox.Ensure(); context.inner = new ChronicleProgressContext(sandbox); }
 
         public int NarratorOverride { get => context.narratorOverride; set => context.narratorOverride = value; }
         public void ForceFact(string factId, bool on) { if (on) context.forcedFacts.Add(factId); else context.forcedFacts.Remove(factId); }
