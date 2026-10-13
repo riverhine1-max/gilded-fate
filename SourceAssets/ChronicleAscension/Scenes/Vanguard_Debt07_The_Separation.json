@@ -1,0 +1,773 @@
+{
+  "schemaVersion": 1,
+  "contentKey": "Vanguard:07",
+  "revelationId": "ASC_VAN_07",
+  "sceneId": "ASC_VAN_07",
+  "idBindingStatus": "BOUND_TO_EXISTING_ASCENSION_CATALOG",
+  "authoringComplete": true,
+  "contentReady": false,
+  "runtimeRegistrationStatus": "NOT_INTEGRATED_BY_THIS_CONTENT_TASK",
+  "hero": "Vanguard",
+  "fateDebt": 7,
+  "kindOrdinal": 3,
+  "presentation": "FullCorrection",
+  "title": "The Separation",
+  "kind": "MAJOR",
+  "expandedMemoryId": "MEM_16",
+  "expandedChapterId": "CH_06",
+  "sourceCommit": "7211864e93fee914ef370912ae1ed8aafd66266b",
+  "journalBlocks": [
+    {
+      "blockKey": "context",
+      "text": "The warrior's last backward glance had become the whole of this memory. Beyond its edge, others were still trying to leave. One had lost a shoe. Another could not lift the arm that held a borrowed cloak. The warrior reached them while the voice behind the barrier was still calling.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "db70fa40b3c676acb5bb625d438d5be96ac833037b976e4114d153557ae47a07"
+    },
+    {
+      "blockKey": "new_observation",
+      "text": "He left because his friend's command mattered more than his own conviction.",
+      "mode": "NARRATED",
+      "textSHA256": "119fcfa2422cabd82dc858ff9e5841bb5b5d31ffa50fbace6fff74ac9144e99b",
+      "assetLineKey": "Vanguard:07:N01"
+    },
+    {
+      "blockKey": "replacement",
+      "text": "He left to lead the others out, without consenting to the separation he could not prevent.",
+      "mode": "NARRATED",
+      "textSHA256": "4e7e9f0c7a9520c69834a591c416310369635845419a13b9a823c37e2598e0f8",
+      "assetLineKey": "Vanguard:07:N02"
+    },
+    {
+      "blockKey": "evidence",
+      "text": "He did not stop arguing when he turned. He kept trying to look back while moving a frightened survivor ahead of him. The movement was awkward, divided between two duties. It was neither the obedience of a follower nor the clean decision his later guilt insisted it must have been.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "8404c5f3e3c3dad8eff86a2e8ba86e731d09d4e91431cc2306ef3c8e754bc443"
+    },
+    {
+      "blockKey": "account",
+      "text": "This does not make the loss just. It does not prove that another choice would have saved everyone. It restores the people his account had cropped away. While one friend remained beyond his reach, others were within it. He could fail to keep them together and still have acted for more than himself.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "8e64a8e619e6632d1dc514c1073b9f4aac42aaba9ede37b5460e71c6a119ccef"
+    },
+    {
+      "blockKey": "closing",
+      "text": "The separation was real. So were the lives he could still reach when he turned away.",
+      "mode": "NARRATED",
+      "textSHA256": "5ce9cffa2109b6e9f43076b73314fd9170d530799cac5127a65075eef932338a",
+      "assetLineKey": "Vanguard:07:N03"
+    }
+  ],
+  "journalText": "The warrior's last backward glance had become the whole of this memory. Beyond its edge, others were still trying to leave. One had lost a shoe. Another could not lift the arm that held a borrowed cloak. The warrior reached them while the voice behind the barrier was still calling.\n\nHe left because his friend's command mattered more than his own conviction.\n\nHe left to lead the others out, without consenting to the separation he could not prevent.\n\nHe did not stop arguing when he turned. He kept trying to look back while moving a frightened survivor ahead of him. The movement was awkward, divided between two duties. It was neither the obedience of a follower nor the clean decision his later guilt insisted it must have been.\n\nThis does not make the loss just. It does not prove that another choice would have saved everyone. It restores the people his account had cropped away. While one friend remained beyond his reach, others were within it. He could fail to keep them together and still have acted for more than himself.\n\nThe separation was real. So were the lives he could still reach when he turned away.",
+  "wordCount": 197,
+  "newlyRecoveredInformation": "His departure included immediate responsibility for vulnerable survivors, and did not express agreement with erasure or abandonment.",
+  "newlyAuthoredDetails": [
+    "Unnamed evacuees at the edge of the barrier memory; the original command and resistance remain intact."
+  ],
+  "sourceEvidence": [
+    "MEM_16",
+    "MEM_19",
+    "MEM_13"
+  ],
+  "relationships": {
+    "follows": [
+      "Vanguard:04",
+      "Vanguard:06"
+    ],
+    "prepares": [
+      "Vanguard:08",
+      "Vanguard:10",
+      "Reaper:07"
+    ]
+  },
+  "correction": {
+    "ownerContentKey": "Vanguard:07",
+    "revelationId": "ASC_VAN_07",
+    "correctionId": "ASC_CORR_VAN_3",
+    "localCorrectionKey": "new_observation",
+    "targetScope": "THIS_NEW_ADDITION_ONLY",
+    "targetBlockKey": "new_observation",
+    "originalNewObservation": "He left because his friend's command mattered more than his own conviction.",
+    "correctedReplacement": "He left to lead the others out, without consenting to the separation he could not prevent.",
+    "replacementBlockKey": "replacement",
+    "originalChronicleTarget": null,
+    "sharedCorrectionIdsModified": [],
+    "preserveOriginal": true,
+    "inkStyle": "Existing restrained red correction style",
+    "acknowledgement": "Only the observation added by this package may be crossed out."
+  },
+  "narration": [
+    {
+      "assetLineKey": "Vanguard:07:N01",
+      "lineId": "ASC_VAN_07__new_observation",
+      "sceneId": "ASC_VAN_07",
+      "revelationId": "ASC_VAN_07",
+      "runtimeCommandId": "new_observation",
+      "commandId": "new_observation",
+      "commandBinding": "Use the existing explicit WriteBlock ID in the authored scene; update binding if Claude assigns a different command ID.",
+      "contentKey": "Vanguard:07",
+      "blockKey": "new_observation",
+      "speaker": "NARRATOR",
+      "text": "He left because his friend's command mattered more than his own conviction.",
+      "textSHA256": "119fcfa2422cabd82dc858ff9e5841bb5b5d31ffa50fbace6fff74ac9144e99b",
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Vanguard_Debt07_The_Separation_N01.wav",
+      "emotion": "ConcernedHistorian",
+      "status": "RECORDED_AUTOMATICALLY_VERIFIED",
+      "durationSeconds": 4.26,
+      "words": [
+        {
+          "text": "He",
+          "startSeconds": 0,
+          "endSeconds": 0.3600000000000001,
+          "charStart": 0,
+          "charLength": 2,
+          "confidence": 0.9374302625656128
+        },
+        {
+          "text": "left",
+          "startSeconds": 0.3600000000000001,
+          "endSeconds": 0.56,
+          "charStart": 3,
+          "charLength": 4,
+          "confidence": 0.998065173625946
+        },
+        {
+          "text": "because",
+          "startSeconds": 0.56,
+          "endSeconds": 0.98,
+          "charStart": 8,
+          "charLength": 7,
+          "confidence": 0.9601396918296814
+        },
+        {
+          "text": "his",
+          "startSeconds": 0.98,
+          "endSeconds": 1.2200000000000002,
+          "charStart": 16,
+          "charLength": 3,
+          "confidence": 0.9964814186096191
+        },
+        {
+          "text": "friend's",
+          "startSeconds": 1.2200000000000002,
+          "endSeconds": 1.6400000000000001,
+          "charStart": 20,
+          "charLength": 8,
+          "confidence": 0.8438388109207153
+        },
+        {
+          "text": "command",
+          "startSeconds": 1.6400000000000001,
+          "endSeconds": 2.08,
+          "charStart": 29,
+          "charLength": 7,
+          "confidence": 0.9971972703933716
+        },
+        {
+          "text": "mattered",
+          "startSeconds": 2.08,
+          "endSeconds": 2.56,
+          "charStart": 37,
+          "charLength": 8,
+          "confidence": 0.9961445331573486
+        },
+        {
+          "text": "more",
+          "startSeconds": 2.56,
+          "endSeconds": 2.96,
+          "charStart": 46,
+          "charLength": 4,
+          "confidence": 0.9987338185310364
+        },
+        {
+          "text": "than",
+          "startSeconds": 2.96,
+          "endSeconds": 3.2,
+          "charStart": 51,
+          "charLength": 4,
+          "confidence": 0.9964458346366882
+        },
+        {
+          "text": "his",
+          "startSeconds": 3.2,
+          "endSeconds": 3.3600000000000003,
+          "charStart": 56,
+          "charLength": 3,
+          "confidence": 0.9980890154838562
+        },
+        {
+          "text": "own",
+          "startSeconds": 3.3600000000000003,
+          "endSeconds": 3.62,
+          "charStart": 60,
+          "charLength": 3,
+          "confidence": 0.9990763664245605
+        },
+        {
+          "text": "conviction.",
+          "startSeconds": 3.62,
+          "endSeconds": 4.06,
+          "charStart": 64,
+          "charLength": 11,
+          "confidence": 0.9680242538452148
+        }
+      ],
+      "readyForAudioClock": true,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "0bc43f700348473564c363b6e8f34cc644f90c4bb29e9aeb05c8ace282dab82f",
+      "format": {
+        "container": "WAV",
+        "sampleRate": 48000,
+        "bitDepth": 24,
+        "channels": 1,
+        "sourceBitDepth": 16
+      },
+      "alignmentMethod": "Local small.en Whisper word timestamps (attention/DTW), CTranslate2 CPU, VAD disabled; no ONNX Runtime imported",
+      "frameResolutionSeconds": 0.02,
+      "minimumWordConfidence": 0.8438388109207153,
+      "verification": {
+        "canonicalSpokenTextVerified": true,
+        "finalSampleCount": 204480,
+        "peakDBFS": -5.8498717449079765,
+        "noClipping": true,
+        "parentTranscript": "He left because his friend's command mattered more than his own conviction. He left to lead the others out without consenting to the separation he could not prevent. The separation was real. So were the lives he could still reach when he turned away.",
+        "finalCropTranscript": "He left because his friend's command mattered more than his own conviction.",
+        "sourceCropFrames": [
+          0,
+          204480
+        ],
+        "analysisPaddingSeconds": 1,
+        "manualListeningReview": "PENDING",
+        "telemetryRuntimeUsed": false
+      }
+    },
+    {
+      "assetLineKey": "Vanguard:07:N02",
+      "lineId": "ASC_VAN_07__replacement",
+      "sceneId": "ASC_VAN_07",
+      "revelationId": "ASC_VAN_07",
+      "runtimeCommandId": "replacement",
+      "commandId": "replacement",
+      "commandBinding": "Use the existing explicit WriteBlock ID in the authored scene; update binding if Claude assigns a different command ID.",
+      "contentKey": "Vanguard:07",
+      "blockKey": "replacement",
+      "speaker": "NARRATOR",
+      "text": "He left to lead the others out, without consenting to the separation he could not prevent.",
+      "textSHA256": "4e7e9f0c7a9520c69834a591c416310369635845419a13b9a823c37e2598e0f8",
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Vanguard_Debt07_The_Separation_N02.wav",
+      "emotion": "ConcernedHistorian",
+      "status": "RECORDED_AUTOMATICALLY_VERIFIED",
+      "durationSeconds": 6.02,
+      "words": [
+        {
+          "text": "He",
+          "startSeconds": 0,
+          "endSeconds": 0.28,
+          "charStart": 0,
+          "charLength": 2,
+          "confidence": 0.9357491135597229
+        },
+        {
+          "text": "left",
+          "startSeconds": 0.28,
+          "endSeconds": 0.48,
+          "charStart": 3,
+          "charLength": 4,
+          "confidence": 0.9967697858810425
+        },
+        {
+          "text": "to",
+          "startSeconds": 0.48,
+          "endSeconds": 0.74,
+          "charStart": 8,
+          "charLength": 2,
+          "confidence": 0.9982892870903015
+        },
+        {
+          "text": "lead",
+          "startSeconds": 0.74,
+          "endSeconds": 1.0,
+          "charStart": 11,
+          "charLength": 4,
+          "confidence": 0.9424374103546143
+        },
+        {
+          "text": "the",
+          "startSeconds": 1.0,
+          "endSeconds": 1.2599999999999998,
+          "charStart": 16,
+          "charLength": 3,
+          "confidence": 0.9935359954833984
+        },
+        {
+          "text": "others",
+          "startSeconds": 1.2599999999999998,
+          "endSeconds": 1.6,
+          "charStart": 20,
+          "charLength": 6,
+          "confidence": 0.9848662614822388
+        },
+        {
+          "text": "out,",
+          "startSeconds": 1.6,
+          "endSeconds": 2.1,
+          "charStart": 27,
+          "charLength": 4,
+          "confidence": 0.9970449805259705
+        },
+        {
+          "text": "without",
+          "startSeconds": 2.68,
+          "endSeconds": 2.94,
+          "charStart": 32,
+          "charLength": 7,
+          "confidence": 0.996390163898468
+        },
+        {
+          "text": "consenting",
+          "startSeconds": 2.94,
+          "endSeconds": 3.8,
+          "charStart": 40,
+          "charLength": 10,
+          "confidence": 0.9914834499359131
+        },
+        {
+          "text": "to",
+          "startSeconds": 3.8,
+          "endSeconds": 3.9800000000000004,
+          "charStart": 51,
+          "charLength": 2,
+          "confidence": 0.9979275465011597
+        },
+        {
+          "text": "the",
+          "startSeconds": 3.9800000000000004,
+          "endSeconds": 4.16,
+          "charStart": 54,
+          "charLength": 3,
+          "confidence": 0.9982202649116516
+        },
+        {
+          "text": "separation",
+          "startSeconds": 4.16,
+          "endSeconds": 4.64,
+          "charStart": 58,
+          "charLength": 10,
+          "confidence": 0.9968336224555969
+        },
+        {
+          "text": "he",
+          "startSeconds": 4.64,
+          "endSeconds": 5.12,
+          "charStart": 69,
+          "charLength": 2,
+          "confidence": 0.9811088442802429
+        },
+        {
+          "text": "could",
+          "startSeconds": 5.12,
+          "endSeconds": 5.3,
+          "charStart": 72,
+          "charLength": 5,
+          "confidence": 0.9990946054458618
+        },
+        {
+          "text": "not",
+          "startSeconds": 5.3,
+          "endSeconds": 5.5,
+          "charStart": 78,
+          "charLength": 3,
+          "confidence": 0.9987543821334839
+        },
+        {
+          "text": "prevent.",
+          "startSeconds": 5.5,
+          "endSeconds": 5.86,
+          "charStart": 82,
+          "charLength": 8,
+          "confidence": 0.998749852180481
+        }
+      ],
+      "readyForAudioClock": true,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "faa2d5e0e21160c82e11adf807a592a1b8b36e2da1b4cc7e2bf8d524b448c4c5",
+      "format": {
+        "container": "WAV",
+        "sampleRate": 48000,
+        "bitDepth": 24,
+        "channels": 1,
+        "sourceBitDepth": 16
+      },
+      "alignmentMethod": "Local small.en Whisper word timestamps (attention/DTW), CTranslate2 CPU, VAD disabled; no ONNX Runtime imported",
+      "frameResolutionSeconds": 0.02,
+      "minimumWordConfidence": 0.9357491135597229,
+      "verification": {
+        "canonicalSpokenTextVerified": true,
+        "finalSampleCount": 288960,
+        "peakDBFS": -6.931870226822872,
+        "noClipping": true,
+        "parentTranscript": "He left because his friend's command mattered more than his own conviction. He left to lead the others out without consenting to the separation he could not prevent. The separation was real. So were the lives he could still reach when he turned away.",
+        "finalCropTranscript": "He left to lead the others out, without consenting to the separation he could not prevent.",
+        "sourceCropFrames": [
+          240960,
+          529920
+        ],
+        "analysisPaddingSeconds": 1,
+        "manualListeningReview": "PENDING",
+        "telemetryRuntimeUsed": false
+      }
+    },
+    {
+      "assetLineKey": "Vanguard:07:N03",
+      "lineId": "ASC_VAN_07__closing",
+      "sceneId": "ASC_VAN_07",
+      "revelationId": "ASC_VAN_07",
+      "runtimeCommandId": "closing",
+      "commandId": "closing",
+      "commandBinding": "Use the existing explicit WriteBlock ID in the authored scene; update binding if Claude assigns a different command ID.",
+      "contentKey": "Vanguard:07",
+      "blockKey": "closing",
+      "speaker": "NARRATOR",
+      "text": "The separation was real. So were the lives he could still reach when he turned away.",
+      "textSHA256": "5ce9cffa2109b6e9f43076b73314fd9170d530799cac5127a65075eef932338a",
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Vanguard_Debt07_The_Separation_N03.wav",
+      "emotion": "ConcernedHistorian",
+      "status": "RECORDED_AUTOMATICALLY_VERIFIED",
+      "durationSeconds": 5.98,
+      "words": [
+        {
+          "text": "The",
+          "startSeconds": 0,
+          "endSeconds": 0.45999999999999996,
+          "charStart": 0,
+          "charLength": 3,
+          "confidence": 0.9612377285957336
+        },
+        {
+          "text": "separation",
+          "startSeconds": 0.45999999999999996,
+          "endSeconds": 0.8999999999999999,
+          "charStart": 4,
+          "charLength": 10,
+          "confidence": 0.9981752634048462
+        },
+        {
+          "text": "was",
+          "startSeconds": 0.8999999999999999,
+          "endSeconds": 1.2999999999999998,
+          "charStart": 15,
+          "charLength": 3,
+          "confidence": 0.9992368221282959
+        },
+        {
+          "text": "real.",
+          "startSeconds": 1.2999999999999998,
+          "endSeconds": 1.7200000000000002,
+          "charStart": 19,
+          "charLength": 5,
+          "confidence": 0.9995712637901306
+        },
+        {
+          "text": "So",
+          "startSeconds": 2.22,
+          "endSeconds": 2.68,
+          "charStart": 25,
+          "charLength": 2,
+          "confidence": 0.9938774704933167
+        },
+        {
+          "text": "were",
+          "startSeconds": 2.68,
+          "endSeconds": 2.84,
+          "charStart": 28,
+          "charLength": 4,
+          "confidence": 0.9769384264945984
+        },
+        {
+          "text": "the",
+          "startSeconds": 2.84,
+          "endSeconds": 2.96,
+          "charStart": 33,
+          "charLength": 3,
+          "confidence": 0.9979239702224731
+        },
+        {
+          "text": "lives",
+          "startSeconds": 2.96,
+          "endSeconds": 3.3200000000000003,
+          "charStart": 37,
+          "charLength": 5,
+          "confidence": 0.9981203675270081
+        },
+        {
+          "text": "he",
+          "startSeconds": 3.3200000000000003,
+          "endSeconds": 3.5599999999999996,
+          "charStart": 43,
+          "charLength": 2,
+          "confidence": 0.9908562898635864
+        },
+        {
+          "text": "could",
+          "startSeconds": 3.5599999999999996,
+          "endSeconds": 3.7,
+          "charStart": 46,
+          "charLength": 5,
+          "confidence": 0.9959099292755127
+        },
+        {
+          "text": "still",
+          "startSeconds": 3.7,
+          "endSeconds": 4.0,
+          "charStart": 52,
+          "charLength": 5,
+          "confidence": 0.9951770305633545
+        },
+        {
+          "text": "reach",
+          "startSeconds": 4.0,
+          "endSeconds": 4.42,
+          "charStart": 58,
+          "charLength": 5,
+          "confidence": 0.9993168115615845
+        },
+        {
+          "text": "when",
+          "startSeconds": 4.42,
+          "endSeconds": 5.08,
+          "charStart": 64,
+          "charLength": 4,
+          "confidence": 0.7553108930587769
+        },
+        {
+          "text": "he",
+          "startSeconds": 5.08,
+          "endSeconds": 5.24,
+          "charStart": 69,
+          "charLength": 2,
+          "confidence": 0.9984595775604248
+        },
+        {
+          "text": "turned",
+          "startSeconds": 5.24,
+          "endSeconds": 5.44,
+          "charStart": 72,
+          "charLength": 6,
+          "confidence": 0.9972720742225647
+        },
+        {
+          "text": "away.",
+          "startSeconds": 5.44,
+          "endSeconds": 5.82,
+          "charStart": 79,
+          "charLength": 5,
+          "confidence": 0.9993239641189575
+        }
+      ],
+      "readyForAudioClock": true,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "2a8b5412019780d27fc5739c720b8a4cbe826c6c973a0452212cb488a816af90",
+      "format": {
+        "container": "WAV",
+        "sampleRate": 48000,
+        "bitDepth": 24,
+        "channels": 1,
+        "sourceBitDepth": 16
+      },
+      "alignmentMethod": "Local small.en Whisper word timestamps (attention/DTW), CTranslate2 CPU, VAD disabled; no ONNX Runtime imported",
+      "frameResolutionSeconds": 0.02,
+      "minimumWordConfidence": 0.7553108930587769,
+      "verification": {
+        "canonicalSpokenTextVerified": true,
+        "finalSampleCount": 287040,
+        "peakDBFS": -6.2089292856460565,
+        "noClipping": true,
+        "parentTranscript": "He left because his friend's command mattered more than his own conviction. He left to lead the others out without consenting to the separation he could not prevent. The separation was real. So were the lives he could still reach when he turned away.",
+        "finalCropTranscript": "The separation was real, so were the lives he could still reach when he turned away.",
+        "sourceCropFrames": [
+          565440,
+          852480
+        ],
+        "analysisPaddingSeconds": 1,
+        "manualListeningReview": "PENDING",
+        "telemetryRuntimeUsed": false
+      }
+    }
+  ],
+  "visualKey": "Vanguard_ExitStudy",
+  "cinematic": {
+    "direction": "Return to the separation memory and expand the frame only through new margin writing and the exit study. Do not alter the barrier clip or its spoken lines. The corrected observation remains on its own continuation leaf.",
+    "events": [
+      {
+        "step": 1,
+        "intent": "RETURN_TO_EXISTING_MEMORY",
+        "memoryId": "MEM_16",
+        "sceneId": "ASC_VAN_07",
+        "useExistingBookTurn": true,
+        "continuationAPI": "ChronicleJournal.PlanContinuation",
+        "maxVisibleTurns": 3,
+        "turnTiming": "ChronicleRhythm.TurnAnticipation and TurnSettle",
+        "baseTextReadOnly": true,
+        "keepBookOpen": true
+      },
+      {
+        "step": 2,
+        "intent": "RESERVE_NEW_WRITING_AREA",
+        "placement": "Fresh continuation leaf for major corrections; unused margin only if it fits for small additions.",
+        "font": "Reuse current Chronicle handwriting and stroke renderer; respect user-selected textScale without automatic shrinking.",
+        "existingBlocksReadOnly": true
+      },
+      {
+        "step": 3,
+        "intent": "OPTIONAL_MARGINAL_ART",
+        "visualKey": "Vanguard_ExitStudy",
+        "asset": "SourceAssets/ChronicleAscension/Art/Vanguard_ExitStudy.png",
+        "status": "GENERATED_AND_CHECKED",
+        "onlyNewOverlay": true,
+        "animation": "None required; static marginal study."
+      },
+      {
+        "step": 4,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "context",
+        "mode": "SILENT_HANDWRITING",
+        "text": "The warrior's last backward glance had become the whole of this memory. Beyond its edge, others were still trying to leave. One had lost a shoe. Another could not lift the arm that held a borrowed cloak. The warrior reached them while the voice behind the barrier was still calling.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 5,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "new_observation",
+        "mode": "NARRATED",
+        "text": "He left because his friend's command mattered more than his own conviction.",
+        "completeBeforeNextBlockingEvent": true,
+        "assetLineKey": "Vanguard:07:N01",
+        "clock": "Final recording sample clock and measured word intervals only.",
+        "missingAudioPolicy": "Existing silent-writing fallback; do not invent word timings."
+      },
+      {
+        "step": 6,
+        "intent": "HESITATE",
+        "authoredPauseSeconds": 1.0,
+        "pauseInk": true,
+        "narrationMustFinish": true
+      },
+      {
+        "step": 7,
+        "intent": "RED_STRIKE_NEW_OBSERVATION",
+        "targetBlockKey": "new_observation",
+        "ownerContentKey": "Vanguard:07",
+        "requestedExistingCue": "red_ink",
+        "cueMeaning": "Existing Debuff mapping; no new quill Foley is claimed.",
+        "preserveOldChronicleInk": true,
+        "requireScopedTargetValidation": true
+      },
+      {
+        "step": 8,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "replacement",
+        "mode": "NARRATED",
+        "text": "He left to lead the others out, without consenting to the separation he could not prevent.",
+        "completeBeforeNextBlockingEvent": true,
+        "assetLineKey": "Vanguard:07:N02",
+        "clock": "Final recording sample clock and measured word intervals only.",
+        "missingAudioPolicy": "Existing silent-writing fallback; do not invent word timings."
+      },
+      {
+        "step": 9,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "evidence",
+        "mode": "SILENT_HANDWRITING",
+        "text": "He did not stop arguing when he turned. He kept trying to look back while moving a frightened survivor ahead of him. The movement was awkward, divided between two duties. It was neither the obedience of a follower nor the clean decision his later guilt insisted it must have been.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 10,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "account",
+        "mode": "SILENT_HANDWRITING",
+        "text": "This does not make the loss just. It does not prove that another choice would have saved everyone. It restores the people his account had cropped away. While one friend remained beyond his reach, others were within it. He could fail to keep them together and still have acted for more than himself.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 11,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "closing",
+        "mode": "NARRATED",
+        "text": "The separation was real. So were the lives he could still reach when he turned away.",
+        "completeBeforeNextBlockingEvent": true,
+        "assetLineKey": "Vanguard:07:N03",
+        "clock": "Final recording sample clock and measured word intervals only.",
+        "missingAudioPolicy": "Existing silent-writing fallback; do not invent word timings."
+      },
+      {
+        "step": 12,
+        "intent": "COMPLETE_NEW_ADDITION",
+        "archivePermanent": true,
+        "idempotent": true,
+        "completionHold": "ChronicleRhythm.CompletionHold; no extra fixed three-second hold",
+        "revisitTiming": "ChronicleRhythm.RevisitScale",
+        "skipState": "All new blocks complete; the new observation is struck and its replacement remains. All base-memory content is unchanged.",
+        "replay": "Read immediately; full cinematic is opt-in.",
+        "runtimeSaveId": "ASC_VAN_07"
+      }
+    ]
+  },
+  "continuityGates": [
+    {
+      "requirement": "Existing expanded memory and its canonical correction/knowledge have already been viewed.",
+      "memoryId": "MEM_16"
+    }
+  ],
+  "spoilerPolicy": "Never identify the Narrator with the fourth companion or the Forgotten Observer before SCENE_CH10. Base discoveries remain first; additions are deferred if required knowledge is absent.",
+  "existingContentModified": false,
+  "newBeingDialogue": false,
+  "accessibility": {
+    "instantText": true,
+    "voiceMuteKeepsPageReadable": true,
+    "reducedMotionUsesStaticArt": true,
+    "reducedFlashingNoExtraGlow": true,
+    "skipResolvesCompletedNewState": true
+  }
+}

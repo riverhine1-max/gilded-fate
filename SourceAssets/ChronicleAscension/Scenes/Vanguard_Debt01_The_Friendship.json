@@ -1,0 +1,807 @@
+{
+  "schemaVersion": 1,
+  "contentKey": "Vanguard:01",
+  "revelationId": "ASC_VAN_01",
+  "sceneId": "ASC_VAN_01",
+  "idBindingStatus": "BOUND_TO_EXISTING_ASCENSION_CATALOG",
+  "authoringComplete": true,
+  "contentReady": false,
+  "runtimeRegistrationStatus": "NOT_INTEGRATED_BY_THIS_CONTENT_TASK",
+  "hero": "Vanguard",
+  "fateDebt": 1,
+  "kindOrdinal": 1,
+  "presentation": "FullCorrection",
+  "title": "The Friendship",
+  "kind": "MAJOR",
+  "expandedMemoryId": "MEM_07",
+  "expandedChapterId": "CH_03",
+  "sourceCommit": "7211864e93fee914ef370912ae1ed8aafd66266b",
+  "journalBlocks": [
+    {
+      "blockKey": "context",
+      "text": "The fire returns with a detail the larger account neglected: a cup with a broken handle. The warrior had set it aside. The fourth companion sat beside him and repaired it with a short length of wire, working while the others discussed the road below the kingdom.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "e6e425b3a87b2b4716ebddb8b3d40ef9742bb400aa900ef30be60b5e487f5734"
+    },
+    {
+      "blockKey": "new_observation",
+      "text": "The warrior's loyalty began as a debt he owed the fourth companion.",
+      "mode": "NARRATED",
+      "textSHA256": "2cddcc4febd6de9fc6f76a976ba030e2936140ffb368c144d4b75b62d2e6e793",
+      "assetLineKey": "Vanguard:01:N01"
+    },
+    {
+      "blockKey": "replacement",
+      "text": "Their loyalty grew from small acts freely given, before either man had anything to repay.",
+      "mode": "NARRATED",
+      "textSHA256": "b1b594fbc5fa55cb9bb185518ab4c143c7d3dd861debe224ded5420c85ded851",
+      "assetLineKey": "Vanguard:01:N02"
+    },
+    {
+      "blockKey": "evidence",
+      "text": "There was no rescue to reward that evening, no oath demanded in exchange. The repaired cup passed between them without ceremony. Later, when the fourth spoke too confidently, the warrior answered him without fear that disagreement would end their place beside the same fire.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "76f4f06096b513424a07efd6c3a46319017c2823bbafb923f604c3a244d0d75f"
+    },
+    {
+      "blockKey": "account",
+      "text": "That ordinary freedom matters. A follower might have mistaken certainty for strength. Someone who had shared cold meals and foolish plans could recognize the person beneath it. The warrior would challenge him precisely because the friendship allowed more than obedience. The wire was crooked. The cup held.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "30e52e787a6eab1596bcdcfd6dd2e10a6be37d77589f12478d29f8cd72acac38"
+    },
+    {
+      "blockKey": "closing",
+      "text": "Before he tried to protect his friend from a terrible choice, he had learned that he could tell him no.",
+      "mode": "NARRATED",
+      "textSHA256": "72c30fc26029994611fcb3aa835d52296f0857c53ffe16388165169da40e400e",
+      "assetLineKey": "Vanguard:01:N03"
+    }
+  ],
+  "journalText": "The fire returns with a detail the larger account neglected: a cup with a broken handle. The warrior had set it aside. The fourth companion sat beside him and repaired it with a short length of wire, working while the others discussed the road below the kingdom.\n\nThe warrior's loyalty began as a debt he owed the fourth companion.\n\nTheir loyalty grew from small acts freely given, before either man had anything to repay.\n\nThere was no rescue to reward that evening, no oath demanded in exchange. The repaired cup passed between them without ceremony. Later, when the fourth spoke too confidently, the warrior answered him without fear that disagreement would end their place beside the same fire.\n\nThat ordinary freedom matters. A follower might have mistaken certainty for strength. Someone who had shared cold meals and foolish plans could recognize the person beneath it. The warrior would challenge him precisely because the friendship allowed more than obedience. The wire was crooked. The cup held.\n\nBefore he tried to protect his friend from a terrible choice, he had learned that he could tell him no.",
+  "wordCount": 185,
+  "newlyRecoveredInformation": "Their bond developed through unpriced everyday care, and permitted disagreement before the sanctuary crisis. Loyalty was not repayment for a rescue or allegiance to a leader.",
+  "newlyAuthoredDetails": [
+    "The fourth companion repairs the warrior's cup beside the campfire.",
+    "The cup's crooked wire becomes a mundane memory motif, never a magical artifact."
+  ],
+  "sourceEvidence": [
+    "MEM_07",
+    "MEM_13",
+    "MEM_25"
+  ],
+  "relationships": {
+    "prepares": [
+      "Vanguard:04",
+      "Vanguard:10"
+    ],
+    "crossCharacter": [
+      "Reaper:01"
+    ]
+  },
+  "correction": {
+    "ownerContentKey": "Vanguard:01",
+    "revelationId": "ASC_VAN_01",
+    "correctionId": "ASC_CORR_VAN_1",
+    "localCorrectionKey": "new_observation",
+    "targetScope": "THIS_NEW_ADDITION_ONLY",
+    "targetBlockKey": "new_observation",
+    "originalNewObservation": "The warrior's loyalty began as a debt he owed the fourth companion.",
+    "correctedReplacement": "Their loyalty grew from small acts freely given, before either man had anything to repay.",
+    "replacementBlockKey": "replacement",
+    "originalChronicleTarget": null,
+    "sharedCorrectionIdsModified": [],
+    "preserveOriginal": true,
+    "inkStyle": "Existing restrained red correction style",
+    "acknowledgement": "Only the observation added by this package may be crossed out."
+  },
+  "narration": [
+    {
+      "assetLineKey": "Vanguard:01:N01",
+      "lineId": "ASC_VAN_01__new_observation",
+      "sceneId": "ASC_VAN_01",
+      "revelationId": "ASC_VAN_01",
+      "runtimeCommandId": "new_observation",
+      "commandId": "new_observation",
+      "commandBinding": "Use the existing explicit WriteBlock ID in the authored scene; update binding if Claude assigns a different command ID.",
+      "contentKey": "Vanguard:01",
+      "blockKey": "new_observation",
+      "speaker": "NARRATOR",
+      "text": "The warrior's loyalty began as a debt he owed the fourth companion.",
+      "textSHA256": "2cddcc4febd6de9fc6f76a976ba030e2936140ffb368c144d4b75b62d2e6e793",
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Vanguard_Debt01_The_Friendship_N01.wav",
+      "emotion": "MeasuredHistorian",
+      "status": "RECORDED_AUTOMATICALLY_VERIFIED",
+      "durationSeconds": 3.76,
+      "words": [
+        {
+          "text": "The",
+          "startSeconds": 0.11999999999999988,
+          "endSeconds": 0.19999999999999996,
+          "confidence": 0.9980490207672119,
+          "charStart": 0,
+          "charLength": 3
+        },
+        {
+          "text": "warrior's",
+          "startSeconds": 0.26,
+          "endSeconds": 0.6399999999999999,
+          "confidence": 0.934263656536738,
+          "charStart": 4,
+          "charLength": 9
+        },
+        {
+          "text": "loyalty",
+          "startSeconds": 0.72,
+          "endSeconds": 1.18,
+          "confidence": 0.9327910372189113,
+          "charStart": 14,
+          "charLength": 7
+        },
+        {
+          "text": "began",
+          "startSeconds": 1.2799999999999996,
+          "endSeconds": 1.6600000000000004,
+          "confidence": 0.9997946143150329,
+          "charStart": 22,
+          "charLength": 5
+        },
+        {
+          "text": "as",
+          "startSeconds": 1.7799999999999996,
+          "endSeconds": 1.8199999999999996,
+          "confidence": 0.9998508989810944,
+          "charStart": 28,
+          "charLength": 2
+        },
+        {
+          "text": "a",
+          "startSeconds": 1.9200000000000002,
+          "endSeconds": 1.9399999999999997,
+          "confidence": 0.9957507848739624,
+          "charStart": 31,
+          "charLength": 1
+        },
+        {
+          "text": "debt",
+          "startSeconds": 2.0,
+          "endSeconds": 2.1799999999999997,
+          "confidence": 0.9883251041173935,
+          "charStart": 33,
+          "charLength": 4
+        },
+        {
+          "text": "he",
+          "startSeconds": 2.26,
+          "endSeconds": 2.34,
+          "confidence": 0.9996236860752106,
+          "charStart": 38,
+          "charLength": 2
+        },
+        {
+          "text": "owed",
+          "startSeconds": 2.46,
+          "endSeconds": 2.62,
+          "confidence": 0.9164547175168991,
+          "charStart": 41,
+          "charLength": 4
+        },
+        {
+          "text": "the",
+          "startSeconds": 2.66,
+          "endSeconds": 2.74,
+          "confidence": 0.9948464433352152,
+          "charStart": 46,
+          "charLength": 3
+        },
+        {
+          "text": "fourth",
+          "startSeconds": 2.7799999999999994,
+          "endSeconds": 3.04,
+          "confidence": 0.9572861095269521,
+          "charStart": 50,
+          "charLength": 6
+        },
+        {
+          "text": "companion.",
+          "startSeconds": 3.12,
+          "endSeconds": 3.5999999999999996,
+          "confidence": 0.9972721404499478,
+          "charStart": 57,
+          "charLength": 10
+        }
+      ],
+      "readyForAudioClock": true,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "ba82ffcbfe2be8081d1a2d48c8d152c5d37bac5abb9ceb3b7c86e4ca5ac1698b",
+      "format": {
+        "container": "WAV",
+        "sampleRate": 48000,
+        "bitDepth": 24,
+        "channels": 1,
+        "sourceBitDepth": 16
+      },
+      "alignmentMethod": "wav2vec2-base-960h quantized ONNX CTC Viterbi with independent small.en transcription; analysis padding removed from real timestamps",
+      "frameResolutionSeconds": 0.02,
+      "minimumWordConfidence": 0.9164547175168991,
+      "verification": {
+        "canonicalSpokenTextVerified": true,
+        "finalSampleCount": 180480,
+        "peakDBFS": -6.622522314926684,
+        "noClipping": true,
+        "sourceCropFrames": [
+          83520,
+          264000
+        ],
+        "parentTranscript": "The warrior's loyalty began as a debt he owed the fourth companion. Their loyalty grew from small acts freely given before either man had anything to repay. Before he tried to protect his friend from a terrible choice, he had learned that he could tell him no.",
+        "perLineCropRechecked": false,
+        "orthographicEquivalents": [
+          "traveller/traveler",
+          "counter example/counterexample"
+        ],
+        "manualListeningReview": "PENDING"
+      }
+    },
+    {
+      "assetLineKey": "Vanguard:01:N02",
+      "lineId": "ASC_VAN_01__replacement",
+      "sceneId": "ASC_VAN_01",
+      "revelationId": "ASC_VAN_01",
+      "runtimeCommandId": "replacement",
+      "commandId": "replacement",
+      "commandBinding": "Use the existing explicit WriteBlock ID in the authored scene; update binding if Claude assigns a different command ID.",
+      "contentKey": "Vanguard:01",
+      "blockKey": "replacement",
+      "speaker": "NARRATOR",
+      "text": "Their loyalty grew from small acts freely given, before either man had anything to repay.",
+      "textSHA256": "b1b594fbc5fa55cb9bb185518ab4c143c7d3dd861debe224ded5420c85ded851",
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Vanguard_Debt01_The_Friendship_N02.wav",
+      "emotion": "MeasuredHistorian",
+      "status": "RECORDED_AUTOMATICALLY_VERIFIED",
+      "durationSeconds": 6.74,
+      "words": [
+        {
+          "text": "Their",
+          "startSeconds": 0.11999999999999922,
+          "endSeconds": 0.33999999999999986,
+          "confidence": 0.8050695508718491,
+          "charStart": 0,
+          "charLength": 5
+        },
+        {
+          "text": "loyalty",
+          "startSeconds": 0.6799999999999988,
+          "endSeconds": 1.1399999999999997,
+          "confidence": 0.9729702472686768,
+          "charStart": 6,
+          "charLength": 7
+        },
+        {
+          "text": "grew",
+          "startSeconds": 1.2399999999999993,
+          "endSeconds": 1.46,
+          "confidence": 0.9994032979011536,
+          "charStart": 14,
+          "charLength": 4
+        },
+        {
+          "text": "from",
+          "startSeconds": 1.6599999999999993,
+          "endSeconds": 1.7800000000000002,
+          "confidence": 0.967900961637497,
+          "charStart": 19,
+          "charLength": 4
+        },
+        {
+          "text": "small",
+          "startSeconds": 1.8999999999999995,
+          "endSeconds": 2.2399999999999993,
+          "confidence": 0.9427372455596924,
+          "charStart": 24,
+          "charLength": 5
+        },
+        {
+          "text": "acts",
+          "startSeconds": 2.339999999999999,
+          "endSeconds": 2.5999999999999988,
+          "confidence": 0.9381687194108963,
+          "charStart": 30,
+          "charLength": 4
+        },
+        {
+          "text": "freely",
+          "startSeconds": 2.919999999999999,
+          "endSeconds": 3.259999999999999,
+          "confidence": 0.9702683091163635,
+          "charStart": 35,
+          "charLength": 6
+        },
+        {
+          "text": "given,",
+          "startSeconds": 3.3199999999999994,
+          "endSeconds": 3.5599999999999996,
+          "confidence": 0.9829454779624939,
+          "charStart": 42,
+          "charLength": 6
+        },
+        {
+          "text": "before",
+          "startSeconds": 4.319999999999999,
+          "endSeconds": 4.64,
+          "confidence": 0.9932048519452413,
+          "charStart": 49,
+          "charLength": 6
+        },
+        {
+          "text": "either",
+          "startSeconds": 4.839999999999999,
+          "endSeconds": 5.079999999999999,
+          "confidence": 0.9468501607577006,
+          "charStart": 56,
+          "charLength": 6
+        },
+        {
+          "text": "man",
+          "startSeconds": 5.12,
+          "endSeconds": 5.36,
+          "confidence": 0.9777128299077352,
+          "charStart": 63,
+          "charLength": 3
+        },
+        {
+          "text": "had",
+          "startSeconds": 5.499999999999999,
+          "endSeconds": 5.599999999999999,
+          "confidence": 0.999746044476827,
+          "charStart": 67,
+          "charLength": 3
+        },
+        {
+          "text": "anything",
+          "startSeconds": 5.679999999999999,
+          "endSeconds": 5.999999999999999,
+          "confidence": 0.9598533138632774,
+          "charStart": 71,
+          "charLength": 8
+        },
+        {
+          "text": "to",
+          "startSeconds": 6.04,
+          "endSeconds": 6.12,
+          "confidence": 0.9978511929512024,
+          "charStart": 80,
+          "charLength": 2
+        },
+        {
+          "text": "repay.",
+          "startSeconds": 6.179999999999999,
+          "endSeconds": 6.579999999999999,
+          "confidence": 0.9496683835983276,
+          "charStart": 83,
+          "charLength": 6
+        }
+      ],
+      "readyForAudioClock": true,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "8949539986cb5b71c57a7c571358037f05a69c22c57d84ab049e24e769367b5d",
+      "format": {
+        "container": "WAV",
+        "sampleRate": 48000,
+        "bitDepth": 24,
+        "channels": 1,
+        "sourceBitDepth": 16
+      },
+      "alignmentMethod": "wav2vec2-base-960h quantized ONNX CTC Viterbi with independent small.en transcription; analysis padding removed from real timestamps",
+      "frameResolutionSeconds": 0.02,
+      "minimumWordConfidence": 0.8050695508718491,
+      "verification": {
+        "canonicalSpokenTextVerified": true,
+        "finalSampleCount": 323520,
+        "peakDBFS": -7.168469148865004,
+        "noClipping": true,
+        "sourceCropFrames": [
+          309120,
+          632640
+        ],
+        "parentTranscript": "The warrior's loyalty began as a debt he owed the fourth companion. Their loyalty grew from small acts freely given before either man had anything to repay. Before he tried to protect his friend from a terrible choice, he had learned that he could tell him no.",
+        "perLineCropRechecked": false,
+        "orthographicEquivalents": [
+          "traveller/traveler",
+          "counter example/counterexample"
+        ],
+        "manualListeningReview": "PENDING"
+      }
+    },
+    {
+      "assetLineKey": "Vanguard:01:N03",
+      "lineId": "ASC_VAN_01__closing",
+      "sceneId": "ASC_VAN_01",
+      "revelationId": "ASC_VAN_01",
+      "runtimeCommandId": "closing",
+      "commandId": "closing",
+      "commandBinding": "Use the existing explicit WriteBlock ID in the authored scene; update binding if Claude assigns a different command ID.",
+      "contentKey": "Vanguard:01",
+      "blockKey": "closing",
+      "speaker": "NARRATOR",
+      "text": "Before he tried to protect his friend from a terrible choice, he had learned that he could tell him no.",
+      "textSHA256": "72c30fc26029994611fcb3aa835d52296f0857c53ffe16388165169da40e400e",
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Vanguard_Debt01_The_Friendship_N03.wav",
+      "emotion": "MeasuredHistorian",
+      "status": "RECORDED_AUTOMATICALLY_VERIFIED",
+      "durationSeconds": 5.62,
+      "words": [
+        {
+          "text": "Before",
+          "startSeconds": 0.11999999999999922,
+          "endSeconds": 0.40000000000000036,
+          "confidence": 0.9691742956638336,
+          "charStart": 0,
+          "charLength": 6
+        },
+        {
+          "text": "he",
+          "startSeconds": 0.4399999999999995,
+          "endSeconds": 0.5199999999999996,
+          "confidence": 0.8900452554225922,
+          "charStart": 7,
+          "charLength": 2
+        },
+        {
+          "text": "tried",
+          "startSeconds": 0.5800000000000001,
+          "endSeconds": 0.8399999999999999,
+          "confidence": 0.9790662884712219,
+          "charStart": 10,
+          "charLength": 5
+        },
+        {
+          "text": "to",
+          "startSeconds": 0.8800000000000008,
+          "endSeconds": 0.9399999999999995,
+          "confidence": 0.9999686181545258,
+          "charStart": 16,
+          "charLength": 2
+        },
+        {
+          "text": "protect",
+          "startSeconds": 1.0,
+          "endSeconds": 1.3200000000000003,
+          "confidence": 0.9857802220753261,
+          "charStart": 19,
+          "charLength": 7
+        },
+        {
+          "text": "his",
+          "startSeconds": 1.3599999999999994,
+          "endSeconds": 1.4800000000000004,
+          "confidence": 0.9992871880531311,
+          "charStart": 27,
+          "charLength": 3
+        },
+        {
+          "text": "friend",
+          "startSeconds": 1.5399999999999991,
+          "endSeconds": 1.7800000000000011,
+          "confidence": 0.9817251066366831,
+          "charStart": 31,
+          "charLength": 6
+        },
+        {
+          "text": "from",
+          "startSeconds": 1.8599999999999994,
+          "endSeconds": 1.9800000000000004,
+          "confidence": 0.990660548210144,
+          "charStart": 38,
+          "charLength": 4
+        },
+        {
+          "text": "a",
+          "startSeconds": 2.039999999999999,
+          "endSeconds": 2.0599999999999987,
+          "confidence": 0.9974883794784546,
+          "charStart": 43,
+          "charLength": 1
+        },
+        {
+          "text": "terrible",
+          "startSeconds": 2.1400000000000006,
+          "endSeconds": 2.5199999999999996,
+          "confidence": 0.9986381903290749,
+          "charStart": 45,
+          "charLength": 8
+        },
+        {
+          "text": "choice,",
+          "startSeconds": 2.6000000000000014,
+          "endSeconds": 2.9200000000000017,
+          "confidence": 0.976943443218867,
+          "charStart": 54,
+          "charLength": 7
+        },
+        {
+          "text": "he",
+          "startSeconds": 3.6000000000000014,
+          "endSeconds": 3.6799999999999997,
+          "confidence": 0.9998154044151306,
+          "charStart": 62,
+          "charLength": 2
+        },
+        {
+          "text": "had",
+          "startSeconds": 3.7399999999999984,
+          "endSeconds": 3.84,
+          "confidence": 0.9998395840326945,
+          "charStart": 65,
+          "charLength": 3
+        },
+        {
+          "text": "learned",
+          "startSeconds": 3.8999999999999986,
+          "endSeconds": 4.219999999999999,
+          "confidence": 0.9596578223364693,
+          "charStart": 69,
+          "charLength": 7
+        },
+        {
+          "text": "that",
+          "startSeconds": 4.399999999999999,
+          "endSeconds": 4.52,
+          "confidence": 0.9913764894008636,
+          "charStart": 77,
+          "charLength": 4
+        },
+        {
+          "text": "he",
+          "startSeconds": 4.559999999999999,
+          "endSeconds": 4.640000000000001,
+          "confidence": 0.9917747676372528,
+          "charStart": 82,
+          "charLength": 2
+        },
+        {
+          "text": "could",
+          "startSeconds": 4.699999999999999,
+          "endSeconds": 4.84,
+          "confidence": 0.9654171347618103,
+          "charStart": 85,
+          "charLength": 5
+        },
+        {
+          "text": "tell",
+          "startSeconds": 4.920000000000002,
+          "endSeconds": 5.079999999999998,
+          "confidence": 0.9839393347501755,
+          "charStart": 91,
+          "charLength": 4
+        },
+        {
+          "text": "him",
+          "startSeconds": 5.120000000000001,
+          "endSeconds": 5.219999999999999,
+          "confidence": 0.9918208122253418,
+          "charStart": 96,
+          "charLength": 3
+        },
+        {
+          "text": "no.",
+          "startSeconds": 5.32,
+          "endSeconds": 5.460000000000001,
+          "confidence": 0.9994083940982819,
+          "charStart": 100,
+          "charLength": 3
+        }
+      ],
+      "readyForAudioClock": true,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "42e474b488e365690d676aa9a9c79005b3e69fb70f2a1aa30ca932521940fa83",
+      "format": {
+        "container": "WAV",
+        "sampleRate": 48000,
+        "bitDepth": 24,
+        "channels": 1,
+        "sourceBitDepth": 16
+      },
+      "alignmentMethod": "wav2vec2-base-960h quantized ONNX CTC Viterbi with independent small.en transcription; analysis padding removed from real timestamps",
+      "frameResolutionSeconds": 0.02,
+      "minimumWordConfidence": 0.8900452554225922,
+      "verification": {
+        "canonicalSpokenTextVerified": true,
+        "finalSampleCount": 269760,
+        "peakDBFS": -6.542825888136123,
+        "noClipping": true,
+        "sourceCropFrames": [
+          672000,
+          941760
+        ],
+        "parentTranscript": "The warrior's loyalty began as a debt he owed the fourth companion. Their loyalty grew from small acts freely given before either man had anything to repay. Before he tried to protect his friend from a terrible choice, he had learned that he could tell him no.",
+        "perLineCropRechecked": false,
+        "orthographicEquivalents": [
+          "traveller/traveler",
+          "counter example/counterexample"
+        ],
+        "manualListeningReview": "PENDING"
+      }
+    }
+  ],
+  "visualKey": "Vanguard_MendedCup",
+  "cinematic": {
+    "direction": "Keep the existing campfire page visible, then add the cup study on new paper. Its bent wire is revealed after the new observation is struck. No portraits or old ink are changed.",
+    "events": [
+      {
+        "step": 1,
+        "intent": "RETURN_TO_EXISTING_MEMORY",
+        "memoryId": "MEM_07",
+        "sceneId": "ASC_VAN_01",
+        "useExistingBookTurn": true,
+        "continuationAPI": "ChronicleJournal.PlanContinuation",
+        "maxVisibleTurns": 3,
+        "turnTiming": "ChronicleRhythm.TurnAnticipation and TurnSettle",
+        "baseTextReadOnly": true,
+        "keepBookOpen": true
+      },
+      {
+        "step": 2,
+        "intent": "RESERVE_NEW_WRITING_AREA",
+        "placement": "Fresh continuation leaf for major corrections; unused margin only if it fits for small additions.",
+        "font": "Reuse current Chronicle handwriting and stroke renderer; respect user-selected textScale without automatic shrinking.",
+        "existingBlocksReadOnly": true
+      },
+      {
+        "step": 3,
+        "intent": "OPTIONAL_MARGINAL_ART",
+        "visualKey": "Vanguard_MendedCup",
+        "asset": "SourceAssets/ChronicleAscension/Art/Vanguard_MendedCup.png",
+        "status": "GENERATED_AND_CHECKED",
+        "onlyNewOverlay": true,
+        "animation": "None required; static marginal study."
+      },
+      {
+        "step": 4,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "context",
+        "mode": "SILENT_HANDWRITING",
+        "text": "The fire returns with a detail the larger account neglected: a cup with a broken handle. The warrior had set it aside. The fourth companion sat beside him and repaired it with a short length of wire, working while the others discussed the road below the kingdom.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 5,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "new_observation",
+        "mode": "NARRATED",
+        "text": "The warrior's loyalty began as a debt he owed the fourth companion.",
+        "completeBeforeNextBlockingEvent": true,
+        "assetLineKey": "Vanguard:01:N01",
+        "clock": "Final recording sample clock and measured word intervals only.",
+        "missingAudioPolicy": "Existing silent-writing fallback; do not invent word timings."
+      },
+      {
+        "step": 6,
+        "intent": "HESITATE",
+        "authoredPauseSeconds": 1.0,
+        "pauseInk": true,
+        "narrationMustFinish": true
+      },
+      {
+        "step": 7,
+        "intent": "RED_STRIKE_NEW_OBSERVATION",
+        "targetBlockKey": "new_observation",
+        "ownerContentKey": "Vanguard:01",
+        "requestedExistingCue": "red_ink",
+        "cueMeaning": "Existing Debuff mapping; no new quill Foley is claimed.",
+        "preserveOldChronicleInk": true,
+        "requireScopedTargetValidation": true
+      },
+      {
+        "step": 8,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "replacement",
+        "mode": "NARRATED",
+        "text": "Their loyalty grew from small acts freely given, before either man had anything to repay.",
+        "completeBeforeNextBlockingEvent": true,
+        "assetLineKey": "Vanguard:01:N02",
+        "clock": "Final recording sample clock and measured word intervals only.",
+        "missingAudioPolicy": "Existing silent-writing fallback; do not invent word timings."
+      },
+      {
+        "step": 9,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "evidence",
+        "mode": "SILENT_HANDWRITING",
+        "text": "There was no rescue to reward that evening, no oath demanded in exchange. The repaired cup passed between them without ceremony. Later, when the fourth spoke too confidently, the warrior answered him without fear that disagreement would end their place beside the same fire.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 10,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "account",
+        "mode": "SILENT_HANDWRITING",
+        "text": "That ordinary freedom matters. A follower might have mistaken certainty for strength. Someone who had shared cold meals and foolish plans could recognize the person beneath it. The warrior would challenge him precisely because the friendship allowed more than obedience. The wire was crooked. The cup held.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 11,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "closing",
+        "mode": "NARRATED",
+        "text": "Before he tried to protect his friend from a terrible choice, he had learned that he could tell him no.",
+        "completeBeforeNextBlockingEvent": true,
+        "assetLineKey": "Vanguard:01:N03",
+        "clock": "Final recording sample clock and measured word intervals only.",
+        "missingAudioPolicy": "Existing silent-writing fallback; do not invent word timings."
+      },
+      {
+        "step": 12,
+        "intent": "COMPLETE_NEW_ADDITION",
+        "archivePermanent": true,
+        "idempotent": true,
+        "completionHold": "ChronicleRhythm.CompletionHold; no extra fixed three-second hold",
+        "revisitTiming": "ChronicleRhythm.RevisitScale",
+        "skipState": "All new blocks complete; the new observation is struck and its replacement remains. All base-memory content is unchanged.",
+        "replay": "Read immediately; full cinematic is opt-in.",
+        "runtimeSaveId": "ASC_VAN_01"
+      }
+    ]
+  },
+  "continuityGates": [
+    {
+      "requirement": "Existing expanded memory and its canonical correction/knowledge have already been viewed.",
+      "memoryId": "MEM_07"
+    },
+    {
+      "requirement": "Base friendship discovery remains first.",
+      "memoryId": "MEM_25",
+      "reason": "Do not let a new earlier-page friendship addition replace the original friendship recovery. Queue if its base discovery has not been seen."
+    }
+  ],
+  "spoilerPolicy": "Never identify the Narrator with the fourth companion or the Forgotten Observer before SCENE_CH10. Base discoveries remain first; additions are deferred if required knowledge is absent.",
+  "existingContentModified": false,
+  "newBeingDialogue": false,
+  "accessibility": {
+    "instantText": true,
+    "voiceMuteKeepsPageReadable": true,
+    "reducedMotionUsesStaticArt": true,
+    "reducedFlashingNoExtraGlow": true,
+    "skipResolvesCompletedNewState": true
+  }
+}

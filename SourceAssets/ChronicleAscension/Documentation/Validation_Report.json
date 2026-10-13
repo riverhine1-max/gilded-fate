@@ -1,0 +1,57 @@
+{
+  "revelationsWritten": 30,
+  "majorCorrections": 12,
+  "smallerAdditions": 18,
+  "newNarratorRecordingsVerified": 45,
+  "newBeingRecordings": 0,
+  "newVisuals": 6,
+  "measuredSpokenWords": 659,
+  "runtimeIDs": "BOUND_TO_EXISTING_ASCENSION_CATALOG",
+  "runtimeRegistration": "NOT_INTEGRATED_BY_CONTENT_TASK",
+  "manualListeningReview": "PENDING",
+  "unityImportAndPlayback": "NOT_RUN",
+  "githubChanged": false,
+  "pendingAudio": [],
+  "checks": [
+    {
+      "check": "Coverage and attachments",
+      "status": "PASS",
+      "detail": "30 entries, ten per hero; 12 major and 18 smaller; all agreed memory attachments and debt ranks match."
+    },
+    {
+      "check": "New correction ownership",
+      "status": "PASS",
+      "detail": "Every strike targets only its own newly added observation. No shared correction ID or base sentence is a target."
+    },
+    {
+      "check": "Narration allocation",
+      "status": "PASS",
+      "detail": "Three spoken blocks per major, one closing line at smaller Debts III/VI/IX, no speech at II/V/VIII: 45 clips across 21 voiced additions."
+    },
+    {
+      "check": "Identity and voice boundary",
+      "status": "PASS",
+      "detail": "Rendered new text has no Narrator identity statement; all new recordings are NARRATOR, with no new Being dialogue."
+    },
+    {
+      "check": "Existing ID contract",
+      "status": "PASS",
+      "detail": "All 30 scene/revelation IDs and 12 correction IDs match the actual ChronicleAscensionCatalog; contentReady remains false until approved scenes are registered."
+    },
+    {
+      "check": "Audio integrity",
+      "status": "PASS",
+      "detail": "45 real new mono 48 kHz PCM 24-bit WAVs; actual sample durations, hashes, canonical word coverage and ordered measured intervals verified. No original recording hash is present."
+    },
+    {
+      "check": "Visual assets",
+      "status": "PASS",
+      "detail": "Six generated RGBA PNGs inspected for subject, palette, text/character invariants and real alpha transparency; every referenced asset belongs to named content entries."
+    },
+    {
+      "check": "Pinned source preservation",
+      "status": "PASS",
+      "detail": "The read-only evidence snapshot retains all 27 memory definitions and ten shared corrections. Its source hashes match the inspected copies; no existing source or binary file is delivered as a replacement."
+    }
+  ]
+}

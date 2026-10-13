@@ -1,0 +1,770 @@
+{
+  "schemaVersion": 1,
+  "contentKey": "Hexer:01",
+  "revelationId": "ASC_HEX_01",
+  "sceneId": "ASC_HEX_01",
+  "idBindingStatus": "BOUND_TO_EXISTING_ASCENSION_CATALOG",
+  "authoringComplete": true,
+  "contentReady": false,
+  "runtimeRegistrationStatus": "NOT_INTEGRATED_BY_THIS_CONTENT_TASK",
+  "hero": "Hexer",
+  "fateDebt": 1,
+  "kindOrdinal": 1,
+  "presentation": "FullCorrection",
+  "title": "The Scholar's Mistake",
+  "kind": "MAJOR",
+  "expandedMemoryId": "MEM_02",
+  "expandedChapterId": "CH_01",
+  "sourceCommit": "7211864e93fee914ef370912ae1ed8aafd66266b",
+  "journalBlocks": [
+    {
+      "blockKey": "context",
+      "text": "The scholar's first comparison used two impressions of the same unfinished day. In one, a visitor arrived before sunset. In the other, the gate remained empty. After the traveler demonstrated his method, only the first impression could be summoned clearly. The scholar entered the result among his successes.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "93e342daabafa37188cb36b46ac8a712642e72d5c727a748ba3147abc9e62afe"
+    },
+    {
+      "blockKey": "new_observation",
+      "text": "The traveler's successful prediction proved that the future had always been fixed.",
+      "mode": "NARRATED",
+      "textSHA256": "61c2b2c82e2eb5c4f7a8ef7b80f8726705c7b33554da444cc98ef94048b8b355",
+      "assetLineKey": "Hexer:01:N01"
+    },
+    {
+      "blockKey": "replacement",
+      "text": "His intervention had removed the future that would have disproved the prediction.",
+      "mode": "NARRATED",
+      "textSHA256": "7f9a7e1e0f4e4554b3e5f8d6f17c13e9e7661c5cb477a6c261e4ab2cb775762c",
+      "assetLineKey": "Hexer:01:N02"
+    },
+    {
+      "blockKey": "evidence",
+      "text": "The recovered notes contain the second impression before the demonstration. Its absence afterward was treated as an error in the earlier calculation. Yet the comparison had changed while it was being tested. The scholar had accepted the surviving answer without accounting for the answer that could no longer object.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "dbd59fb8feb45279f140275f321567ab7aaaab64480d02eb97ba0429b04bef1a"
+    },
+    {
+      "blockKey": "account",
+      "text": "This was more than mistaking an intervention for observation. He had allowed the method to decide what counted as evidence of its own success. The traveler could be genuinely helpful and still make that test dishonest. A result remained; the grounds upon which it might be questioned had been lost.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "204cc09558edf14e4d9a3c7bd8af4e718842855242047b38733fb919902f9730"
+    },
+    {
+      "blockKey": "closing",
+      "text": "The first mistake was not a failed calculation. It was accepting a test that could discard its own counterexample.",
+      "mode": "NARRATED",
+      "textSHA256": "c18c8fdc4ddbf05c56e0d39a2e8a217ee95bd333b39f5aa718829bf0a2a9ebfb",
+      "assetLineKey": "Hexer:01:N03"
+    }
+  ],
+  "journalText": "The scholar's first comparison used two impressions of the same unfinished day. In one, a visitor arrived before sunset. In the other, the gate remained empty. After the traveler demonstrated his method, only the first impression could be summoned clearly. The scholar entered the result among his successes.\n\nThe traveler's successful prediction proved that the future had always been fixed.\n\nHis intervention had removed the future that would have disproved the prediction.\n\nThe recovered notes contain the second impression before the demonstration. Its absence afterward was treated as an error in the earlier calculation. Yet the comparison had changed while it was being tested. The scholar had accepted the surviving answer without accounting for the answer that could no longer object.\n\nThis was more than mistaking an intervention for observation. He had allowed the method to decide what counted as evidence of its own success. The traveler could be genuinely helpful and still make that test dishonest. A result remained; the grounds upon which it might be questioned had been lost.\n\nThe first mistake was not a failed calculation. It was accepting a test that could discard its own counterexample.",
+  "wordCount": 190,
+  "newlyRecoveredInformation": "A concrete comparison reveals survivorship bias in Hexer's early validation of the traveler's method: intervention removed the counterexample and made the surviving prediction seem inevitable.",
+  "newlyAuthoredDetails": [
+    "Two gate-arrival impressions and a discarded comparison in the scholar's early notes."
+  ],
+  "sourceEvidence": [
+    "MEM_02",
+    "MEM_04",
+    "MEM_05"
+  ],
+  "relationships": {
+    "prepares": [
+      "Hexer:02",
+      "Hexer:04",
+      "Hexer:10"
+    ],
+    "crossCharacter": [
+      "Vanguard:03",
+      "Reaper:01"
+    ]
+  },
+  "correction": {
+    "ownerContentKey": "Hexer:01",
+    "revelationId": "ASC_HEX_01",
+    "correctionId": "ASC_CORR_HEX_1",
+    "localCorrectionKey": "new_observation",
+    "targetScope": "THIS_NEW_ADDITION_ONLY",
+    "targetBlockKey": "new_observation",
+    "originalNewObservation": "The traveler's successful prediction proved that the future had always been fixed.",
+    "correctedReplacement": "His intervention had removed the future that would have disproved the prediction.",
+    "replacementBlockKey": "replacement",
+    "originalChronicleTarget": null,
+    "sharedCorrectionIdsModified": [],
+    "preserveOriginal": true,
+    "inkStyle": "Existing restrained red correction style",
+    "acknowledgement": "Only the observation added by this package may be crossed out."
+  },
+  "narration": [
+    {
+      "assetLineKey": "Hexer:01:N01",
+      "lineId": "ASC_HEX_01__new_observation",
+      "sceneId": "ASC_HEX_01",
+      "revelationId": "ASC_HEX_01",
+      "runtimeCommandId": "new_observation",
+      "commandId": "new_observation",
+      "commandBinding": "Use the existing explicit WriteBlock ID in the authored scene; update binding if Claude assigns a different command ID.",
+      "contentKey": "Hexer:01",
+      "blockKey": "new_observation",
+      "speaker": "NARRATOR",
+      "text": "The traveler's successful prediction proved that the future had always been fixed.",
+      "textSHA256": "61c2b2c82e2eb5c4f7a8ef7b80f8726705c7b33554da444cc98ef94048b8b355",
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Hexer_Debt01_The_Scholar_s_Mistake_N01.wav",
+      "emotion": "MeasuredHistorian",
+      "status": "RECORDED_AUTOMATICALLY_VERIFIED",
+      "durationSeconds": 4.44,
+      "words": [
+        {
+          "text": "The",
+          "startSeconds": 0,
+          "endSeconds": 0.15999999999999992,
+          "charStart": 0,
+          "charLength": 3,
+          "confidence": 0.9356376528739929
+        },
+        {
+          "text": "traveler's",
+          "startSeconds": 0.15999999999999992,
+          "endSeconds": 0.54,
+          "charStart": 4,
+          "charLength": 10,
+          "confidence": 0.408385306596756
+        },
+        {
+          "text": "successful",
+          "startSeconds": 0.76,
+          "endSeconds": 1.08,
+          "charStart": 15,
+          "charLength": 10,
+          "confidence": 0.9955831170082092
+        },
+        {
+          "text": "prediction",
+          "startSeconds": 1.08,
+          "endSeconds": 1.7599999999999998,
+          "charStart": 26,
+          "charLength": 10,
+          "confidence": 0.9881939888000488
+        },
+        {
+          "text": "proved",
+          "startSeconds": 1.7599999999999998,
+          "endSeconds": 2.24,
+          "charStart": 37,
+          "charLength": 6,
+          "confidence": 0.9969995021820068
+        },
+        {
+          "text": "that",
+          "startSeconds": 2.24,
+          "endSeconds": 2.54,
+          "charStart": 44,
+          "charLength": 4,
+          "confidence": 0.9890345335006714
+        },
+        {
+          "text": "the",
+          "startSeconds": 2.54,
+          "endSeconds": 2.64,
+          "charStart": 49,
+          "charLength": 3,
+          "confidence": 0.9949051141738892
+        },
+        {
+          "text": "future",
+          "startSeconds": 2.64,
+          "endSeconds": 3.0,
+          "charStart": 53,
+          "charLength": 6,
+          "confidence": 0.9988042116165161
+        },
+        {
+          "text": "had",
+          "startSeconds": 3.0,
+          "endSeconds": 3.24,
+          "charStart": 60,
+          "charLength": 3,
+          "confidence": 0.9904098510742188
+        },
+        {
+          "text": "always",
+          "startSeconds": 3.24,
+          "endSeconds": 3.5199999999999996,
+          "charStart": 64,
+          "charLength": 6,
+          "confidence": 0.9948515295982361
+        },
+        {
+          "text": "been",
+          "startSeconds": 3.5199999999999996,
+          "endSeconds": 3.7800000000000002,
+          "charStart": 71,
+          "charLength": 4,
+          "confidence": 0.9986949563026428
+        },
+        {
+          "text": "fixed.",
+          "startSeconds": 3.7800000000000002,
+          "endSeconds": 4.24,
+          "charStart": 76,
+          "charLength": 6,
+          "confidence": 0.9989342093467712
+        }
+      ],
+      "readyForAudioClock": true,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "99bd310301924c0edfe00d4b59415b4ba6577e0ac0f4d85ebd96f42293a7b692",
+      "format": {
+        "container": "WAV",
+        "sampleRate": 48000,
+        "bitDepth": 24,
+        "channels": 1,
+        "sourceBitDepth": 16
+      },
+      "alignmentMethod": "Local small.en Whisper word timestamps (attention/DTW), CTranslate2 CPU, VAD disabled; no ONNX Runtime imported",
+      "frameResolutionSeconds": 0.02,
+      "minimumWordConfidence": 0.408385306596756,
+      "verification": {
+        "canonicalSpokenTextVerified": true,
+        "finalSampleCount": 213120,
+        "peakDBFS": -6.135994405443478,
+        "noClipping": true,
+        "parentTranscript": "The Traveller's successful prediction proved that the future had always been fixed. His intervention had removed the future that would have disproved the prediction. The first mistake was not a failed calculation. It was accepting a test that could discard its own counterexample.",
+        "finalCropTranscript": "The travellers' successful prediction proved that the future had always been fixed.",
+        "sourceCropFrames": [
+          0,
+          213120
+        ],
+        "analysisPaddingSeconds": 1,
+        "manualListeningReview": "PENDING",
+        "telemetryRuntimeUsed": false
+      }
+    },
+    {
+      "assetLineKey": "Hexer:01:N02",
+      "lineId": "ASC_HEX_01__replacement",
+      "sceneId": "ASC_HEX_01",
+      "revelationId": "ASC_HEX_01",
+      "runtimeCommandId": "replacement",
+      "commandId": "replacement",
+      "commandBinding": "Use the existing explicit WriteBlock ID in the authored scene; update binding if Claude assigns a different command ID.",
+      "contentKey": "Hexer:01",
+      "blockKey": "replacement",
+      "speaker": "NARRATOR",
+      "text": "His intervention had removed the future that would have disproved the prediction.",
+      "textSHA256": "7f9a7e1e0f4e4554b3e5f8d6f17c13e9e7661c5cb477a6c261e4ab2cb775762c",
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Hexer_Debt01_The_Scholar_s_Mistake_N02.wav",
+      "emotion": "MeasuredHistorian",
+      "status": "RECORDED_AUTOMATICALLY_VERIFIED",
+      "durationSeconds": 5.54,
+      "words": [
+        {
+          "text": "His",
+          "startSeconds": 0,
+          "endSeconds": 0.30000000000000004,
+          "charStart": 0,
+          "charLength": 3,
+          "confidence": 0.8595483899116516
+        },
+        {
+          "text": "intervention",
+          "startSeconds": 0.30000000000000004,
+          "endSeconds": 0.78,
+          "charStart": 4,
+          "charLength": 12,
+          "confidence": 0.9971543550491333
+        },
+        {
+          "text": "had",
+          "startSeconds": 0.78,
+          "endSeconds": 1.2200000000000002,
+          "charStart": 17,
+          "charLength": 3,
+          "confidence": 0.9938151836395264
+        },
+        {
+          "text": "removed",
+          "startSeconds": 1.2200000000000002,
+          "endSeconds": 1.6600000000000001,
+          "charStart": 21,
+          "charLength": 7,
+          "confidence": 0.9953975081443787
+        },
+        {
+          "text": "the",
+          "startSeconds": 1.6600000000000001,
+          "endSeconds": 1.92,
+          "charStart": 29,
+          "charLength": 3,
+          "confidence": 0.9976978898048401
+        },
+        {
+          "text": "future",
+          "startSeconds": 1.92,
+          "endSeconds": 2.34,
+          "charStart": 33,
+          "charLength": 6,
+          "confidence": 0.9979952573776245
+        },
+        {
+          "text": "that",
+          "startSeconds": 2.34,
+          "endSeconds": 3.1799999999999997,
+          "charStart": 40,
+          "charLength": 4,
+          "confidence": 0.9281286001205444
+        },
+        {
+          "text": "would",
+          "startSeconds": 3.1799999999999997,
+          "endSeconds": 3.34,
+          "charStart": 45,
+          "charLength": 5,
+          "confidence": 0.9964717626571655
+        },
+        {
+          "text": "have",
+          "startSeconds": 3.34,
+          "endSeconds": 3.5199999999999996,
+          "charStart": 51,
+          "charLength": 4,
+          "confidence": 0.9889776110649109
+        },
+        {
+          "text": "disproved",
+          "startSeconds": 3.5199999999999996,
+          "endSeconds": 4.54,
+          "charStart": 56,
+          "charLength": 9,
+          "confidence": 0.9914382100105286
+        },
+        {
+          "text": "the",
+          "startSeconds": 4.54,
+          "endSeconds": 4.86,
+          "charStart": 66,
+          "charLength": 3,
+          "confidence": 0.9976335763931274
+        },
+        {
+          "text": "prediction.",
+          "startSeconds": 4.86,
+          "endSeconds": 5.26,
+          "charStart": 70,
+          "charLength": 11,
+          "confidence": 0.9950089454650879
+        }
+      ],
+      "readyForAudioClock": true,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "e3441c0f11057c9334c12d8d3c23e95c27919c167dd81ec377bfbb12677da9b9",
+      "format": {
+        "container": "WAV",
+        "sampleRate": 48000,
+        "bitDepth": 24,
+        "channels": 1,
+        "sourceBitDepth": 16
+      },
+      "alignmentMethod": "Local small.en Whisper word timestamps (attention/DTW), CTranslate2 CPU, VAD disabled; no ONNX Runtime imported",
+      "frameResolutionSeconds": 0.02,
+      "minimumWordConfidence": 0.8595483899116516,
+      "verification": {
+        "canonicalSpokenTextVerified": true,
+        "finalSampleCount": 265920,
+        "peakDBFS": -7.079797310043967,
+        "noClipping": true,
+        "parentTranscript": "The Traveller's successful prediction proved that the future had always been fixed. His intervention had removed the future that would have disproved the prediction. The first mistake was not a failed calculation. It was accepting a test that could discard its own counterexample.",
+        "finalCropTranscript": "His intervention had removed the future that would have disproved the prediction.",
+        "sourceCropFrames": [
+          257280,
+          523200
+        ],
+        "analysisPaddingSeconds": 1,
+        "manualListeningReview": "PENDING",
+        "telemetryRuntimeUsed": false
+      }
+    },
+    {
+      "assetLineKey": "Hexer:01:N03",
+      "lineId": "ASC_HEX_01__closing",
+      "sceneId": "ASC_HEX_01",
+      "revelationId": "ASC_HEX_01",
+      "runtimeCommandId": "closing",
+      "commandId": "closing",
+      "commandBinding": "Use the existing explicit WriteBlock ID in the authored scene; update binding if Claude assigns a different command ID.",
+      "contentKey": "Hexer:01",
+      "blockKey": "closing",
+      "speaker": "NARRATOR",
+      "text": "The first mistake was not a failed calculation. It was accepting a test that could discard its own counterexample.",
+      "textSHA256": "c18c8fdc4ddbf05c56e0d39a2e8a217ee95bd333b39f5aa718829bf0a2a9ebfb",
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Hexer_Debt01_The_Scholar_s_Mistake_N03.wav",
+      "emotion": "MeasuredHistorian",
+      "status": "RECORDED_AUTOMATICALLY_VERIFIED",
+      "durationSeconds": 10.22,
+      "words": [
+        {
+          "text": "The",
+          "startSeconds": 0,
+          "endSeconds": 0.6599999999999999,
+          "charStart": 0,
+          "charLength": 3,
+          "confidence": 0.9705613255500793
+        },
+        {
+          "text": "first",
+          "startSeconds": 0.6599999999999999,
+          "endSeconds": 0.9199999999999999,
+          "charStart": 4,
+          "charLength": 5,
+          "confidence": 0.997850775718689
+        },
+        {
+          "text": "mistake",
+          "startSeconds": 0.9199999999999999,
+          "endSeconds": 1.5,
+          "charStart": 10,
+          "charLength": 7,
+          "confidence": 0.9973437190055847
+        },
+        {
+          "text": "was",
+          "startSeconds": 1.5,
+          "endSeconds": 2.22,
+          "charStart": 18,
+          "charLength": 3,
+          "confidence": 0.9918338060379028
+        },
+        {
+          "text": "not",
+          "startSeconds": 2.22,
+          "endSeconds": 2.48,
+          "charStart": 22,
+          "charLength": 3,
+          "confidence": 0.9974097609519958
+        },
+        {
+          "text": "a",
+          "startSeconds": 2.48,
+          "endSeconds": 2.7,
+          "charStart": 26,
+          "charLength": 1,
+          "confidence": 0.9980435371398926
+        },
+        {
+          "text": "failed",
+          "startSeconds": 2.7,
+          "endSeconds": 3.16,
+          "charStart": 28,
+          "charLength": 6,
+          "confidence": 0.9971970319747925
+        },
+        {
+          "text": "calculation.",
+          "startSeconds": 3.16,
+          "endSeconds": 4.14,
+          "charStart": 35,
+          "charLength": 12,
+          "confidence": 0.9984093308448792
+        },
+        {
+          "text": "It",
+          "startSeconds": 5.06,
+          "endSeconds": 5.28,
+          "charStart": 48,
+          "charLength": 2,
+          "confidence": 0.9912309646606445
+        },
+        {
+          "text": "was",
+          "startSeconds": 5.28,
+          "endSeconds": 5.46,
+          "charStart": 51,
+          "charLength": 3,
+          "confidence": 0.9992363452911377
+        },
+        {
+          "text": "accepting",
+          "startSeconds": 5.46,
+          "endSeconds": 6.06,
+          "charStart": 55,
+          "charLength": 9,
+          "confidence": 0.991848349571228
+        },
+        {
+          "text": "a",
+          "startSeconds": 6.06,
+          "endSeconds": 6.32,
+          "charStart": 65,
+          "charLength": 1,
+          "confidence": 0.9985697269439697
+        },
+        {
+          "text": "test",
+          "startSeconds": 6.32,
+          "endSeconds": 6.7,
+          "charStart": 67,
+          "charLength": 4,
+          "confidence": 0.9994522929191589
+        },
+        {
+          "text": "that",
+          "startSeconds": 6.7,
+          "endSeconds": 7.4399999999999995,
+          "charStart": 72,
+          "charLength": 4,
+          "confidence": 0.9768344759941101
+        },
+        {
+          "text": "could",
+          "startSeconds": 7.4399999999999995,
+          "endSeconds": 7.640000000000001,
+          "charStart": 77,
+          "charLength": 5,
+          "confidence": 0.9969742298126221
+        },
+        {
+          "text": "discard",
+          "startSeconds": 7.640000000000001,
+          "endSeconds": 8.28,
+          "charStart": 83,
+          "charLength": 7,
+          "confidence": 0.9974731802940369
+        },
+        {
+          "text": "its",
+          "startSeconds": 8.28,
+          "endSeconds": 8.72,
+          "charStart": 91,
+          "charLength": 3,
+          "confidence": 0.9864991903305054
+        },
+        {
+          "text": "own",
+          "startSeconds": 8.72,
+          "endSeconds": 9.2,
+          "charStart": 95,
+          "charLength": 3,
+          "confidence": 0.9979639053344727
+        },
+        {
+          "text": "counterexample.",
+          "startSeconds": 9.2,
+          "endSeconds": 10.2,
+          "charStart": 99,
+          "charLength": 15,
+          "confidence": 0.8562429845333099
+        }
+      ],
+      "readyForAudioClock": true,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "a7b8df4580be8f59c2663875be3786737620ba8ed6ed48f4440d371913ce13c6",
+      "format": {
+        "container": "WAV",
+        "sampleRate": 48000,
+        "bitDepth": 24,
+        "channels": 1,
+        "sourceBitDepth": 16
+      },
+      "alignmentMethod": "Local small.en Whisper word timestamps (attention/DTW), CTranslate2 CPU, VAD disabled; no ONNX Runtime imported",
+      "frameResolutionSeconds": 0.02,
+      "minimumWordConfidence": 0.8562429845333099,
+      "verification": {
+        "canonicalSpokenTextVerified": true,
+        "finalSampleCount": 490560,
+        "peakDBFS": -6.788311353669235,
+        "noClipping": true,
+        "parentTranscript": "The Traveller's successful prediction proved that the future had always been fixed. His intervention had removed the future that would have disproved the prediction. The first mistake was not a failed calculation. It was accepting a test that could discard its own counterexample.",
+        "finalCropTranscript": "The first mistake was not a failed calculation. It was accepting a test that could discard its own counterexample.",
+        "sourceCropFrames": [
+          570240,
+          1060800
+        ],
+        "analysisPaddingSeconds": 1,
+        "manualListeningReview": "PENDING",
+        "telemetryRuntimeUsed": false
+      }
+    }
+  ],
+  "visualKey": "Hexer_InterruptedDiagram",
+  "cinematic": {
+    "direction": "Return to the visions page and add a separate comparison leaf. Present the two cases as a marginal study, then strike only the newly written inference. Existing future-vision art and CORR_02 remain intact.",
+    "events": [
+      {
+        "step": 1,
+        "intent": "RETURN_TO_EXISTING_MEMORY",
+        "memoryId": "MEM_02",
+        "sceneId": "ASC_HEX_01",
+        "useExistingBookTurn": true,
+        "continuationAPI": "ChronicleJournal.PlanContinuation",
+        "maxVisibleTurns": 3,
+        "turnTiming": "ChronicleRhythm.TurnAnticipation and TurnSettle",
+        "baseTextReadOnly": true,
+        "keepBookOpen": true
+      },
+      {
+        "step": 2,
+        "intent": "RESERVE_NEW_WRITING_AREA",
+        "placement": "Fresh continuation leaf for major corrections; unused margin only if it fits for small additions.",
+        "font": "Reuse current Chronicle handwriting and stroke renderer; respect user-selected textScale without automatic shrinking.",
+        "existingBlocksReadOnly": true
+      },
+      {
+        "step": 3,
+        "intent": "OPTIONAL_MARGINAL_ART",
+        "visualKey": "Hexer_InterruptedDiagram",
+        "asset": "SourceAssets/ChronicleAscension/Art/Hexer_InterruptedDiagram.png",
+        "status": "GENERATED_AND_CHECKED",
+        "onlyNewOverlay": true,
+        "animation": "None required; static marginal study."
+      },
+      {
+        "step": 4,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "context",
+        "mode": "SILENT_HANDWRITING",
+        "text": "The scholar's first comparison used two impressions of the same unfinished day. In one, a visitor arrived before sunset. In the other, the gate remained empty. After the traveler demonstrated his method, only the first impression could be summoned clearly. The scholar entered the result among his successes.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 5,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "new_observation",
+        "mode": "NARRATED",
+        "text": "The traveler's successful prediction proved that the future had always been fixed.",
+        "completeBeforeNextBlockingEvent": true,
+        "assetLineKey": "Hexer:01:N01",
+        "clock": "Final recording sample clock and measured word intervals only.",
+        "missingAudioPolicy": "Existing silent-writing fallback; do not invent word timings."
+      },
+      {
+        "step": 6,
+        "intent": "HESITATE",
+        "authoredPauseSeconds": 1.0,
+        "pauseInk": true,
+        "narrationMustFinish": true
+      },
+      {
+        "step": 7,
+        "intent": "RED_STRIKE_NEW_OBSERVATION",
+        "targetBlockKey": "new_observation",
+        "ownerContentKey": "Hexer:01",
+        "requestedExistingCue": "red_ink",
+        "cueMeaning": "Existing Debuff mapping; no new quill Foley is claimed.",
+        "preserveOldChronicleInk": true,
+        "requireScopedTargetValidation": true
+      },
+      {
+        "step": 8,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "replacement",
+        "mode": "NARRATED",
+        "text": "His intervention had removed the future that would have disproved the prediction.",
+        "completeBeforeNextBlockingEvent": true,
+        "assetLineKey": "Hexer:01:N02",
+        "clock": "Final recording sample clock and measured word intervals only.",
+        "missingAudioPolicy": "Existing silent-writing fallback; do not invent word timings."
+      },
+      {
+        "step": 9,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "evidence",
+        "mode": "SILENT_HANDWRITING",
+        "text": "The recovered notes contain the second impression before the demonstration. Its absence afterward was treated as an error in the earlier calculation. Yet the comparison had changed while it was being tested. The scholar had accepted the surviving answer without accounting for the answer that could no longer object.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 10,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "account",
+        "mode": "SILENT_HANDWRITING",
+        "text": "This was more than mistaking an intervention for observation. He had allowed the method to decide what counted as evidence of its own success. The traveler could be genuinely helpful and still make that test dishonest. A result remained; the grounds upon which it might be questioned had been lost.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 11,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "closing",
+        "mode": "NARRATED",
+        "text": "The first mistake was not a failed calculation. It was accepting a test that could discard its own counterexample.",
+        "completeBeforeNextBlockingEvent": true,
+        "assetLineKey": "Hexer:01:N03",
+        "clock": "Final recording sample clock and measured word intervals only.",
+        "missingAudioPolicy": "Existing silent-writing fallback; do not invent word timings."
+      },
+      {
+        "step": 12,
+        "intent": "COMPLETE_NEW_ADDITION",
+        "archivePermanent": true,
+        "idempotent": true,
+        "completionHold": "ChronicleRhythm.CompletionHold; no extra fixed three-second hold",
+        "revisitTiming": "ChronicleRhythm.RevisitScale",
+        "skipState": "All new blocks complete; the new observation is struck and its replacement remains. All base-memory content is unchanged.",
+        "replay": "Read immediately; full cinematic is opt-in.",
+        "runtimeSaveId": "ASC_HEX_01"
+      }
+    ]
+  },
+  "continuityGates": [
+    {
+      "requirement": "Existing expanded memory and its canonical correction/knowledge have already been viewed.",
+      "memoryId": "MEM_02"
+    },
+    {
+      "requirement": "Traveler intervention is already known.",
+      "correctionId": "CORR_02",
+      "reason": "This is new evidence about the method, after the existing change-versus-observation correction."
+    }
+  ],
+  "spoilerPolicy": "Never identify the Narrator with the fourth companion or the Forgotten Observer before SCENE_CH10. Base discoveries remain first; additions are deferred if required knowledge is absent.",
+  "existingContentModified": false,
+  "newBeingDialogue": false,
+  "accessibility": {
+    "instantText": true,
+    "voiceMuteKeepsPageReadable": true,
+    "reducedMotionUsesStaticArt": true,
+    "reducedFlashingNoExtraGlow": true,
+    "skipResolvesCompletedNewState": true
+  }
+}

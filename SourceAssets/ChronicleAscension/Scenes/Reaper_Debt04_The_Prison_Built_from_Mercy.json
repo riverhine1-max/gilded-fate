@@ -1,0 +1,743 @@
+{
+  "schemaVersion": 1,
+  "contentKey": "Reaper:04",
+  "revelationId": "ASC_REA_04",
+  "sceneId": "ASC_REA_04",
+  "idBindingStatus": "BOUND_TO_EXISTING_ASCENSION_CATALOG",
+  "authoringComplete": true,
+  "contentReady": false,
+  "runtimeRegistrationStatus": "NOT_INTEGRATED_BY_THIS_CONTENT_TASK",
+  "hero": "Reaper",
+  "fateDebt": 4,
+  "kindOrdinal": 2,
+  "presentation": "FullCorrection",
+  "title": "The Prison Built from Mercy",
+  "kind": "MAJOR",
+  "expandedMemoryId": "MEM_12",
+  "expandedChapterId": "CH_04",
+  "sourceCommit": "7211864e93fee914ef370912ae1ed8aafd66266b",
+  "journalBlocks": [
+    {
+      "blockKey": "context",
+      "text": "Within one preserved future, a hand kept reaching toward a doorway. The frame remained clear. Nothing of the room beyond it could be recovered. The Reaper followed the associated traces and found that the reaching and the welcome it expected had been held apart. Each fragment continued without the other.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "3628299a3d5fb9a7b146d8f9e299e4c04b7ea83af3966f3ac16291725c1de4d1"
+    },
+    {
+      "blockKey": "new_observation",
+      "text": "Everything held beneath the sanctuary had been saved from loss.",
+      "mode": "NARRATED",
+      "textSHA256": "57cbda2789c63eb195011acd554725fa4d48be484dd0cac9128b924b30bca5be",
+      "assetLineKey": "Reaper:04:N01"
+    },
+    {
+      "blockKey": "replacement",
+      "text": "Some fragments were kept after the relationships that gave them meaning had been torn apart.",
+      "mode": "NARRATED",
+      "textSHA256": "77f14455bb928a8177332eb5997d4f6c5d10f0e6d14f9360dac57b997300f641",
+      "assetLineKey": "Reaper:04:N02"
+    },
+    {
+      "blockKey": "evidence",
+      "text": "A doorway was not a home merely because its outline endured. The repeated gesture belonged to someone, and had once been answered by someone. The traveler's collection retained evidence of both while denying this impression the meeting that made them intelligible. Keeping more fragments had not made this particular life whole.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "e882eeb87fa5d6e77e06e524abe7c96991f07311f103230ce173b5f3c121e529"
+    },
+    {
+      "blockKey": "account",
+      "text": "The Reaper understood the fear that had built the sanctuary. He also understood why counting preserved shapes could conceal another kind of loss. His record would keep the separation visible. If the fragments could ever be helped, that work would have to consider what had been taken between them, not merely what had been stored.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "959f23cfbbd1d23c6842fcf017b933ec4bff1d9063b34870fb655ad2ef162120"
+    },
+    {
+      "blockKey": "closing",
+      "text": "The prison had preserved the reach. It had not preserved the possibility of being met.",
+      "mode": "NARRATED",
+      "textSHA256": "5302e3639b75c950aa20ecd453e3eedce991c20f852a6340b7e94ac68e70b94f",
+      "assetLineKey": "Reaper:04:N03"
+    }
+  ],
+  "journalText": "Within one preserved future, a hand kept reaching toward a doorway. The frame remained clear. Nothing of the room beyond it could be recovered. The Reaper followed the associated traces and found that the reaching and the welcome it expected had been held apart. Each fragment continued without the other.\n\nEverything held beneath the sanctuary had been saved from loss.\n\nSome fragments were kept after the relationships that gave them meaning had been torn apart.\n\nA doorway was not a home merely because its outline endured. The repeated gesture belonged to someone, and had once been answered by someone. The traveler's collection retained evidence of both while denying this impression the meeting that made them intelligible. Keeping more fragments had not made this particular life whole.\n\nThe Reaper understood the fear that had built the sanctuary. He also understood why counting preserved shapes could conceal another kind of loss. His record would keep the separation visible. If the fragments could ever be helped, that work would have to consider what had been taken between them, not merely what had been stored.\n\nThe prison had preserved the reach. It had not preserved the possibility of being met.",
+  "wordCount": 196,
+  "newlyRecoveredInformation": "One preserved impression has been divided from its answering relationship, revealing relational loss inside apparently intact fragments. This gives the established prison metaphor a concrete cost.",
+  "newlyAuthoredDetails": [
+    "A reaching gesture and answering welcome retained as separated impressions. No safe method of restoring them is claimed."
+  ],
+  "sourceEvidence": [
+    "MEM_12",
+    "MEM_06",
+    "MEM_11"
+  ],
+  "relationships": {
+    "follows": [
+      "Reaper:01",
+      "Reaper:02"
+    ],
+    "prepares": [
+      "Reaper:07",
+      "Reaper:10"
+    ],
+    "crossCharacter": [
+      "Hexer:05"
+    ]
+  },
+  "correction": {
+    "ownerContentKey": "Reaper:04",
+    "revelationId": "ASC_REA_04",
+    "correctionId": "ASC_CORR_REA_2",
+    "localCorrectionKey": "new_observation",
+    "targetScope": "THIS_NEW_ADDITION_ONLY",
+    "targetBlockKey": "new_observation",
+    "originalNewObservation": "Everything held beneath the sanctuary had been saved from loss.",
+    "correctedReplacement": "Some fragments were kept after the relationships that gave them meaning had been torn apart.",
+    "replacementBlockKey": "replacement",
+    "originalChronicleTarget": null,
+    "sharedCorrectionIdsModified": [],
+    "preserveOriginal": true,
+    "inkStyle": "Existing restrained red correction style",
+    "acknowledgement": "Only the observation added by this package may be crossed out."
+  },
+  "narration": [
+    {
+      "assetLineKey": "Reaper:04:N01",
+      "lineId": "ASC_REA_04__new_observation",
+      "sceneId": "ASC_REA_04",
+      "revelationId": "ASC_REA_04",
+      "runtimeCommandId": "new_observation",
+      "commandId": "new_observation",
+      "commandBinding": "Use the existing explicit WriteBlock ID in the authored scene; update binding if Claude assigns a different command ID.",
+      "contentKey": "Reaper:04",
+      "blockKey": "new_observation",
+      "speaker": "NARRATOR",
+      "text": "Everything held beneath the sanctuary had been saved from loss.",
+      "textSHA256": "57cbda2789c63eb195011acd554725fa4d48be484dd0cac9128b924b30bca5be",
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Reaper_Debt04_The_Prison_Built_from_Mercy_N01.wav",
+      "emotion": "DoubtingHistorian",
+      "status": "RECORDED_AUTOMATICALLY_VERIFIED",
+      "durationSeconds": 4.24,
+      "words": [
+        {
+          "text": "Everything",
+          "startSeconds": 0,
+          "endSeconds": 0.78,
+          "charStart": 0,
+          "charLength": 10,
+          "confidence": 0.944693922996521
+        },
+        {
+          "text": "held",
+          "startSeconds": 0.78,
+          "endSeconds": 1.4,
+          "charStart": 11,
+          "charLength": 4,
+          "confidence": 0.9818511009216309
+        },
+        {
+          "text": "beneath",
+          "startSeconds": 1.4,
+          "endSeconds": 1.7999999999999998,
+          "charStart": 16,
+          "charLength": 7,
+          "confidence": 0.9964691400527954
+        },
+        {
+          "text": "the",
+          "startSeconds": 1.7999999999999998,
+          "endSeconds": 2.06,
+          "charStart": 24,
+          "charLength": 3,
+          "confidence": 0.9981377124786377
+        },
+        {
+          "text": "sanctuary",
+          "startSeconds": 2.06,
+          "endSeconds": 2.56,
+          "charStart": 28,
+          "charLength": 9,
+          "confidence": 0.972159743309021
+        },
+        {
+          "text": "had",
+          "startSeconds": 2.56,
+          "endSeconds": 2.8,
+          "charStart": 38,
+          "charLength": 3,
+          "confidence": 0.9889344573020935
+        },
+        {
+          "text": "been",
+          "startSeconds": 2.8,
+          "endSeconds": 3.0199999999999996,
+          "charStart": 42,
+          "charLength": 4,
+          "confidence": 0.9997425675392151
+        },
+        {
+          "text": "saved",
+          "startSeconds": 3.0199999999999996,
+          "endSeconds": 3.46,
+          "charStart": 47,
+          "charLength": 5,
+          "confidence": 0.9993019104003906
+        },
+        {
+          "text": "from",
+          "startSeconds": 3.46,
+          "endSeconds": 3.76,
+          "charStart": 53,
+          "charLength": 4,
+          "confidence": 0.9991909861564636
+        },
+        {
+          "text": "loss.",
+          "startSeconds": 3.76,
+          "endSeconds": 4.08,
+          "charStart": 58,
+          "charLength": 5,
+          "confidence": 0.9863341450691223
+        }
+      ],
+      "readyForAudioClock": true,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "b181ecae48cdccb3f9d30b594940c677511325658e2fab2acf47229d77e3fe24",
+      "format": {
+        "container": "WAV",
+        "sampleRate": 48000,
+        "bitDepth": 24,
+        "channels": 1,
+        "sourceBitDepth": 16
+      },
+      "alignmentMethod": "Local small.en Whisper word timestamps (attention/DTW), CTranslate2 CPU, VAD disabled; no ONNX Runtime imported",
+      "frameResolutionSeconds": 0.02,
+      "minimumWordConfidence": 0.944693922996521,
+      "verification": {
+        "canonicalSpokenTextVerified": true,
+        "finalSampleCount": 203520,
+        "peakDBFS": -6.678281029828947,
+        "noClipping": true,
+        "parentTranscript": "Everything held beneath the sanctuary had been saved from loss. Some fragments were kept after the relationships that gave them meaning had been torn apart. The prison had preserved the reach. It had not preserved the possibility of being met.",
+        "finalCropTranscript": "Everything held beneath the sanctuary had been saved from loss.",
+        "sourceCropFrames": [
+          0,
+          203520
+        ],
+        "analysisPaddingSeconds": 1,
+        "manualListeningReview": "PENDING",
+        "telemetryRuntimeUsed": false
+      }
+    },
+    {
+      "assetLineKey": "Reaper:04:N02",
+      "lineId": "ASC_REA_04__replacement",
+      "sceneId": "ASC_REA_04",
+      "revelationId": "ASC_REA_04",
+      "runtimeCommandId": "replacement",
+      "commandId": "replacement",
+      "commandBinding": "Use the existing explicit WriteBlock ID in the authored scene; update binding if Claude assigns a different command ID.",
+      "contentKey": "Reaper:04",
+      "blockKey": "replacement",
+      "speaker": "NARRATOR",
+      "text": "Some fragments were kept after the relationships that gave them meaning had been torn apart.",
+      "textSHA256": "77f14455bb928a8177332eb5997d4f6c5d10f0e6d14f9360dac57b997300f641",
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Reaper_Debt04_The_Prison_Built_from_Mercy_N02.wav",
+      "emotion": "DoubtingHistorian",
+      "status": "RECORDED_AUTOMATICALLY_VERIFIED",
+      "durationSeconds": 6.16,
+      "words": [
+        {
+          "text": "Some",
+          "startSeconds": 0,
+          "endSeconds": 0.3600000000000001,
+          "charStart": 0,
+          "charLength": 4,
+          "confidence": 0.9374666213989258
+        },
+        {
+          "text": "fragments",
+          "startSeconds": 0.3600000000000001,
+          "endSeconds": 0.78,
+          "charStart": 5,
+          "charLength": 9,
+          "confidence": 0.9985382556915283
+        },
+        {
+          "text": "were",
+          "startSeconds": 0.78,
+          "endSeconds": 1.12,
+          "charStart": 15,
+          "charLength": 4,
+          "confidence": 0.9981424808502197
+        },
+        {
+          "text": "kept",
+          "startSeconds": 1.12,
+          "endSeconds": 1.44,
+          "charStart": 20,
+          "charLength": 4,
+          "confidence": 0.9985007047653198
+        },
+        {
+          "text": "after",
+          "startSeconds": 1.44,
+          "endSeconds": 2.18,
+          "charStart": 25,
+          "charLength": 5,
+          "confidence": 0.9162160158157349
+        },
+        {
+          "text": "the",
+          "startSeconds": 2.18,
+          "endSeconds": 2.38,
+          "charStart": 31,
+          "charLength": 3,
+          "confidence": 0.9980249404907227
+        },
+        {
+          "text": "relationships",
+          "startSeconds": 2.38,
+          "endSeconds": 2.86,
+          "charStart": 35,
+          "charLength": 13,
+          "confidence": 0.992382824420929
+        },
+        {
+          "text": "that",
+          "startSeconds": 2.86,
+          "endSeconds": 3.3,
+          "charStart": 49,
+          "charLength": 4,
+          "confidence": 0.996042013168335
+        },
+        {
+          "text": "gave",
+          "startSeconds": 3.3,
+          "endSeconds": 3.54,
+          "charStart": 54,
+          "charLength": 4,
+          "confidence": 0.9980145692825317
+        },
+        {
+          "text": "them",
+          "startSeconds": 3.54,
+          "endSeconds": 3.7800000000000002,
+          "charStart": 59,
+          "charLength": 4,
+          "confidence": 0.9301018118858337
+        },
+        {
+          "text": "meaning",
+          "startSeconds": 3.7800000000000002,
+          "endSeconds": 4.26,
+          "charStart": 64,
+          "charLength": 7,
+          "confidence": 0.9978638291358948
+        },
+        {
+          "text": "had",
+          "startSeconds": 4.26,
+          "endSeconds": 4.9,
+          "charStart": 72,
+          "charLength": 3,
+          "confidence": 0.983052134513855
+        },
+        {
+          "text": "been",
+          "startSeconds": 4.9,
+          "endSeconds": 5.14,
+          "charStart": 76,
+          "charLength": 4,
+          "confidence": 0.9990435242652893
+        },
+        {
+          "text": "torn",
+          "startSeconds": 5.14,
+          "endSeconds": 5.52,
+          "charStart": 81,
+          "charLength": 4,
+          "confidence": 0.999650239944458
+        },
+        {
+          "text": "apart.",
+          "startSeconds": 5.52,
+          "endSeconds": 5.98,
+          "charStart": 86,
+          "charLength": 6,
+          "confidence": 0.9984629154205322
+        }
+      ],
+      "readyForAudioClock": true,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "f696b45db0cc086c9b89361dea1278df0ad38728c44c9662e997947f74e87a84",
+      "format": {
+        "container": "WAV",
+        "sampleRate": 48000,
+        "bitDepth": 24,
+        "channels": 1,
+        "sourceBitDepth": 16
+      },
+      "alignmentMethod": "Local small.en Whisper word timestamps (attention/DTW), CTranslate2 CPU, VAD disabled; no ONNX Runtime imported",
+      "frameResolutionSeconds": 0.02,
+      "minimumWordConfidence": 0.9162160158157349,
+      "verification": {
+        "canonicalSpokenTextVerified": true,
+        "finalSampleCount": 295680,
+        "peakDBFS": -5.311323485466102,
+        "noClipping": true,
+        "parentTranscript": "Everything held beneath the sanctuary had been saved from loss. Some fragments were kept after the relationships that gave them meaning had been torn apart. The prison had preserved the reach. It had not preserved the possibility of being met.",
+        "finalCropTranscript": "Some fragments were kept after the relationships that gave them meaning had been torn apart.",
+        "sourceCropFrames": [
+          232320,
+          528000
+        ],
+        "analysisPaddingSeconds": 1,
+        "manualListeningReview": "PENDING",
+        "telemetryRuntimeUsed": false
+      }
+    },
+    {
+      "assetLineKey": "Reaper:04:N03",
+      "lineId": "ASC_REA_04__closing",
+      "sceneId": "ASC_REA_04",
+      "revelationId": "ASC_REA_04",
+      "runtimeCommandId": "closing",
+      "commandId": "closing",
+      "commandBinding": "Use the existing explicit WriteBlock ID in the authored scene; update binding if Claude assigns a different command ID.",
+      "contentKey": "Reaper:04",
+      "blockKey": "closing",
+      "speaker": "NARRATOR",
+      "text": "The prison had preserved the reach. It had not preserved the possibility of being met.",
+      "textSHA256": "5302e3639b75c950aa20ecd453e3eedce991c20f852a6340b7e94ac68e70b94f",
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Reaper_Debt04_The_Prison_Built_from_Mercy_N03.wav",
+      "emotion": "DoubtingHistorian",
+      "status": "RECORDED_AUTOMATICALLY_VERIFIED",
+      "durationSeconds": 7.0,
+      "words": [
+        {
+          "text": "The",
+          "startSeconds": 0,
+          "endSeconds": 0.26,
+          "charStart": 0,
+          "charLength": 3,
+          "confidence": 0.927832305431366
+        },
+        {
+          "text": "prison",
+          "startSeconds": 0.26,
+          "endSeconds": 0.6200000000000001,
+          "charStart": 4,
+          "charLength": 6,
+          "confidence": 0.9469917416572571
+        },
+        {
+          "text": "had",
+          "startSeconds": 0.6200000000000001,
+          "endSeconds": 1.06,
+          "charStart": 11,
+          "charLength": 3,
+          "confidence": 0.9967457056045532
+        },
+        {
+          "text": "preserved",
+          "startSeconds": 1.06,
+          "endSeconds": 1.58,
+          "charStart": 15,
+          "charLength": 9,
+          "confidence": 0.9987727999687195
+        },
+        {
+          "text": "the",
+          "startSeconds": 1.58,
+          "endSeconds": 2.14,
+          "charStart": 25,
+          "charLength": 3,
+          "confidence": 0.9918757677078247
+        },
+        {
+          "text": "reach.",
+          "startSeconds": 2.14,
+          "endSeconds": 2.46,
+          "charStart": 29,
+          "charLength": 6,
+          "confidence": 0.8391611576080322
+        },
+        {
+          "text": "It",
+          "startSeconds": 3.84,
+          "endSeconds": 4.14,
+          "charStart": 36,
+          "charLength": 2,
+          "confidence": 0.9940944314002991
+        },
+        {
+          "text": "had",
+          "startSeconds": 4.14,
+          "endSeconds": 4.26,
+          "charStart": 39,
+          "charLength": 3,
+          "confidence": 0.9967505931854248
+        },
+        {
+          "text": "not",
+          "startSeconds": 4.26,
+          "endSeconds": 4.5,
+          "charStart": 43,
+          "charLength": 3,
+          "confidence": 0.9988116025924683
+        },
+        {
+          "text": "preserved",
+          "startSeconds": 4.5,
+          "endSeconds": 5.12,
+          "charStart": 47,
+          "charLength": 9,
+          "confidence": 0.9988093376159668
+        },
+        {
+          "text": "the",
+          "startSeconds": 5.12,
+          "endSeconds": 5.36,
+          "charStart": 57,
+          "charLength": 3,
+          "confidence": 0.9988873600959778
+        },
+        {
+          "text": "possibility",
+          "startSeconds": 5.36,
+          "endSeconds": 5.8,
+          "charStart": 61,
+          "charLength": 11,
+          "confidence": 0.9988046884536743
+        },
+        {
+          "text": "of",
+          "startSeconds": 5.8,
+          "endSeconds": 6.28,
+          "charStart": 73,
+          "charLength": 2,
+          "confidence": 0.9992792010307312
+        },
+        {
+          "text": "being",
+          "startSeconds": 6.28,
+          "endSeconds": 6.52,
+          "charStart": 76,
+          "charLength": 5,
+          "confidence": 0.9992793202400208
+        },
+        {
+          "text": "met.",
+          "startSeconds": 6.52,
+          "endSeconds": 6.88,
+          "charStart": 82,
+          "charLength": 4,
+          "confidence": 0.9996529817581177
+        }
+      ],
+      "readyForAudioClock": true,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "2dc75e99937de3a0e09072c5a6a2927ea3ace875d64dd975bbffd000020a6a00",
+      "format": {
+        "container": "WAV",
+        "sampleRate": 48000,
+        "bitDepth": 24,
+        "channels": 1,
+        "sourceBitDepth": 16
+      },
+      "alignmentMethod": "Local small.en Whisper word timestamps (attention/DTW), CTranslate2 CPU, VAD disabled; no ONNX Runtime imported",
+      "frameResolutionSeconds": 0.02,
+      "minimumWordConfidence": 0.8391611576080322,
+      "verification": {
+        "canonicalSpokenTextVerified": true,
+        "finalSampleCount": 336000,
+        "peakDBFS": -4.929554654746443,
+        "noClipping": true,
+        "parentTranscript": "Everything held beneath the sanctuary had been saved from loss. Some fragments were kept after the relationships that gave them meaning had been torn apart. The prison had preserved the reach. It had not preserved the possibility of being met.",
+        "finalCropTranscript": "The prison had preserved the reach. It had not preserved the possibility of being met.",
+        "sourceCropFrames": [
+          540480,
+          876480
+        ],
+        "analysisPaddingSeconds": 1,
+        "manualListeningReview": "PENDING",
+        "telemetryRuntimeUsed": false
+      }
+    }
+  ],
+  "visualKey": "Reaper_TwoAccounts",
+  "cinematic": {
+    "direction": "Add a separated doorway study on a new sanctuary leaf. Its parts never become an animated reunion. Correct the new saved-from-loss claim without touching the original prison sentence.",
+    "events": [
+      {
+        "step": 1,
+        "intent": "RETURN_TO_EXISTING_MEMORY",
+        "memoryId": "MEM_12",
+        "sceneId": "ASC_REA_04",
+        "useExistingBookTurn": true,
+        "continuationAPI": "ChronicleJournal.PlanContinuation",
+        "maxVisibleTurns": 3,
+        "turnTiming": "ChronicleRhythm.TurnAnticipation and TurnSettle",
+        "baseTextReadOnly": true,
+        "keepBookOpen": true
+      },
+      {
+        "step": 2,
+        "intent": "RESERVE_NEW_WRITING_AREA",
+        "placement": "Fresh continuation leaf for major corrections; unused margin only if it fits for small additions.",
+        "font": "Reuse current Chronicle handwriting and stroke renderer; respect user-selected textScale without automatic shrinking.",
+        "existingBlocksReadOnly": true
+      },
+      {
+        "step": 3,
+        "intent": "OPTIONAL_MARGINAL_ART",
+        "visualKey": "Reaper_TwoAccounts",
+        "asset": "SourceAssets/ChronicleAscension/Art/Reaper_TwoAccounts.png",
+        "status": "GENERATED_AND_CHECKED",
+        "onlyNewOverlay": true,
+        "animation": "None required; static marginal study."
+      },
+      {
+        "step": 4,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "context",
+        "mode": "SILENT_HANDWRITING",
+        "text": "Within one preserved future, a hand kept reaching toward a doorway. The frame remained clear. Nothing of the room beyond it could be recovered. The Reaper followed the associated traces and found that the reaching and the welcome it expected had been held apart. Each fragment continued without the other.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 5,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "new_observation",
+        "mode": "NARRATED",
+        "text": "Everything held beneath the sanctuary had been saved from loss.",
+        "completeBeforeNextBlockingEvent": true,
+        "assetLineKey": "Reaper:04:N01",
+        "clock": "Final recording sample clock and measured word intervals only.",
+        "missingAudioPolicy": "Existing silent-writing fallback; do not invent word timings."
+      },
+      {
+        "step": 6,
+        "intent": "HESITATE",
+        "authoredPauseSeconds": 1.0,
+        "pauseInk": true,
+        "narrationMustFinish": true
+      },
+      {
+        "step": 7,
+        "intent": "RED_STRIKE_NEW_OBSERVATION",
+        "targetBlockKey": "new_observation",
+        "ownerContentKey": "Reaper:04",
+        "requestedExistingCue": "red_ink",
+        "cueMeaning": "Existing Debuff mapping; no new quill Foley is claimed.",
+        "preserveOldChronicleInk": true,
+        "requireScopedTargetValidation": true
+      },
+      {
+        "step": 8,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "replacement",
+        "mode": "NARRATED",
+        "text": "Some fragments were kept after the relationships that gave them meaning had been torn apart.",
+        "completeBeforeNextBlockingEvent": true,
+        "assetLineKey": "Reaper:04:N02",
+        "clock": "Final recording sample clock and measured word intervals only.",
+        "missingAudioPolicy": "Existing silent-writing fallback; do not invent word timings."
+      },
+      {
+        "step": 9,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "evidence",
+        "mode": "SILENT_HANDWRITING",
+        "text": "A doorway was not a home merely because its outline endured. The repeated gesture belonged to someone, and had once been answered by someone. The traveler's collection retained evidence of both while denying this impression the meeting that made them intelligible. Keeping more fragments had not made this particular life whole.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 10,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "account",
+        "mode": "SILENT_HANDWRITING",
+        "text": "The Reaper understood the fear that had built the sanctuary. He also understood why counting preserved shapes could conceal another kind of loss. His record would keep the separation visible. If the fragments could ever be helped, that work would have to consider what had been taken between them, not merely what had been stored.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 11,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "closing",
+        "mode": "NARRATED",
+        "text": "The prison had preserved the reach. It had not preserved the possibility of being met.",
+        "completeBeforeNextBlockingEvent": true,
+        "assetLineKey": "Reaper:04:N03",
+        "clock": "Final recording sample clock and measured word intervals only.",
+        "missingAudioPolicy": "Existing silent-writing fallback; do not invent word timings."
+      },
+      {
+        "step": 12,
+        "intent": "COMPLETE_NEW_ADDITION",
+        "archivePermanent": true,
+        "idempotent": true,
+        "completionHold": "ChronicleRhythm.CompletionHold; no extra fixed three-second hold",
+        "revisitTiming": "ChronicleRhythm.RevisitScale",
+        "skipState": "All new blocks complete; the new observation is struck and its replacement remains. All base-memory content is unchanged.",
+        "replay": "Read immediately; full cinematic is opt-in.",
+        "runtimeSaveId": "ASC_REA_04"
+      }
+    ]
+  },
+  "continuityGates": [
+    {
+      "requirement": "Existing expanded memory and its canonical correction/knowledge have already been viewed.",
+      "memoryId": "MEM_12"
+    }
+  ],
+  "spoilerPolicy": "Never identify the Narrator with the fourth companion or the Forgotten Observer before SCENE_CH10. Base discoveries remain first; additions are deferred if required knowledge is absent.",
+  "existingContentModified": false,
+  "newBeingDialogue": false,
+  "accessibility": {
+    "instantText": true,
+    "voiceMuteKeepsPageReadable": true,
+    "reducedMotionUsesStaticArt": true,
+    "reducedFlashingNoExtraGlow": true,
+    "skipResolvesCompletedNewState": true
+  }
+}

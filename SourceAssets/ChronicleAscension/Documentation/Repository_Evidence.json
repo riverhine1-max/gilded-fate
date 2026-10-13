@@ -1,0 +1,154 @@
+{
+  "repository": "https://github.com/riverhine1-max/gilded-fate",
+  "commit": "7211864e93fee914ef370912ae1ed8aafd66266b",
+  "storyReadCommit": "9132d13a79af79e1d44d593f6da43cdd64f7478c",
+  "currentMainInspected": true,
+  "initialRepoTreeEntries": 2658,
+  "recursiveTreeTruncated": false,
+  "prompts1And2Found": true,
+  "ascensionCatalogFound": true,
+  "runtimeIdsAvailable": true,
+  "scope": "Base story read at the original pinned commit. Prompts 1 and 2 were added during production and their actual contracts were read at the newer commit; the compare contains no change to base story scripts or original correction definitions.",
+  "sources": [
+    {
+      "path": "Assets/Scripts/Chronicle/ChronicleAscensionCatalog.cs",
+      "sha256": "fe1d2dbbb9b691ce8c94a474547f5354272253cb2cdb05fba6e38c8a2fb90a5d",
+      "gitBlobSHA1": "a9b967e233ee20f034190a0d97136a68d9768297",
+      "readCommit": "7211864e93fee914ef370912ae1ed8aafd66266b",
+      "url": "https://github.com/riverhine1-max/gilded-fate/blob/7211864e93fee914ef370912ae1ed8aafd66266b/Assets/Scripts/Chronicle/ChronicleAscensionCatalog.cs"
+    },
+    {
+      "path": "Assets/Scripts/Chronicle/ChronicleAscensionProgress.cs",
+      "sha256": "093ff4985a87069ba693c1063084456f6cb9b58dde635281f192cfbf198d9369",
+      "gitBlobSHA1": "f594d15e447fab7e6c9f9235b4e6a32935184795",
+      "readCommit": "7211864e93fee914ef370912ae1ed8aafd66266b",
+      "url": "https://github.com/riverhine1-max/gilded-fate/blob/7211864e93fee914ef370912ae1ed8aafd66266b/Assets/Scripts/Chronicle/ChronicleAscensionProgress.cs"
+    },
+    {
+      "path": "Assets/Scripts/Chronicle/ChronicleAscensionView.cs",
+      "sha256": "62f79e7e00a2699b7ca5fc5b27617353b85e2f61a7c3db6a9056b992e9f22d92",
+      "gitBlobSHA1": "2ecd606e90c336efe301ba272770bd328d4a909b",
+      "readCommit": "7211864e93fee914ef370912ae1ed8aafd66266b",
+      "url": "https://github.com/riverhine1-max/gilded-fate/blob/7211864e93fee914ef370912ae1ed8aafd66266b/Assets/Scripts/Chronicle/ChronicleAscensionView.cs"
+    },
+    {
+      "path": "Assets/Scripts/Chronicle/ChronicleCatalog.cs",
+      "sha256": "c4c49177ac310adab067d5690e8f288c73e47fe2fab35bad2b3cc6604d30b068",
+      "gitBlobSHA1": "f79bd1dcefa33df36631e8671e8c98081d42c7a1",
+      "readCommit": "9132d13a79af79e1d44d593f6da43cdd64f7478c",
+      "url": "https://github.com/riverhine1-max/gilded-fate/blob/9132d13a79af79e1d44d593f6da43cdd64f7478c/Assets/Scripts/Chronicle/ChronicleCatalog.cs"
+    },
+    {
+      "path": "Assets/Scripts/Chronicle/ChronicleJournal.cs",
+      "sha256": "77ed8b4d20f812f932ad70288a31aac361a5d8b862bf816d29fbf931c21a9411",
+      "gitBlobSHA1": "c0290e83d6d41d680ced7f0f3805ba0164251902",
+      "readCommit": "7211864e93fee914ef370912ae1ed8aafd66266b",
+      "url": "https://github.com/riverhine1-max/gilded-fate/blob/7211864e93fee914ef370912ae1ed8aafd66266b/Assets/Scripts/Chronicle/ChronicleJournal.cs"
+    },
+    {
+      "path": "Assets/Scripts/Chronicle/ChronicleMilestoneScenes.cs",
+      "sha256": "5098595804a02ab867ec6070730fb5e975447c2f7ab084621951ad871b990436",
+      "gitBlobSHA1": "7740b1d5d367e33e5c4feff22109ac232530c2f4",
+      "readCommit": "9132d13a79af79e1d44d593f6da43cdd64f7478c",
+      "url": "https://github.com/riverhine1-max/gilded-fate/blob/9132d13a79af79e1d44d593f6da43cdd64f7478c/Assets/Scripts/Chronicle/ChronicleMilestoneScenes.cs"
+    },
+    {
+      "path": "Assets/Scripts/Chronicle/ChronicleRhythm.cs",
+      "sha256": "973abef632482938c7d0c109e5f4dfbcd6d9bfff46cae365dd0e6d76f158f192",
+      "gitBlobSHA1": "f660357b97efcce9902d0a210a8b0af7237e6809",
+      "readCommit": "7211864e93fee914ef370912ae1ed8aafd66266b",
+      "url": "https://github.com/riverhine1-max/gilded-fate/blob/7211864e93fee914ef370912ae1ed8aafd66266b/Assets/Scripts/Chronicle/ChronicleRhythm.cs"
+    },
+    {
+      "path": "Assets/Scripts/Chronicle/ChronicleScripts.cs",
+      "sha256": "14997fa6ed576971a5790405efca3b8a76576b162785c48f15b3dc932cc662b5",
+      "gitBlobSHA1": "1a71b9865c31e2242f3776e4fc3aacbb543e6868",
+      "readCommit": "9132d13a79af79e1d44d593f6da43cdd64f7478c",
+      "url": "https://github.com/riverhine1-max/gilded-fate/blob/9132d13a79af79e1d44d593f6da43cdd64f7478c/Assets/Scripts/Chronicle/ChronicleScripts.cs"
+    },
+    {
+      "path": "Assets/Scripts/Chronicle/Scripts/ChronicleScripts.ActI.cs",
+      "sha256": "d45670dc9422a846afea103955a52817c275a9d6632f8b74384e1b31f6cac74a",
+      "gitBlobSHA1": "5cff39a5c004f71bd3bb224b2235dcd3124509dc",
+      "readCommit": "9132d13a79af79e1d44d593f6da43cdd64f7478c",
+      "url": "https://github.com/riverhine1-max/gilded-fate/blob/9132d13a79af79e1d44d593f6da43cdd64f7478c/Assets/Scripts/Chronicle/Scripts/ChronicleScripts.ActI.cs"
+    },
+    {
+      "path": "Assets/Scripts/Chronicle/Scripts/ChronicleScripts.ActII.cs",
+      "sha256": "7c9f3ece7c674f8fd6b7629d7ee78163557427e737b5b1b085337c0eecbd765d",
+      "gitBlobSHA1": "25d79c5f52e9dcef7856c0c30cee3e88fc0cc8cc",
+      "readCommit": "9132d13a79af79e1d44d593f6da43cdd64f7478c",
+      "url": "https://github.com/riverhine1-max/gilded-fate/blob/9132d13a79af79e1d44d593f6da43cdd64f7478c/Assets/Scripts/Chronicle/Scripts/ChronicleScripts.ActII.cs"
+    },
+    {
+      "path": "Assets/Scripts/Chronicle/Scripts/ChronicleScripts.ActIII.cs",
+      "sha256": "0b502ddf876e5f7e06e34f92e444f084330c10f211b003ddb37bfd3803f0716e",
+      "gitBlobSHA1": "c4d240c4890755d2fe8463d825abda1b58d2066e",
+      "readCommit": "9132d13a79af79e1d44d593f6da43cdd64f7478c",
+      "url": "https://github.com/riverhine1-max/gilded-fate/blob/9132d13a79af79e1d44d593f6da43cdd64f7478c/Assets/Scripts/Chronicle/Scripts/ChronicleScripts.ActIII.cs"
+    },
+    {
+      "path": "Assets/Scripts/ChronicleBook/ChronicleDialogueAudio.cs",
+      "sha256": "9476f2f80f1731beaba7d74ff2be0ff8a96a83480d769538a23874bd57cdd39f",
+      "gitBlobSHA1": "c1cbbdb033af05061daa7bda752ae724613a126c",
+      "readCommit": "9132d13a79af79e1d44d593f6da43cdd64f7478c",
+      "url": "https://github.com/riverhine1-max/gilded-fate/blob/9132d13a79af79e1d44d593f6da43cdd64f7478c/Assets/Scripts/ChronicleBook/ChronicleDialogueAudio.cs"
+    },
+    {
+      "path": "Assets/Scripts/UI/GildedChronicleArt.cs",
+      "sha256": "b9dcdd7418e95810d8eaa7b92569c4c3dcc1a8800024dff221f03f6b4769ea13",
+      "gitBlobSHA1": "2d1c16e469abed8674f719954cfe30a991892800",
+      "readCommit": "9132d13a79af79e1d44d593f6da43cdd64f7478c",
+      "url": "https://github.com/riverhine1-max/gilded-fate/blob/9132d13a79af79e1d44d593f6da43cdd64f7478c/Assets/Scripts/UI/GildedChronicleArt.cs"
+    },
+    {
+      "path": "Assets/Scripts/UI/GildedChronicleCinematicArt.cs",
+      "sha256": "2e1ee347c74b8db46705e7045c350a6919c92897c9206bd684d1a4e36ecbb7fc",
+      "gitBlobSHA1": "aef509fa3de9d613c4af498f830e22179d8c0881",
+      "readCommit": "9132d13a79af79e1d44d593f6da43cdd64f7478c",
+      "url": "https://github.com/riverhine1-max/gilded-fate/blob/9132d13a79af79e1d44d593f6da43cdd64f7478c/Assets/Scripts/UI/GildedChronicleCinematicArt.cs"
+    },
+    {
+      "path": "Docs/CHRONICLE_ARCHITECTURE.md",
+      "sha256": "8774200150ccfea46c08149f10981970f4e13c1308107b3670bf0d97700d4542",
+      "gitBlobSHA1": "6a633b0ebd685f23034211e69a2e49e6f40b6fe0",
+      "readCommit": "9132d13a79af79e1d44d593f6da43cdd64f7478c",
+      "url": "https://github.com/riverhine1-max/gilded-fate/blob/9132d13a79af79e1d44d593f6da43cdd64f7478c/Docs/CHRONICLE_ARCHITECTURE.md"
+    },
+    {
+      "path": "Docs/CHRONICLE_VOICE_SYNC.md",
+      "sha256": "c52d043227dd035b01df5cc8e0416dfeb364d07654d6ab17e07fdf16aa8cced3",
+      "gitBlobSHA1": "54ab5b4883357087f5cbea7b9f65cda6ed9da106",
+      "readCommit": "9132d13a79af79e1d44d593f6da43cdd64f7478c",
+      "url": "https://github.com/riverhine1-max/gilded-fate/blob/9132d13a79af79e1d44d593f6da43cdd64f7478c/Docs/CHRONICLE_VOICE_SYNC.md"
+    },
+    {
+      "path": "Docs/Updates/Chronicle_Audio_Integration.md",
+      "sha256": "5f6e9f89c0aaefcd51852e28eb59dd5c59dc4b9ad55acd15d77f1468e5c85769",
+      "gitBlobSHA1": "90f762932c8a240b8b6f9c5829eaab8f2041f74e",
+      "readCommit": "9132d13a79af79e1d44d593f6da43cdd64f7478c",
+      "url": "https://github.com/riverhine1-max/gilded-fate/blob/9132d13a79af79e1d44d593f6da43cdd64f7478c/Docs/Updates/Chronicle_Audio_Integration.md"
+    },
+    {
+      "path": "SourceAssets/ChronicleAudio/Documentation/Performance.md",
+      "sha256": "3312b2abb07b81609646046981be384d505478b904baffd2b37d9979cf3a4285",
+      "gitBlobSHA1": "e6b5077362b485334f8c455a4d72ea93eecd96a1",
+      "readCommit": "9132d13a79af79e1d44d593f6da43cdd64f7478c",
+      "url": "https://github.com/riverhine1-max/gilded-fate/blob/9132d13a79af79e1d44d593f6da43cdd64f7478c/SourceAssets/ChronicleAudio/Documentation/Performance.md"
+    },
+    {
+      "path": "SourceAssets/ChronicleAudio/Narrator_Voice.json",
+      "sha256": "74c13cc30d3531940eb03d353c6af08ad62af2e4804008937058724c98261304",
+      "gitBlobSHA1": "7ce3dfa548ae8c921aa5019329199bdd56cbad31",
+      "readCommit": "9132d13a79af79e1d44d593f6da43cdd64f7478c",
+      "url": "https://github.com/riverhine1-max/gilded-fate/blob/9132d13a79af79e1d44d593f6da43cdd64f7478c/SourceAssets/ChronicleAudio/Narrator_Voice.json"
+    },
+    {
+      "path": "SourceAssets/ChronicleAudio/asset_manifest.json",
+      "sha256": "429193f835da6720aedd70d235dfb1e74340216289c2313aaf964b5138f0850f",
+      "gitBlobSHA1": "323635bd241d66dd8b6f6e08411b796e8b5f6eb8",
+      "readCommit": "9132d13a79af79e1d44d593f6da43cdd64f7478c",
+      "url": "https://github.com/riverhine1-max/gilded-fate/blob/9132d13a79af79e1d44d593f6da43cdd64f7478c/SourceAssets/ChronicleAudio/asset_manifest.json"
+    }
+  ]
+}

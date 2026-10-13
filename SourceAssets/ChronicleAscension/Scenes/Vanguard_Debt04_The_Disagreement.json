@@ -1,0 +1,797 @@
+{
+  "schemaVersion": 1,
+  "contentKey": "Vanguard:04",
+  "revelationId": "ASC_VAN_04",
+  "sceneId": "ASC_VAN_04",
+  "idBindingStatus": "BOUND_TO_EXISTING_ASCENSION_CATALOG",
+  "authoringComplete": true,
+  "contentReady": false,
+  "runtimeRegistrationStatus": "NOT_INTEGRATED_BY_THIS_CONTENT_TASK",
+  "hero": "Vanguard",
+  "fateDebt": 4,
+  "kindOrdinal": 2,
+  "presentation": "FullCorrection",
+  "title": "The Disagreement",
+  "kind": "MAJOR",
+  "expandedMemoryId": "MEM_13",
+  "expandedChapterId": "CH_05",
+  "sourceCommit": "7211864e93fee914ef370912ae1ed8aafd66266b",
+  "journalBlocks": [
+    {
+      "blockKey": "context",
+      "text": "Beneath the argument lay a quieter disagreement. The fourth companion had marked the positions of the four companions upon the sanctuary floor. The warrior noticed that every path in the proposed escape led away from its center. He knelt and added a space where an answer could be given.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "5628b79cd8f2b7f86de04574c4d60e6cfe4b3c291fb09a2bfe89db4059882137"
+    },
+    {
+      "blockKey": "new_observation",
+      "text": "The warrior opposed the plan because he could not bear to lose his friend.",
+      "mode": "NARRATED",
+      "textSHA256": "aa561305f0d7b9bf471436da4f66568a9c9149809ccbef738ffbd4c22ef94e4c",
+      "assetLineKey": "Vanguard:04:N01"
+    },
+    {
+      "blockKey": "replacement",
+      "text": "He also opposed a rescue that gave the people being saved no choice about its cost.",
+      "mode": "NARRATED",
+      "textSHA256": "70d067650dec4546005a0d52072783ffc65e8ae836c9f619d0ca8bc08c932ac3",
+      "assetLineKey": "Vanguard:04:N02"
+    },
+    {
+      "blockKey": "evidence",
+      "text": "The new mark was not another route through the stone. It was room for a refusal. The fourth understood it, then continued with the plan. Neither had mistaken the other's concern for cowardice. Their disagreement survived because concern did not settle the question of authority.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "53b7a8058e03dea826b24329ed2b7462e4190d027acab31cf6186fc4c523bba7"
+    },
+    {
+      "blockKey": "account",
+      "text": "The warrior's anger had two objects: the loss he feared, and the decision being made for them. Remembering only the first made him seem unable to understand the danger. Remembering both restores what he was defending. He could accept a risk without accepting another person's right to choose it for everyone.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "eb8209f15795651ef68105f8dfaf5c73f8845da7f426a1ab0739b115942a2181"
+    },
+    {
+      "blockKey": "closing",
+      "text": "He wanted his friend beside him. He wanted the others to be able to answer for themselves.",
+      "mode": "NARRATED",
+      "textSHA256": "d8b3dee0a413b077dc718c559ff3b621f1205ae5f369edecd273d0d117a116ef",
+      "assetLineKey": "Vanguard:04:N03"
+    }
+  ],
+  "journalText": "Beneath the argument lay a quieter disagreement. The fourth companion had marked the positions of the four companions upon the sanctuary floor. The warrior noticed that every path in the proposed escape led away from its center. He knelt and added a space where an answer could be given.\n\nThe warrior opposed the plan because he could not bear to lose his friend.\n\nHe also opposed a rescue that gave the people being saved no choice about its cost.\n\nThe new mark was not another route through the stone. It was room for a refusal. The fourth understood it, then continued with the plan. Neither had mistaken the other's concern for cowardice. Their disagreement survived because concern did not settle the question of authority.\n\nThe warrior's anger had two objects: the loss he feared, and the decision being made for them. Remembering only the first made him seem unable to understand the danger. Remembering both restores what he was defending. He could accept a risk without accepting another person's right to choose it for everyone.\n\nHe wanted his friend beside him. He wanted the others to be able to answer for themselves.",
+  "wordCount": 192,
+  "newlyRecoveredInformation": "Vanguard's objection included a concrete demand for consent, represented by a deliberately unfilled response space in the plan, rather than attachment alone.",
+  "newlyAuthoredDetails": [
+    "Positions marked on the floor and a space for refusal. This supplements, rather than changes, the recorded argument."
+  ],
+  "sourceEvidence": [
+    "MEM_13",
+    "MEM_14",
+    "SCENE_CH10"
+  ],
+  "relationships": {
+    "follows": [
+      "Vanguard:01",
+      "Vanguard:03"
+    ],
+    "prepares": [
+      "Vanguard:07",
+      "Hexer:06",
+      "Reaper:10"
+    ]
+  },
+  "correction": {
+    "ownerContentKey": "Vanguard:04",
+    "revelationId": "ASC_VAN_04",
+    "correctionId": "ASC_CORR_VAN_2",
+    "localCorrectionKey": "new_observation",
+    "targetScope": "THIS_NEW_ADDITION_ONLY",
+    "targetBlockKey": "new_observation",
+    "originalNewObservation": "The warrior opposed the plan because he could not bear to lose his friend.",
+    "correctedReplacement": "He also opposed a rescue that gave the people being saved no choice about its cost.",
+    "replacementBlockKey": "replacement",
+    "originalChronicleTarget": null,
+    "sharedCorrectionIdsModified": [],
+    "preserveOriginal": true,
+    "inkStyle": "Existing restrained red correction style",
+    "acknowledgement": "Only the observation added by this package may be crossed out."
+  },
+  "narration": [
+    {
+      "assetLineKey": "Vanguard:04:N01",
+      "lineId": "ASC_VAN_04__new_observation",
+      "sceneId": "ASC_VAN_04",
+      "revelationId": "ASC_VAN_04",
+      "runtimeCommandId": "new_observation",
+      "commandId": "new_observation",
+      "commandBinding": "Use the existing explicit WriteBlock ID in the authored scene; update binding if Claude assigns a different command ID.",
+      "contentKey": "Vanguard:04",
+      "blockKey": "new_observation",
+      "speaker": "NARRATOR",
+      "text": "The warrior opposed the plan because he could not bear to lose his friend.",
+      "textSHA256": "aa561305f0d7b9bf471436da4f66568a9c9149809ccbef738ffbd4c22ef94e4c",
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Vanguard_Debt04_The_Disagreement_N01.wav",
+      "emotion": "DoubtingHistorian",
+      "status": "RECORDED_AUTOMATICALLY_VERIFIED",
+      "durationSeconds": 4.4,
+      "words": [
+        {
+          "text": "The",
+          "startSeconds": 0.07999999999999963,
+          "endSeconds": 0.6000000000000001,
+          "charStart": 0,
+          "charLength": 3,
+          "confidence": 0.9474207162857056
+        },
+        {
+          "text": "warrior",
+          "startSeconds": 0.6000000000000001,
+          "endSeconds": 0.8999999999999999,
+          "charStart": 4,
+          "charLength": 7,
+          "confidence": 0.9597992300987244
+        },
+        {
+          "text": "opposed",
+          "startSeconds": 0.8999999999999999,
+          "endSeconds": 1.52,
+          "charStart": 12,
+          "charLength": 7,
+          "confidence": 0.9914611577987671
+        },
+        {
+          "text": "the",
+          "startSeconds": 1.52,
+          "endSeconds": 1.7400000000000002,
+          "charStart": 20,
+          "charLength": 3,
+          "confidence": 0.9960570335388184
+        },
+        {
+          "text": "plan",
+          "startSeconds": 1.7400000000000002,
+          "endSeconds": 2.04,
+          "charStart": 24,
+          "charLength": 4,
+          "confidence": 0.9978840947151184
+        },
+        {
+          "text": "because",
+          "startSeconds": 2.04,
+          "endSeconds": 2.5,
+          "charStart": 29,
+          "charLength": 7,
+          "confidence": 0.9048683047294617
+        },
+        {
+          "text": "he",
+          "startSeconds": 2.5,
+          "endSeconds": 2.66,
+          "charStart": 37,
+          "charLength": 2,
+          "confidence": 0.997366726398468
+        },
+        {
+          "text": "could",
+          "startSeconds": 2.66,
+          "endSeconds": 2.8,
+          "charStart": 40,
+          "charLength": 5,
+          "confidence": 0.9982709884643555
+        },
+        {
+          "text": "not",
+          "startSeconds": 2.8,
+          "endSeconds": 2.98,
+          "charStart": 46,
+          "charLength": 3,
+          "confidence": 0.9971882700920105
+        },
+        {
+          "text": "bear",
+          "startSeconds": 2.98,
+          "endSeconds": 3.24,
+          "charStart": 50,
+          "charLength": 4,
+          "confidence": 0.9358677268028259
+        },
+        {
+          "text": "to",
+          "startSeconds": 3.24,
+          "endSeconds": 3.46,
+          "charStart": 55,
+          "charLength": 2,
+          "confidence": 0.9983522891998291
+        },
+        {
+          "text": "lose",
+          "startSeconds": 3.46,
+          "endSeconds": 3.6399999999999997,
+          "charStart": 58,
+          "charLength": 4,
+          "confidence": 0.9855814576148987
+        },
+        {
+          "text": "his",
+          "startSeconds": 3.6399999999999997,
+          "endSeconds": 3.92,
+          "charStart": 63,
+          "charLength": 3,
+          "confidence": 0.9979193806648254
+        },
+        {
+          "text": "friend.",
+          "startSeconds": 3.92,
+          "endSeconds": 4.18,
+          "charStart": 67,
+          "charLength": 7,
+          "confidence": 0.6664207577705383
+        }
+      ],
+      "readyForAudioClock": true,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "028e25318563640b8150e999c649545b47c4bfc0579d5caedc16dfa97311b627",
+      "format": {
+        "container": "WAV",
+        "sampleRate": 48000,
+        "bitDepth": 24,
+        "channels": 1,
+        "sourceBitDepth": 16
+      },
+      "alignmentMethod": "Local small.en Whisper word timestamps (attention/DTW), CTranslate2 CPU, VAD disabled; no ONNX Runtime imported",
+      "frameResolutionSeconds": 0.02,
+      "minimumWordConfidence": 0.6664207577705383,
+      "verification": {
+        "canonicalSpokenTextVerified": true,
+        "finalSampleCount": 211200,
+        "peakDBFS": -5.725956959340591,
+        "noClipping": true,
+        "parentTranscript": "The warrior opposed the plan because he could not bear to lose his friend. He also opposed a rescue that gave the people being saved no choice about its cost. He wanted his friend beside him. He wanted the others to be able to answer for themselves.",
+        "finalCropTranscript": "The warrior opposed the plan because he could not bear to lose his friend.",
+        "sourceCropFrames": [
+          0,
+          211200
+        ],
+        "analysisPaddingSeconds": 1,
+        "manualListeningReview": "PENDING",
+        "telemetryRuntimeUsed": false
+      }
+    },
+    {
+      "assetLineKey": "Vanguard:04:N02",
+      "lineId": "ASC_VAN_04__replacement",
+      "sceneId": "ASC_VAN_04",
+      "revelationId": "ASC_VAN_04",
+      "runtimeCommandId": "replacement",
+      "commandId": "replacement",
+      "commandBinding": "Use the existing explicit WriteBlock ID in the authored scene; update binding if Claude assigns a different command ID.",
+      "contentKey": "Vanguard:04",
+      "blockKey": "replacement",
+      "speaker": "NARRATOR",
+      "text": "He also opposed a rescue that gave the people being saved no choice about its cost.",
+      "textSHA256": "70d067650dec4546005a0d52072783ffc65e8ae836c9f619d0ca8bc08c932ac3",
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Vanguard_Debt04_The_Disagreement_N02.wav",
+      "emotion": "DoubtingHistorian",
+      "status": "RECORDED_AUTOMATICALLY_VERIFIED",
+      "durationSeconds": 6.2,
+      "words": [
+        {
+          "text": "He",
+          "startSeconds": 0.03999999999999937,
+          "endSeconds": 0.76,
+          "charStart": 0,
+          "charLength": 2,
+          "confidence": 0.9432504177093506
+        },
+        {
+          "text": "also",
+          "startSeconds": 0.76,
+          "endSeconds": 1.08,
+          "charStart": 3,
+          "charLength": 4,
+          "confidence": 0.9976102113723755
+        },
+        {
+          "text": "opposed",
+          "startSeconds": 1.08,
+          "endSeconds": 1.6,
+          "charStart": 8,
+          "charLength": 7,
+          "confidence": 0.9969797134399414
+        },
+        {
+          "text": "a",
+          "startSeconds": 1.6,
+          "endSeconds": 1.7400000000000002,
+          "charStart": 16,
+          "charLength": 1,
+          "confidence": 0.9941263198852539
+        },
+        {
+          "text": "rescue",
+          "startSeconds": 1.7400000000000002,
+          "endSeconds": 2.16,
+          "charStart": 18,
+          "charLength": 6,
+          "confidence": 0.9952463507652283
+        },
+        {
+          "text": "that",
+          "startSeconds": 2.16,
+          "endSeconds": 2.74,
+          "charStart": 25,
+          "charLength": 4,
+          "confidence": 0.9851260185241699
+        },
+        {
+          "text": "gave",
+          "startSeconds": 2.74,
+          "endSeconds": 2.94,
+          "charStart": 30,
+          "charLength": 4,
+          "confidence": 0.9965468049049377
+        },
+        {
+          "text": "the",
+          "startSeconds": 2.94,
+          "endSeconds": 3.1799999999999997,
+          "charStart": 35,
+          "charLength": 3,
+          "confidence": 0.9944586753845215
+        },
+        {
+          "text": "people",
+          "startSeconds": 3.1799999999999997,
+          "endSeconds": 3.4800000000000004,
+          "charStart": 39,
+          "charLength": 6,
+          "confidence": 0.9988719820976257
+        },
+        {
+          "text": "being",
+          "startSeconds": 3.4800000000000004,
+          "endSeconds": 3.76,
+          "charStart": 46,
+          "charLength": 5,
+          "confidence": 0.9950218200683594
+        },
+        {
+          "text": "saved",
+          "startSeconds": 3.76,
+          "endSeconds": 4.32,
+          "charStart": 52,
+          "charLength": 5,
+          "confidence": 0.9977346658706665
+        },
+        {
+          "text": "no",
+          "startSeconds": 4.32,
+          "endSeconds": 4.72,
+          "charStart": 58,
+          "charLength": 2,
+          "confidence": 0.9592882394790649
+        },
+        {
+          "text": "choice",
+          "startSeconds": 4.72,
+          "endSeconds": 5.08,
+          "charStart": 61,
+          "charLength": 6,
+          "confidence": 0.9967239499092102
+        },
+        {
+          "text": "about",
+          "startSeconds": 5.08,
+          "endSeconds": 5.44,
+          "charStart": 68,
+          "charLength": 5,
+          "confidence": 0.9979627132415771
+        },
+        {
+          "text": "its",
+          "startSeconds": 5.44,
+          "endSeconds": 5.7,
+          "charStart": 74,
+          "charLength": 3,
+          "confidence": 0.9880637526512146
+        },
+        {
+          "text": "cost.",
+          "startSeconds": 5.7,
+          "endSeconds": 5.98,
+          "charStart": 78,
+          "charLength": 5,
+          "confidence": 0.9889559149742126
+        }
+      ],
+      "readyForAudioClock": true,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "4be14944e88b979f72e2581d2aa6bad763b9c62079d4b6a9f4fadf3ec8ae55cc",
+      "format": {
+        "container": "WAV",
+        "sampleRate": 48000,
+        "bitDepth": 24,
+        "channels": 1,
+        "sourceBitDepth": 16
+      },
+      "alignmentMethod": "Local small.en Whisper word timestamps (attention/DTW), CTranslate2 CPU, VAD disabled; no ONNX Runtime imported",
+      "frameResolutionSeconds": 0.02,
+      "minimumWordConfidence": 0.9432504177093506,
+      "verification": {
+        "canonicalSpokenTextVerified": true,
+        "finalSampleCount": 297600,
+        "peakDBFS": -5.387170843871825,
+        "noClipping": true,
+        "parentTranscript": "The warrior opposed the plan because he could not bear to lose his friend. He also opposed a rescue that gave the people being saved no choice about its cost. He wanted his friend beside him. He wanted the others to be able to answer for themselves.",
+        "finalCropTranscript": "He also opposed a rescue that gave the people being saved no choice about its cost.",
+        "sourceCropFrames": [
+          330240,
+          627840
+        ],
+        "analysisPaddingSeconds": 1,
+        "manualListeningReview": "PENDING",
+        "telemetryRuntimeUsed": false
+      }
+    },
+    {
+      "assetLineKey": "Vanguard:04:N03",
+      "lineId": "ASC_VAN_04__closing",
+      "sceneId": "ASC_VAN_04",
+      "revelationId": "ASC_VAN_04",
+      "runtimeCommandId": "closing",
+      "commandId": "closing",
+      "commandBinding": "Use the existing explicit WriteBlock ID in the authored scene; update binding if Claude assigns a different command ID.",
+      "contentKey": "Vanguard:04",
+      "blockKey": "closing",
+      "speaker": "NARRATOR",
+      "text": "He wanted his friend beside him. He wanted the others to be able to answer for themselves.",
+      "textSHA256": "d8b3dee0a413b077dc718c559ff3b621f1205ae5f369edecd273d0d117a116ef",
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Vanguard_Debt04_The_Disagreement_N03.wav",
+      "emotion": "DoubtingHistorian",
+      "status": "RECORDED_AUTOMATICALLY_VERIFIED",
+      "durationSeconds": 10.64,
+      "words": [
+        {
+          "text": "He",
+          "startSeconds": 0,
+          "endSeconds": 0.24,
+          "charStart": 0,
+          "charLength": 2,
+          "confidence": 0.8960013389587402
+        },
+        {
+          "text": "wanted",
+          "startSeconds": 0.24,
+          "endSeconds": 0.45999999999999996,
+          "charStart": 3,
+          "charLength": 6,
+          "confidence": 0.9977622032165527
+        },
+        {
+          "text": "his",
+          "startSeconds": 0.45999999999999996,
+          "endSeconds": 0.72,
+          "charStart": 10,
+          "charLength": 3,
+          "confidence": 0.9926297664642334
+        },
+        {
+          "text": "friend",
+          "startSeconds": 0.72,
+          "endSeconds": 1.02,
+          "charStart": 14,
+          "charLength": 6,
+          "confidence": 0.9874300360679626
+        },
+        {
+          "text": "beside",
+          "startSeconds": 1.02,
+          "endSeconds": 1.52,
+          "charStart": 21,
+          "charLength": 6,
+          "confidence": 0.9972572922706604
+        },
+        {
+          "text": "him.",
+          "startSeconds": 1.52,
+          "endSeconds": 2.14,
+          "charStart": 28,
+          "charLength": 4,
+          "confidence": 0.9976063966751099
+        },
+        {
+          "text": "He",
+          "startSeconds": 6.920000000000002,
+          "endSeconds": 7.640000000000001,
+          "charStart": 33,
+          "charLength": 2,
+          "confidence": 0.992698609828949
+        },
+        {
+          "text": "wanted",
+          "startSeconds": 7.640000000000001,
+          "endSeconds": 7.98,
+          "charStart": 36,
+          "charLength": 6,
+          "confidence": 0.9986633062362671
+        },
+        {
+          "text": "the",
+          "startSeconds": 7.98,
+          "endSeconds": 8.18,
+          "charStart": 43,
+          "charLength": 3,
+          "confidence": 0.9960018992424011
+        },
+        {
+          "text": "others",
+          "startSeconds": 8.18,
+          "endSeconds": 8.44,
+          "charStart": 47,
+          "charLength": 6,
+          "confidence": 0.9980104565620422
+        },
+        {
+          "text": "to",
+          "startSeconds": 8.44,
+          "endSeconds": 8.8,
+          "charStart": 54,
+          "charLength": 2,
+          "confidence": 0.9964267611503601
+        },
+        {
+          "text": "be",
+          "startSeconds": 8.8,
+          "endSeconds": 8.92,
+          "charStart": 57,
+          "charLength": 2,
+          "confidence": 0.9981796741485596
+        },
+        {
+          "text": "able",
+          "startSeconds": 8.92,
+          "endSeconds": 9.12,
+          "charStart": 60,
+          "charLength": 4,
+          "confidence": 0.9996057152748108
+        },
+        {
+          "text": "to",
+          "startSeconds": 9.12,
+          "endSeconds": 9.32,
+          "charStart": 65,
+          "charLength": 2,
+          "confidence": 0.9974188804626465
+        },
+        {
+          "text": "answer",
+          "startSeconds": 9.32,
+          "endSeconds": 9.68,
+          "charStart": 68,
+          "charLength": 6,
+          "confidence": 0.999420166015625
+        },
+        {
+          "text": "for",
+          "startSeconds": 9.68,
+          "endSeconds": 10.04,
+          "charStart": 75,
+          "charLength": 3,
+          "confidence": 0.9982004165649414
+        },
+        {
+          "text": "themselves.",
+          "startSeconds": 10.04,
+          "endSeconds": 10.44,
+          "charStart": 79,
+          "charLength": 11,
+          "confidence": 0.9906896352767944
+        }
+      ],
+      "readyForAudioClock": true,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "35900ad12772455156f72157b7c2db627344426311734fd2f9f93453089fb238",
+      "format": {
+        "container": "WAV",
+        "sampleRate": 48000,
+        "bitDepth": 24,
+        "channels": 1,
+        "sourceBitDepth": 16
+      },
+      "alignmentMethod": "Local small.en Whisper word timestamps (attention/DTW), CTranslate2 CPU, VAD disabled; no ONNX Runtime imported",
+      "frameResolutionSeconds": 0.02,
+      "minimumWordConfidence": 0.8960013389587402,
+      "verification": {
+        "canonicalSpokenTextVerified": true,
+        "finalSampleCount": 510720,
+        "peakDBFS": -4.430845287551847,
+        "noClipping": true,
+        "parentTranscript": "The warrior opposed the plan because he could not bear to lose his friend. He also opposed a rescue that gave the people being saved no choice about its cost. He wanted his friend beside him. He wanted the others to be able to answer for themselves.",
+        "finalCropTranscript": "He wanted his friend beside him. He wanted the others to be able to answer for themselves.",
+        "sourceCropFrames": [
+          637440,
+          1148160
+        ],
+        "analysisPaddingSeconds": 1,
+        "manualListeningReview": "PENDING",
+        "telemetryRuntimeUsed": false
+      }
+    }
+  ],
+  "visualKey": "Vanguard_ExitStudy",
+  "cinematic": {
+    "direction": "Return to the argument page without playing its dialogue. On a continuation leaf, show the new observation and its own red strike. Keep one blank gap in the new chalk study; never cross out the existing character quotations.",
+    "events": [
+      {
+        "step": 1,
+        "intent": "RETURN_TO_EXISTING_MEMORY",
+        "memoryId": "MEM_13",
+        "sceneId": "ASC_VAN_04",
+        "useExistingBookTurn": true,
+        "continuationAPI": "ChronicleJournal.PlanContinuation",
+        "maxVisibleTurns": 3,
+        "turnTiming": "ChronicleRhythm.TurnAnticipation and TurnSettle",
+        "baseTextReadOnly": true,
+        "keepBookOpen": true
+      },
+      {
+        "step": 2,
+        "intent": "RESERVE_NEW_WRITING_AREA",
+        "placement": "Fresh continuation leaf for major corrections; unused margin only if it fits for small additions.",
+        "font": "Reuse current Chronicle handwriting and stroke renderer; respect user-selected textScale without automatic shrinking.",
+        "existingBlocksReadOnly": true
+      },
+      {
+        "step": 3,
+        "intent": "OPTIONAL_MARGINAL_ART",
+        "visualKey": "Vanguard_ExitStudy",
+        "asset": "SourceAssets/ChronicleAscension/Art/Vanguard_ExitStudy.png",
+        "status": "GENERATED_AND_CHECKED",
+        "onlyNewOverlay": true,
+        "animation": "None required; static marginal study."
+      },
+      {
+        "step": 4,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "context",
+        "mode": "SILENT_HANDWRITING",
+        "text": "Beneath the argument lay a quieter disagreement. The fourth companion had marked the positions of the four companions upon the sanctuary floor. The warrior noticed that every path in the proposed escape led away from its center. He knelt and added a space where an answer could be given.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 5,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "new_observation",
+        "mode": "NARRATED",
+        "text": "The warrior opposed the plan because he could not bear to lose his friend.",
+        "completeBeforeNextBlockingEvent": true,
+        "assetLineKey": "Vanguard:04:N01",
+        "clock": "Final recording sample clock and measured word intervals only.",
+        "missingAudioPolicy": "Existing silent-writing fallback; do not invent word timings."
+      },
+      {
+        "step": 6,
+        "intent": "HESITATE",
+        "authoredPauseSeconds": 1.0,
+        "pauseInk": true,
+        "narrationMustFinish": true
+      },
+      {
+        "step": 7,
+        "intent": "RED_STRIKE_NEW_OBSERVATION",
+        "targetBlockKey": "new_observation",
+        "ownerContentKey": "Vanguard:04",
+        "requestedExistingCue": "red_ink",
+        "cueMeaning": "Existing Debuff mapping; no new quill Foley is claimed.",
+        "preserveOldChronicleInk": true,
+        "requireScopedTargetValidation": true
+      },
+      {
+        "step": 8,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "replacement",
+        "mode": "NARRATED",
+        "text": "He also opposed a rescue that gave the people being saved no choice about its cost.",
+        "completeBeforeNextBlockingEvent": true,
+        "assetLineKey": "Vanguard:04:N02",
+        "clock": "Final recording sample clock and measured word intervals only.",
+        "missingAudioPolicy": "Existing silent-writing fallback; do not invent word timings."
+      },
+      {
+        "step": 9,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "evidence",
+        "mode": "SILENT_HANDWRITING",
+        "text": "The new mark was not another route through the stone. It was room for a refusal. The fourth understood it, then continued with the plan. Neither had mistaken the other's concern for cowardice. Their disagreement survived because concern did not settle the question of authority.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 10,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "account",
+        "mode": "SILENT_HANDWRITING",
+        "text": "The warrior's anger had two objects: the loss he feared, and the decision being made for them. Remembering only the first made him seem unable to understand the danger. Remembering both restores what he was defending. He could accept a risk without accepting another person's right to choose it for everyone.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 11,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "closing",
+        "mode": "NARRATED",
+        "text": "He wanted his friend beside him. He wanted the others to be able to answer for themselves.",
+        "completeBeforeNextBlockingEvent": true,
+        "assetLineKey": "Vanguard:04:N03",
+        "clock": "Final recording sample clock and measured word intervals only.",
+        "missingAudioPolicy": "Existing silent-writing fallback; do not invent word timings."
+      },
+      {
+        "step": 12,
+        "intent": "COMPLETE_NEW_ADDITION",
+        "archivePermanent": true,
+        "idempotent": true,
+        "completionHold": "ChronicleRhythm.CompletionHold; no extra fixed three-second hold",
+        "revisitTiming": "ChronicleRhythm.RevisitScale",
+        "skipState": "All new blocks complete; the new observation is struck and its replacement remains. All base-memory content is unchanged.",
+        "replay": "Read immediately; full cinematic is opt-in.",
+        "runtimeSaveId": "ASC_VAN_04"
+      }
+    ]
+  },
+  "continuityGates": [
+    {
+      "requirement": "Existing expanded memory and its canonical correction/knowledge have already been viewed.",
+      "memoryId": "MEM_13"
+    }
+  ],
+  "spoilerPolicy": "Never identify the Narrator with the fourth companion or the Forgotten Observer before SCENE_CH10. Base discoveries remain first; additions are deferred if required knowledge is absent.",
+  "existingContentModified": false,
+  "newBeingDialogue": false,
+  "accessibility": {
+    "instantText": true,
+    "voiceMuteKeepsPageReadable": true,
+    "reducedMotionUsesStaticArt": true,
+    "reducedFlashingNoExtraGlow": true,
+    "skipResolvesCompletedNewState": true
+  }
+}

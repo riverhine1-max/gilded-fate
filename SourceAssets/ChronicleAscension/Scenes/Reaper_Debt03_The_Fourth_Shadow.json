@@ -1,0 +1,342 @@
+{
+  "schemaVersion": 1,
+  "contentKey": "Reaper:03",
+  "revelationId": "ASC_REA_03",
+  "sceneId": "ASC_REA_03",
+  "idBindingStatus": "BOUND_TO_EXISTING_ASCENSION_CATALOG",
+  "authoringComplete": true,
+  "contentReady": false,
+  "runtimeRegistrationStatus": "NOT_INTEGRATED_BY_THIS_CONTENT_TASK",
+  "hero": "Reaper",
+  "fateDebt": 3,
+  "kindOrdinal": 2,
+  "presentation": "Narrated",
+  "title": "The Fourth Shadow",
+  "kind": "SMALL",
+  "expandedMemoryId": "MEM_09",
+  "expandedChapterId": "CH_03",
+  "sourceCommit": "7211864e93fee914ef370912ae1ed8aafd66266b",
+  "journalBlocks": [
+    {
+      "blockKey": "paragraph_1",
+      "text": "Before the fourth shadow crossed the threshold, it waited. The Reaper had paused to examine a trace behind the others. The shadow held its place until he turned toward the passage, then moved with him. The recovered motion was so ordinary that it had almost escaped the account.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "0d284a23dec4dae5849070e4506f6a016e62b33c17152b2b2eb63019429f23df"
+    },
+    {
+      "blockKey": "paragraph_2",
+      "text": "An imitation might have followed the three shapes ahead. This delay concerned the person who had fallen behind. The fourth presence had made room for someone whose attention was elsewhere.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "78fb21a853ec863c3561b6de4cc5f9cb1f31025c6993a20aabcabb1bec0c4cb0"
+    },
+    {
+      "blockKey": "closing",
+      "text": "What he recovered was more than a missing count. Someone had noticed him waiting.",
+      "mode": "NARRATED",
+      "textSHA256": "fa746af33204df084a7531477f7b52f2a990deb7e744580fe55563cb6707e827",
+      "assetLineKey": "Reaper:03:N01"
+    }
+  ],
+  "journalText": "Before the fourth shadow crossed the threshold, it waited. The Reaper had paused to examine a trace behind the others. The shadow held its place until he turned toward the passage, then moved with him. The recovered motion was so ordinary that it had almost escaped the account.\n\nAn imitation might have followed the three shapes ahead. This delay concerned the person who had fallen behind. The fourth presence had made room for someone whose attention was elsewhere.\n\nWhat he recovered was more than a missing count. Someone had noticed him waiting.",
+  "wordCount": 92,
+  "newlyRecoveredInformation": "A small pause before entry reveals the fourth companion attending to the Reaper, adding interpersonal evidence to the already-known fourth shadow.",
+  "newlyAuthoredDetails": [
+    "A recovered pause before the canonical threshold crossing, not an alteration to its movement commands."
+  ],
+  "sourceEvidence": [
+    "MEM_09",
+    "MEM_07"
+  ],
+  "relationships": {
+    "follows": [
+      "Reaper:01"
+    ],
+    "prepares": [
+      "Reaper:05",
+      "Reaper:09"
+    ]
+  },
+  "correction": null,
+  "narration": [
+    {
+      "assetLineKey": "Reaper:03:N01",
+      "lineId": "ASC_REA_03__closing",
+      "sceneId": "ASC_REA_03",
+      "revelationId": "ASC_REA_03",
+      "runtimeCommandId": "closing",
+      "commandId": "closing",
+      "commandBinding": "Use the existing explicit WriteBlock ID in the authored scene; update binding if Claude assigns a different command ID.",
+      "contentKey": "Reaper:03",
+      "blockKey": "closing",
+      "speaker": "NARRATOR",
+      "text": "What he recovered was more than a missing count. Someone had noticed him waiting.",
+      "textSHA256": "fa746af33204df084a7531477f7b52f2a990deb7e744580fe55563cb6707e827",
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Reaper_Debt03_The_Fourth_Shadow_N01.wav",
+      "emotion": "MeasuredHistorian",
+      "status": "RECORDED_AUTOMATICALLY_VERIFIED",
+      "durationSeconds": 4.7,
+      "words": [
+        {
+          "text": "What",
+          "startSeconds": 0,
+          "endSeconds": 0.21999999999999997,
+          "charStart": 0,
+          "charLength": 4,
+          "confidence": 0.9397377967834473
+        },
+        {
+          "text": "he",
+          "startSeconds": 0.21999999999999997,
+          "endSeconds": 0.3799999999999999,
+          "charStart": 5,
+          "charLength": 2,
+          "confidence": 0.9977282881736755
+        },
+        {
+          "text": "recovered",
+          "startSeconds": 0.3799999999999999,
+          "endSeconds": 0.8,
+          "charStart": 8,
+          "charLength": 9,
+          "confidence": 0.9943463206291199
+        },
+        {
+          "text": "was",
+          "startSeconds": 0.8,
+          "endSeconds": 1.04,
+          "charStart": 18,
+          "charLength": 3,
+          "confidence": 0.9930669069290161
+        },
+        {
+          "text": "more",
+          "startSeconds": 1.04,
+          "endSeconds": 1.38,
+          "charStart": 22,
+          "charLength": 4,
+          "confidence": 0.9988773465156555
+        },
+        {
+          "text": "than",
+          "startSeconds": 1.38,
+          "endSeconds": 1.6,
+          "charStart": 27,
+          "charLength": 4,
+          "confidence": 0.9973520040512085
+        },
+        {
+          "text": "a",
+          "startSeconds": 1.6,
+          "endSeconds": 1.7200000000000002,
+          "charStart": 32,
+          "charLength": 1,
+          "confidence": 0.9973238706588745
+        },
+        {
+          "text": "missing",
+          "startSeconds": 1.7200000000000002,
+          "endSeconds": 2.0,
+          "charStart": 34,
+          "charLength": 7,
+          "confidence": 0.9994497895240784
+        },
+        {
+          "text": "count.",
+          "startSeconds": 2.0,
+          "endSeconds": 2.52,
+          "charStart": 42,
+          "charLength": 6,
+          "confidence": 0.9827340245246887
+        },
+        {
+          "text": "Someone",
+          "startSeconds": 3.2800000000000002,
+          "endSeconds": 3.4400000000000004,
+          "charStart": 49,
+          "charLength": 7,
+          "confidence": 0.9925438165664673
+        },
+        {
+          "text": "had",
+          "startSeconds": 3.4400000000000004,
+          "endSeconds": 3.6799999999999997,
+          "charStart": 57,
+          "charLength": 3,
+          "confidence": 0.997779905796051
+        },
+        {
+          "text": "noticed",
+          "startSeconds": 3.6799999999999997,
+          "endSeconds": 4.0,
+          "charStart": 61,
+          "charLength": 7,
+          "confidence": 0.9980708956718445
+        },
+        {
+          "text": "him",
+          "startSeconds": 4.0,
+          "endSeconds": 4.22,
+          "charStart": 69,
+          "charLength": 3,
+          "confidence": 0.9991200566291809
+        },
+        {
+          "text": "waiting.",
+          "startSeconds": 4.22,
+          "endSeconds": 4.52,
+          "charStart": 73,
+          "charLength": 8,
+          "confidence": 0.9961793422698975
+        }
+      ],
+      "readyForAudioClock": true,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "dce8afb69c8222a02b1ad05ae1173f97e76484c66100c3e782eb3cc33d4b79f8",
+      "format": {
+        "container": "WAV",
+        "sampleRate": 48000,
+        "bitDepth": 24,
+        "channels": 1,
+        "sourceBitDepth": 16
+      },
+      "alignmentMethod": "Local small.en Whisper word timestamps (attention/DTW), CTranslate2 CPU, VAD disabled; no ONNX Runtime imported",
+      "frameResolutionSeconds": 0.02,
+      "minimumWordConfidence": 0.9397377967834473,
+      "verification": {
+        "canonicalSpokenTextVerified": true,
+        "finalSampleCount": 225600,
+        "peakDBFS": -8.011438492672276,
+        "noClipping": true,
+        "parentTranscript": "What he recovered was more than a missing count. Someone had noticed him waiting.",
+        "finalCropTranscript": "What he recovered was more than a missing count. Someone had noticed him waiting.",
+        "sourceCropFrames": [
+          0,
+          225600
+        ],
+        "analysisPaddingSeconds": 1,
+        "manualListeningReview": "PENDING",
+        "telemetryRuntimeUsed": false
+      }
+    }
+  ],
+  "visualKey": "Reaper_SpaceBesideEcho",
+  "cinematic": {
+    "direction": "Keep the original four-shadow illustration unchanged. Add the pre-entry pause as text; the final sentence alone is narrated.",
+    "events": [
+      {
+        "step": 1,
+        "intent": "RETURN_TO_EXISTING_MEMORY",
+        "memoryId": "MEM_09",
+        "sceneId": "ASC_REA_03",
+        "useExistingBookTurn": true,
+        "continuationAPI": "ChronicleJournal.PlanContinuation",
+        "maxVisibleTurns": 3,
+        "turnTiming": "ChronicleRhythm.TurnAnticipation and TurnSettle",
+        "baseTextReadOnly": true,
+        "keepBookOpen": true
+      },
+      {
+        "step": 2,
+        "intent": "RESERVE_NEW_WRITING_AREA",
+        "placement": "Fresh continuation leaf for major corrections; unused margin only if it fits for small additions.",
+        "font": "Reuse current Chronicle handwriting and stroke renderer; respect user-selected textScale without automatic shrinking.",
+        "existingBlocksReadOnly": true
+      },
+      {
+        "step": 3,
+        "intent": "OPTIONAL_MARGINAL_ART",
+        "visualKey": "Reaper_SpaceBesideEcho",
+        "asset": "SourceAssets/ChronicleAscension/Art/Reaper_SpaceBesideEcho.png",
+        "status": "GENERATED_AND_CHECKED",
+        "onlyNewOverlay": true,
+        "animation": "None required; static marginal study."
+      },
+      {
+        "step": 4,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "paragraph_1",
+        "mode": "SILENT_HANDWRITING",
+        "text": "Before the fourth shadow crossed the threshold, it waited. The Reaper had paused to examine a trace behind the others. The shadow held its place until he turned toward the passage, then moved with him. The recovered motion was so ordinary that it had almost escaped the account.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [
+            "The recovered motion was so ordinary that it had almost escaped the account."
+          ],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 5,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "paragraph_2",
+        "mode": "SILENT_HANDWRITING",
+        "text": "An imitation might have followed the three shapes ahead. This delay concerned the person who had fallen behind. The fourth presence had made room for someone whose attention was elsewhere.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [
+            "The recovered motion was so ordinary that it had almost escaped the account."
+          ],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 6,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "closing",
+        "mode": "NARRATED",
+        "text": "What he recovered was more than a missing count. Someone had noticed him waiting.",
+        "completeBeforeNextBlockingEvent": true,
+        "assetLineKey": "Reaper:03:N01",
+        "clock": "Final recording sample clock and measured word intervals only.",
+        "missingAudioPolicy": "Existing silent-writing fallback; do not invent word timings."
+      },
+      {
+        "step": 7,
+        "intent": "COMPLETE_NEW_ADDITION",
+        "archivePermanent": true,
+        "idempotent": true,
+        "completionHold": "ChronicleRhythm.CompletionHold; no extra fixed three-second hold",
+        "revisitTiming": "ChronicleRhythm.RevisitScale",
+        "skipState": "All new blocks complete; the new observation is struck and its replacement remains. All base-memory content is unchanged.",
+        "replay": "Read immediately; full cinematic is opt-in.",
+        "runtimeSaveId": "ASC_REA_03"
+      }
+    ]
+  },
+  "continuityGates": [
+    {
+      "requirement": "Existing expanded memory and its canonical correction/knowledge have already been viewed.",
+      "memoryId": "MEM_09"
+    }
+  ],
+  "spoilerPolicy": "Never identify the Narrator with the fourth companion or the Forgotten Observer before SCENE_CH10. Base discoveries remain first; additions are deferred if required knowledge is absent.",
+  "existingContentModified": false,
+  "newBeingDialogue": false,
+  "accessibility": {
+    "instantText": true,
+    "voiceMuteKeepsPageReadable": true,
+    "reducedMotionUsesStaticArt": true,
+    "reducedFlashingNoExtraGlow": true,
+    "skipResolvesCompletedNewState": true
+  }
+}

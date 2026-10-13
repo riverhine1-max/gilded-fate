@@ -1,0 +1,163 @@
+{
+  "schemaVersion": 1,
+  "contentKey": "Hexer:02",
+  "revelationId": "ASC_HEX_02",
+  "sceneId": "ASC_HEX_02",
+  "idBindingStatus": "BOUND_TO_EXISTING_ASCENSION_CATALOG",
+  "authoringComplete": true,
+  "contentReady": false,
+  "runtimeRegistrationStatus": "NOT_INTEGRATED_BY_THIS_CONTENT_TASK",
+  "hero": "Hexer",
+  "fateDebt": 2,
+  "kindOrdinal": 1,
+  "presentation": "SilentHandwriting",
+  "title": "The First Calculation",
+  "kind": "SMALL",
+  "expandedMemoryId": "MEM_05",
+  "expandedChapterId": "CH_02",
+  "sourceCommit": "7211864e93fee914ef370912ae1ed8aafd66266b",
+  "journalBlocks": [
+    {
+      "blockKey": "paragraph_1",
+      "text": "Beside the first calculation, the scholar had left an interval instead of a single answer. It allowed for choices he had not observed: a delayed departure, a changed intention, someone deciding against the road before them. Later he copied the neat result and left the interval behind.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "13e8b87537d70ab13a7ea107fbee3a1736f160407bb02ca413e8a0b34358c0dd"
+    },
+    {
+      "blockKey": "paragraph_2",
+      "text": "The discarded marks had been part of his understanding, not a blemish upon it. He recovered them before he attempted the calculation again. The page now keeps the uncertainty beside the answer it qualifies.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "5a4e99061c5d27a80a40d419f797f55c094717510577d521d801dcbbdb73f684"
+    }
+  ],
+  "journalText": "Beside the first calculation, the scholar had left an interval instead of a single answer. It allowed for choices he had not observed: a delayed departure, a changed intention, someone deciding against the road before them. Later he copied the neat result and left the interval behind.\n\nThe discarded marks had been part of his understanding, not a blemish upon it. He recovered them before he attempted the calculation again. The page now keeps the uncertainty beside the answer it qualifies.",
+  "wordCount": 81,
+  "newlyRecoveredInformation": "His original model included unobserved human choices as an uncertainty interval; the polished copied result concealed that limit.",
+  "newlyAuthoredDetails": [
+    "A retained uncertainty interval in a remembered working sheet; no executable formula is invented."
+  ],
+  "sourceEvidence": [
+    "MEM_02",
+    "MEM_05"
+  ],
+  "relationships": {
+    "follows": [
+      "Hexer:01"
+    ],
+    "prepares": [
+      "Hexer:06",
+      "Hexer:10"
+    ]
+  },
+  "correction": null,
+  "narration": [],
+  "visualKey": "Hexer_InterruptedDiagram",
+  "cinematic": {
+    "direction": "Add a silent working-note passage. Keep its uncertainty visible in the new margin; do not edit or strike the original prediction correction.",
+    "events": [
+      {
+        "step": 1,
+        "intent": "RETURN_TO_EXISTING_MEMORY",
+        "memoryId": "MEM_05",
+        "sceneId": "ASC_HEX_02",
+        "useExistingBookTurn": true,
+        "continuationAPI": "ChronicleJournal.PlanContinuation",
+        "maxVisibleTurns": 3,
+        "turnTiming": "ChronicleRhythm.TurnAnticipation and TurnSettle",
+        "baseTextReadOnly": true,
+        "keepBookOpen": true
+      },
+      {
+        "step": 2,
+        "intent": "RESERVE_NEW_WRITING_AREA",
+        "placement": "Fresh continuation leaf for major corrections; unused margin only if it fits for small additions.",
+        "font": "Reuse current Chronicle handwriting and stroke renderer; respect user-selected textScale without automatic shrinking.",
+        "existingBlocksReadOnly": true
+      },
+      {
+        "step": 3,
+        "intent": "OPTIONAL_MARGINAL_ART",
+        "visualKey": "Hexer_InterruptedDiagram",
+        "asset": "SourceAssets/ChronicleAscension/Art/Hexer_InterruptedDiagram.png",
+        "status": "GENERATED_AND_CHECKED",
+        "onlyNewOverlay": true,
+        "animation": "None required; static marginal study."
+      },
+      {
+        "step": 4,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "paragraph_1",
+        "mode": "SILENT_HANDWRITING",
+        "text": "Beside the first calculation, the scholar had left an interval instead of a single answer. It allowed for choices he had not observed: a delayed departure, a changed intention, someone deciding against the road before them. Later he copied the neat result and left the interval behind.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [
+            "The discarded marks had been part of his understanding, not a blemish upon it."
+          ],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 5,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "paragraph_2",
+        "mode": "SILENT_HANDWRITING",
+        "text": "The discarded marks had been part of his understanding, not a blemish upon it. He recovered them before he attempted the calculation again. The page now keeps the uncertainty beside the answer it qualifies.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [
+            "The discarded marks had been part of his understanding, not a blemish upon it."
+          ],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 6,
+        "intent": "COMPLETE_NEW_ADDITION",
+        "archivePermanent": true,
+        "idempotent": true,
+        "completionHold": "ChronicleRhythm.CompletionHold; no extra fixed three-second hold",
+        "revisitTiming": "ChronicleRhythm.RevisitScale",
+        "skipState": "All new blocks complete; the new observation is struck and its replacement remains. All base-memory content is unchanged.",
+        "replay": "Read immediately; full cinematic is opt-in.",
+        "runtimeSaveId": "ASC_HEX_02"
+      }
+    ]
+  },
+  "continuityGates": [
+    {
+      "requirement": "Existing expanded memory and its canonical correction/knowledge have already been viewed.",
+      "memoryId": "MEM_05"
+    }
+  ],
+  "spoilerPolicy": "Never identify the Narrator with the fourth companion or the Forgotten Observer before SCENE_CH10. Base discoveries remain first; additions are deferred if required knowledge is absent.",
+  "existingContentModified": false,
+  "newBeingDialogue": false,
+  "accessibility": {
+    "instantText": true,
+    "voiceMuteKeepsPageReadable": true,
+    "reducedMotionUsesStaticArt": true,
+    "reducedFlashingNoExtraGlow": true,
+    "skipResolvesCompletedNewState": true
+  }
+}

@@ -1,0 +1,845 @@
+{
+  "schemaVersion": 1,
+  "contentKey": "Reaper:10",
+  "revelationId": "ASC_REA_10",
+  "sceneId": "ASC_REA_10",
+  "idBindingStatus": "BOUND_TO_EXISTING_ASCENSION_CATALOG",
+  "authoringComplete": true,
+  "contentReady": false,
+  "runtimeRegistrationStatus": "NOT_INTEGRATED_BY_THIS_CONTENT_TASK",
+  "hero": "Reaper",
+  "fateDebt": 10,
+  "kindOrdinal": 4,
+  "presentation": "FullCorrection",
+  "title": "The Truth of What Remains",
+  "kind": "MAJOR",
+  "expandedMemoryId": "MEM_27",
+  "expandedChapterId": "CH_09",
+  "sourceCommit": "7211864e93fee914ef370912ae1ed8aafd66266b",
+  "journalBlocks": [
+    {
+      "blockKey": "context",
+      "text": "The Reaper had been arranging the surviving details into a portrait of the friend before the breaking. Every match seemed useful; every difference seemed another injury to remove. Then the habit of making room returned within the merged recollection, alongside a resistance he could not attribute with the same confidence.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "c382ad49a52948f313ef3b9cebad9c4861cdeb044375c6856c5a5ed4a967520a"
+    },
+    {
+      "blockKey": "new_observation",
+      "text": "To save what remained, they had to recover the fourth companion exactly as he had been.",
+      "mode": "NARRATED",
+      "textSHA256": "4e544f10d3482b9f374af5dcb5a9bba2dca80e9c9ad8a8235af7ae82ad65a996",
+      "assetLineKey": "Reaper:10:N01"
+    },
+    {
+      "blockKey": "replacement",
+      "text": "What remained deserved a future, even if it could never become its former self.",
+      "mode": "NARRATED",
+      "textSHA256": "334f3db0e5f726e95068fe895cb696b2045de0454f63e6efb9dc51c997c02e93",
+      "assetLineKey": "Reaper:10:N02"
+    },
+    {
+      "blockKey": "evidence",
+      "text": "The old portrait could help them recognize him. It could not answer on behalf of the existence that had endured. The Reaper had already met echoes whose names were gone and survivors whose pasts could not agree. Insisting upon a cleaner account had repeatedly concealed the person still present.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "00c7bd4ae09368345faeb9121414c0f52abdcfe4f45f0870ac00250c64de2760"
+    },
+    {
+      "blockKey": "account",
+      "text": "This is no acceptance of the prison, and no judgment that it must last. Freedom remains worth seeking. Its purpose must include the possibility of an answer they did not expect. If returning their friend required silencing whatever he had become, preservation would once again be mistaken for care.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "c92fe741c64d534f597df106ff79834d8a3f75e318a4cb3fe4b1af0a03fcb630"
+    },
+    {
+      "blockKey": "closing",
+      "text": "They could search for a way to free him. They could not decide in advance who he must be when he answered.",
+      "mode": "NARRATED",
+      "textSHA256": "e60866c9c6662a4da5ce3c0a8fd6d25ee2e5e9560f39c067299e1c9946563812",
+      "assetLineKey": "Reaper:10:N03"
+    }
+  ],
+  "journalText": "The Reaper had been arranging the surviving details into a portrait of the friend before the breaking. Every match seemed useful; every difference seemed another injury to remove. Then the habit of making room returned within the merged recollection, alongside a resistance he could not attribute with the same confidence.\n\nTo save what remained, they had to recover the fourth companion exactly as he had been.\n\nWhat remained deserved a future, even if it could never become its former self.\n\nThe old portrait could help them recognize him. It could not answer on behalf of the existence that had endured. The Reaper had already met echoes whose names were gone and survivors whose pasts could not agree. Insisting upon a cleaner account had repeatedly concealed the person still present.\n\nThis is no acceptance of the prison, and no judgment that it must last. Freedom remains worth seeking. Its purpose must include the possibility of an answer they did not expect. If returning their friend required silencing whatever he had become, preservation would once again be mistaken for care.\n\nThey could search for a way to free him. They could not decide in advance who he must be when he answered.",
+  "wordCount": 200,
+  "newlyRecoveredInformation": "The rescue's ethical aim shifts from compulsory restoration of a remembered portrait to freedom and an open future for the surviving existence. Fusion was already known and is not presented as the new discovery.",
+  "newlyAuthoredDetails": [
+    "The Reaper's recovered comparison between a pre-Severing portrait and a surviving habit. Inability to reverse fusion is not asserted as fact; the if clause preserves uncertainty."
+  ],
+  "sourceEvidence": [
+    "MEM_27",
+    "MEM_12",
+    "MEM_21",
+    "SCENE_CH10"
+  ],
+  "relationships": {
+    "follows": [
+      "Reaper:01",
+      "Reaper:04",
+      "Reaper:07",
+      "Reaper:09"
+    ],
+    "convergesWith": [
+      "Vanguard:10",
+      "Hexer:10"
+    ],
+    "leadsToward": "SCENE_CH10"
+  },
+  "correction": {
+    "ownerContentKey": "Reaper:10",
+    "revelationId": "ASC_REA_10",
+    "correctionId": "ASC_CORR_REA_4",
+    "localCorrectionKey": "new_observation",
+    "targetScope": "THIS_NEW_ADDITION_ONLY",
+    "targetBlockKey": "new_observation",
+    "originalNewObservation": "To save what remained, they had to recover the fourth companion exactly as he had been.",
+    "correctedReplacement": "What remained deserved a future, even if it could never become its former self.",
+    "replacementBlockKey": "replacement",
+    "originalChronicleTarget": null,
+    "sharedCorrectionIdsModified": [],
+    "preserveOriginal": true,
+    "inkStyle": "Existing restrained red correction style",
+    "acknowledgement": "Only the observation added by this package may be crossed out."
+  },
+  "narration": [
+    {
+      "assetLineKey": "Reaper:10:N01",
+      "lineId": "ASC_REA_10__new_observation",
+      "sceneId": "ASC_REA_10",
+      "revelationId": "ASC_REA_10",
+      "runtimeCommandId": "new_observation",
+      "commandId": "new_observation",
+      "commandBinding": "Use the existing explicit WriteBlock ID in the authored scene; update binding if Claude assigns a different command ID.",
+      "contentKey": "Reaper:10",
+      "blockKey": "new_observation",
+      "speaker": "NARRATOR",
+      "text": "To save what remained, they had to recover the fourth companion exactly as he had been.",
+      "textSHA256": "4e544f10d3482b9f374af5dcb5a9bba2dca80e9c9ad8a8235af7ae82ad65a996",
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Reaper_Debt10_The_Truth_of_What_Remains_N01.wav",
+      "emotion": "QuietRecognitionWithoutIdentityReveal",
+      "status": "RECORDED_AUTOMATICALLY_VERIFIED",
+      "durationSeconds": 6.56,
+      "words": [
+        {
+          "text": "To",
+          "startSeconds": 0,
+          "endSeconds": 0.43999999999999995,
+          "charStart": 0,
+          "charLength": 2,
+          "confidence": 0.9744811058044434
+        },
+        {
+          "text": "save",
+          "startSeconds": 0.43999999999999995,
+          "endSeconds": 0.8400000000000001,
+          "charStart": 3,
+          "charLength": 4,
+          "confidence": 0.998241662979126
+        },
+        {
+          "text": "what",
+          "startSeconds": 0.8400000000000001,
+          "endSeconds": 1.46,
+          "charStart": 8,
+          "charLength": 4,
+          "confidence": 0.9867302179336548
+        },
+        {
+          "text": "remained,",
+          "startSeconds": 1.46,
+          "endSeconds": 1.9,
+          "charStart": 13,
+          "charLength": 9,
+          "confidence": 0.9947898387908936
+        },
+        {
+          "text": "they",
+          "startSeconds": 2.62,
+          "endSeconds": 2.68,
+          "charStart": 23,
+          "charLength": 4,
+          "confidence": 0.996911346912384
+        },
+        {
+          "text": "had",
+          "startSeconds": 2.68,
+          "endSeconds": 2.82,
+          "charStart": 28,
+          "charLength": 3,
+          "confidence": 0.9980177879333496
+        },
+        {
+          "text": "to",
+          "startSeconds": 2.82,
+          "endSeconds": 2.98,
+          "charStart": 32,
+          "charLength": 2,
+          "confidence": 0.9981661438941956
+        },
+        {
+          "text": "recover",
+          "startSeconds": 2.98,
+          "endSeconds": 3.38,
+          "charStart": 35,
+          "charLength": 7,
+          "confidence": 0.9992960691452026
+        },
+        {
+          "text": "the",
+          "startSeconds": 3.38,
+          "endSeconds": 3.9800000000000004,
+          "charStart": 43,
+          "charLength": 3,
+          "confidence": 0.9932894110679626
+        },
+        {
+          "text": "fourth",
+          "startSeconds": 3.9800000000000004,
+          "endSeconds": 4.22,
+          "charStart": 47,
+          "charLength": 6,
+          "confidence": 0.8832201957702637
+        },
+        {
+          "text": "companion",
+          "startSeconds": 4.22,
+          "endSeconds": 4.76,
+          "charStart": 54,
+          "charLength": 9,
+          "confidence": 0.9384737610816956
+        },
+        {
+          "text": "exactly",
+          "startSeconds": 4.76,
+          "endSeconds": 5.32,
+          "charStart": 64,
+          "charLength": 7,
+          "confidence": 0.9748328328132629
+        },
+        {
+          "text": "as",
+          "startSeconds": 5.32,
+          "endSeconds": 5.78,
+          "charStart": 72,
+          "charLength": 2,
+          "confidence": 0.9976587295532227
+        },
+        {
+          "text": "he",
+          "startSeconds": 5.78,
+          "endSeconds": 5.94,
+          "charStart": 75,
+          "charLength": 2,
+          "confidence": 0.9978697299957275
+        },
+        {
+          "text": "had",
+          "startSeconds": 5.94,
+          "endSeconds": 6.1,
+          "charStart": 78,
+          "charLength": 3,
+          "confidence": 0.9911993145942688
+        },
+        {
+          "text": "been.",
+          "startSeconds": 6.1,
+          "endSeconds": 6.36,
+          "charStart": 82,
+          "charLength": 5,
+          "confidence": 0.9995604157447815
+        }
+      ],
+      "readyForAudioClock": true,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "cd908df929d74ff713becde781ac95daaa89ff1b2cf6b3a652f9de9f8607fdac",
+      "format": {
+        "container": "WAV",
+        "sampleRate": 48000,
+        "bitDepth": 24,
+        "channels": 1,
+        "sourceBitDepth": 16
+      },
+      "alignmentMethod": "Local small.en Whisper word timestamps (attention/DTW), CTranslate2 CPU, VAD disabled; no ONNX Runtime imported",
+      "frameResolutionSeconds": 0.02,
+      "minimumWordConfidence": 0.8832201957702637,
+      "verification": {
+        "canonicalSpokenTextVerified": true,
+        "finalSampleCount": 314880,
+        "peakDBFS": -6.0932448154119125,
+        "noClipping": true,
+        "parentTranscript": "To save what remained, they had to recover the fourth companion exactly as he had been. What remained deserved a future, even if it could never become its former self. They could search for a way to free him. They could not decide in advance who he must be when he answered.",
+        "finalCropTranscript": "To save what remained, they had to recover the fourth companion exactly as he had been.",
+        "sourceCropFrames": [
+          0,
+          314880
+        ],
+        "analysisPaddingSeconds": 1,
+        "manualListeningReview": "PENDING",
+        "telemetryRuntimeUsed": false
+      }
+    },
+    {
+      "assetLineKey": "Reaper:10:N02",
+      "lineId": "ASC_REA_10__replacement",
+      "sceneId": "ASC_REA_10",
+      "revelationId": "ASC_REA_10",
+      "runtimeCommandId": "replacement",
+      "commandId": "replacement",
+      "commandBinding": "Use the existing explicit WriteBlock ID in the authored scene; update binding if Claude assigns a different command ID.",
+      "contentKey": "Reaper:10",
+      "blockKey": "replacement",
+      "speaker": "NARRATOR",
+      "text": "What remained deserved a future, even if it could never become its former self.",
+      "textSHA256": "334f3db0e5f726e95068fe895cb696b2045de0454f63e6efb9dc51c997c02e93",
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Reaper_Debt10_The_Truth_of_What_Remains_N02.wav",
+      "emotion": "QuietRecognitionWithoutIdentityReveal",
+      "status": "RECORDED_AUTOMATICALLY_VERIFIED",
+      "durationSeconds": 6.24,
+      "words": [
+        {
+          "text": "What",
+          "startSeconds": 0,
+          "endSeconds": 0.30000000000000004,
+          "charStart": 0,
+          "charLength": 4,
+          "confidence": 0.8898945450782776
+        },
+        {
+          "text": "remained",
+          "startSeconds": 0.30000000000000004,
+          "endSeconds": 0.8799999999999999,
+          "charStart": 5,
+          "charLength": 8,
+          "confidence": 0.9859186410903931
+        },
+        {
+          "text": "deserved",
+          "startSeconds": 0.8799999999999999,
+          "endSeconds": 1.7599999999999998,
+          "charStart": 14,
+          "charLength": 8,
+          "confidence": 0.9443660378456116
+        },
+        {
+          "text": "a",
+          "startSeconds": 1.7599999999999998,
+          "endSeconds": 2.02,
+          "charStart": 23,
+          "charLength": 1,
+          "confidence": 0.9964619278907776
+        },
+        {
+          "text": "future,",
+          "startSeconds": 2.02,
+          "endSeconds": 2.36,
+          "charStart": 25,
+          "charLength": 7,
+          "confidence": 0.9989168643951416
+        },
+        {
+          "text": "even",
+          "startSeconds": 2.66,
+          "endSeconds": 2.96,
+          "charStart": 33,
+          "charLength": 4,
+          "confidence": 0.9973253011703491
+        },
+        {
+          "text": "if",
+          "startSeconds": 2.96,
+          "endSeconds": 3.1399999999999997,
+          "charStart": 38,
+          "charLength": 2,
+          "confidence": 0.9963118433952332
+        },
+        {
+          "text": "it",
+          "startSeconds": 3.1399999999999997,
+          "endSeconds": 3.3,
+          "charStart": 41,
+          "charLength": 2,
+          "confidence": 0.9963374137878418
+        },
+        {
+          "text": "could",
+          "startSeconds": 3.3,
+          "endSeconds": 3.4400000000000004,
+          "charStart": 44,
+          "charLength": 5,
+          "confidence": 0.9891186952590942
+        },
+        {
+          "text": "never",
+          "startSeconds": 3.4400000000000004,
+          "endSeconds": 3.7800000000000002,
+          "charStart": 50,
+          "charLength": 5,
+          "confidence": 0.9973689317703247
+        },
+        {
+          "text": "become",
+          "startSeconds": 3.7800000000000002,
+          "endSeconds": 4.32,
+          "charStart": 56,
+          "charLength": 6,
+          "confidence": 0.9948209524154663
+        },
+        {
+          "text": "its",
+          "startSeconds": 4.32,
+          "endSeconds": 5.36,
+          "charStart": 63,
+          "charLength": 3,
+          "confidence": 0.9670732617378235
+        },
+        {
+          "text": "former",
+          "startSeconds": 5.36,
+          "endSeconds": 5.7,
+          "charStart": 67,
+          "charLength": 6,
+          "confidence": 0.9984114170074463
+        },
+        {
+          "text": "self.",
+          "startSeconds": 5.7,
+          "endSeconds": 6.08,
+          "charStart": 74,
+          "charLength": 5,
+          "confidence": 0.9741976857185364
+        }
+      ],
+      "readyForAudioClock": true,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "41acfd60565a2fd798c89e11b9e79d257916e56be66464c08b6a036c0945f6f8",
+      "format": {
+        "container": "WAV",
+        "sampleRate": 48000,
+        "bitDepth": 24,
+        "channels": 1,
+        "sourceBitDepth": 16
+      },
+      "alignmentMethod": "Local small.en Whisper word timestamps (attention/DTW), CTranslate2 CPU, VAD disabled; no ONNX Runtime imported",
+      "frameResolutionSeconds": 0.02,
+      "minimumWordConfidence": 0.8898945450782776,
+      "verification": {
+        "canonicalSpokenTextVerified": true,
+        "finalSampleCount": 299520,
+        "peakDBFS": -5.852863289819814,
+        "noClipping": true,
+        "parentTranscript": "To save what remained, they had to recover the fourth companion exactly as he had been. What remained deserved a future, even if it could never become its former self. They could search for a way to free him. They could not decide in advance who he must be when he answered.",
+        "finalCropTranscript": "What remained deserved a future, even if it could never become its former self.",
+        "sourceCropFrames": [
+          339840,
+          639360
+        ],
+        "analysisPaddingSeconds": 1,
+        "manualListeningReview": "PENDING",
+        "telemetryRuntimeUsed": false
+      }
+    },
+    {
+      "assetLineKey": "Reaper:10:N03",
+      "lineId": "ASC_REA_10__closing",
+      "sceneId": "ASC_REA_10",
+      "revelationId": "ASC_REA_10",
+      "runtimeCommandId": "closing",
+      "commandId": "closing",
+      "commandBinding": "Use the existing explicit WriteBlock ID in the authored scene; update binding if Claude assigns a different command ID.",
+      "contentKey": "Reaper:10",
+      "blockKey": "closing",
+      "speaker": "NARRATOR",
+      "text": "They could search for a way to free him. They could not decide in advance who he must be when he answered.",
+      "textSHA256": "e60866c9c6662a4da5ce3c0a8fd6d25ee2e5e9560f39c067299e1c9946563812",
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Reaper_Debt10_The_Truth_of_What_Remains_N03.wav",
+      "emotion": "QuietRecognitionWithoutIdentityReveal",
+      "status": "RECORDED_AUTOMATICALLY_VERIFIED",
+      "durationSeconds": 9.32,
+      "words": [
+        {
+          "text": "They",
+          "startSeconds": 0,
+          "endSeconds": 0.48,
+          "charStart": 0,
+          "charLength": 4,
+          "confidence": 0.8957391381263733
+        },
+        {
+          "text": "could",
+          "startSeconds": 0.48,
+          "endSeconds": 0.6399999999999999,
+          "charStart": 5,
+          "charLength": 5,
+          "confidence": 0.9986647367477417
+        },
+        {
+          "text": "search",
+          "startSeconds": 0.6399999999999999,
+          "endSeconds": 0.94,
+          "charStart": 11,
+          "charLength": 6,
+          "confidence": 0.998161256313324
+        },
+        {
+          "text": "for",
+          "startSeconds": 0.94,
+          "endSeconds": 1.2799999999999998,
+          "charStart": 18,
+          "charLength": 3,
+          "confidence": 0.9985257983207703
+        },
+        {
+          "text": "a",
+          "startSeconds": 1.2799999999999998,
+          "endSeconds": 1.44,
+          "charStart": 22,
+          "charLength": 1,
+          "confidence": 0.9987114667892456
+        },
+        {
+          "text": "way",
+          "startSeconds": 1.44,
+          "endSeconds": 1.7000000000000002,
+          "charStart": 24,
+          "charLength": 3,
+          "confidence": 0.9990192651748657
+        },
+        {
+          "text": "to",
+          "startSeconds": 1.7000000000000002,
+          "endSeconds": 2.46,
+          "charStart": 28,
+          "charLength": 2,
+          "confidence": 0.9812225699424744
+        },
+        {
+          "text": "free",
+          "startSeconds": 2.46,
+          "endSeconds": 2.76,
+          "charStart": 31,
+          "charLength": 4,
+          "confidence": 0.9861656427383423
+        },
+        {
+          "text": "him.",
+          "startSeconds": 2.76,
+          "endSeconds": 3.16,
+          "charStart": 36,
+          "charLength": 4,
+          "confidence": 0.9696804881095886
+        },
+        {
+          "text": "They",
+          "startSeconds": 4.48,
+          "endSeconds": 4.68,
+          "charStart": 41,
+          "charLength": 4,
+          "confidence": 0.9957082271575928
+        },
+        {
+          "text": "could",
+          "startSeconds": 4.68,
+          "endSeconds": 4.84,
+          "charStart": 46,
+          "charLength": 5,
+          "confidence": 0.999498724937439
+        },
+        {
+          "text": "not",
+          "startSeconds": 4.84,
+          "endSeconds": 5.08,
+          "charStart": 52,
+          "charLength": 3,
+          "confidence": 0.999039351940155
+        },
+        {
+          "text": "decide",
+          "startSeconds": 5.08,
+          "endSeconds": 5.56,
+          "charStart": 56,
+          "charLength": 6,
+          "confidence": 0.9979325532913208
+        },
+        {
+          "text": "in",
+          "startSeconds": 5.56,
+          "endSeconds": 5.76,
+          "charStart": 63,
+          "charLength": 2,
+          "confidence": 0.9784352779388428
+        },
+        {
+          "text": "advance",
+          "startSeconds": 5.76,
+          "endSeconds": 6.34,
+          "charStart": 66,
+          "charLength": 7,
+          "confidence": 0.9985912442207336
+        },
+        {
+          "text": "who",
+          "startSeconds": 6.34,
+          "endSeconds": 7.18,
+          "charStart": 74,
+          "charLength": 3,
+          "confidence": 0.9629446864128113
+        },
+        {
+          "text": "he",
+          "startSeconds": 7.18,
+          "endSeconds": 7.380000000000001,
+          "charStart": 78,
+          "charLength": 2,
+          "confidence": 0.9971809387207031
+        },
+        {
+          "text": "must",
+          "startSeconds": 7.380000000000001,
+          "endSeconds": 7.539999999999999,
+          "charStart": 81,
+          "charLength": 4,
+          "confidence": 0.9985242486000061
+        },
+        {
+          "text": "be",
+          "startSeconds": 7.539999999999999,
+          "endSeconds": 8.02,
+          "charStart": 86,
+          "charLength": 2,
+          "confidence": 0.99933260679245
+        },
+        {
+          "text": "when",
+          "startSeconds": 8.02,
+          "endSeconds": 8.62,
+          "charStart": 89,
+          "charLength": 4,
+          "confidence": 0.9346445798873901
+        },
+        {
+          "text": "he",
+          "startSeconds": 8.62,
+          "endSeconds": 8.8,
+          "charStart": 94,
+          "charLength": 2,
+          "confidence": 0.996823787689209
+        },
+        {
+          "text": "answered.",
+          "startSeconds": 8.8,
+          "endSeconds": 9.18,
+          "charStart": 97,
+          "charLength": 9,
+          "confidence": 0.9997705817222595
+        }
+      ],
+      "readyForAudioClock": true,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "d6c349add6a09c709c8e21d6c149e25d72391efac076d89a6cf8994641083912",
+      "format": {
+        "container": "WAV",
+        "sampleRate": 48000,
+        "bitDepth": 24,
+        "channels": 1,
+        "sourceBitDepth": 16
+      },
+      "alignmentMethod": "Local small.en Whisper word timestamps (attention/DTW), CTranslate2 CPU, VAD disabled; no ONNX Runtime imported",
+      "frameResolutionSeconds": 0.02,
+      "minimumWordConfidence": 0.8957391381263733,
+      "verification": {
+        "canonicalSpokenTextVerified": true,
+        "finalSampleCount": 447360,
+        "peakDBFS": -5.6211348063493105,
+        "noClipping": true,
+        "parentTranscript": "To save what remained, they had to recover the fourth companion exactly as he had been. What remained deserved a future, even if it could never become its former self. They could search for a way to free him. They could not decide in advance who he must be when he answered.",
+        "finalCropTranscript": "They could search for a way to free him. They could not decide in advance who he must be when he answered.",
+        "sourceCropFrames": [
+          764160,
+          1211520
+        ],
+        "analysisPaddingSeconds": 1,
+        "manualListeningReview": "PENDING",
+        "telemetryRuntimeUsed": false
+      }
+    }
+  ],
+  "visualKey": "Reaper_TwoAccounts",
+  "cinematic": {
+    "direction": "Append the final correction after the base fusion account. End on two open testimony spaces, not a completed portrait, new Being line, or reunion. Chapter X remains the shared finale.",
+    "events": [
+      {
+        "step": 1,
+        "intent": "RETURN_TO_EXISTING_MEMORY",
+        "memoryId": "MEM_27",
+        "sceneId": "ASC_REA_10",
+        "useExistingBookTurn": true,
+        "continuationAPI": "ChronicleJournal.PlanContinuation",
+        "maxVisibleTurns": 3,
+        "turnTiming": "ChronicleRhythm.TurnAnticipation and TurnSettle",
+        "baseTextReadOnly": true,
+        "keepBookOpen": true
+      },
+      {
+        "step": 2,
+        "intent": "RESERVE_NEW_WRITING_AREA",
+        "placement": "Fresh continuation leaf for major corrections; unused margin only if it fits for small additions.",
+        "font": "Reuse current Chronicle handwriting and stroke renderer; respect user-selected textScale without automatic shrinking.",
+        "existingBlocksReadOnly": true
+      },
+      {
+        "step": 3,
+        "intent": "OPTIONAL_MARGINAL_ART",
+        "visualKey": "Reaper_TwoAccounts",
+        "asset": "SourceAssets/ChronicleAscension/Art/Reaper_TwoAccounts.png",
+        "status": "GENERATED_AND_CHECKED",
+        "onlyNewOverlay": true,
+        "animation": "None required; static marginal study."
+      },
+      {
+        "step": 4,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "context",
+        "mode": "SILENT_HANDWRITING",
+        "text": "The Reaper had been arranging the surviving details into a portrait of the friend before the breaking. Every match seemed useful; every difference seemed another injury to remove. Then the habit of making room returned within the merged recollection, alongside a resistance he could not attribute with the same confidence.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 5,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "new_observation",
+        "mode": "NARRATED",
+        "text": "To save what remained, they had to recover the fourth companion exactly as he had been.",
+        "completeBeforeNextBlockingEvent": true,
+        "assetLineKey": "Reaper:10:N01",
+        "clock": "Final recording sample clock and measured word intervals only.",
+        "missingAudioPolicy": "Existing silent-writing fallback; do not invent word timings."
+      },
+      {
+        "step": 6,
+        "intent": "HESITATE",
+        "authoredPauseSeconds": 1.0,
+        "pauseInk": true,
+        "narrationMustFinish": true
+      },
+      {
+        "step": 7,
+        "intent": "RED_STRIKE_NEW_OBSERVATION",
+        "targetBlockKey": "new_observation",
+        "ownerContentKey": "Reaper:10",
+        "requestedExistingCue": "red_ink",
+        "cueMeaning": "Existing Debuff mapping; no new quill Foley is claimed.",
+        "preserveOldChronicleInk": true,
+        "requireScopedTargetValidation": true
+      },
+      {
+        "step": 8,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "replacement",
+        "mode": "NARRATED",
+        "text": "What remained deserved a future, even if it could never become its former self.",
+        "completeBeforeNextBlockingEvent": true,
+        "assetLineKey": "Reaper:10:N02",
+        "clock": "Final recording sample clock and measured word intervals only.",
+        "missingAudioPolicy": "Existing silent-writing fallback; do not invent word timings."
+      },
+      {
+        "step": 9,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "evidence",
+        "mode": "SILENT_HANDWRITING",
+        "text": "The old portrait could help them recognize him. It could not answer on behalf of the existence that had endured. The Reaper had already met echoes whose names were gone and survivors whose pasts could not agree. Insisting upon a cleaner account had repeatedly concealed the person still present.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 10,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "account",
+        "mode": "SILENT_HANDWRITING",
+        "text": "This is no acceptance of the prison, and no judgment that it must last. Freedom remains worth seeking. Its purpose must include the possibility of an answer they did not expect. If returning their friend required silencing whatever he had become, preservation would once again be mistaken for care.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 11,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "closing",
+        "mode": "NARRATED",
+        "text": "They could search for a way to free him. They could not decide in advance who he must be when he answered.",
+        "completeBeforeNextBlockingEvent": true,
+        "assetLineKey": "Reaper:10:N03",
+        "clock": "Final recording sample clock and measured word intervals only.",
+        "missingAudioPolicy": "Existing silent-writing fallback; do not invent word timings."
+      },
+      {
+        "step": 12,
+        "intent": "COMPLETE_NEW_ADDITION",
+        "archivePermanent": true,
+        "idempotent": true,
+        "completionHold": "ChronicleRhythm.CompletionHold; no extra fixed three-second hold",
+        "revisitTiming": "ChronicleRhythm.RevisitScale",
+        "skipState": "All new blocks complete; the new observation is struck and its replacement remains. All base-memory content is unchanged.",
+        "replay": "Read immediately; full cinematic is opt-in.",
+        "runtimeSaveId": "ASC_REA_10"
+      }
+    ]
+  },
+  "continuityGates": [
+    {
+      "requirement": "Existing expanded memory and its canonical correction/knowledge have already been viewed.",
+      "memoryId": "MEM_27"
+    },
+    {
+      "requirement": "Existing fusion discovery remains first.",
+      "correctionId": "CORR_09",
+      "reason": "The new passage examines surviving disagreement and care, rather than unveiling fusion early."
+    }
+  ],
+  "spoilerPolicy": "Never identify the Narrator with the fourth companion or the Forgotten Observer before SCENE_CH10. Base discoveries remain first; additions are deferred if required knowledge is absent.",
+  "existingContentModified": false,
+  "newBeingDialogue": false,
+  "accessibility": {
+    "instantText": true,
+    "voiceMuteKeepsPageReadable": true,
+    "reducedMotionUsesStaticArt": true,
+    "reducedFlashingNoExtraGlow": true,
+    "skipResolvesCompletedNewState": true
+  }
+}

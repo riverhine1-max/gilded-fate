@@ -1,0 +1,342 @@
+{
+  "schemaVersion": 1,
+  "contentKey": "Vanguard:06",
+  "revelationId": "ASC_VAN_06",
+  "sceneId": "ASC_VAN_06",
+  "idBindingStatus": "BOUND_TO_EXISTING_ASCENSION_CATALOG",
+  "authoringComplete": true,
+  "contentReady": false,
+  "runtimeRegistrationStatus": "NOT_INTEGRATED_BY_THIS_CONTENT_TASK",
+  "hero": "Vanguard",
+  "fateDebt": 6,
+  "kindOrdinal": 4,
+  "presentation": "Narrated",
+  "title": "The Unfinished Promise",
+  "kind": "SMALL",
+  "expandedMemoryId": "MEM_16",
+  "expandedChapterId": "CH_06",
+  "sourceCommit": "7211864e93fee914ef370912ae1ed8aafd66266b",
+  "journalBlocks": [
+    {
+      "blockKey": "paragraph_1",
+      "text": "The memory of the breaking contains a movement the warrior could not explain afterward. Before his hand reached for the collapsing barrier, it closed as though around the handle of a cup. The gesture was useless there. It belonged to another place, to a quieter exchange whose words would not return.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "6d399733107de4995e313cd897cb5dc1035c1b58d1972200fd316ea5a2507753"
+    },
+    {
+      "blockKey": "paragraph_2",
+      "text": "He had remembered the pressure of making an agreement before he remembered what the agreement asked of him. I cannot recover its words from the grief that followed.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "14eb8601e0a601bfc2dfc915464d3425345173cda1e20f2794fe3e32de38da45"
+    },
+    {
+      "blockKey": "closing",
+      "text": "He knew he had promised something. He could not yet tell obligation from grief.",
+      "mode": "NARRATED",
+      "textSHA256": "be18d829518e749f01acfea3ff985acc8c95e01a024b3bbce3b52ea8bb7be84c",
+      "assetLineKey": "Vanguard:06:N01"
+    }
+  ],
+  "journalText": "The memory of the breaking contains a movement the warrior could not explain afterward. Before his hand reached for the collapsing barrier, it closed as though around the handle of a cup. The gesture was useless there. It belonged to another place, to a quieter exchange whose words would not return.\n\nHe had remembered the pressure of making an agreement before he remembered what the agreement asked of him. I cannot recover its words from the grief that followed.\n\nHe knew he had promised something. He could not yet tell obligation from grief.",
+  "wordCount": 93,
+  "newlyRecoveredInformation": "A bodily association connects the catastrophe to an earlier ordinary agreement, while its exact terms remain unrecovered until Debt X.",
+  "newlyAuthoredDetails": [
+    "An involuntary cup-holding gesture during the barrier memory; no promise terms are disclosed here."
+  ],
+  "sourceEvidence": [
+    "MEM_16",
+    "MEM_25"
+  ],
+  "relationships": {
+    "follows": [
+      "Vanguard:01"
+    ],
+    "prepares": [
+      "Vanguard:07",
+      "Vanguard:10"
+    ]
+  },
+  "correction": null,
+  "narration": [
+    {
+      "assetLineKey": "Vanguard:06:N01",
+      "lineId": "ASC_VAN_06__closing",
+      "sceneId": "ASC_VAN_06",
+      "revelationId": "ASC_VAN_06",
+      "runtimeCommandId": "closing",
+      "commandId": "closing",
+      "commandBinding": "Use the existing explicit WriteBlock ID in the authored scene; update binding if Claude assigns a different command ID.",
+      "contentKey": "Vanguard:06",
+      "blockKey": "closing",
+      "speaker": "NARRATOR",
+      "text": "He knew he had promised something. He could not yet tell obligation from grief.",
+      "textSHA256": "be18d829518e749f01acfea3ff985acc8c95e01a024b3bbce3b52ea8bb7be84c",
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Vanguard_Debt06_The_Unfinished_Promise_N01.wav",
+      "emotion": "DoubtingHistorian",
+      "status": "RECORDED_AUTOMATICALLY_VERIFIED",
+      "durationSeconds": 5.2,
+      "words": [
+        {
+          "text": "He",
+          "startSeconds": 0,
+          "endSeconds": 0.30000000000000004,
+          "charStart": 0,
+          "charLength": 2,
+          "confidence": 0.9125398397445679
+        },
+        {
+          "text": "knew",
+          "startSeconds": 0.30000000000000004,
+          "endSeconds": 0.5800000000000001,
+          "charStart": 3,
+          "charLength": 4,
+          "confidence": 0.9974616765975952
+        },
+        {
+          "text": "he",
+          "startSeconds": 0.5800000000000001,
+          "endSeconds": 0.8799999999999999,
+          "charStart": 8,
+          "charLength": 2,
+          "confidence": 0.9909091591835022
+        },
+        {
+          "text": "had",
+          "startSeconds": 0.8799999999999999,
+          "endSeconds": 1.02,
+          "charStart": 11,
+          "charLength": 3,
+          "confidence": 0.9970853924751282
+        },
+        {
+          "text": "promised",
+          "startSeconds": 1.02,
+          "endSeconds": 1.2999999999999998,
+          "charStart": 15,
+          "charLength": 8,
+          "confidence": 0.9982187151908875
+        },
+        {
+          "text": "something.",
+          "startSeconds": 1.2999999999999998,
+          "endSeconds": 1.88,
+          "charStart": 24,
+          "charLength": 10,
+          "confidence": 0.9987499713897705
+        },
+        {
+          "text": "He",
+          "startSeconds": 2.6,
+          "endSeconds": 2.68,
+          "charStart": 35,
+          "charLength": 2,
+          "confidence": 0.99406898021698
+        },
+        {
+          "text": "could",
+          "startSeconds": 2.68,
+          "endSeconds": 2.84,
+          "charStart": 38,
+          "charLength": 5,
+          "confidence": 0.9987866282463074
+        },
+        {
+          "text": "not",
+          "startSeconds": 2.84,
+          "endSeconds": 3.08,
+          "charStart": 44,
+          "charLength": 3,
+          "confidence": 0.9977624416351318
+        },
+        {
+          "text": "yet",
+          "startSeconds": 3.08,
+          "endSeconds": 3.3,
+          "charStart": 48,
+          "charLength": 3,
+          "confidence": 0.9950839877128601
+        },
+        {
+          "text": "tell",
+          "startSeconds": 3.3,
+          "endSeconds": 3.6799999999999997,
+          "charStart": 52,
+          "charLength": 4,
+          "confidence": 0.9984145164489746
+        },
+        {
+          "text": "obligation",
+          "startSeconds": 3.6799999999999997,
+          "endSeconds": 4.24,
+          "charStart": 57,
+          "charLength": 10,
+          "confidence": 0.9764067530632019
+        },
+        {
+          "text": "from",
+          "startSeconds": 4.24,
+          "endSeconds": 4.76,
+          "charStart": 68,
+          "charLength": 4,
+          "confidence": 0.9991205334663391
+        },
+        {
+          "text": "grief.",
+          "startSeconds": 4.76,
+          "endSeconds": 5.06,
+          "charStart": 73,
+          "charLength": 6,
+          "confidence": 0.9829666614532471
+        }
+      ],
+      "readyForAudioClock": true,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "19754329fee812d3bd066aabbcb8636add3e79f27263f15cbfb1648ec80ed334",
+      "format": {
+        "container": "WAV",
+        "sampleRate": 48000,
+        "bitDepth": 24,
+        "channels": 1,
+        "sourceBitDepth": 16
+      },
+      "alignmentMethod": "Local small.en Whisper word timestamps (attention/DTW), CTranslate2 CPU, VAD disabled; no ONNX Runtime imported",
+      "frameResolutionSeconds": 0.02,
+      "minimumWordConfidence": 0.9125398397445679,
+      "verification": {
+        "canonicalSpokenTextVerified": true,
+        "finalSampleCount": 249600,
+        "peakDBFS": -7.820182821401107,
+        "noClipping": true,
+        "parentTranscript": "He knew he had promised something. He could not yet tell obligation from grief.",
+        "finalCropTranscript": "He knew he had promised something. He could not yet tell obligation from grief.",
+        "sourceCropFrames": [
+          0,
+          249600
+        ],
+        "analysisPaddingSeconds": 1,
+        "manualListeningReview": "PENDING",
+        "telemetryRuntimeUsed": false
+      }
+    }
+  ],
+  "visualKey": "Vanguard_MendedCup",
+  "cinematic": {
+    "direction": "Use a faint cup study beside the new text. Voice only the final sentence. Keep the existing promise dialogue unchanged and do not play it over this addition.",
+    "events": [
+      {
+        "step": 1,
+        "intent": "RETURN_TO_EXISTING_MEMORY",
+        "memoryId": "MEM_16",
+        "sceneId": "ASC_VAN_06",
+        "useExistingBookTurn": true,
+        "continuationAPI": "ChronicleJournal.PlanContinuation",
+        "maxVisibleTurns": 3,
+        "turnTiming": "ChronicleRhythm.TurnAnticipation and TurnSettle",
+        "baseTextReadOnly": true,
+        "keepBookOpen": true
+      },
+      {
+        "step": 2,
+        "intent": "RESERVE_NEW_WRITING_AREA",
+        "placement": "Fresh continuation leaf for major corrections; unused margin only if it fits for small additions.",
+        "font": "Reuse current Chronicle handwriting and stroke renderer; respect user-selected textScale without automatic shrinking.",
+        "existingBlocksReadOnly": true
+      },
+      {
+        "step": 3,
+        "intent": "OPTIONAL_MARGINAL_ART",
+        "visualKey": "Vanguard_MendedCup",
+        "asset": "SourceAssets/ChronicleAscension/Art/Vanguard_MendedCup.png",
+        "status": "GENERATED_AND_CHECKED",
+        "onlyNewOverlay": true,
+        "animation": "None required; static marginal study."
+      },
+      {
+        "step": 4,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "paragraph_1",
+        "mode": "SILENT_HANDWRITING",
+        "text": "The memory of the breaking contains a movement the warrior could not explain afterward. Before his hand reached for the collapsing barrier, it closed as though around the handle of a cup. The gesture was useless there. It belonged to another place, to a quieter exchange whose words would not return.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [
+            "It belonged to another place, to a quieter exchange whose words would not return."
+          ],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 5,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "paragraph_2",
+        "mode": "SILENT_HANDWRITING",
+        "text": "He had remembered the pressure of making an agreement before he remembered what the agreement asked of him. I cannot recover its words from the grief that followed.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [
+            "It belonged to another place, to a quieter exchange whose words would not return."
+          ],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 6,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "closing",
+        "mode": "NARRATED",
+        "text": "He knew he had promised something. He could not yet tell obligation from grief.",
+        "completeBeforeNextBlockingEvent": true,
+        "assetLineKey": "Vanguard:06:N01",
+        "clock": "Final recording sample clock and measured word intervals only.",
+        "missingAudioPolicy": "Existing silent-writing fallback; do not invent word timings."
+      },
+      {
+        "step": 7,
+        "intent": "COMPLETE_NEW_ADDITION",
+        "archivePermanent": true,
+        "idempotent": true,
+        "completionHold": "ChronicleRhythm.CompletionHold; no extra fixed three-second hold",
+        "revisitTiming": "ChronicleRhythm.RevisitScale",
+        "skipState": "All new blocks complete; the new observation is struck and its replacement remains. All base-memory content is unchanged.",
+        "replay": "Read immediately; full cinematic is opt-in.",
+        "runtimeSaveId": "ASC_VAN_06"
+      }
+    ]
+  },
+  "continuityGates": [
+    {
+      "requirement": "Existing expanded memory and its canonical correction/knowledge have already been viewed.",
+      "memoryId": "MEM_16"
+    }
+  ],
+  "spoilerPolicy": "Never identify the Narrator with the fourth companion or the Forgotten Observer before SCENE_CH10. Base discoveries remain first; additions are deferred if required knowledge is absent.",
+  "existingContentModified": false,
+  "newBeingDialogue": false,
+  "accessibility": {
+    "instantText": true,
+    "voiceMuteKeepsPageReadable": true,
+    "reducedMotionUsesStaticArt": true,
+    "reducedFlashingNoExtraGlow": true,
+    "skipResolvesCompletedNewState": true
+  }
+}

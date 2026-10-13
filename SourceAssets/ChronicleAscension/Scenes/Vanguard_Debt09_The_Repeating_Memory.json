@@ -1,0 +1,359 @@
+{
+  "schemaVersion": 1,
+  "contentKey": "Vanguard:09",
+  "revelationId": "ASC_VAN_09",
+  "sceneId": "ASC_VAN_09",
+  "idBindingStatus": "BOUND_TO_EXISTING_ASCENSION_CATALOG",
+  "authoringComplete": true,
+  "contentReady": false,
+  "runtimeRegistrationStatus": "NOT_INTEGRATED_BY_THIS_CONTENT_TASK",
+  "hero": "Vanguard",
+  "fateDebt": 9,
+  "kindOrdinal": 6,
+  "presentation": "Narrated",
+  "title": "The Repeating Memory",
+  "kind": "SMALL",
+  "expandedMemoryId": "MEM_22",
+  "expandedChapterId": "CH_08",
+  "sourceCommit": "7211864e93fee914ef370912ae1ed8aafd66266b",
+  "journalBlocks": [
+    {
+      "blockKey": "paragraph_1",
+      "text": "In one returning battle, the warrior remembered where the first blow would fall. He also remembered stepping toward it. This time he noticed someone behind his shoulder before he moved. He placed his shield differently.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "74bc9bd3f1c38c1a8ba99ab3621688205e1b9153e626f65df5b55f7c24a8c3d7"
+    },
+    {
+      "blockKey": "paragraph_2",
+      "text": "The danger felt familiar; the person he protected did not. He could not tell whether this was another hour, another path, or a memory borrowing the shape of both. He recorded the difference instead of discarding it.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "0436606987213927060c16ecba619957ab3df1207485cf098cc10215ab3e12c9"
+    },
+    {
+      "blockKey": "closing",
+      "text": "Recognition gave him a moment to consider. It did not tell him what he owed that moment.",
+      "mode": "NARRATED",
+      "textSHA256": "91c70ae61cbe258e1edf7491429b3ffc8d395858d5e195e4db439aa644b1532a",
+      "assetLineKey": "Vanguard:09:N01"
+    }
+  ],
+  "journalText": "In one returning battle, the warrior remembered where the first blow would fall. He also remembered stepping toward it. This time he noticed someone behind his shoulder before he moved. He placed his shield differently.\n\nThe danger felt familiar; the person he protected did not. He could not tell whether this was another hour, another path, or a memory borrowing the shape of both. He recorded the difference instead of discarding it.\n\nRecognition gave him a moment to consider. It did not tell him what he owed that moment.",
+  "wordCount": 89,
+  "newlyRecoveredInformation": "He retained a difference in his protective response rather than treating familiarity as proof that the entire event was identical or morally predetermined.",
+  "newlyAuthoredDetails": [
+    "A differently placed shield in one echo of a battle. No loop-breaking gameplay rule is asserted."
+  ],
+  "sourceEvidence": [
+    "MEM_22",
+    "MEM_20"
+  ],
+  "relationships": {
+    "follows": [
+      "Vanguard:05"
+    ],
+    "prepares": [
+      "Vanguard:10"
+    ],
+    "crossCharacter": [
+      "Hexer:08"
+    ]
+  },
+  "correction": null,
+  "narration": [
+    {
+      "assetLineKey": "Vanguard:09:N01",
+      "lineId": "ASC_VAN_09__closing",
+      "sceneId": "ASC_VAN_09",
+      "revelationId": "ASC_VAN_09",
+      "runtimeCommandId": "closing",
+      "commandId": "closing",
+      "commandBinding": "Use the existing explicit WriteBlock ID in the authored scene; update binding if Claude assigns a different command ID.",
+      "contentKey": "Vanguard:09",
+      "blockKey": "closing",
+      "speaker": "NARRATOR",
+      "text": "Recognition gave him a moment to consider. It did not tell him what he owed that moment.",
+      "textSHA256": "91c70ae61cbe258e1edf7491429b3ffc8d395858d5e195e4db439aa644b1532a",
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Vanguard_Debt09_The_Repeating_Memory_N01.wav",
+      "emotion": "ConcernedHistorian",
+      "status": "RECORDED_AUTOMATICALLY_VERIFIED",
+      "durationSeconds": 5.56,
+      "words": [
+        {
+          "text": "Recognition",
+          "startSeconds": 0.4600000000000013,
+          "endSeconds": 1.02,
+          "charStart": 0,
+          "charLength": 11,
+          "confidence": 0.9853195548057556
+        },
+        {
+          "text": "gave",
+          "startSeconds": 1.02,
+          "endSeconds": 1.2999999999999998,
+          "charStart": 12,
+          "charLength": 4,
+          "confidence": 0.997378945350647
+        },
+        {
+          "text": "him",
+          "startSeconds": 1.2999999999999998,
+          "endSeconds": 1.48,
+          "charStart": 17,
+          "charLength": 3,
+          "confidence": 0.9985546469688416
+        },
+        {
+          "text": "a",
+          "startSeconds": 1.48,
+          "endSeconds": 1.62,
+          "charStart": 21,
+          "charLength": 1,
+          "confidence": 0.9978623986244202
+        },
+        {
+          "text": "moment",
+          "startSeconds": 1.62,
+          "endSeconds": 1.8199999999999998,
+          "charStart": 23,
+          "charLength": 6,
+          "confidence": 0.9991268515586853
+        },
+        {
+          "text": "to",
+          "startSeconds": 1.8199999999999998,
+          "endSeconds": 2.08,
+          "charStart": 30,
+          "charLength": 2,
+          "confidence": 0.9992005228996277
+        },
+        {
+          "text": "consider.",
+          "startSeconds": 2.08,
+          "endSeconds": 2.44,
+          "charStart": 33,
+          "charLength": 9,
+          "confidence": 0.9992735981941223
+        },
+        {
+          "text": "It",
+          "startSeconds": 2.82,
+          "endSeconds": 2.96,
+          "charStart": 43,
+          "charLength": 2,
+          "confidence": 0.993474543094635
+        },
+        {
+          "text": "did",
+          "startSeconds": 2.96,
+          "endSeconds": 3.0999999999999996,
+          "charStart": 46,
+          "charLength": 3,
+          "confidence": 0.9913479685783386
+        },
+        {
+          "text": "not",
+          "startSeconds": 3.0999999999999996,
+          "endSeconds": 3.3200000000000003,
+          "charStart": 50,
+          "charLength": 3,
+          "confidence": 0.9989618062973022
+        },
+        {
+          "text": "tell",
+          "startSeconds": 3.3200000000000003,
+          "endSeconds": 3.5599999999999996,
+          "charStart": 54,
+          "charLength": 4,
+          "confidence": 0.9993233680725098
+        },
+        {
+          "text": "him",
+          "startSeconds": 3.5599999999999996,
+          "endSeconds": 3.8600000000000003,
+          "charStart": 59,
+          "charLength": 3,
+          "confidence": 0.999071478843689
+        },
+        {
+          "text": "what",
+          "startSeconds": 3.8600000000000003,
+          "endSeconds": 4.32,
+          "charStart": 63,
+          "charLength": 4,
+          "confidence": 0.9924341440200806
+        },
+        {
+          "text": "he",
+          "startSeconds": 4.32,
+          "endSeconds": 4.48,
+          "charStart": 68,
+          "charLength": 2,
+          "confidence": 0.999049961566925
+        },
+        {
+          "text": "owed",
+          "startSeconds": 4.48,
+          "endSeconds": 4.78,
+          "charStart": 71,
+          "charLength": 4,
+          "confidence": 0.996992826461792
+        },
+        {
+          "text": "that",
+          "startSeconds": 4.78,
+          "endSeconds": 5.06,
+          "charStart": 76,
+          "charLength": 4,
+          "confidence": 0.9903510212898254
+        },
+        {
+          "text": "moment.",
+          "startSeconds": 5.06,
+          "endSeconds": 5.42,
+          "charStart": 81,
+          "charLength": 7,
+          "confidence": 0.9996034502983093
+        }
+      ],
+      "readyForAudioClock": true,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "4d473cce02372fae5b37b3487d60f58ce662915ac560e2b5c8e3b79262c64333",
+      "format": {
+        "container": "WAV",
+        "sampleRate": 48000,
+        "bitDepth": 24,
+        "channels": 1,
+        "sourceBitDepth": 16
+      },
+      "alignmentMethod": "Local small.en Whisper word timestamps (attention/DTW), CTranslate2 CPU, VAD disabled; no ONNX Runtime imported",
+      "frameResolutionSeconds": 0.02,
+      "minimumWordConfidence": 0.9853195548057556,
+      "verification": {
+        "canonicalSpokenTextVerified": true,
+        "finalSampleCount": 266880,
+        "peakDBFS": -7.26188669235823,
+        "noClipping": true,
+        "parentTranscript": "Recognition gave him a moment to consider. It did not tell him what he owed that moment.",
+        "finalCropTranscript": "Recognition gave him a moment to consider. It did not tell him what he owed that moment.",
+        "sourceCropFrames": [
+          0,
+          266880
+        ],
+        "analysisPaddingSeconds": 1,
+        "manualListeningReview": "PENDING",
+        "telemetryRuntimeUsed": false
+      }
+    }
+  ],
+  "visualKey": null,
+  "cinematic": {
+    "direction": "Append the remembered difference without changing the battle animation. The closing line writes from its new recording's clock; the earlier observations remain silent.",
+    "events": [
+      {
+        "step": 1,
+        "intent": "RETURN_TO_EXISTING_MEMORY",
+        "memoryId": "MEM_22",
+        "sceneId": "ASC_VAN_09",
+        "useExistingBookTurn": true,
+        "continuationAPI": "ChronicleJournal.PlanContinuation",
+        "maxVisibleTurns": 3,
+        "turnTiming": "ChronicleRhythm.TurnAnticipation and TurnSettle",
+        "baseTextReadOnly": true,
+        "keepBookOpen": true
+      },
+      {
+        "step": 2,
+        "intent": "RESERVE_NEW_WRITING_AREA",
+        "placement": "Fresh continuation leaf for major corrections; unused margin only if it fits for small additions.",
+        "font": "Reuse current Chronicle handwriting and stroke renderer; respect user-selected textScale without automatic shrinking.",
+        "existingBlocksReadOnly": true
+      },
+      {
+        "step": 3,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "paragraph_1",
+        "mode": "SILENT_HANDWRITING",
+        "text": "In one returning battle, the warrior remembered where the first blow would fall. He also remembered stepping toward it. This time he noticed someone behind his shoulder before he moved. He placed his shield differently.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [
+            "He recorded the difference instead of discarding it."
+          ],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 4,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "paragraph_2",
+        "mode": "SILENT_HANDWRITING",
+        "text": "The danger felt familiar; the person he protected did not. He could not tell whether this was another hour, another path, or a memory borrowing the shape of both. He recorded the difference instead of discarding it.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [
+            "He recorded the difference instead of discarding it."
+          ],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 5,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "closing",
+        "mode": "NARRATED",
+        "text": "Recognition gave him a moment to consider. It did not tell him what he owed that moment.",
+        "completeBeforeNextBlockingEvent": true,
+        "assetLineKey": "Vanguard:09:N01",
+        "clock": "Final recording sample clock and measured word intervals only.",
+        "missingAudioPolicy": "Existing silent-writing fallback; do not invent word timings."
+      },
+      {
+        "step": 6,
+        "intent": "COMPLETE_NEW_ADDITION",
+        "archivePermanent": true,
+        "idempotent": true,
+        "completionHold": "ChronicleRhythm.CompletionHold; no extra fixed three-second hold",
+        "revisitTiming": "ChronicleRhythm.RevisitScale",
+        "skipState": "All new blocks complete; the new observation is struck and its replacement remains. All base-memory content is unchanged.",
+        "replay": "Read immediately; full cinematic is opt-in.",
+        "runtimeSaveId": "ASC_VAN_09"
+      }
+    ]
+  },
+  "continuityGates": [
+    {
+      "requirement": "Existing expanded memory and its canonical correction/knowledge have already been viewed.",
+      "memoryId": "MEM_22"
+    }
+  ],
+  "spoilerPolicy": "Never identify the Narrator with the fourth companion or the Forgotten Observer before SCENE_CH10. Base discoveries remain first; additions are deferred if required knowledge is absent.",
+  "existingContentModified": false,
+  "newBeingDialogue": false,
+  "accessibility": {
+    "instantText": true,
+    "voiceMuteKeepsPageReadable": true,
+    "reducedMotionUsesStaticArt": true,
+    "reducedFlashingNoExtraGlow": true,
+    "skipResolvesCompletedNewState": true
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "sourceCommit": "7211864e93fee914ef370912ae1ed8aafd66266b",
+  "referenceOnly": true,
+  "modified": false,
+  "sharedCorrections": [
+    {
+      "id": "CORR_01",
+      "chapter": 3,
+      "original": "Three travelers stood together.",
+      "corrected": "There were four."
+    },
+    {
+      "id": "CORR_02",
+      "chapter": 2,
+      "original": "The traveler watched the futures unfold.",
+      "corrected": "The traveler was changing them."
+    },
+    {
+      "id": "CORR_03",
+      "chapter": 2,
+      "original": "The lost futures left nothing behind.",
+      "corrected": "Their echoes remained."
+    },
+    {
+      "id": "CORR_04",
+      "chapter": 4,
+      "original": "The sanctuary was abandoned.",
+      "corrected": "The sanctuary was watching them."
+    },
+    {
+      "id": "CORR_05",
+      "chapter": 5,
+      "original": "The memories were lost by chance.",
+      "corrected": "Someone attempted to erase them deliberately."
+    },
+    {
+      "id": "CORR_06",
+      "chapter": 6,
+      "original": "The Severing was an unexplained catastrophe.",
+      "corrected": "The conflict over memory and fate caused the Severing."
+    },
+    {
+      "id": "CORR_07",
+      "chapter": 7,
+      "original": "Time continued unchanged after the Severing.",
+      "corrected": "Time fragmented into loops, jumps, and broken sequences."
+    },
+    {
+      "id": "CORR_08",
+      "chapter": 8,
+      "original": "Their stories had reached an ending.",
+      "corrected": "Something in the Weave refused the ending."
+    },
+    {
+      "id": "CORR_09",
+      "chapter": 9,
+      "original": "The fourth companion disappeared completely.",
+      "corrected": "He survived in a fused existence with the Being."
+    },
+    {
+      "id": "CORR_10",
+      "chapter": 0,
+      "original": "The narrator was only a historian.",
+      "corrected": "The narrator is the Forgotten Observer."
+    }
+  ]
+}

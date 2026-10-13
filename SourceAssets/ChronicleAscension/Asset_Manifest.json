@@ -1,0 +1,876 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "7211864e93fee914ef370912ae1ed8aafd66266b",
+  "status": {
+    "revelationsWritten": 30,
+    "majorCorrections": 12,
+    "smallerAdditions": 18,
+    "newNarratorRecordingsVerified": 45,
+    "newBeingRecordings": 0,
+    "newVisuals": 6,
+    "measuredSpokenWords": 659,
+    "runtimeIDs": "BOUND_TO_EXISTING_ASCENSION_CATALOG",
+    "runtimeRegistration": "NOT_INTEGRATED_BY_CONTENT_TASK",
+    "manualListeningReview": "PENDING",
+    "unityImportAndPlayback": "NOT_RUN",
+    "githubChanged": false,
+    "pendingAudio": [],
+    "checks": [
+      {
+        "check": "Coverage and attachments",
+        "status": "PASS",
+        "detail": "30 entries, ten per hero; 12 major and 18 smaller; all agreed memory attachments and debt ranks match."
+      },
+      {
+        "check": "New correction ownership",
+        "status": "PASS",
+        "detail": "Every strike targets only its own newly added observation. No shared correction ID or base sentence is a target."
+      },
+      {
+        "check": "Narration allocation",
+        "status": "PASS",
+        "detail": "Three spoken blocks per major, one closing line at smaller Debts III/VI/IX, no speech at II/V/VIII: 45 clips across 21 voiced additions."
+      },
+      {
+        "check": "Identity and voice boundary",
+        "status": "PASS",
+        "detail": "Rendered new text has no Narrator identity statement; all new recordings are NARRATOR, with no new Being dialogue."
+      },
+      {
+        "check": "Existing ID contract",
+        "status": "PASS",
+        "detail": "All 30 scene/revelation IDs and 12 correction IDs match the actual ChronicleAscensionCatalog; contentReady remains false until approved scenes are registered."
+      },
+      {
+        "check": "Audio integrity",
+        "status": "PASS",
+        "detail": "45 real new mono 48 kHz PCM 24-bit WAVs; actual sample durations, hashes, canonical word coverage and ordered measured intervals verified. No original recording hash is present."
+      },
+      {
+        "check": "Visual assets",
+        "status": "PASS",
+        "detail": "Six generated RGBA PNGs inspected for subject, palette, text/character invariants and real alpha transparency; every referenced asset belongs to named content entries."
+      },
+      {
+        "check": "Pinned source preservation",
+        "status": "PASS",
+        "detail": "The read-only evidence snapshot retains all 27 memory definitions and ten shared corrections. Its source hashes match the inspected copies; no existing source or binary file is delivered as a replacement."
+      }
+    ]
+  },
+  "files": [
+    {
+      "file": "SourceAssets/ChronicleAscension/Art/Art_Manifest.json",
+      "sizeBytes": 11883,
+      "sha256": "36caf24727aad8133bcb37a1ada494a78acf72564181b75367037846b350cebd",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Art/Hexer_ConflictingHours.png",
+      "sizeBytes": 3058711,
+      "sha256": "d49bdce205cb9ce878481f5f96d5b919ad53c41b22061cbfaf3a0cf4d79aac64",
+      "kind": "newVisual"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Art/Hexer_InterruptedDiagram.png",
+      "sizeBytes": 2162354,
+      "sha256": "ad5fa86687287b0fe6c8353961d558c142bb5207708525987905bf2a809b61c0",
+      "kind": "newVisual"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Art/Reaper_SpaceBesideEcho.png",
+      "sizeBytes": 2099956,
+      "sha256": "d29b97e9a02edb084b93747fcf9ba6ae6c06707922e1b6e3905d5ca66b43e454",
+      "kind": "newVisual"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Art/Reaper_TwoAccounts.png",
+      "sizeBytes": 2620030,
+      "sha256": "e33b8408af4c1bac6f56b60d07b301fe32898b788211c2bbc6e402672d78d002",
+      "kind": "newVisual"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Art/Vanguard_ExitStudy.png",
+      "sizeBytes": 2636324,
+      "sha256": "03faf8ff58c31d950cc2429dc4e5ae4eab2a7d61ef77fe23991a177e4580bad2",
+      "kind": "newVisual"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Art/Vanguard_MendedCup.png",
+      "sizeBytes": 2365046,
+      "sha256": "e27b360f7c09939f22ecd226322ba348800c327e5271db36dff4846176752d41",
+      "kind": "newVisual"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Manifests/Audio_Verification.md",
+      "sizeBytes": 1993,
+      "sha256": "b4233eef471661029fc9a3076134c074d22918c3af54acb4687879d2ef37af31",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Manifests/Dialogue_Production.json",
+      "sizeBytes": 241875,
+      "sha256": "6d85a56f4b0f69f051e995cb486e5e1f724c49747c840577cc5316088890afdd",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Manifests/Listening_Review.csv",
+      "sizeBytes": 7140,
+      "sha256": "fa83e355135d2fe1e58dc7273f7accef16f778c4458a40e40c4444d2b296342f",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Manifests/Narration_Scripts.md",
+      "sizeBytes": 4811,
+      "sha256": "1dbbf648b0039c30adfc7fa3d86d05e7ca749a5afe6fde1f53a003b42db855ec",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Manifests/Narrator_Voice_Direction.json",
+      "sizeBytes": 538,
+      "sha256": "51c978268e650e17d535c8e06aae070cb576552d52e2c4bfef480d7928a857eb",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Manifests/Recording_Requests.json",
+      "sizeBytes": 278770,
+      "sha256": "8576dae84fe3f14530849985de1e3057383e7f1bbdd803a7dfc1edb19d538137",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Manifests/Word_Timings.csv",
+      "sizeBytes": 52950,
+      "sha256": "2f9cbdbe54f2de5ff76140a3b57fe460ddc2c84f300246b63b7eee3bf9d63f77",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Hexer_Debt01_The_Scholar_s_Mistake_N01.wav",
+      "sizeBytes": 639404,
+      "sha256": "99bd310301924c0edfe00d4b59415b4ba6577e0ac0f4d85ebd96f42293a7b692",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Hexer_Debt01_The_Scholar_s_Mistake_N02.wav",
+      "sizeBytes": 797804,
+      "sha256": "e3441c0f11057c9334c12d8d3c23e95c27919c167dd81ec377bfbb12677da9b9",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Hexer_Debt01_The_Scholar_s_Mistake_N03.wav",
+      "sizeBytes": 1471724,
+      "sha256": "a7b8df4580be8f59c2663875be3786737620ba8ed6ed48f4440d371913ce13c6",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Hexer_Debt03_The_Unexplained_Signature_N01.wav",
+      "sizeBytes": 817964,
+      "sha256": "e274468a37f793f533d09a71da5f2240433c64399667563a406923696c71be9a",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Hexer_Debt04_The_Warning_He_Remembered_Wrong_N01.wav",
+      "sizeBytes": 832364,
+      "sha256": "26de46f108f0b2dfffe5ab47d34097457d4f339783a1796ea1d524cae4c383e3",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Hexer_Debt04_The_Warning_He_Remembered_Wrong_N02.wav",
+      "sizeBytes": 985004,
+      "sha256": "2674357603ca730cc7eb4183252766a14d37d04f93168ea272e08627dfb8cb6d",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Hexer_Debt04_The_Warning_He_Remembered_Wrong_N03.wav",
+      "sizeBytes": 1160684,
+      "sha256": "2f5a5b68d1a35258daae642bb84b5d6b9fb21f00924a0f4c197cee6f15860d08",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Hexer_Debt06_An_Incomplete_Answer_N01.wav",
+      "sizeBytes": 751724,
+      "sha256": "69669e0868a26e9959436c9517862cf891bcbf67377b2da6c095f604890a4e8e",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Hexer_Debt07_The_Broken_Sequence_N01.wav",
+      "sizeBytes": 740204,
+      "sha256": "e926d12e9dd0bb401e87431db540b09f06bd53d5473ac2c4bc2a0cd672d5da2a",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Hexer_Debt07_The_Broken_Sequence_N02.wav",
+      "sizeBytes": 1094444,
+      "sha256": "5f544f54f9bf89eeda3eb82322d63ddc4e5a8a915710f010ef9416f3fdc52d81",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Hexer_Debt07_The_Broken_Sequence_N03.wav",
+      "sizeBytes": 1103084,
+      "sha256": "1f933e764d012921d7b4dd4b4b746ac6e393dd4e39e63c1606ace2975fcc892a",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Hexer_Debt09_The_Persistent_Thread_N01.wav",
+      "sizeBytes": 887084,
+      "sha256": "3ed100d4218c23c3f34207b923f8341a75b860f95a5737e24f64a9e54b16d418",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Hexer_Debt10_The_Truth_Beyond_Calculation_N01.wav",
+      "sizeBytes": 632273,
+      "sha256": "b13be4a94e17263a7be1eb22d264bb689827e53240d8adf222d0d07bebe34578",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Hexer_Debt10_The_Truth_Beyond_Calculation_N02.wav",
+      "sizeBytes": 990764,
+      "sha256": "7275a2d2b40e214edb835881171874849972fe5e5cb2c41899c4c2309f832941",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Hexer_Debt10_The_Truth_Beyond_Calculation_N03.wav",
+      "sizeBytes": 1088684,
+      "sha256": "404e7c4bd0ad39025afbc0b25e718bfc66cffdd0ada8cd8c87190833a6c083d8",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Reaper_Debt01_The_Echo_That_Wasn_t_Empty_N01.wav",
+      "sizeBytes": 639404,
+      "sha256": "ddd8e6f699ba803085d2806ee2895efd2a87d9daa4235c5af6d6e2221b40042a",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Reaper_Debt01_The_Echo_That_Wasn_t_Empty_N02.wav",
+      "sizeBytes": 671084,
+      "sha256": "64c11b1780278de5621440ff501d810c22b5e33a0673d2940b2293acde6ca950",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Reaper_Debt01_The_Echo_That_Wasn_t_Empty_N03.wav",
+      "sizeBytes": 956204,
+      "sha256": "aada59703c326f0a74644c31701bdcc39bd62bfc290cc122b26eff2f77e6428b",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Reaper_Debt03_The_Fourth_Shadow_N01.wav",
+      "sizeBytes": 676844,
+      "sha256": "dce8afb69c8222a02b1ad05ae1173f97e76484c66100c3e782eb3cc33d4b79f8",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Reaper_Debt04_The_Prison_Built_from_Mercy_N01.wav",
+      "sizeBytes": 610604,
+      "sha256": "b181ecae48cdccb3f9d30b594940c677511325658e2fab2acf47229d77e3fe24",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Reaper_Debt04_The_Prison_Built_from_Mercy_N02.wav",
+      "sizeBytes": 887084,
+      "sha256": "f696b45db0cc086c9b89361dea1278df0ad38728c44c9662e997947f74e87a84",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Reaper_Debt04_The_Prison_Built_from_Mercy_N03.wav",
+      "sizeBytes": 1008044,
+      "sha256": "2dc75e99937de3a0e09072c5a6a2927ea3ace875d64dd975bbffd000020a6a00",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Reaper_Debt06_The_Two_Wills_N01.wav",
+      "sizeBytes": 449324,
+      "sha256": "b24200f1960f82d7e6a377eb4f5d577c5de3666a8e92d012491099852dc4e7b4",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Reaper_Debt07_What_Protection_Could_Not_Restore_N01.wav",
+      "sizeBytes": 668204,
+      "sha256": "64711cb6db6eb3dcf0fee7e2d87aae4e04781ef005c40e6a0e341c415407e54f",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Reaper_Debt07_What_Protection_Could_Not_Restore_N02.wav",
+      "sizeBytes": 855404,
+      "sha256": "daea05670fc7a4d8e783e0571e2bf4d278890b4bac57d6e18353bde216e43b07",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Reaper_Debt07_What_Protection_Could_Not_Restore_N03.wav",
+      "sizeBytes": 1215404,
+      "sha256": "1d187f6c17266a46e10a9890bd500d5ff6097fb0d8f93ea4ad5eee3387386cd1",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Reaper_Debt09_The_Last_Remaining_Echo_N01.wav",
+      "sizeBytes": 717191,
+      "sha256": "63dfd9a73baf943985f9c9bffb154096f5814d9643ce66c9e9e12674a3354668",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Reaper_Debt10_The_Truth_of_What_Remains_N01.wav",
+      "sizeBytes": 944684,
+      "sha256": "cd908df929d74ff713becde781ac95daaa89ff1b2cf6b3a652f9de9f8607fdac",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Reaper_Debt10_The_Truth_of_What_Remains_N02.wav",
+      "sizeBytes": 898604,
+      "sha256": "41acfd60565a2fd798c89e11b9e79d257916e56be66464c08b6a036c0945f6f8",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Reaper_Debt10_The_Truth_of_What_Remains_N03.wav",
+      "sizeBytes": 1342124,
+      "sha256": "d6c349add6a09c709c8e21d6c149e25d72391efac076d89a6cf8994641083912",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Vanguard_Debt01_The_Friendship_N01.wav",
+      "sizeBytes": 541484,
+      "sha256": "ba82ffcbfe2be8081d1a2d48c8d152c5d37bac5abb9ceb3b7c86e4ca5ac1698b",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Vanguard_Debt01_The_Friendship_N02.wav",
+      "sizeBytes": 970604,
+      "sha256": "8949539986cb5b71c57a7c571358037f05a69c22c57d84ab049e24e769367b5d",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Vanguard_Debt01_The_Friendship_N03.wav",
+      "sizeBytes": 809324,
+      "sha256": "42e474b488e365690d676aa9a9c79005b3e69fb70f2a1aa30ca932521940fa83",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Vanguard_Debt03_A_Warning_Remembered_N01.wav",
+      "sizeBytes": 581804,
+      "sha256": "9873a2c231402445389a48abf9b59465aa63b7d9a9ee89ce206d4ab562419522",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Vanguard_Debt04_The_Disagreement_N01.wav",
+      "sizeBytes": 633644,
+      "sha256": "028e25318563640b8150e999c649545b47c4bfc0579d5caedc16dfa97311b627",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Vanguard_Debt04_The_Disagreement_N02.wav",
+      "sizeBytes": 892844,
+      "sha256": "4be14944e88b979f72e2581d2aa6bad763b9c62079d4b6a9f4fadf3ec8ae55cc",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Vanguard_Debt04_The_Disagreement_N03.wav",
+      "sizeBytes": 1532204,
+      "sha256": "35900ad12772455156f72157b7c2db627344426311734fd2f9f93453089fb238",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Vanguard_Debt06_The_Unfinished_Promise_N01.wav",
+      "sizeBytes": 748844,
+      "sha256": "19754329fee812d3bd066aabbcb8636add3e79f27263f15cbfb1648ec80ed334",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Vanguard_Debt07_The_Separation_N01.wav",
+      "sizeBytes": 613484,
+      "sha256": "0bc43f700348473564c363b6e8f34cc644f90c4bb29e9aeb05c8ace282dab82f",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Vanguard_Debt07_The_Separation_N02.wav",
+      "sizeBytes": 866924,
+      "sha256": "faa2d5e0e21160c82e11adf807a592a1b8b36e2da1b4cc7e2bf8d524b448c4c5",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Vanguard_Debt07_The_Separation_N03.wav",
+      "sizeBytes": 861164,
+      "sha256": "2a8b5412019780d27fc5739c720b8a4cbe826c6c973a0452212cb488a816af90",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Vanguard_Debt09_The_Repeating_Memory_N01.wav",
+      "sizeBytes": 800684,
+      "sha256": "4d473cce02372fae5b37b3487d60f58ce662915ac560e2b5c8e3b79262c64333",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Vanguard_Debt10_The_Warrior_s_True_History_N01.wav",
+      "sizeBytes": 751724,
+      "sha256": "4a5834061c4bab80fe1c1f3a2221e93d8d710810b1fa85975e661b81235cee06",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Vanguard_Debt10_The_Warrior_s_True_History_N02.wav",
+      "sizeBytes": 671084,
+      "sha256": "effb21a4ee351521a23e22bbc9d9bcce11bacfdc453712c00723359914b57adb",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Vanguard_Debt10_The_Warrior_s_True_History_N03.wav",
+      "sizeBytes": 887084,
+      "sha256": "2ffccb428ef071580d886ccae4e680faa0e2d30c95f8a663a814eb8263d58f1d",
+      "kind": "newNarration"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Documentation/Claude_Prompt4_Integration.md",
+      "sizeBytes": 7715,
+      "sha256": "69e068da2fc36ababfc53ffd9dec16da7900e2e644254ec9e6f350417d801958",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Documentation/Continuity_Report.md",
+      "sizeBytes": 18136,
+      "sha256": "ee6f1f13cc9e0aa0c8042103985922a31efd532662e6f8068ad486cc19795eb1",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Documentation/Manual_GitHub_Upload.md",
+      "sizeBytes": 1094,
+      "sha256": "5dd19746dbfedd16c838ac3badc5c506b15d1aed530742a0451fdffe24011f5b",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Documentation/Original_Correction_Evidence.json",
+      "sizeBytes": 1896,
+      "sha256": "e2cd6224b319b5f230529bdb51e30a62fb635f74dc1d69756172f31f9552626c",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Documentation/Read_All_Recollections.html",
+      "sizeBytes": 28430,
+      "sha256": "99d969a69a1e0805644c4268daa3242770f293b31c07cb4d441b78508aa7dec9",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Documentation/Repository_Evidence.json",
+      "sizeBytes": 9595,
+      "sha256": "75c3356e6b42354bee6e6befbb640bdef39933315280e490165f7bcc1dfce4ce",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Documentation/Runtime_ID_Contract.json",
+      "sizeBytes": 1319,
+      "sha256": "4e14b9432728781c6f4fdfd16cda71c3a3d6a69352ed1f8adda4abd3940f7b3a",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Documentation/Validation_Report.json",
+      "sizeBytes": 2394,
+      "sha256": "015dc41971a11222c24f4bf73294735956af3cf5f2deebbc117df115b39c0dcc",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Lore/All_Recollections.md",
+      "sizeBytes": 24837,
+      "sha256": "7fd3d8d298fe2d0bf0af4d4b8d37f95087382556cc8952eea1032bef1e270f44",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Lore/Hexer/Character_Arc.md",
+      "sizeBytes": 2751,
+      "sha256": "a57e6b1a0a5cf01b658fd147967d0b34e7385cc64f5ade9f5ec347c79ab139bb",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Lore/Hexer/Hexer_Debt01_The_Scholar_s_Mistake.md",
+      "sizeBytes": 2195,
+      "sha256": "5d8b773d6a317f82b44469b2c0a4a0aebad832b9cc24d92de6a0a4fcf826376f",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Lore/Hexer/Hexer_Debt02_The_First_Calculation.md",
+      "sizeBytes": 1052,
+      "sha256": "31404332b080f2dcdc6a1f410e33b02ad1741f3e6bf2dd0e66e8bac706dedb5e",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Lore/Hexer/Hexer_Debt03_The_Unexplained_Signature.md",
+      "sizeBytes": 1152,
+      "sha256": "7efa59779f87f8a3281b646874ab85728657072b74707758fe4afa6d11de396b",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Lore/Hexer/Hexer_Debt04_The_Warning_He_Remembered_Wrong.md",
+      "sizeBytes": 2174,
+      "sha256": "c16394f5b67bb527b4405124b64ead451d3ee7b39112eb121ea26081bb5a88ed",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Lore/Hexer/Hexer_Debt05_The_Memory_Threads.md",
+      "sizeBytes": 1098,
+      "sha256": "09b6b4970aea277948e70c98a97a6f522d43215fdbd8b8ea0d3db3c4fcd0c6f2",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Lore/Hexer/Hexer_Debt06_An_Incomplete_Answer.md",
+      "sizeBytes": 1182,
+      "sha256": "b4eb3df4cad60a898b15b66d18ad8e4506bfadd95f39f93b3d75818bdb3db56e",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Lore/Hexer/Hexer_Debt07_The_Broken_Sequence.md",
+      "sizeBytes": 2111,
+      "sha256": "d3242ef666cce4a7fa2a48038eb9fc859460848d0e29a0556fa431e3572b2bad",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Lore/Hexer/Hexer_Debt08_The_Hour_That_Returned.md",
+      "sizeBytes": 1063,
+      "sha256": "a171c67ecf5b9c95a9e610b60c130bfdc140e6172a366b11fa07c520a95ba85d",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Lore/Hexer/Hexer_Debt09_The_Persistent_Thread.md",
+      "sizeBytes": 1220,
+      "sha256": "9c06fc4b2563edab80552c364128b4d3edb7b416a602d9e4d0c4a2498d8980a1",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Lore/Hexer/Hexer_Debt10_The_Truth_Beyond_Calculation.md",
+      "sizeBytes": 2346,
+      "sha256": "266d22259a25a7994af85de483da40514556a915230546265e4ca701678ab0ff",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Lore/New_Corrections.json",
+      "sizeBytes": 9692,
+      "sha256": "c712c707528128fa511c8e87ccf10d3f1a690ad7f5e853dbda61aecf30e2e41b",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Lore/Reaper/Character_Arc.md",
+      "sizeBytes": 2904,
+      "sha256": "528310f3ce7fae6948efdae1e63cd643f4a06e37051c60daa10824ca619f3413",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Lore/Reaper/Reaper_Debt01_The_Echo_That_Wasn_t_Empty.md",
+      "sizeBytes": 1929,
+      "sha256": "5c0feeb3952b7914b97daecc643e24293840787294e1f377f1c8b72b9a5a4428",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Lore/Reaper/Reaper_Debt02_A_Forgotten_Life.md",
+      "sizeBytes": 1080,
+      "sha256": "4da3a979dfc9315b203a45ba3aa6a6e636ec74dcf87dea1cb4a12392cc4227fc",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Lore/Reaper/Reaper_Debt03_The_Fourth_Shadow.md",
+      "sizeBytes": 1158,
+      "sha256": "0d2f33406df0002a1f2d9d4cb2e3e3208b1c7cd8966e34fc5d5504138cc2ee18",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Lore/Reaper/Reaper_Debt04_The_Prison_Built_from_Mercy.md",
+      "sizeBytes": 2156,
+      "sha256": "4241b7b843ed0d4845dafc6d831f487d124cc00331a8f4042b41602285443ba9",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Lore/Reaper/Reaper_Debt05_The_Promise_Without_Witnesses.md",
+      "sizeBytes": 1111,
+      "sha256": "9f3498742c43668a6ba21cd286f7cca4d86b5163814cfed23e14a366bbcfb792",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Lore/Reaper/Reaper_Debt06_The_Two_Wills.md",
+      "sizeBytes": 1198,
+      "sha256": "f32c4a5f95225a865df9cff8c31998b42801a559f6172d414ea1f441f9316705",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Lore/Reaper/Reaper_Debt07_What_Protection_Could_Not_Restore.md",
+      "sizeBytes": 2237,
+      "sha256": "39237fdf6025a828d2f88738f9f0ac042961925b4f2c9306af68b9448026dff9",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Lore/Reaper/Reaper_Debt08_An_Ending_Interrupted.md",
+      "sizeBytes": 1135,
+      "sha256": "26f21fa1c00434d76b04f15c511affcc460afb65f0a33405787319bcca791ef1",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Lore/Reaper/Reaper_Debt09_The_Last_Remaining_Echo.md",
+      "sizeBytes": 1241,
+      "sha256": "7ea844a7f0667c7fe6808666623b45d5dc23683220d1956bac5b6b85079954ea",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Lore/Reaper/Reaper_Debt10_The_Truth_of_What_Remains.md",
+      "sizeBytes": 2196,
+      "sha256": "fb7e4c47395f931f13fa9ac6447c90d5d1fb592598ad559b9ce2399abd1d2f0b",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Lore/Revelation_Catalog.json",
+      "sizeBytes": 14406,
+      "sha256": "b938b96b0807233f970f77c04c4ff5a203090f35dd2f281d21c34b0b9d346268",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Lore/Small_Additions.json",
+      "sizeBytes": 199387,
+      "sha256": "ca81a93c2664797779dea14defa8a7b0051e972632301ac47d57c85bc0e05d3f",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Lore/Vanguard/Character_Arc.md",
+      "sizeBytes": 2552,
+      "sha256": "0f96748b1d5d91c39db8f080d5befcacd93cea1e3e40a957b82a7e51e29b24f6",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Lore/Vanguard/Vanguard_Debt01_The_Friendship.md",
+      "sizeBytes": 2038,
+      "sha256": "4ec5fcb44c211db81e0d065c7627f4e701a13f9a65f29ad600424db1772987b2",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Lore/Vanguard/Vanguard_Debt02_The_Life_He_Protected.md",
+      "sizeBytes": 988,
+      "sha256": "c460ecde8b8df5a6cefe52dc2eb7aa6184a5525f7a4dd9b1c4a84457835f7aac",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Lore/Vanguard/Vanguard_Debt03_A_Warning_Remembered.md",
+      "sizeBytes": 1104,
+      "sha256": "d5849177852d23b0c82439ceb854a37fea7972d13e242d2449b85a1a9403b337",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Lore/Vanguard/Vanguard_Debt04_The_Disagreement.md",
+      "sizeBytes": 2081,
+      "sha256": "cda034e879ecb85bfec0c0da663ac9b4226882827b01ae0cd394d86e88a4fe97",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Lore/Vanguard/Vanguard_Debt05_A_Place_That_Remembered.md",
+      "sizeBytes": 1057,
+      "sha256": "47920862dd5135b043df361ea619b899f9f447299d2e85e1cba24cf5505802aa",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Lore/Vanguard/Vanguard_Debt06_The_Unfinished_Promise.md",
+      "sizeBytes": 1182,
+      "sha256": "7aae0dd80b7f258ea5abb83f9c633cbc79b457f6dfd869949a84e7de7beb64f8",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Lore/Vanguard/Vanguard_Debt07_The_Separation.md",
+      "sizeBytes": 2036,
+      "sha256": "01fa9d7aca47d616e0395c8227bdca6b30f8f3fb759ede744845682c822ffc5d",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Lore/Vanguard/Vanguard_Debt08_What_He_Carried_Forward.md",
+      "sizeBytes": 1084,
+      "sha256": "75ae249c7757562b31c4324b322c73c6db8a63d3ded86512f9d21134effa9901",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Lore/Vanguard/Vanguard_Debt09_The_Repeating_Memory.md",
+      "sizeBytes": 1199,
+      "sha256": "46e50408b2a934204138e14725a9801ee97a9ae54ea994e78dd2c04216ec7ec3",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Lore/Vanguard/Vanguard_Debt10_The_Warrior_s_True_History.md",
+      "sizeBytes": 2153,
+      "sha256": "07a7cb34ee4b2703d195db71ea98a3575a0c97b03d7ece224b5f971b8cc9c55f",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/README.md",
+      "sizeBytes": 721,
+      "sha256": "f95284e9ce3468c68260b58b8a3cbbc5e3efb918bdc5af192739cd515e5a2339",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Scenes/Hexer_Debt01_The_Scholar_s_Mistake.json",
+      "sizeBytes": 29958,
+      "sha256": "04caf6879aaa602cd6abb2e0f9a8be48341821fbfa2d39c06319df37b892f514",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Scenes/Hexer_Debt02_The_First_Calculation.json",
+      "sizeBytes": 7327,
+      "sha256": "5e9b23338eafeccb014994dad8f2a7afbe23683058958e811d8d3ca7b8100c57",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Scenes/Hexer_Debt03_The_Unexplained_Signature.json",
+      "sizeBytes": 13298,
+      "sha256": "01f11393f0d165765182e1d950ddc728fcc2be6bf742e4663a0af9debd3dcd4e",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Scenes/Hexer_Debt04_The_Warning_He_Remembered_Wrong.json",
+      "sizeBytes": 30648,
+      "sha256": "f7d178ee662ca9102b97ad27f4893cf5c5185e17711496df418c2d59b9c7345c",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Scenes/Hexer_Debt05_The_Memory_Threads.json",
+      "sizeBytes": 7140,
+      "sha256": "25052a6b65d74dd4c08c5a852d97a31ea19571467f274e709a6e801de1e0d703",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Scenes/Hexer_Debt06_An_Incomplete_Answer.json",
+      "sizeBytes": 13107,
+      "sha256": "70146e33a111f7fa3e4ef782a919ca143e2a68046d9d6f07d7654f5529d92975",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Scenes/Hexer_Debt07_The_Broken_Sequence.json",
+      "sizeBytes": 29054,
+      "sha256": "ee34735ab847323bdc9798c2679ffb347a7abe67b9e39d72aedb18111b5c30ca",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Scenes/Hexer_Debt08_The_Hour_That_Returned.json",
+      "sizeBytes": 7276,
+      "sha256": "e6fab1f40ce5fe38b854aa44b08fd2137c37a5c7718058a55f3530ef6137a1ac",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Scenes/Hexer_Debt09_The_Persistent_Thread.json",
+      "sizeBytes": 13852,
+      "sha256": "948186c3e71a662375285b76796515a7d7ac4a971aeaeb6991a255928b837367",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Scenes/Hexer_Debt10_The_Truth_Beyond_Calculation.json",
+      "sizeBytes": 30816,
+      "sha256": "d32ae2020203c40b5e23e024fb8bad37d32ce8cf29f16225f3f27ffb00e0facd",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Scenes/Reaper_Debt01_The_Echo_That_Wasn_t_Empty.json",
+      "sizeBytes": 26785,
+      "sha256": "d8890e4c2d3a521366884c42cec68de882718882a6bea2c1a0485ce9b51a5e4c",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Scenes/Reaper_Debt02_A_Forgotten_Life.json",
+      "sizeBytes": 6977,
+      "sha256": "45ef07b0eb8ebd501a1238ba874e5b83eb57a9a4d526455f47f8a36a1ca0cbc9",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Scenes/Reaper_Debt03_The_Fourth_Shadow.json",
+      "sizeBytes": 13209,
+      "sha256": "593570f3cca4853b8211cad73e2fc0a6dc38eef95b8f7302185f98c12e0437e3",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Scenes/Reaper_Debt04_The_Prison_Built_from_Mercy.json",
+      "sizeBytes": 28745,
+      "sha256": "efc6e3bdfaf8cf588633716115b0375082c0f03bb3f68357730b64ab35f804fc",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Scenes/Reaper_Debt05_The_Promise_Without_Witnesses.json",
+      "sizeBytes": 6952,
+      "sha256": "89d25acc743d9ab376b8a3b1506c7c0003abe57a65cc0f51d12c1fccd8f859a8",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Scenes/Reaper_Debt06_The_Two_Wills.json",
+      "sizeBytes": 11957,
+      "sha256": "885226a74dfaa52e3bf0e57775fcfc69f3d80e822e00eab46ff9249ca6d74eeb",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Scenes/Reaper_Debt07_What_Protection_Could_Not_Restore.json",
+      "sizeBytes": 29896,
+      "sha256": "8bea3f4753ee270e30c8d3e17839ae48cc5e893f0389d7b01264a3ad50163885",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Scenes/Reaper_Debt08_An_Ending_Interrupted.json",
+      "sizeBytes": 6989,
+      "sha256": "34c4334e48241ec356400c3d8276668c4545888f97a6030a37de70baa6b7be5f",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Scenes/Reaper_Debt09_The_Last_Remaining_Echo.json",
+      "sizeBytes": 14186,
+      "sha256": "4cd346e848fa5fe8ad23b2edee290fff4617e5a8473a088b3015b6298c963ba9",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Scenes/Reaper_Debt10_The_Truth_of_What_Remains.json",
+      "sizeBytes": 31953,
+      "sha256": "d166b281d4b5459bffabd9e32b926b9c6c439e8930b3ed42b3650d361358cc9f",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Scenes/Vanguard_Debt01_The_Friendship.json",
+      "sizeBytes": 30968,
+      "sha256": "8cfffaaf06e6195eb2f8a4ba0313569fa0fa25718ceb72a64cd9b2d2be2f9e0f",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Scenes/Vanguard_Debt02_The_Life_He_Protected.json",
+      "sizeBytes": 6723,
+      "sha256": "9b9d144414f399c6ebdd2c770b98593a4965d52acbca4761cc96b143b5bf8b6f",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Scenes/Vanguard_Debt03_A_Warning_Remembered.json",
+      "sizeBytes": 11880,
+      "sha256": "9aafd4ab61c3e620c73e7dfa56a0c22dce1e0ac0e66a5b559f3d2aa373b905d8",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Scenes/Vanguard_Debt04_The_Disagreement.json",
+      "sizeBytes": 30078,
+      "sha256": "2c4fa43ef1a3e5252cc046cadaf17407118564d33317638513560175735c99ce",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Scenes/Vanguard_Debt05_A_Place_That_Remembered.json",
+      "sizeBytes": 6795,
+      "sha256": "c55c9f29976eb80bf8ef93eb37ecb1ab017f91e4d19809b0b07e3abb7c0b75aa",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Scenes/Vanguard_Debt06_The_Unfinished_Promise.json",
+      "sizeBytes": 13226,
+      "sha256": "4114a7dbbf2f1070978a97ab4eb4602b29e77c1b133971de14276e1f5d349916",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Scenes/Vanguard_Debt07_The_Separation.json",
+      "sizeBytes": 29426,
+      "sha256": "e4f41d37aeaa8fc0e8b04349689dc374291bc788572a84ccb4def14ff7775aab",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Scenes/Vanguard_Debt08_What_He_Carried_Forward.json",
+      "sizeBytes": 6973,
+      "sha256": "fe56932ab2c1a15e47b4224b6a164dd8cf9e0b78247ce40b28b2da022a11c418",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Scenes/Vanguard_Debt09_The_Repeating_Memory.json",
+      "sizeBytes": 13488,
+      "sha256": "ae1b721f00157aec3c5f11d4377c8474fd1adcc0b20e5d3a6a905c4da9c55127",
+      "kind": "newLoreOrDocumentation"
+    },
+    {
+      "file": "SourceAssets/ChronicleAscension/Scenes/Vanguard_Debt10_The_Warrior_s_True_History.json",
+      "sizeBytes": 30182,
+      "sha256": "c2bcfaf8712c1413f97d0a5483237e01152de88f93fd7004b45e4b68915b52fa",
+      "kind": "newLoreOrDocumentation"
+    }
+  ],
+  "originalAudioOrArtworkIncluded": false,
+  "existingCorrectionTextIncludedForEvidenceOnly": true,
+  "liveResourcesModified": false
+}

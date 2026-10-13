@@ -1,0 +1,173 @@
+{
+  "created": 6,
+  "assets": [
+    {
+      "visualKey": "Vanguard_MendedCup",
+      "file": "SourceAssets/ChronicleAscension/Art/Vanguard_MendedCup.png",
+      "status": "GENERATED_AND_CHECKED",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "transparent": true,
+      "alphaExtrema": [
+        0,
+        254
+      ],
+      "sha256": "e27b360f7c09939f22ecd226322ba348800c327e5271db36dff4846176752d41",
+      "engine": "built-in imagegen",
+      "prompt": "Use case: illustration-story. Asset type: a small transparent marginal illustration for the Gilded Fate Chronicle, not a new scene background. Primary request: one worn ancient drinking cup with its broken handle carefully reattached using a short, crooked loop of thin brass wire. The repair is imperfect but the cup is usable, a memory of freely given friendship. Style: delicate hand-drawn brown-black ink contours, restrained sepia crosshatching and soft muted charcoal watercolor, a few tiny antique-gold highlights that match the existing dark leather, old gold and teal Chronicle art. Keep it tactile and human, a domestic object rather than a magical relic. Composition: one cup, three-quarter view, central with generous transparent space for page text around it; irregular fading ink edges. No page, parchment background, label, lettering, border, logo, glow, gemstone, hand, person, or extra objects. Genuine transparent background; preserve fine ink strokes and alpha. Suitable as a quiet journal margin overlay, readable at small scale.",
+      "contentKeys": [
+        "Vanguard:01",
+        "Vanguard:06",
+        "Vanguard:10"
+      ],
+      "review": "Subject, restrained material palette, absence of text/characters, and real alpha transparency inspected.",
+      "revelationIds": [
+        "ASC_VAN_01",
+        "ASC_VAN_06",
+        "ASC_VAN_10"
+      ]
+    },
+    {
+      "visualKey": "Vanguard_ExitStudy",
+      "file": "SourceAssets/ChronicleAscension/Art/Vanguard_ExitStudy.png",
+      "status": "GENERATED_AND_CHECKED",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "transparent": true,
+      "alphaExtrema": [
+        0,
+        254
+      ],
+      "sha256": "03faf8ff58c31d950cc2429dc4e5ae4eab2a7d61ef77fe23991a177e4580bad2",
+      "engine": "built-in imagegen",
+      "prompt": "Use case: illustration-story. Asset type: transparent marginal memory study for an ancient dark-fantasy journal in Gilded Fate. Draw a single evocative ink-and-watercolor still life: an incomplete plan lightly scratched in pale chalk on a small broken dark stone slab, four simple shallow location marks with an obvious unfilled gap between them, and a worn folded traveling cloak resting against the edge of the slab. No map labels, readable text, equations, letters, numbers, heraldry, faces, or people. It represents room for another person's answer and vulnerable travelers leaving the sanctuary, not a working magical machine or a new sigil. Fine sepia-brown pen contours, restrained charcoal hatching, muted old gold stone highlights and a small gray-green cloth accent. Tactile, aged, quiet, consistent with the Chronicle's established Gothic sanctum stone and antique-gold palette. Central composition with irregular fading illustration edges and generous genuine transparent surroundings. No parchment sheet, scene background, border, glowing lines, gem, magical aura, or UI frame. The illustration will sit in the margin of new pages while the existing book and character art remain unchanged.",
+      "contentKeys": [
+        "Vanguard:04",
+        "Vanguard:07"
+      ],
+      "review": "Four unlettered positions, gap, cloak, aged materials, and real alpha inspected; this is an illustrative study, not a functioning magical diagram.",
+      "revelationIds": [
+        "ASC_VAN_04",
+        "ASC_VAN_07"
+      ]
+    },
+    {
+      "visualKey": "Hexer_InterruptedDiagram",
+      "file": "SourceAssets/ChronicleAscension/Art/Hexer_InterruptedDiagram.png",
+      "status": "GENERATED_AND_CHECKED",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "transparent": true,
+      "alphaExtrema": [
+        0,
+        254
+      ],
+      "sha256": "ad5fa86687287b0fe6c8353961d558c142bb5207708525987905bf2a809b61c0",
+      "engine": "built-in imagegen",
+      "prompt": "Use case: illustration-story. Asset type: a transparent antique journal margin illustration for Gilded Fate. One small folded, weathered working sheet from an ancient scholar, shown slightly angled; thin brown-black hand-ink lines suggest two branching paths, a faint abandoned second case, and a deliberately empty rectangular testimony space at the lower edge with a narrow return stroke leading back toward the paths. The space stays completely blank. This is a tactile narrative illustration of a test that must leave room for another person's experience, not a precise technical chart and not an executable spell. Restrained sepia ink crosshatching with charcoal watercolor shadows, softly worn paper edges and only a small subdued old-gold accent, matching the existing dark Gothic Chronicle palette. No readable writing, no letters, no numbers, no equations, no star chart, no glowing symbol, no gemstone, no characters, no author signature, no book, no full-page backdrop or scene replacement. Central sparse still life on genuine transparent background, generous space surrounding the isolated paper fragment. Fine drawing edges should dissolve gently into alpha. Preserve the quiet handmade quality.",
+      "contentKeys": [
+        "Hexer:01",
+        "Hexer:02",
+        "Hexer:03",
+        "Hexer:04",
+        "Hexer:06",
+        "Hexer:10"
+      ],
+      "review": "Unlettered branching study and empty testimony space inspected; diagram is illustrative, and exact relationships are carried by scene text/data.",
+      "revelationIds": [
+        "ASC_HEX_01",
+        "ASC_HEX_02",
+        "ASC_HEX_03",
+        "ASC_HEX_04",
+        "ASC_HEX_06",
+        "ASC_HEX_10"
+      ]
+    },
+    {
+      "visualKey": "Hexer_ConflictingHours",
+      "file": "SourceAssets/ChronicleAscension/Art/Hexer_ConflictingHours.png",
+      "status": "GENERATED_AND_CHECKED",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "transparent": true,
+      "alphaExtrema": [
+        0,
+        254
+      ],
+      "sha256": "d49bdce205cb9ce878481f5f96d5b919ad53c41b22061cbfaf3a0cf4d79aac64",
+      "engine": "built-in imagegen",
+      "prompt": "Use case: illustration-story. Asset type: a transparent small marginal memory fragment for the Gilded Fate Chronicle. A pair of loosely overlapping worn scholar's note sheets, each with an unlettered ink study of a simple clock face and a single curved path, subtly different hand positions and page folds; no numerals, no dates, no words, no formulas. A small plain cup silhouette is drawn in one lower margin, not a real extra physical cup. The two sheets visibly disagree without either being crossed out. They represent two records of a returning hour and unreliable ordering after the Severing; do not claim a specific chronology. Fine sepia-brown pen drawing, charcoal watercolor, softly aged ivory paper, restrained old-gold edge highlights, matching Gilded Fate's established Gothic chronicle art. This is a narrative artist's study, not a precise diagram. Central restrained still life with generous transparent surrounding space and ragged paper/ink contours. No book background, no new environment, character, glowing glyph, magical light, gem, polished UI badge, readable text or signature. Genuine alpha transparency around the isolated sheets.",
+      "contentKeys": [
+        "Hexer:07",
+        "Hexer:08",
+        "Hexer:09"
+      ],
+      "review": "Different unlettered clock studies and folds inspected, real alpha verified; depicted hands carry no canonical time.",
+      "revelationIds": [
+        "ASC_HEX_07",
+        "ASC_HEX_08",
+        "ASC_HEX_09"
+      ]
+    },
+    {
+      "visualKey": "Reaper_SpaceBesideEcho",
+      "file": "SourceAssets/ChronicleAscension/Art/Reaper_SpaceBesideEcho.png",
+      "status": "GENERATED_AND_CHECKED",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "transparent": true,
+      "alphaExtrema": [
+        0,
+        254
+      ],
+      "sha256": "d29b97e9a02edb084b93747fcf9ba6ae6c06707922e1b6e3905d5ca66b43e454",
+      "engine": "built-in imagegen",
+      "prompt": "Use case: illustration-story. Asset type: a small transparent marginal memory fragment for Gilded Fate's Chronicle. Delicate hand-drawn sepia ink and charcoal-wash study of worn footprints along a narrow rough road fragment. One incomplete trail bends slightly aside and deliberately leaves an empty neighboring strip of ground; two distinct quiet footprint impressions near an ancient plain stone threshold suggest one traveler waiting for another. No whole person, no face, no armor, no hero redesign, no named character, no second supernatural body. The empty space is the emotional focus: an ordinary gesture of making room. Restrained old-gold flecks in the stone and extremely muted gray-green shadows, matching the existing Chronicle's dark aged palette, with irregular ink edges gently fading into genuine alpha. Central sparse composition with generous transparent space; no scene background, parchment page, border, readable text, labels, runes, glow, magical circle or gemstones. This is a narrative memory study, not a map or a literal portrait of a soul.",
+      "contentKeys": [
+        "Reaper:01",
+        "Reaper:03",
+        "Reaper:09"
+      ],
+      "review": "Waiting footprints, empty neighboring space, absence of redesigned figures/text, and real alpha verified.",
+      "revelationIds": [
+        "ASC_REA_01",
+        "ASC_REA_03",
+        "ASC_REA_09"
+      ]
+    },
+    {
+      "visualKey": "Reaper_TwoAccounts",
+      "file": "SourceAssets/ChronicleAscension/Art/Reaper_TwoAccounts.png",
+      "status": "GENERATED_AND_CHECKED",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "transparent": true,
+      "alphaExtrema": [
+        0,
+        254
+      ],
+      "sha256": "e33b8408af4c1bac6f56b60d07b301fe32898b788211c2bbc6e402672d78d002",
+      "engine": "built-in imagegen",
+      "prompt": "Use case: illustration-story. Asset type: one transparent marginal illustration for Gilded Fate's ancient Chronicle, a quiet narrative study about protecting different histories without forcing a single answer. Two small weathered testimony slips lie side by side with equal importance; each has a faint hand-ink drawing of the same plain hearth, one showing a low intact fire bowl and the other an empty hearth. Beneath them, an incomplete ink sketch of a simple doorway has an open threshold, no shut door or locking mechanism. Both slips have completely blank unruled areas for an account; no writing is baked in. Fine sepia-brown ink contours, subdued charcoal crosshatching, ivory paper and only tiny antique-gold material accents, matching the Chronicle's existing Gothic, aged palette. Preserve room for unanswered testimony rather than illustrating a reunion, freed soul, cure or new ending. Central balanced still life, irregular paper and ink edges fading into genuine transparent alpha, generous empty surroundings for page text. No full scene, book background, character portrait, person, magical glyph, glowing symbol, gemstone, label, letter, equation, logo or decorative UI border.",
+      "contentKeys": [
+        "Reaper:04",
+        "Reaper:07",
+        "Reaper:10"
+      ],
+      "review": "Two equal unlettered testimony slips, hearth differences, open threshold, absence of a reunion/portrait, and actual alpha verified.",
+      "revelationIds": [
+        "ASC_REA_04",
+        "ASC_REA_07",
+        "ASC_REA_10"
+      ]
+    }
+  ],
+  "referenceArtNotRedistributed": true,
+  "existingArtUnchanged": true
+}

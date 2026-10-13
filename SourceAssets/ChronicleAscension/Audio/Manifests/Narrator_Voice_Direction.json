@@ -1,0 +1,14 @@
+{
+  "speaker": "NARRATOR",
+  "name": "Arthur",
+  "model": "seed_audio",
+  "voice_id": "30fc8796-ceb6-4a66-b3a7-4a145ef7f346",
+  "voice_type": "preset",
+  "speech_rate": 0,
+  "format": "wav",
+  "sample_rate": 48000,
+  "performance": "Same established fictional preset voice at normal native pace; intimate, thoughtful, restrained. No voice cloning. Emotional cues are direction for review, not spoken prompt text.",
+  "source": "SourceAssets/ChronicleAudio/Narrator_Voice.json",
+  "newBeingLines": 0,
+  "sourceAudioRedistributed": false
+}

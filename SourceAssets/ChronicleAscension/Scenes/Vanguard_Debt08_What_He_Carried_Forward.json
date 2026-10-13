@@ -1,0 +1,155 @@
+{
+  "schemaVersion": 1,
+  "contentKey": "Vanguard:08",
+  "revelationId": "ASC_VAN_08",
+  "sceneId": "ASC_VAN_08",
+  "idBindingStatus": "BOUND_TO_EXISTING_ASCENSION_CATALOG",
+  "authoringComplete": true,
+  "contentReady": false,
+  "runtimeRegistrationStatus": "NOT_INTEGRATED_BY_THIS_CONTENT_TASK",
+  "hero": "Vanguard",
+  "fateDebt": 8,
+  "kindOrdinal": 5,
+  "presentation": "SilentHandwriting",
+  "title": "What He Carried Forward",
+  "kind": "SMALL",
+  "expandedMemoryId": "MEM_19",
+  "expandedChapterId": "CH_07",
+  "sourceCommit": "7211864e93fee914ef370912ae1ed8aafd66266b",
+  "journalBlocks": [
+    {
+      "blockKey": "paragraph_1",
+      "text": "On the broken roads, the warrior packed the weakest travelers' provisions where they could reach them. He left his own beneath the rest. When asked why, he could give no account of learning the arrangement.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "5446d3c01aaaf03f13da78beb5ced6bc7cfd28c7763cdbf2bd3f76da1dc0f11d"
+    },
+    {
+      "blockKey": "paragraph_2",
+      "text": "The fourth companion had once repacked their supplies that way after a long argument about distance. The warrior had mocked the extra trouble, then copied it. A useful kindness survived the name of the person who taught it. He carried that forward without knowing whose example it was.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "8bbc46a82912e19d959a197f9668cf812ef09bd46df23df7338668eccfdd8599"
+    }
+  ],
+  "journalText": "On the broken roads, the warrior packed the weakest travelers' provisions where they could reach them. He left his own beneath the rest. When asked why, he could give no account of learning the arrangement.\n\nThe fourth companion had once repacked their supplies that way after a long argument about distance. The warrior had mocked the extra trouble, then copied it. A useful kindness survived the name of the person who taught it. He carried that forward without knowing whose example it was.",
+  "wordCount": 83,
+  "newlyRecoveredInformation": "The friend's practical care persisted as Vanguard's learned habit even while autobiographical memory of its source was absent.",
+  "newlyAuthoredDetails": [
+    "A remembered supply-packing lesson; no magically preserved object or new power."
+  ],
+  "sourceEvidence": [
+    "MEM_19",
+    "MEM_25"
+  ],
+  "relationships": {
+    "follows": [
+      "Vanguard:01",
+      "Vanguard:07"
+    ],
+    "prepares": [
+      "Vanguard:10",
+      "Reaper:09"
+    ]
+  },
+  "correction": null,
+  "narration": [],
+  "visualKey": null,
+  "cinematic": {
+    "direction": "Write a quiet addition on the migration page. Leave the existing survivors and road art in place. Let the pause fall between the surviving habit and its forgotten source.",
+    "events": [
+      {
+        "step": 1,
+        "intent": "RETURN_TO_EXISTING_MEMORY",
+        "memoryId": "MEM_19",
+        "sceneId": "ASC_VAN_08",
+        "useExistingBookTurn": true,
+        "continuationAPI": "ChronicleJournal.PlanContinuation",
+        "maxVisibleTurns": 3,
+        "turnTiming": "ChronicleRhythm.TurnAnticipation and TurnSettle",
+        "baseTextReadOnly": true,
+        "keepBookOpen": true
+      },
+      {
+        "step": 2,
+        "intent": "RESERVE_NEW_WRITING_AREA",
+        "placement": "Fresh continuation leaf for major corrections; unused margin only if it fits for small additions.",
+        "font": "Reuse current Chronicle handwriting and stroke renderer; respect user-selected textScale without automatic shrinking.",
+        "existingBlocksReadOnly": true
+      },
+      {
+        "step": 3,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "paragraph_1",
+        "mode": "SILENT_HANDWRITING",
+        "text": "On the broken roads, the warrior packed the weakest travelers' provisions where they could reach them. He left his own beneath the rest. When asked why, he could give no account of learning the arrangement.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [
+            "A useful kindness survived the name of the person who taught it."
+          ],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 4,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "paragraph_2",
+        "mode": "SILENT_HANDWRITING",
+        "text": "The fourth companion had once repacked their supplies that way after a long argument about distance. The warrior had mocked the extra trouble, then copied it. A useful kindness survived the name of the person who taught it. He carried that forward without knowing whose example it was.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [
+            "A useful kindness survived the name of the person who taught it."
+          ],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 5,
+        "intent": "COMPLETE_NEW_ADDITION",
+        "archivePermanent": true,
+        "idempotent": true,
+        "completionHold": "ChronicleRhythm.CompletionHold; no extra fixed three-second hold",
+        "revisitTiming": "ChronicleRhythm.RevisitScale",
+        "skipState": "All new blocks complete; the new observation is struck and its replacement remains. All base-memory content is unchanged.",
+        "replay": "Read immediately; full cinematic is opt-in.",
+        "runtimeSaveId": "ASC_VAN_08"
+      }
+    ]
+  },
+  "continuityGates": [
+    {
+      "requirement": "Existing expanded memory and its canonical correction/knowledge have already been viewed.",
+      "memoryId": "MEM_19"
+    }
+  ],
+  "spoilerPolicy": "Never identify the Narrator with the fourth companion or the Forgotten Observer before SCENE_CH10. Base discoveries remain first; additions are deferred if required knowledge is absent.",
+  "existingContentModified": false,
+  "newBeingDialogue": false,
+  "accessibility": {
+    "instantText": true,
+    "voiceMuteKeepsPageReadable": true,
+    "reducedMotionUsesStaticArt": true,
+    "reducedFlashingNoExtraGlow": true,
+    "skipResolvesCompletedNewState": true
+  }
+}

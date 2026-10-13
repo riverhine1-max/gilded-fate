@@ -1,0 +1,43 @@
+{
+  "sourceCommit": "7211864e93fee914ef370912ae1ed8aafd66266b",
+  "storyReadCommit": "9132d13a79af79e1d44d593f6da43cdd64f7478c",
+  "heroCodes": {
+    "Vanguard": "VAN",
+    "Hexer": "HEX",
+    "Reaper": "REA"
+  },
+  "revelationPrefix": "ASC_",
+  "sceneIdEqualsRevelationId": true,
+  "correctionPrefix": "ASC_CORR_",
+  "majorOrdinals": [
+    1,
+    4,
+    7,
+    10
+  ],
+  "sources": [
+    {
+      "path": "Assets/Scripts/Chronicle/ChronicleAscensionCatalog.cs",
+      "sha": "a9b967e233ee20f034190a0d97136a68d9768297"
+    },
+    {
+      "path": "Assets/Scripts/Chronicle/ChronicleJournal.cs",
+      "sha": "c0290e83d6d41d680ced7f0f3805ba0164251902"
+    },
+    {
+      "path": "Assets/Scripts/Chronicle/ChronicleAscensionView.cs",
+      "sha": "2ecd606e90c336efe301ba272770bd328d4a909b"
+    },
+    {
+      "path": "Assets/Scripts/Chronicle/ChronicleRhythm.cs",
+      "sha": "f660357b97efcce9902d0a210a8b0af7237e6809"
+    },
+    {
+      "path": "Assets/Scripts/Chronicle/ChronicleAscensionProgress.cs",
+      "sha": "f594d15e447fab7e6c9f9235b4e6a32935184795"
+    }
+  ],
+  "storyScriptsUnchangedInComparedUpdates": true,
+  "contentLoader": "Authored ChronicleScripts scene registration; no JSON loader present",
+  "readinessGate": "ChronicleAscensionCatalog.IsPresentable: contentReady && ChronicleScripts.Has(sceneId)"
+}

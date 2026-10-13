@@ -1,0 +1,766 @@
+{
+  "schemaVersion": 1,
+  "contentKey": "Reaper:07",
+  "revelationId": "ASC_REA_07",
+  "sceneId": "ASC_REA_07",
+  "idBindingStatus": "BOUND_TO_EXISTING_ASCENSION_CATALOG",
+  "authoringComplete": true,
+  "contentReady": false,
+  "runtimeRegistrationStatus": "NOT_INTEGRATED_BY_THIS_CONTENT_TASK",
+  "hero": "Reaper",
+  "fateDebt": 7,
+  "kindOrdinal": 3,
+  "presentation": "FullCorrection",
+  "title": "What Protection Could Not Restore",
+  "kind": "MAJOR",
+  "expandedMemoryId": "MEM_21",
+  "expandedChapterId": "CH_07",
+  "sourceCommit": "7211864e93fee914ef370912ae1ed8aafd66266b",
+  "journalBlocks": [
+    {
+      "blockKey": "context",
+      "text": "At the refuge, two survivors gave accounts of the same household. In one, a mother had lived to see her child grown. In the other, that child remembered tending an empty hearth. The Reaper could not settle the accounts by choosing the more merciful one. Both arrived with someone who had lived their loss.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "7ba631dff2af46a4e77c74de18240208315e099a6e1a31727a31b18dba44f592"
+    },
+    {
+      "blockKey": "new_observation",
+      "text": "A life made safe could finally become one unbroken history.",
+      "mode": "NARRATED",
+      "textSHA256": "02b721cd25b55eaa81b9ab5477127b39f1467c435480b04c3a49374fb4e0d4b0",
+      "assetLineKey": "Reaper:07:N01"
+    },
+    {
+      "blockKey": "replacement",
+      "text": "The refuge sheltered conflicting memories without requiring either survivor to surrender an account.",
+      "mode": "NARRATED",
+      "textSHA256": "3357107e3d99a7db0e2b5db697544f383c88b999ec7350389b7b735515fab25f",
+      "assetLineKey": "Reaper:07:N02"
+    },
+    {
+      "blockKey": "evidence",
+      "text": "The first register gave them one narrow space. The keeper added another. Nothing on the page repaired the past, and the disagreement did not disappear. Yet both could remain without having their safety depend upon accepting the history preferred by someone else. Tomorrow had room for them together.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "7872e3a26f2a65b82dfe90912bed0c6ad8e8289748c2be8fdcba265a9e0ab7d7"
+    },
+    {
+      "blockKey": "account",
+      "text": "Protection had accomplished something restoration could not be assumed to accomplish: it allowed the survivors to continue while their differences remained unresolved. The Reaper retained both testimonies. Combining them into a cleaner story would have made his record easier to read by asking another person to disappear within it.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "ac6b3f4fb5151fa04724eb64ea93ce752a2b56de717052152e5b4554c2a78a70"
+    },
+    {
+      "blockKey": "closing",
+      "text": "A shared shelter did not require a single past. He could preserve the accounts without declaring one life a mistake.",
+      "mode": "NARRATED",
+      "textSHA256": "bb4e58fe12a0ecb69d4b6594054300232f5cff4727f93c5a20c53633f77aa3ee",
+      "assetLineKey": "Reaper:07:N03"
+    }
+  ],
+  "journalText": "At the refuge, two survivors gave accounts of the same household. In one, a mother had lived to see her child grown. In the other, that child remembered tending an empty hearth. The Reaper could not settle the accounts by choosing the more merciful one. Both arrived with someone who had lived their loss.\n\nA life made safe could finally become one unbroken history.\n\nThe refuge sheltered conflicting memories without requiring either survivor to surrender an account.\n\nThe first register gave them one narrow space. The keeper added another. Nothing on the page repaired the past, and the disagreement did not disappear. Yet both could remain without having their safety depend upon accepting the history preferred by someone else. Tomorrow had room for them together.\n\nProtection had accomplished something restoration could not be assumed to accomplish: it allowed the survivors to continue while their differences remained unresolved. The Reaper retained both testimonies. Combining them into a cleaner story would have made his record easier to read by asking another person to disappear within it.\n\nA shared shelter did not require a single past. He could preserve the accounts without declaring one life a mistake.",
+  "wordCount": 194,
+  "newlyRecoveredInformation": "A specific pair of conflicting lived accounts is accepted within the refuge; protection includes coexistence without forced historical reconciliation. This goes beyond the known fact that the Plane did not restore everything.",
+  "newlyAuthoredDetails": [
+    "Two unnamed survivors and an expanded register. The cause of their divergent pasts remains undiagnosed; the refuge gains no new power."
+  ],
+  "sourceEvidence": [
+    "MEM_21",
+    "MEM_20",
+    "MEM_12"
+  ],
+  "relationships": {
+    "follows": [
+      "Reaper:04"
+    ],
+    "prepares": [
+      "Reaper:10"
+    ],
+    "crossCharacter": [
+      "Vanguard:07",
+      "Hexer:08"
+    ]
+  },
+  "correction": {
+    "ownerContentKey": "Reaper:07",
+    "revelationId": "ASC_REA_07",
+    "correctionId": "ASC_CORR_REA_3",
+    "localCorrectionKey": "new_observation",
+    "targetScope": "THIS_NEW_ADDITION_ONLY",
+    "targetBlockKey": "new_observation",
+    "originalNewObservation": "A life made safe could finally become one unbroken history.",
+    "correctedReplacement": "The refuge sheltered conflicting memories without requiring either survivor to surrender an account.",
+    "replacementBlockKey": "replacement",
+    "originalChronicleTarget": null,
+    "sharedCorrectionIdsModified": [],
+    "preserveOriginal": true,
+    "inkStyle": "Existing restrained red correction style",
+    "acknowledgement": "Only the observation added by this package may be crossed out."
+  },
+  "narration": [
+    {
+      "assetLineKey": "Reaper:07:N01",
+      "lineId": "ASC_REA_07__new_observation",
+      "sceneId": "ASC_REA_07",
+      "revelationId": "ASC_REA_07",
+      "runtimeCommandId": "new_observation",
+      "commandId": "new_observation",
+      "commandBinding": "Use the existing explicit WriteBlock ID in the authored scene; update binding if Claude assigns a different command ID.",
+      "contentKey": "Reaper:07",
+      "blockKey": "new_observation",
+      "speaker": "NARRATOR",
+      "text": "A life made safe could finally become one unbroken history.",
+      "textSHA256": "02b721cd25b55eaa81b9ab5477127b39f1467c435480b04c3a49374fb4e0d4b0",
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Reaper_Debt07_What_Protection_Could_Not_Restore_N01.wav",
+      "emotion": "ConcernedHistorian",
+      "status": "RECORDED_AUTOMATICALLY_VERIFIED",
+      "durationSeconds": 4.64,
+      "words": [
+        {
+          "text": "A",
+          "startSeconds": 0,
+          "endSeconds": 0.3400000000000001,
+          "charStart": 0,
+          "charLength": 1,
+          "confidence": 0.922461748123169
+        },
+        {
+          "text": "life",
+          "startSeconds": 0.3400000000000001,
+          "endSeconds": 0.5800000000000001,
+          "charStart": 2,
+          "charLength": 4,
+          "confidence": 0.997267484664917
+        },
+        {
+          "text": "made",
+          "startSeconds": 0.5800000000000001,
+          "endSeconds": 0.8799999999999999,
+          "charStart": 7,
+          "charLength": 4,
+          "confidence": 0.9978616833686829
+        },
+        {
+          "text": "safe",
+          "startSeconds": 0.8799999999999999,
+          "endSeconds": 1.3399999999999999,
+          "charStart": 12,
+          "charLength": 4,
+          "confidence": 0.9980449676513672
+        },
+        {
+          "text": "could",
+          "startSeconds": 1.3399999999999999,
+          "endSeconds": 2.02,
+          "charStart": 17,
+          "charLength": 5,
+          "confidence": 0.9521652460098267
+        },
+        {
+          "text": "finally",
+          "startSeconds": 2.02,
+          "endSeconds": 2.4,
+          "charStart": 23,
+          "charLength": 7,
+          "confidence": 0.9980852603912354
+        },
+        {
+          "text": "become",
+          "startSeconds": 2.4,
+          "endSeconds": 2.8,
+          "charStart": 31,
+          "charLength": 6,
+          "confidence": 0.9958181977272034
+        },
+        {
+          "text": "one",
+          "startSeconds": 2.8,
+          "endSeconds": 3.1799999999999997,
+          "charStart": 38,
+          "charLength": 3,
+          "confidence": 0.9973136782646179
+        },
+        {
+          "text": "unbroken",
+          "startSeconds": 3.1799999999999997,
+          "endSeconds": 3.92,
+          "charStart": 42,
+          "charLength": 8,
+          "confidence": 0.9960446655750275
+        },
+        {
+          "text": "history.",
+          "startSeconds": 3.92,
+          "endSeconds": 4.44,
+          "charStart": 51,
+          "charLength": 8,
+          "confidence": 0.9990155696868896
+        }
+      ],
+      "readyForAudioClock": true,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "64711cb6db6eb3dcf0fee7e2d87aae4e04781ef005c40e6a0e341c415407e54f",
+      "format": {
+        "container": "WAV",
+        "sampleRate": 48000,
+        "bitDepth": 24,
+        "channels": 1,
+        "sourceBitDepth": 16
+      },
+      "alignmentMethod": "Local small.en Whisper word timestamps (attention/DTW), CTranslate2 CPU, VAD disabled; no ONNX Runtime imported",
+      "frameResolutionSeconds": 0.02,
+      "minimumWordConfidence": 0.922461748123169,
+      "verification": {
+        "canonicalSpokenTextVerified": true,
+        "finalSampleCount": 222720,
+        "peakDBFS": -6.083788014021949,
+        "noClipping": true,
+        "parentTranscript": "A life made safe could finally become one unbroken history. The refuge sheltered conflicting memories without requiring either survivor to surrender an account. A shared shelter did not require a single past. He could preserve the accounts without declaring one life a mistake.",
+        "finalCropTranscript": "A life made safe could finally become one unbroken history.",
+        "sourceCropFrames": [
+          0,
+          222720
+        ],
+        "analysisPaddingSeconds": 1,
+        "manualListeningReview": "PENDING",
+        "telemetryRuntimeUsed": false
+      }
+    },
+    {
+      "assetLineKey": "Reaper:07:N02",
+      "lineId": "ASC_REA_07__replacement",
+      "sceneId": "ASC_REA_07",
+      "revelationId": "ASC_REA_07",
+      "runtimeCommandId": "replacement",
+      "commandId": "replacement",
+      "commandBinding": "Use the existing explicit WriteBlock ID in the authored scene; update binding if Claude assigns a different command ID.",
+      "contentKey": "Reaper:07",
+      "blockKey": "replacement",
+      "speaker": "NARRATOR",
+      "text": "The refuge sheltered conflicting memories without requiring either survivor to surrender an account.",
+      "textSHA256": "3357107e3d99a7db0e2b5db697544f383c88b999ec7350389b7b735515fab25f",
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Reaper_Debt07_What_Protection_Could_Not_Restore_N02.wav",
+      "emotion": "ConcernedHistorian",
+      "status": "RECORDED_AUTOMATICALLY_VERIFIED",
+      "durationSeconds": 5.94,
+      "words": [
+        {
+          "text": "The",
+          "startSeconds": 0,
+          "endSeconds": 0.41999999999999993,
+          "charStart": 0,
+          "charLength": 3,
+          "confidence": 0.9165423512458801
+        },
+        {
+          "text": "refuge",
+          "startSeconds": 0.41999999999999993,
+          "endSeconds": 0.8,
+          "charStart": 4,
+          "charLength": 6,
+          "confidence": 0.8700060844421387
+        },
+        {
+          "text": "sheltered",
+          "startSeconds": 0.8,
+          "endSeconds": 1.2599999999999998,
+          "charStart": 11,
+          "charLength": 9,
+          "confidence": 0.9948551654815674
+        },
+        {
+          "text": "conflicting",
+          "startSeconds": 1.2599999999999998,
+          "endSeconds": 1.7799999999999998,
+          "charStart": 21,
+          "charLength": 11,
+          "confidence": 0.998538613319397
+        },
+        {
+          "text": "memories",
+          "startSeconds": 1.7799999999999998,
+          "endSeconds": 2.34,
+          "charStart": 33,
+          "charLength": 8,
+          "confidence": 0.9970229268074036
+        },
+        {
+          "text": "without",
+          "startSeconds": 2.34,
+          "endSeconds": 3.3,
+          "charStart": 42,
+          "charLength": 7,
+          "confidence": 0.8960622549057007
+        },
+        {
+          "text": "requiring",
+          "startSeconds": 3.3,
+          "endSeconds": 3.8600000000000003,
+          "charStart": 50,
+          "charLength": 9,
+          "confidence": 0.997706413269043
+        },
+        {
+          "text": "either",
+          "startSeconds": 3.8600000000000003,
+          "endSeconds": 4.14,
+          "charStart": 60,
+          "charLength": 6,
+          "confidence": 0.998278021812439
+        },
+        {
+          "text": "survivor",
+          "startSeconds": 4.14,
+          "endSeconds": 4.6,
+          "charStart": 67,
+          "charLength": 8,
+          "confidence": 0.9966673254966736
+        },
+        {
+          "text": "to",
+          "startSeconds": 4.6,
+          "endSeconds": 4.84,
+          "charStart": 76,
+          "charLength": 2,
+          "confidence": 0.9982492923736572
+        },
+        {
+          "text": "surrender",
+          "startSeconds": 4.84,
+          "endSeconds": 5.16,
+          "charStart": 79,
+          "charLength": 9,
+          "confidence": 0.9988569021224976
+        },
+        {
+          "text": "an",
+          "startSeconds": 5.16,
+          "endSeconds": 5.42,
+          "charStart": 89,
+          "charLength": 2,
+          "confidence": 0.9950540065765381
+        },
+        {
+          "text": "account.",
+          "startSeconds": 5.42,
+          "endSeconds": 5.76,
+          "charStart": 92,
+          "charLength": 8,
+          "confidence": 0.9995763897895813
+        }
+      ],
+      "readyForAudioClock": true,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "daea05670fc7a4d8e783e0571e2bf4d278890b4bac57d6e18353bde216e43b07",
+      "format": {
+        "container": "WAV",
+        "sampleRate": 48000,
+        "bitDepth": 24,
+        "channels": 1,
+        "sourceBitDepth": 16
+      },
+      "alignmentMethod": "Local small.en Whisper word timestamps (attention/DTW), CTranslate2 CPU, VAD disabled; no ONNX Runtime imported",
+      "frameResolutionSeconds": 0.02,
+      "minimumWordConfidence": 0.8700060844421387,
+      "verification": {
+        "canonicalSpokenTextVerified": true,
+        "finalSampleCount": 285120,
+        "peakDBFS": -5.880593713382237,
+        "noClipping": true,
+        "parentTranscript": "A life made safe could finally become one unbroken history. The refuge sheltered conflicting memories without requiring either survivor to surrender an account. A shared shelter did not require a single past. He could preserve the accounts without declaring one life a mistake.",
+        "finalCropTranscript": "The refuge sheltered conflicting memories without requiring either survivor to surrender an account.",
+        "sourceCropFrames": [
+          275520,
+          560640
+        ],
+        "analysisPaddingSeconds": 1,
+        "manualListeningReview": "PENDING",
+        "telemetryRuntimeUsed": false
+      }
+    },
+    {
+      "assetLineKey": "Reaper:07:N03",
+      "lineId": "ASC_REA_07__closing",
+      "sceneId": "ASC_REA_07",
+      "revelationId": "ASC_REA_07",
+      "runtimeCommandId": "closing",
+      "commandId": "closing",
+      "commandBinding": "Use the existing explicit WriteBlock ID in the authored scene; update binding if Claude assigns a different command ID.",
+      "contentKey": "Reaper:07",
+      "blockKey": "closing",
+      "speaker": "NARRATOR",
+      "text": "A shared shelter did not require a single past. He could preserve the accounts without declaring one life a mistake.",
+      "textSHA256": "bb4e58fe12a0ecb69d4b6594054300232f5cff4727f93c5a20c53633f77aa3ee",
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Reaper_Debt07_What_Protection_Could_Not_Restore_N03.wav",
+      "emotion": "ConcernedHistorian",
+      "status": "RECORDED_AUTOMATICALLY_VERIFIED",
+      "durationSeconds": 8.44,
+      "words": [
+        {
+          "text": "A",
+          "startSeconds": 0,
+          "endSeconds": 0.56,
+          "charStart": 0,
+          "charLength": 1,
+          "confidence": 0.9705345034599304
+        },
+        {
+          "text": "shared",
+          "startSeconds": 0.56,
+          "endSeconds": 0.8600000000000001,
+          "charStart": 2,
+          "charLength": 6,
+          "confidence": 0.9927748441696167
+        },
+        {
+          "text": "shelter",
+          "startSeconds": 0.8600000000000001,
+          "endSeconds": 1.3199999999999998,
+          "charStart": 9,
+          "charLength": 7,
+          "confidence": 0.9982014894485474
+        },
+        {
+          "text": "did",
+          "startSeconds": 1.3199999999999998,
+          "endSeconds": 1.7799999999999998,
+          "charStart": 17,
+          "charLength": 3,
+          "confidence": 0.9916502237319946
+        },
+        {
+          "text": "not",
+          "startSeconds": 1.7799999999999998,
+          "endSeconds": 2.0,
+          "charStart": 21,
+          "charLength": 3,
+          "confidence": 0.9993478655815125
+        },
+        {
+          "text": "require",
+          "startSeconds": 2.0,
+          "endSeconds": 2.4,
+          "charStart": 25,
+          "charLength": 7,
+          "confidence": 0.9990257024765015
+        },
+        {
+          "text": "a",
+          "startSeconds": 2.4,
+          "endSeconds": 2.7,
+          "charStart": 33,
+          "charLength": 1,
+          "confidence": 0.9987454414367676
+        },
+        {
+          "text": "single",
+          "startSeconds": 2.7,
+          "endSeconds": 3.04,
+          "charStart": 35,
+          "charLength": 6,
+          "confidence": 0.99973064661026
+        },
+        {
+          "text": "past.",
+          "startSeconds": 3.04,
+          "endSeconds": 3.5199999999999996,
+          "charStart": 42,
+          "charLength": 5,
+          "confidence": 0.8223990201950073
+        },
+        {
+          "text": "He",
+          "startSeconds": 4.44,
+          "endSeconds": 4.56,
+          "charStart": 48,
+          "charLength": 2,
+          "confidence": 0.9954763054847717
+        },
+        {
+          "text": "could",
+          "startSeconds": 4.56,
+          "endSeconds": 4.74,
+          "charStart": 51,
+          "charLength": 5,
+          "confidence": 0.9993983507156372
+        },
+        {
+          "text": "preserve",
+          "startSeconds": 4.74,
+          "endSeconds": 5.14,
+          "charStart": 57,
+          "charLength": 8,
+          "confidence": 0.9981777667999268
+        },
+        {
+          "text": "the",
+          "startSeconds": 5.14,
+          "endSeconds": 5.36,
+          "charStart": 66,
+          "charLength": 3,
+          "confidence": 0.9976390600204468
+        },
+        {
+          "text": "accounts",
+          "startSeconds": 5.36,
+          "endSeconds": 5.82,
+          "charStart": 70,
+          "charLength": 8,
+          "confidence": 0.9936284422874451
+        },
+        {
+          "text": "without",
+          "startSeconds": 5.82,
+          "endSeconds": 6.74,
+          "charStart": 79,
+          "charLength": 7,
+          "confidence": 0.8429571390151978
+        },
+        {
+          "text": "declaring",
+          "startSeconds": 6.74,
+          "endSeconds": 7.18,
+          "charStart": 87,
+          "charLength": 9,
+          "confidence": 0.9994426369667053
+        },
+        {
+          "text": "one",
+          "startSeconds": 7.18,
+          "endSeconds": 7.5,
+          "charStart": 97,
+          "charLength": 3,
+          "confidence": 0.9959937334060669
+        },
+        {
+          "text": "life",
+          "startSeconds": 7.5,
+          "endSeconds": 7.779999999999999,
+          "charStart": 101,
+          "charLength": 4,
+          "confidence": 0.9986203908920288
+        },
+        {
+          "text": "a",
+          "startSeconds": 7.779999999999999,
+          "endSeconds": 7.9399999999999995,
+          "charStart": 106,
+          "charLength": 1,
+          "confidence": 0.9968907237052917
+        },
+        {
+          "text": "mistake.",
+          "startSeconds": 7.9399999999999995,
+          "endSeconds": 8.28,
+          "charStart": 108,
+          "charLength": 8,
+          "confidence": 0.9981169700622559
+        }
+      ],
+      "readyForAudioClock": true,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "1d187f6c17266a46e10a9890bd500d5ff6097fb0d8f93ea4ad5eee3387386cd1",
+      "format": {
+        "container": "WAV",
+        "sampleRate": 48000,
+        "bitDepth": 24,
+        "channels": 1,
+        "sourceBitDepth": 16
+      },
+      "alignmentMethod": "Local small.en Whisper word timestamps (attention/DTW), CTranslate2 CPU, VAD disabled; no ONNX Runtime imported",
+      "frameResolutionSeconds": 0.02,
+      "minimumWordConfidence": 0.8223990201950073,
+      "verification": {
+        "canonicalSpokenTextVerified": true,
+        "finalSampleCount": 405120,
+        "peakDBFS": -4.7831310616552996,
+        "noClipping": true,
+        "parentTranscript": "A life made safe could finally become one unbroken history. The refuge sheltered conflicting memories without requiring either survivor to surrender an account. A shared shelter did not require a single past. He could preserve the accounts without declaring one life a mistake.",
+        "finalCropTranscript": "A shared shelter did not require a single past. He could preserve the accounts without declaring one life a mistake.",
+        "sourceCropFrames": [
+          619200,
+          1024320
+        ],
+        "analysisPaddingSeconds": 1,
+        "manualListeningReview": "PENDING",
+        "telemetryRuntimeUsed": false
+      }
+    }
+  ],
+  "visualKey": "Reaper_TwoAccounts",
+  "cinematic": {
+    "direction": "Append two unlettered testimony spaces to a new refuge page. Strike only the new unbroken-history inference. Keep the Plane's original illustration, music, and promise of endurance intact.",
+    "events": [
+      {
+        "step": 1,
+        "intent": "RETURN_TO_EXISTING_MEMORY",
+        "memoryId": "MEM_21",
+        "sceneId": "ASC_REA_07",
+        "useExistingBookTurn": true,
+        "continuationAPI": "ChronicleJournal.PlanContinuation",
+        "maxVisibleTurns": 3,
+        "turnTiming": "ChronicleRhythm.TurnAnticipation and TurnSettle",
+        "baseTextReadOnly": true,
+        "keepBookOpen": true
+      },
+      {
+        "step": 2,
+        "intent": "RESERVE_NEW_WRITING_AREA",
+        "placement": "Fresh continuation leaf for major corrections; unused margin only if it fits for small additions.",
+        "font": "Reuse current Chronicle handwriting and stroke renderer; respect user-selected textScale without automatic shrinking.",
+        "existingBlocksReadOnly": true
+      },
+      {
+        "step": 3,
+        "intent": "OPTIONAL_MARGINAL_ART",
+        "visualKey": "Reaper_TwoAccounts",
+        "asset": "SourceAssets/ChronicleAscension/Art/Reaper_TwoAccounts.png",
+        "status": "GENERATED_AND_CHECKED",
+        "onlyNewOverlay": true,
+        "animation": "None required; static marginal study."
+      },
+      {
+        "step": 4,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "context",
+        "mode": "SILENT_HANDWRITING",
+        "text": "At the refuge, two survivors gave accounts of the same household. In one, a mother had lived to see her child grown. In the other, that child remembered tending an empty hearth. The Reaper could not settle the accounts by choosing the more merciful one. Both arrived with someone who had lived their loss.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 5,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "new_observation",
+        "mode": "NARRATED",
+        "text": "A life made safe could finally become one unbroken history.",
+        "completeBeforeNextBlockingEvent": true,
+        "assetLineKey": "Reaper:07:N01",
+        "clock": "Final recording sample clock and measured word intervals only.",
+        "missingAudioPolicy": "Existing silent-writing fallback; do not invent word timings."
+      },
+      {
+        "step": 6,
+        "intent": "HESITATE",
+        "authoredPauseSeconds": 1.0,
+        "pauseInk": true,
+        "narrationMustFinish": true
+      },
+      {
+        "step": 7,
+        "intent": "RED_STRIKE_NEW_OBSERVATION",
+        "targetBlockKey": "new_observation",
+        "ownerContentKey": "Reaper:07",
+        "requestedExistingCue": "red_ink",
+        "cueMeaning": "Existing Debuff mapping; no new quill Foley is claimed.",
+        "preserveOldChronicleInk": true,
+        "requireScopedTargetValidation": true
+      },
+      {
+        "step": 8,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "replacement",
+        "mode": "NARRATED",
+        "text": "The refuge sheltered conflicting memories without requiring either survivor to surrender an account.",
+        "completeBeforeNextBlockingEvent": true,
+        "assetLineKey": "Reaper:07:N02",
+        "clock": "Final recording sample clock and measured word intervals only.",
+        "missingAudioPolicy": "Existing silent-writing fallback; do not invent word timings."
+      },
+      {
+        "step": 9,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "evidence",
+        "mode": "SILENT_HANDWRITING",
+        "text": "The first register gave them one narrow space. The keeper added another. Nothing on the page repaired the past, and the disagreement did not disappear. Yet both could remain without having their safety depend upon accepting the history preferred by someone else. Tomorrow had room for them together.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 10,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "account",
+        "mode": "SILENT_HANDWRITING",
+        "text": "Protection had accomplished something restoration could not be assumed to accomplish: it allowed the survivors to continue while their differences remained unresolved. The Reaper retained both testimonies. Combining them into a cleaner story would have made his record easier to read by asking another person to disappear within it.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 11,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "closing",
+        "mode": "NARRATED",
+        "text": "A shared shelter did not require a single past. He could preserve the accounts without declaring one life a mistake.",
+        "completeBeforeNextBlockingEvent": true,
+        "assetLineKey": "Reaper:07:N03",
+        "clock": "Final recording sample clock and measured word intervals only.",
+        "missingAudioPolicy": "Existing silent-writing fallback; do not invent word timings."
+      },
+      {
+        "step": 12,
+        "intent": "COMPLETE_NEW_ADDITION",
+        "archivePermanent": true,
+        "idempotent": true,
+        "completionHold": "ChronicleRhythm.CompletionHold; no extra fixed three-second hold",
+        "revisitTiming": "ChronicleRhythm.RevisitScale",
+        "skipState": "All new blocks complete; the new observation is struck and its replacement remains. All base-memory content is unchanged.",
+        "replay": "Read immediately; full cinematic is opt-in.",
+        "runtimeSaveId": "ASC_REA_07"
+      }
+    ]
+  },
+  "continuityGates": [
+    {
+      "requirement": "Existing expanded memory and its canonical correction/knowledge have already been viewed.",
+      "memoryId": "MEM_21"
+    }
+  ],
+  "spoilerPolicy": "Never identify the Narrator with the fourth companion or the Forgotten Observer before SCENE_CH10. Base discoveries remain first; additions are deferred if required knowledge is absent.",
+  "existingContentModified": false,
+  "newBeingDialogue": false,
+  "accessibility": {
+    "instantText": true,
+    "voiceMuteKeepsPageReadable": true,
+    "reducedMotionUsesStaticArt": true,
+    "reducedFlashingNoExtraGlow": true,
+    "skipResolvesCompletedNewState": true
+  }
+}

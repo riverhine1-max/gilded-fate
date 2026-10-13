@@ -1,0 +1,750 @@
+{
+  "schemaVersion": 1,
+  "contentKey": "Hexer:07",
+  "revelationId": "ASC_HEX_07",
+  "sceneId": "ASC_HEX_07",
+  "idBindingStatus": "BOUND_TO_EXISTING_ASCENSION_CATALOG",
+  "authoringComplete": true,
+  "contentReady": false,
+  "runtimeRegistrationStatus": "NOT_INTEGRATED_BY_THIS_CONTENT_TASK",
+  "hero": "Hexer",
+  "fateDebt": 7,
+  "kindOrdinal": 3,
+  "presentation": "FullCorrection",
+  "title": "The Broken Sequence",
+  "kind": "MAJOR",
+  "expandedMemoryId": "MEM_17",
+  "expandedChapterId": "CH_06",
+  "sourceCommit": "7211864e93fee914ef370912ae1ed8aafd66266b",
+  "journalBlocks": [
+    {
+      "blockKey": "context",
+      "text": "Two surviving studies placed the same fracture on opposite sides of a remembered movement. In one, the hand withdrew before the line divided. In the other, the divided line was already beneath it. The scholar had once chosen the cleaner sequence and treated the second as a damaged copy.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "517d229e764fc2d616a43c655c1966b50394edb98699ca39391f396a84fb560a"
+    },
+    {
+      "blockKey": "new_observation",
+      "text": "The last severed thread marked the first moment of the catastrophe.",
+      "mode": "NARRATED",
+      "textSHA256": "d2246cfdfbf8f6723815922afc39c9b30ab80f841e3524b1bed311dc97d9a47a",
+      "assetLineKey": "Hexer:07:N01"
+    },
+    {
+      "blockKey": "replacement",
+      "text": "The surviving records preserve incompatible orders; neither establishes a single first moment.",
+      "mode": "NARRATED",
+      "textSHA256": "46f3f3096780a3a1fd906e7b2a465321f5697f53ac5cbe37ec079aae414c8129",
+      "assetLineKey": "Hexer:07:N02"
+    },
+    {
+      "blockKey": "evidence",
+      "text": "The conflict remained recognizable in both studies: a connection pulled apart, and a will refusing release. What failed to agree was the ordering of the marks around it. After the breaking, even the account of the breaking carried damaged time. The easier sequence was not thereby the truer one.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "7c0bb9e393a92a830d6ac66d66c6cc956ffe298cb78e772aaa53c2ed904daa9f"
+    },
+    {
+      "blockKey": "account",
+      "text": "This does not turn responsibility into an unknowable mystery. The dangerous choices and the refusal to heed uncertainty remain. It does prevent a diagram from assigning all blame to whichever movement can be placed last. A record may preserve a cause without preserving a trustworthy clock for it.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "e7cf8a13b1bd86d2f9df6b5910e296abcff19fe7c966abbdc45f2ebfc847fd7a"
+    },
+    {
+      "blockKey": "closing",
+      "text": "The conflict was recoverable. The order was not. He had mistaken a tidy sequence for a complete explanation.",
+      "mode": "NARRATED",
+      "textSHA256": "7c04b8c6e1164559051816ed8f080bee0bce25eeb243a71c82db427648333ba4",
+      "assetLineKey": "Hexer:07:N03"
+    }
+  ],
+  "journalText": "Two surviving studies placed the same fracture on opposite sides of a remembered movement. In one, the hand withdrew before the line divided. In the other, the divided line was already beneath it. The scholar had once chosen the cleaner sequence and treated the second as a damaged copy.\n\nThe last severed thread marked the first moment of the catastrophe.\n\nThe surviving records preserve incompatible orders; neither establishes a single first moment.\n\nThe conflict remained recognizable in both studies: a connection pulled apart, and a will refusing release. What failed to agree was the ordering of the marks around it. After the breaking, even the account of the breaking carried damaged time. The easier sequence was not thereby the truer one.\n\nThis does not turn responsibility into an unknowable mystery. The dangerous choices and the refusal to heed uncertainty remain. It does prevent a diagram from assigning all blame to whichever movement can be placed last. A record may preserve a cause without preserving a trustworthy clock for it.\n\nThe conflict was recoverable. The order was not. He had mistaken a tidy sequence for a complete explanation.",
+  "wordCount": 187,
+  "newlyRecoveredInformation": "Post-Severing evidence cannot reliably establish the catastrophe's event order, despite retaining the already-known conflict that caused it. Clean chronology cannot identify a sole culpable final gesture.",
+  "newlyAuthoredDetails": [
+    "Two incompatible remembered studies. The addition limits the evidence, not the existence of causes, decisions, or Vanguard's local recollection."
+  ],
+  "sourceEvidence": [
+    "MEM_17",
+    "MEM_20",
+    "MEM_16"
+  ],
+  "relationships": {
+    "follows": [
+      "Hexer:04"
+    ],
+    "prepares": [
+      "Hexer:08",
+      "Hexer:09"
+    ],
+    "crossCharacter": [
+      "Vanguard:07"
+    ]
+  },
+  "correction": {
+    "ownerContentKey": "Hexer:07",
+    "revelationId": "ASC_HEX_07",
+    "correctionId": "ASC_CORR_HEX_3",
+    "localCorrectionKey": "new_observation",
+    "targetScope": "THIS_NEW_ADDITION_ONLY",
+    "targetBlockKey": "new_observation",
+    "originalNewObservation": "The last severed thread marked the first moment of the catastrophe.",
+    "correctedReplacement": "The surviving records preserve incompatible orders; neither establishes a single first moment.",
+    "replacementBlockKey": "replacement",
+    "originalChronicleTarget": null,
+    "sharedCorrectionIdsModified": [],
+    "preserveOriginal": true,
+    "inkStyle": "Existing restrained red correction style",
+    "acknowledgement": "Only the observation added by this package may be crossed out."
+  },
+  "narration": [
+    {
+      "assetLineKey": "Hexer:07:N01",
+      "lineId": "ASC_HEX_07__new_observation",
+      "sceneId": "ASC_HEX_07",
+      "revelationId": "ASC_HEX_07",
+      "runtimeCommandId": "new_observation",
+      "commandId": "new_observation",
+      "commandBinding": "Use the existing explicit WriteBlock ID in the authored scene; update binding if Claude assigns a different command ID.",
+      "contentKey": "Hexer:07",
+      "blockKey": "new_observation",
+      "speaker": "NARRATOR",
+      "text": "The last severed thread marked the first moment of the catastrophe.",
+      "textSHA256": "d2246cfdfbf8f6723815922afc39c9b30ab80f841e3524b1bed311dc97d9a47a",
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Hexer_Debt07_The_Broken_Sequence_N01.wav",
+      "emotion": "ConcernedHistorian",
+      "status": "RECORDED_AUTOMATICALLY_VERIFIED",
+      "durationSeconds": 5.14,
+      "words": [
+        {
+          "text": "The",
+          "startSeconds": 0,
+          "endSeconds": 0.54,
+          "charStart": 0,
+          "charLength": 3,
+          "confidence": 0.9295137524604797
+        },
+        {
+          "text": "last",
+          "startSeconds": 0.54,
+          "endSeconds": 0.8799999999999999,
+          "charStart": 4,
+          "charLength": 4,
+          "confidence": 0.9923700094223022
+        },
+        {
+          "text": "severed",
+          "startSeconds": 0.8799999999999999,
+          "endSeconds": 1.2799999999999998,
+          "charStart": 9,
+          "charLength": 7,
+          "confidence": 0.9961550831794739
+        },
+        {
+          "text": "thread",
+          "startSeconds": 1.2799999999999998,
+          "endSeconds": 1.7599999999999998,
+          "charStart": 17,
+          "charLength": 6,
+          "confidence": 0.9980098605155945
+        },
+        {
+          "text": "marked",
+          "startSeconds": 1.7599999999999998,
+          "endSeconds": 2.54,
+          "charStart": 24,
+          "charLength": 6,
+          "confidence": 0.9780108332633972
+        },
+        {
+          "text": "the",
+          "startSeconds": 2.54,
+          "endSeconds": 3.24,
+          "charStart": 31,
+          "charLength": 3,
+          "confidence": 0.8724090456962585
+        },
+        {
+          "text": "first",
+          "startSeconds": 3.24,
+          "endSeconds": 3.5599999999999996,
+          "charStart": 35,
+          "charLength": 5,
+          "confidence": 0.9956082701683044
+        },
+        {
+          "text": "moment",
+          "startSeconds": 3.5599999999999996,
+          "endSeconds": 4.02,
+          "charStart": 41,
+          "charLength": 6,
+          "confidence": 0.9952731728553772
+        },
+        {
+          "text": "of",
+          "startSeconds": 4.02,
+          "endSeconds": 4.32,
+          "charStart": 48,
+          "charLength": 2,
+          "confidence": 0.9978803396224976
+        },
+        {
+          "text": "the",
+          "startSeconds": 4.32,
+          "endSeconds": 4.44,
+          "charStart": 51,
+          "charLength": 3,
+          "confidence": 0.9968003034591675
+        },
+        {
+          "text": "catastrophe.",
+          "startSeconds": 4.44,
+          "endSeconds": 4.98,
+          "charStart": 55,
+          "charLength": 12,
+          "confidence": 0.9866194128990173
+        }
+      ],
+      "readyForAudioClock": true,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "e926d12e9dd0bb401e87431db540b09f06bd53d5473ac2c4bc2a0cd672d5da2a",
+      "format": {
+        "container": "WAV",
+        "sampleRate": 48000,
+        "bitDepth": 24,
+        "channels": 1,
+        "sourceBitDepth": 16
+      },
+      "alignmentMethod": "Local small.en Whisper word timestamps (attention/DTW), CTranslate2 CPU, VAD disabled; no ONNX Runtime imported",
+      "frameResolutionSeconds": 0.02,
+      "minimumWordConfidence": 0.8724090456962585,
+      "verification": {
+        "canonicalSpokenTextVerified": true,
+        "finalSampleCount": 246720,
+        "peakDBFS": -5.036621249319463,
+        "noClipping": true,
+        "parentTranscript": "The last severed thread marked the first moment of the catastrophe. The surviving records preserve incompatible orders. Neither establishes a single first moment. The conflict was recoverable. The order was not. He had mistaken a tidy sequence for a complete explanation.",
+        "finalCropTranscript": "The last severed thread marked the first moment of the catastrophe.",
+        "sourceCropFrames": [
+          0,
+          246720
+        ],
+        "analysisPaddingSeconds": 1,
+        "manualListeningReview": "PENDING",
+        "telemetryRuntimeUsed": false
+      }
+    },
+    {
+      "assetLineKey": "Hexer:07:N02",
+      "lineId": "ASC_HEX_07__replacement",
+      "sceneId": "ASC_HEX_07",
+      "revelationId": "ASC_HEX_07",
+      "runtimeCommandId": "replacement",
+      "commandId": "replacement",
+      "commandBinding": "Use the existing explicit WriteBlock ID in the authored scene; update binding if Claude assigns a different command ID.",
+      "contentKey": "Hexer:07",
+      "blockKey": "replacement",
+      "speaker": "NARRATOR",
+      "text": "The surviving records preserve incompatible orders; neither establishes a single first moment.",
+      "textSHA256": "46f3f3096780a3a1fd906e7b2a465321f5697f53ac5cbe37ec079aae414c8129",
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Hexer_Debt07_The_Broken_Sequence_N02.wav",
+      "emotion": "ConcernedHistorian",
+      "status": "RECORDED_AUTOMATICALLY_VERIFIED",
+      "durationSeconds": 7.6,
+      "words": [
+        {
+          "text": "The",
+          "startSeconds": 0,
+          "endSeconds": 0.32000000000000006,
+          "charStart": 0,
+          "charLength": 3,
+          "confidence": 0.93046635389328
+        },
+        {
+          "text": "surviving",
+          "startSeconds": 0.32000000000000006,
+          "endSeconds": 0.76,
+          "charStart": 4,
+          "charLength": 9,
+          "confidence": 0.9926798343658447
+        },
+        {
+          "text": "records",
+          "startSeconds": 0.76,
+          "endSeconds": 1.2599999999999998,
+          "charStart": 14,
+          "charLength": 7,
+          "confidence": 0.9723108410835266
+        },
+        {
+          "text": "preserve",
+          "startSeconds": 1.2599999999999998,
+          "endSeconds": 1.88,
+          "charStart": 22,
+          "charLength": 8,
+          "confidence": 0.9900554418563843
+        },
+        {
+          "text": "incompatible",
+          "startSeconds": 1.88,
+          "endSeconds": 3.04,
+          "charStart": 31,
+          "charLength": 12,
+          "confidence": 0.7296492457389832
+        },
+        {
+          "text": "orders;",
+          "startSeconds": 3.04,
+          "endSeconds": 3.8600000000000003,
+          "charStart": 44,
+          "charLength": 7,
+          "confidence": 0.9947081804275513
+        },
+        {
+          "text": "neither",
+          "startSeconds": 4.74,
+          "endSeconds": 4.84,
+          "charStart": 52,
+          "charLength": 7,
+          "confidence": 0.9962361454963684
+        },
+        {
+          "text": "establishes",
+          "startSeconds": 4.84,
+          "endSeconds": 5.56,
+          "charStart": 60,
+          "charLength": 11,
+          "confidence": 0.9961395859718323
+        },
+        {
+          "text": "a",
+          "startSeconds": 5.56,
+          "endSeconds": 5.96,
+          "charStart": 72,
+          "charLength": 1,
+          "confidence": 0.9977005124092102
+        },
+        {
+          "text": "single",
+          "startSeconds": 5.96,
+          "endSeconds": 6.38,
+          "charStart": 74,
+          "charLength": 6,
+          "confidence": 0.9996115565299988
+        },
+        {
+          "text": "first",
+          "startSeconds": 6.38,
+          "endSeconds": 6.92,
+          "charStart": 81,
+          "charLength": 5,
+          "confidence": 0.8812382221221924
+        },
+        {
+          "text": "moment.",
+          "startSeconds": 6.92,
+          "endSeconds": 7.4399999999999995,
+          "charStart": 87,
+          "charLength": 7,
+          "confidence": 0.9931619167327881
+        }
+      ],
+      "readyForAudioClock": true,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "5f544f54f9bf89eeda3eb82322d63ddc4e5a8a915710f010ef9416f3fdc52d81",
+      "format": {
+        "container": "WAV",
+        "sampleRate": 48000,
+        "bitDepth": 24,
+        "channels": 1,
+        "sourceBitDepth": 16
+      },
+      "alignmentMethod": "Local small.en Whisper word timestamps (attention/DTW), CTranslate2 CPU, VAD disabled; no ONNX Runtime imported",
+      "frameResolutionSeconds": 0.02,
+      "minimumWordConfidence": 0.7296492457389832,
+      "verification": {
+        "canonicalSpokenTextVerified": true,
+        "finalSampleCount": 364800,
+        "peakDBFS": -6.200077212117646,
+        "noClipping": true,
+        "parentTranscript": "The last severed thread marked the first moment of the catastrophe. The surviving records preserve incompatible orders. Neither establishes a single first moment. The conflict was recoverable. The order was not. He had mistaken a tidy sequence for a complete explanation.",
+        "finalCropTranscript": "The surviving records preserve incompatible orders. Neither establishes a single first moment.",
+        "sourceCropFrames": [
+          278400,
+          643200
+        ],
+        "analysisPaddingSeconds": 1,
+        "manualListeningReview": "PENDING",
+        "telemetryRuntimeUsed": false
+      }
+    },
+    {
+      "assetLineKey": "Hexer:07:N03",
+      "lineId": "ASC_HEX_07__closing",
+      "sceneId": "ASC_HEX_07",
+      "revelationId": "ASC_HEX_07",
+      "runtimeCommandId": "closing",
+      "commandId": "closing",
+      "commandBinding": "Use the existing explicit WriteBlock ID in the authored scene; update binding if Claude assigns a different command ID.",
+      "contentKey": "Hexer:07",
+      "blockKey": "closing",
+      "speaker": "NARRATOR",
+      "text": "The conflict was recoverable. The order was not. He had mistaken a tidy sequence for a complete explanation.",
+      "textSHA256": "7c04b8c6e1164559051816ed8f080bee0bce25eeb243a71c82db427648333ba4",
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Hexer_Debt07_The_Broken_Sequence_N03.wav",
+      "emotion": "ConcernedHistorian",
+      "status": "RECORDED_AUTOMATICALLY_VERIFIED",
+      "durationSeconds": 7.66,
+      "words": [
+        {
+          "text": "The",
+          "startSeconds": 0,
+          "endSeconds": 0.3999999999999999,
+          "charStart": 0,
+          "charLength": 3,
+          "confidence": 0.8821032643318176
+        },
+        {
+          "text": "conflict",
+          "startSeconds": 0.3999999999999999,
+          "endSeconds": 0.72,
+          "charStart": 4,
+          "charLength": 8,
+          "confidence": 0.9954040050506592
+        },
+        {
+          "text": "was",
+          "startSeconds": 0.72,
+          "endSeconds": 0.98,
+          "charStart": 13,
+          "charLength": 3,
+          "confidence": 0.9981391429901123
+        },
+        {
+          "text": "recoverable.",
+          "startSeconds": 0.98,
+          "endSeconds": 1.7799999999999998,
+          "charStart": 17,
+          "charLength": 12,
+          "confidence": 0.9967296123504639
+        },
+        {
+          "text": "The",
+          "startSeconds": 2.18,
+          "endSeconds": 2.38,
+          "charStart": 30,
+          "charLength": 3,
+          "confidence": 0.9894952178001404
+        },
+        {
+          "text": "order",
+          "startSeconds": 2.38,
+          "endSeconds": 2.6,
+          "charStart": 34,
+          "charLength": 5,
+          "confidence": 0.9228613972663879
+        },
+        {
+          "text": "was",
+          "startSeconds": 2.6,
+          "endSeconds": 2.82,
+          "charStart": 40,
+          "charLength": 3,
+          "confidence": 0.9987967014312744
+        },
+        {
+          "text": "not.",
+          "startSeconds": 2.82,
+          "endSeconds": 3.0999999999999996,
+          "charStart": 44,
+          "charLength": 4,
+          "confidence": 0.9952503442764282
+        },
+        {
+          "text": "He",
+          "startSeconds": 3.9000000000000004,
+          "endSeconds": 4.04,
+          "charStart": 49,
+          "charLength": 2,
+          "confidence": 0.994271993637085
+        },
+        {
+          "text": "had",
+          "startSeconds": 4.04,
+          "endSeconds": 4.18,
+          "charStart": 52,
+          "charLength": 3,
+          "confidence": 0.9931365251541138
+        },
+        {
+          "text": "mistaken",
+          "startSeconds": 4.18,
+          "endSeconds": 4.56,
+          "charStart": 56,
+          "charLength": 8,
+          "confidence": 0.9873119592666626
+        },
+        {
+          "text": "a",
+          "startSeconds": 4.56,
+          "endSeconds": 4.84,
+          "charStart": 65,
+          "charLength": 1,
+          "confidence": 0.9981637597084045
+        },
+        {
+          "text": "tidy",
+          "startSeconds": 4.84,
+          "endSeconds": 5.12,
+          "charStart": 67,
+          "charLength": 4,
+          "confidence": 0.9921880960464478
+        },
+        {
+          "text": "sequence",
+          "startSeconds": 5.12,
+          "endSeconds": 5.66,
+          "charStart": 72,
+          "charLength": 8,
+          "confidence": 0.9974269270896912
+        },
+        {
+          "text": "for",
+          "startSeconds": 5.66,
+          "endSeconds": 6.36,
+          "charStart": 81,
+          "charLength": 3,
+          "confidence": 0.9819394946098328
+        },
+        {
+          "text": "a",
+          "startSeconds": 6.36,
+          "endSeconds": 6.5,
+          "charStart": 85,
+          "charLength": 1,
+          "confidence": 0.9971399307250977
+        },
+        {
+          "text": "complete",
+          "startSeconds": 6.5,
+          "endSeconds": 6.86,
+          "charStart": 87,
+          "charLength": 8,
+          "confidence": 0.999392032623291
+        },
+        {
+          "text": "explanation.",
+          "startSeconds": 6.86,
+          "endSeconds": 7.48,
+          "charStart": 96,
+          "charLength": 12,
+          "confidence": 0.99724280834198
+        }
+      ],
+      "readyForAudioClock": true,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "1f933e764d012921d7b4dd4b4b746ac6e393dd4e39e63c1606ace2975fcc892a",
+      "format": {
+        "container": "WAV",
+        "sampleRate": 48000,
+        "bitDepth": 24,
+        "channels": 1,
+        "sourceBitDepth": 16
+      },
+      "alignmentMethod": "Local small.en Whisper word timestamps (attention/DTW), CTranslate2 CPU, VAD disabled; no ONNX Runtime imported",
+      "frameResolutionSeconds": 0.02,
+      "minimumWordConfidence": 0.8821032643318176,
+      "verification": {
+        "canonicalSpokenTextVerified": true,
+        "finalSampleCount": 367680,
+        "peakDBFS": -4.81977627049086,
+        "noClipping": true,
+        "parentTranscript": "The last severed thread marked the first moment of the catastrophe. The surviving records preserve incompatible orders. Neither establishes a single first moment. The conflict was recoverable. The order was not. He had mistaken a tidy sequence for a complete explanation.",
+        "finalCropTranscript": "The conflict was recoverable, the order was not. He had mistaken a tidy sequence for a complete explanation.",
+        "sourceCropFrames": [
+          662400,
+          1030080
+        ],
+        "analysisPaddingSeconds": 1,
+        "manualListeningReview": "PENDING",
+        "telemetryRuntimeUsed": false
+      }
+    }
+  ],
+  "visualKey": "Hexer_ConflictingHours",
+  "cinematic": {
+    "direction": "Turn backward to the Weave page, then show two new time studies without numbers. Strike the new chronological claim only. Preserve CORR_06 and the old fracture animation.",
+    "events": [
+      {
+        "step": 1,
+        "intent": "RETURN_TO_EXISTING_MEMORY",
+        "memoryId": "MEM_17",
+        "sceneId": "ASC_HEX_07",
+        "useExistingBookTurn": true,
+        "continuationAPI": "ChronicleJournal.PlanContinuation",
+        "maxVisibleTurns": 3,
+        "turnTiming": "ChronicleRhythm.TurnAnticipation and TurnSettle",
+        "baseTextReadOnly": true,
+        "keepBookOpen": true
+      },
+      {
+        "step": 2,
+        "intent": "RESERVE_NEW_WRITING_AREA",
+        "placement": "Fresh continuation leaf for major corrections; unused margin only if it fits for small additions.",
+        "font": "Reuse current Chronicle handwriting and stroke renderer; respect user-selected textScale without automatic shrinking.",
+        "existingBlocksReadOnly": true
+      },
+      {
+        "step": 3,
+        "intent": "OPTIONAL_MARGINAL_ART",
+        "visualKey": "Hexer_ConflictingHours",
+        "asset": "SourceAssets/ChronicleAscension/Art/Hexer_ConflictingHours.png",
+        "status": "GENERATED_AND_CHECKED",
+        "onlyNewOverlay": true,
+        "animation": "None required; static marginal study."
+      },
+      {
+        "step": 4,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "context",
+        "mode": "SILENT_HANDWRITING",
+        "text": "Two surviving studies placed the same fracture on opposite sides of a remembered movement. In one, the hand withdrew before the line divided. In the other, the divided line was already beneath it. The scholar had once chosen the cleaner sequence and treated the second as a damaged copy.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 5,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "new_observation",
+        "mode": "NARRATED",
+        "text": "The last severed thread marked the first moment of the catastrophe.",
+        "completeBeforeNextBlockingEvent": true,
+        "assetLineKey": "Hexer:07:N01",
+        "clock": "Final recording sample clock and measured word intervals only.",
+        "missingAudioPolicy": "Existing silent-writing fallback; do not invent word timings."
+      },
+      {
+        "step": 6,
+        "intent": "HESITATE",
+        "authoredPauseSeconds": 1.0,
+        "pauseInk": true,
+        "narrationMustFinish": true
+      },
+      {
+        "step": 7,
+        "intent": "RED_STRIKE_NEW_OBSERVATION",
+        "targetBlockKey": "new_observation",
+        "ownerContentKey": "Hexer:07",
+        "requestedExistingCue": "red_ink",
+        "cueMeaning": "Existing Debuff mapping; no new quill Foley is claimed.",
+        "preserveOldChronicleInk": true,
+        "requireScopedTargetValidation": true
+      },
+      {
+        "step": 8,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "replacement",
+        "mode": "NARRATED",
+        "text": "The surviving records preserve incompatible orders; neither establishes a single first moment.",
+        "completeBeforeNextBlockingEvent": true,
+        "assetLineKey": "Hexer:07:N02",
+        "clock": "Final recording sample clock and measured word intervals only.",
+        "missingAudioPolicy": "Existing silent-writing fallback; do not invent word timings."
+      },
+      {
+        "step": 9,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "evidence",
+        "mode": "SILENT_HANDWRITING",
+        "text": "The conflict remained recognizable in both studies: a connection pulled apart, and a will refusing release. What failed to agree was the ordering of the marks around it. After the breaking, even the account of the breaking carried damaged time. The easier sequence was not thereby the truer one.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 10,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "account",
+        "mode": "SILENT_HANDWRITING",
+        "text": "This does not turn responsibility into an unknowable mystery. The dangerous choices and the refusal to heed uncertainty remain. It does prevent a diagram from assigning all blame to whichever movement can be placed last. A record may preserve a cause without preserving a trustworthy clock for it.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 11,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "closing",
+        "mode": "NARRATED",
+        "text": "The conflict was recoverable. The order was not. He had mistaken a tidy sequence for a complete explanation.",
+        "completeBeforeNextBlockingEvent": true,
+        "assetLineKey": "Hexer:07:N03",
+        "clock": "Final recording sample clock and measured word intervals only.",
+        "missingAudioPolicy": "Existing silent-writing fallback; do not invent word timings."
+      },
+      {
+        "step": 12,
+        "intent": "COMPLETE_NEW_ADDITION",
+        "archivePermanent": true,
+        "idempotent": true,
+        "completionHold": "ChronicleRhythm.CompletionHold; no extra fixed three-second hold",
+        "revisitTiming": "ChronicleRhythm.RevisitScale",
+        "skipState": "All new blocks complete; the new observation is struck and its replacement remains. All base-memory content is unchanged.",
+        "replay": "Read immediately; full cinematic is opt-in.",
+        "runtimeSaveId": "ASC_HEX_07"
+      }
+    ]
+  },
+  "continuityGates": [
+    {
+      "requirement": "Existing expanded memory and its canonical correction/knowledge have already been viewed.",
+      "memoryId": "MEM_17"
+    }
+  ],
+  "spoilerPolicy": "Never identify the Narrator with the fourth companion or the Forgotten Observer before SCENE_CH10. Base discoveries remain first; additions are deferred if required knowledge is absent.",
+  "existingContentModified": false,
+  "newBeingDialogue": false,
+  "accessibility": {
+    "instantText": true,
+    "voiceMuteKeepsPageReadable": true,
+    "reducedMotionUsesStaticArt": true,
+    "reducedFlashingNoExtraGlow": true,
+    "skipResolvesCompletedNewState": true
+  }
+}

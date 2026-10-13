@@ -1,0 +1,805 @@
+{
+  "schemaVersion": 1,
+  "contentKey": "Hexer:04",
+  "revelationId": "ASC_HEX_04",
+  "sceneId": "ASC_HEX_04",
+  "idBindingStatus": "BOUND_TO_EXISTING_ASCENSION_CATALOG",
+  "authoringComplete": true,
+  "contentReady": false,
+  "runtimeRegistrationStatus": "NOT_INTEGRATED_BY_THIS_CONTENT_TASK",
+  "hero": "Hexer",
+  "fateDebt": 4,
+  "kindOrdinal": 2,
+  "presentation": "FullCorrection",
+  "title": "The Warning He Remembered Wrong",
+  "kind": "MAJOR",
+  "expandedMemoryId": "MEM_14",
+  "expandedChapterId": "CH_05",
+  "sourceCommit": "7211864e93fee914ef370912ae1ed8aafd66266b",
+  "journalBlocks": [
+    {
+      "blockKey": "context",
+      "text": "The scholar recovered a second sheet beneath the proposed memory erasure. It listed the observations needed to tell whether a connection had weakened. Several depended upon recollections the plan intended to remove. He had seen the contradiction, then remembered it afterward as a warning about incomplete execution.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "c5c73be7244b4c0b9217eca2dbdf8069dfdff2bc079f848dcda587ff83ab563e"
+    },
+    {
+      "blockKey": "new_observation",
+      "text": "The warning meant that sufficiently complete memory loss would end the danger.",
+      "mode": "NARRATED",
+      "textSHA256": "931b0a6174236726d8437d2e0808779600b0f86601932578c82f4b0d3f3d2362",
+      "assetLineKey": "Hexer:04:N01"
+    },
+    {
+      "blockKey": "replacement",
+      "text": "Complete memory loss could also remove the evidence needed to discover that the danger remained.",
+      "mode": "NARRATED",
+      "textSHA256": "8f6b15f9397c152a0c6613081bf398faa6d2ab34de4adcbcdba6ec51d3a73b57",
+      "assetLineKey": "Hexer:04:N02"
+    },
+    {
+      "blockKey": "evidence",
+      "text": "A blank measurement would not establish a broken connection if the person making it could no longer recognize what had been measured. The scholar's question at the sanctuary was larger than he later recalled. It concerned both the failure of the plan and their ability to know whether it had failed.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "af16865a4ffe237846ffb3f77e1c1dae1851b5b4e9f17746ee6950b1bedfc914"
+    },
+    {
+      "blockKey": "account",
+      "text": "The fourth companion's decision remains his own. Urgency did not become certainty merely because there was little time. The scholar had understood a possible route out of the danger; he had not established a safe way to verify its result. Losing the witness was itself one of the costs.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "956f99541e38c79cb3d754f84fcb406d71b7b7a114b6482d283d1d0d59106914"
+    },
+    {
+      "blockKey": "closing",
+      "text": "He had warned of more than a thread refusing to break. He had warned of no longer knowing where to look.",
+      "mode": "NARRATED",
+      "textSHA256": "846a51afcf55200131a3d3084bd910b2ce5585e2ec7af8e1934f91c47409d955",
+      "assetLineKey": "Hexer:04:N03"
+    }
+  ],
+  "journalText": "The scholar recovered a second sheet beneath the proposed memory erasure. It listed the observations needed to tell whether a connection had weakened. Several depended upon recollections the plan intended to remove. He had seen the contradiction, then remembered it afterward as a warning about incomplete execution.\n\nThe warning meant that sufficiently complete memory loss would end the danger.\n\nComplete memory loss could also remove the evidence needed to discover that the danger remained.\n\nA blank measurement would not establish a broken connection if the person making it could no longer recognize what had been measured. The scholar's question at the sanctuary was larger than he later recalled. It concerned both the failure of the plan and their ability to know whether it had failed.\n\nThe fourth companion's decision remains his own. Urgency did not become certainty merely because there was little time. The scholar had understood a possible route out of the danger; he had not established a safe way to verify its result. Losing the witness was itself one of the costs.\n\nHe had warned of more than a thread refusing to break. He had warned of no longer knowing where to look.",
+  "wordCount": 195,
+  "newlyRecoveredInformation": "Erasure could destroy the means of checking success, a separate danger from the power's connection surviving. This deepens the existing warning without altering its recorded words.",
+  "newlyAuthoredDetails": [
+    "A verification sheet whose observations depend on memories slated for erasure. It does not prove that every possible erasure must fail."
+  ],
+  "sourceEvidence": [
+    "MEM_11",
+    "MEM_14",
+    "SCENE_CH10"
+  ],
+  "relationships": {
+    "follows": [
+      "Hexer:01",
+      "Hexer:03"
+    ],
+    "prepares": [
+      "Hexer:05",
+      "Hexer:06",
+      "Hexer:07"
+    ]
+  },
+  "correction": {
+    "ownerContentKey": "Hexer:04",
+    "revelationId": "ASC_HEX_04",
+    "correctionId": "ASC_CORR_HEX_2",
+    "localCorrectionKey": "new_observation",
+    "targetScope": "THIS_NEW_ADDITION_ONLY",
+    "targetBlockKey": "new_observation",
+    "originalNewObservation": "The warning meant that sufficiently complete memory loss would end the danger.",
+    "correctedReplacement": "Complete memory loss could also remove the evidence needed to discover that the danger remained.",
+    "replacementBlockKey": "replacement",
+    "originalChronicleTarget": null,
+    "sharedCorrectionIdsModified": [],
+    "preserveOriginal": true,
+    "inkStyle": "Existing restrained red correction style",
+    "acknowledgement": "Only the observation added by this package may be crossed out."
+  },
+  "narration": [
+    {
+      "assetLineKey": "Hexer:04:N01",
+      "lineId": "ASC_HEX_04__new_observation",
+      "sceneId": "ASC_HEX_04",
+      "revelationId": "ASC_HEX_04",
+      "runtimeCommandId": "new_observation",
+      "commandId": "new_observation",
+      "commandBinding": "Use the existing explicit WriteBlock ID in the authored scene; update binding if Claude assigns a different command ID.",
+      "contentKey": "Hexer:04",
+      "blockKey": "new_observation",
+      "speaker": "NARRATOR",
+      "text": "The warning meant that sufficiently complete memory loss would end the danger.",
+      "textSHA256": "931b0a6174236726d8437d2e0808779600b0f86601932578c82f4b0d3f3d2362",
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Hexer_Debt04_The_Warning_He_Remembered_Wrong_N01.wav",
+      "emotion": "DoubtingHistorian",
+      "status": "RECORDED_AUTOMATICALLY_VERIFIED",
+      "durationSeconds": 5.78,
+      "words": [
+        {
+          "text": "The",
+          "startSeconds": 0,
+          "endSeconds": 0.30000000000000004,
+          "charStart": 0,
+          "charLength": 3,
+          "confidence": 0.9572771191596985
+        },
+        {
+          "text": "warning",
+          "startSeconds": 0.30000000000000004,
+          "endSeconds": 0.6399999999999999,
+          "charStart": 4,
+          "charLength": 7,
+          "confidence": 0.9905345439910889
+        },
+        {
+          "text": "meant",
+          "startSeconds": 0.6399999999999999,
+          "endSeconds": 1.04,
+          "charStart": 12,
+          "charLength": 5,
+          "confidence": 0.9971464276313782
+        },
+        {
+          "text": "that",
+          "startSeconds": 1.04,
+          "endSeconds": 1.6800000000000002,
+          "charStart": 18,
+          "charLength": 4,
+          "confidence": 0.9859842658042908
+        },
+        {
+          "text": "sufficiently",
+          "startSeconds": 1.6800000000000002,
+          "endSeconds": 2.14,
+          "charStart": 23,
+          "charLength": 12,
+          "confidence": 0.9221833944320679
+        },
+        {
+          "text": "complete",
+          "startSeconds": 2.14,
+          "endSeconds": 2.76,
+          "charStart": 36,
+          "charLength": 8,
+          "confidence": 0.9924371838569641
+        },
+        {
+          "text": "memory",
+          "startSeconds": 2.76,
+          "endSeconds": 3.1799999999999997,
+          "charStart": 45,
+          "charLength": 6,
+          "confidence": 0.9979681372642517
+        },
+        {
+          "text": "loss",
+          "startSeconds": 3.1799999999999997,
+          "endSeconds": 3.58,
+          "charStart": 52,
+          "charLength": 4,
+          "confidence": 0.9988539218902588
+        },
+        {
+          "text": "would",
+          "startSeconds": 3.58,
+          "endSeconds": 4.26,
+          "charStart": 57,
+          "charLength": 5,
+          "confidence": 0.989831268787384
+        },
+        {
+          "text": "end",
+          "startSeconds": 4.26,
+          "endSeconds": 4.76,
+          "charStart": 63,
+          "charLength": 3,
+          "confidence": 0.9916218519210815
+        },
+        {
+          "text": "the",
+          "startSeconds": 4.76,
+          "endSeconds": 5.14,
+          "charStart": 67,
+          "charLength": 3,
+          "confidence": 0.998297393321991
+        },
+        {
+          "text": "danger.",
+          "startSeconds": 5.14,
+          "endSeconds": 5.58,
+          "charStart": 71,
+          "charLength": 7,
+          "confidence": 0.9961366057395935
+        }
+      ],
+      "readyForAudioClock": true,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "26de46f108f0b2dfffe5ab47d34097457d4f339783a1796ea1d524cae4c383e3",
+      "format": {
+        "container": "WAV",
+        "sampleRate": 48000,
+        "bitDepth": 24,
+        "channels": 1,
+        "sourceBitDepth": 16
+      },
+      "alignmentMethod": "Local small.en Whisper word timestamps (attention/DTW), CTranslate2 CPU, VAD disabled; no ONNX Runtime imported",
+      "frameResolutionSeconds": 0.02,
+      "minimumWordConfidence": 0.9221833944320679,
+      "verification": {
+        "canonicalSpokenTextVerified": true,
+        "finalSampleCount": 277440,
+        "peakDBFS": -6.949593291651407,
+        "noClipping": true,
+        "parentTranscript": "The warning meant that sufficiently complete memory loss would end the danger. Complete memory loss could also remove the evidence needed to discover that the danger remained. He had warned of more than a thread refusing to break. He had warned of no longer knowing where to look.",
+        "finalCropTranscript": "The warning meant that sufficiently complete memory loss would end the danger.",
+        "sourceCropFrames": [
+          0,
+          277440
+        ],
+        "analysisPaddingSeconds": 1,
+        "manualListeningReview": "PENDING",
+        "telemetryRuntimeUsed": false
+      }
+    },
+    {
+      "assetLineKey": "Hexer:04:N02",
+      "lineId": "ASC_HEX_04__replacement",
+      "sceneId": "ASC_HEX_04",
+      "revelationId": "ASC_HEX_04",
+      "runtimeCommandId": "replacement",
+      "commandId": "replacement",
+      "commandBinding": "Use the existing explicit WriteBlock ID in the authored scene; update binding if Claude assigns a different command ID.",
+      "contentKey": "Hexer:04",
+      "blockKey": "replacement",
+      "speaker": "NARRATOR",
+      "text": "Complete memory loss could also remove the evidence needed to discover that the danger remained.",
+      "textSHA256": "8f6b15f9397c152a0c6613081bf398faa6d2ab34de4adcbcdba6ec51d3a73b57",
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Hexer_Debt04_The_Warning_He_Remembered_Wrong_N02.wav",
+      "emotion": "DoubtingHistorian",
+      "status": "RECORDED_AUTOMATICALLY_VERIFIED",
+      "durationSeconds": 6.84,
+      "words": [
+        {
+          "text": "Complete",
+          "startSeconds": 0,
+          "endSeconds": 0.56,
+          "charStart": 0,
+          "charLength": 8,
+          "confidence": 0.8964576721191406
+        },
+        {
+          "text": "memory",
+          "startSeconds": 0.56,
+          "endSeconds": 1.02,
+          "charStart": 9,
+          "charLength": 6,
+          "confidence": 0.9957834482192993
+        },
+        {
+          "text": "loss",
+          "startSeconds": 1.02,
+          "endSeconds": 1.42,
+          "charStart": 16,
+          "charLength": 4,
+          "confidence": 0.9986554384231567
+        },
+        {
+          "text": "could",
+          "startSeconds": 1.42,
+          "endSeconds": 2.0,
+          "charStart": 21,
+          "charLength": 5,
+          "confidence": 0.9915165901184082
+        },
+        {
+          "text": "also",
+          "startSeconds": 2.0,
+          "endSeconds": 2.42,
+          "charStart": 27,
+          "charLength": 4,
+          "confidence": 0.9981850981712341
+        },
+        {
+          "text": "remove",
+          "startSeconds": 2.42,
+          "endSeconds": 2.86,
+          "charStart": 32,
+          "charLength": 6,
+          "confidence": 0.9984197616577148
+        },
+        {
+          "text": "the",
+          "startSeconds": 2.86,
+          "endSeconds": 3.1399999999999997,
+          "charStart": 39,
+          "charLength": 3,
+          "confidence": 0.994873583316803
+        },
+        {
+          "text": "evidence",
+          "startSeconds": 3.1399999999999997,
+          "endSeconds": 3.5,
+          "charStart": 43,
+          "charLength": 8,
+          "confidence": 0.9984984397888184
+        },
+        {
+          "text": "needed",
+          "startSeconds": 3.5,
+          "endSeconds": 3.92,
+          "charStart": 52,
+          "charLength": 6,
+          "confidence": 0.9984662532806396
+        },
+        {
+          "text": "to",
+          "startSeconds": 3.92,
+          "endSeconds": 4.2,
+          "charStart": 59,
+          "charLength": 2,
+          "confidence": 0.9994687438011169
+        },
+        {
+          "text": "discover",
+          "startSeconds": 4.2,
+          "endSeconds": 4.64,
+          "charStart": 62,
+          "charLength": 8,
+          "confidence": 0.9977237582206726
+        },
+        {
+          "text": "that",
+          "startSeconds": 4.64,
+          "endSeconds": 5.44,
+          "charStart": 71,
+          "charLength": 4,
+          "confidence": 0.9810957312583923
+        },
+        {
+          "text": "the",
+          "startSeconds": 5.44,
+          "endSeconds": 5.6,
+          "charStart": 76,
+          "charLength": 3,
+          "confidence": 0.9950070381164551
+        },
+        {
+          "text": "danger",
+          "startSeconds": 5.6,
+          "endSeconds": 6.0,
+          "charStart": 80,
+          "charLength": 6,
+          "confidence": 0.9945382475852966
+        },
+        {
+          "text": "remained.",
+          "startSeconds": 6.0,
+          "endSeconds": 6.64,
+          "charStart": 87,
+          "charLength": 9,
+          "confidence": 0.702766478061676
+        }
+      ],
+      "readyForAudioClock": true,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "2674357603ca730cc7eb4183252766a14d37d04f93168ea272e08627dfb8cb6d",
+      "format": {
+        "container": "WAV",
+        "sampleRate": 48000,
+        "bitDepth": 24,
+        "channels": 1,
+        "sourceBitDepth": 16
+      },
+      "alignmentMethod": "Local small.en Whisper word timestamps (attention/DTW), CTranslate2 CPU, VAD disabled; no ONNX Runtime imported",
+      "frameResolutionSeconds": 0.02,
+      "minimumWordConfidence": 0.702766478061676,
+      "verification": {
+        "canonicalSpokenTextVerified": true,
+        "finalSampleCount": 328320,
+        "peakDBFS": -7.356812583787199,
+        "noClipping": true,
+        "parentTranscript": "The warning meant that sufficiently complete memory loss would end the danger. Complete memory loss could also remove the evidence needed to discover that the danger remained. He had warned of more than a thread refusing to break. He had warned of no longer knowing where to look.",
+        "finalCropTranscript": "Complete memory loss could also remove the evidence needed to discover that the danger remained.",
+        "sourceCropFrames": [
+          295680,
+          624000
+        ],
+        "analysisPaddingSeconds": 1,
+        "manualListeningReview": "PENDING",
+        "telemetryRuntimeUsed": false
+      }
+    },
+    {
+      "assetLineKey": "Hexer:04:N03",
+      "lineId": "ASC_HEX_04__closing",
+      "sceneId": "ASC_HEX_04",
+      "revelationId": "ASC_HEX_04",
+      "runtimeCommandId": "closing",
+      "commandId": "closing",
+      "commandBinding": "Use the existing explicit WriteBlock ID in the authored scene; update binding if Claude assigns a different command ID.",
+      "contentKey": "Hexer:04",
+      "blockKey": "closing",
+      "speaker": "NARRATOR",
+      "text": "He had warned of more than a thread refusing to break. He had warned of no longer knowing where to look.",
+      "textSHA256": "846a51afcf55200131a3d3084bd910b2ce5585e2ec7af8e1934f91c47409d955",
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Hexer_Debt04_The_Warning_He_Remembered_Wrong_N03.wav",
+      "emotion": "DoubtingHistorian",
+      "status": "RECORDED_AUTOMATICALLY_VERIFIED",
+      "durationSeconds": 8.06,
+      "words": [
+        {
+          "text": "He",
+          "startSeconds": 0,
+          "endSeconds": 0.24,
+          "charStart": 0,
+          "charLength": 2,
+          "confidence": 0.9034220576286316
+        },
+        {
+          "text": "had",
+          "startSeconds": 0.24,
+          "endSeconds": 0.3999999999999999,
+          "charStart": 3,
+          "charLength": 3,
+          "confidence": 0.9897469282150269
+        },
+        {
+          "text": "warned",
+          "startSeconds": 0.3999999999999999,
+          "endSeconds": 0.8,
+          "charStart": 7,
+          "charLength": 6,
+          "confidence": 0.9993746876716614
+        },
+        {
+          "text": "of",
+          "startSeconds": 0.8,
+          "endSeconds": 1.2999999999999998,
+          "charStart": 14,
+          "charLength": 2,
+          "confidence": 0.9784746766090393
+        },
+        {
+          "text": "more",
+          "startSeconds": 1.2999999999999998,
+          "endSeconds": 1.6600000000000001,
+          "charStart": 17,
+          "charLength": 4,
+          "confidence": 0.9972007274627686
+        },
+        {
+          "text": "than",
+          "startSeconds": 1.6600000000000001,
+          "endSeconds": 1.9,
+          "charStart": 22,
+          "charLength": 4,
+          "confidence": 0.994269847869873
+        },
+        {
+          "text": "a",
+          "startSeconds": 1.9,
+          "endSeconds": 2.04,
+          "charStart": 27,
+          "charLength": 1,
+          "confidence": 0.9956327080726624
+        },
+        {
+          "text": "thread",
+          "startSeconds": 2.04,
+          "endSeconds": 2.4,
+          "charStart": 29,
+          "charLength": 6,
+          "confidence": 0.9988957643508911
+        },
+        {
+          "text": "refusing",
+          "startSeconds": 2.4,
+          "endSeconds": 2.98,
+          "charStart": 36,
+          "charLength": 8,
+          "confidence": 0.9933185577392578
+        },
+        {
+          "text": "to",
+          "startSeconds": 2.98,
+          "endSeconds": 3.3600000000000003,
+          "charStart": 45,
+          "charLength": 2,
+          "confidence": 0.9995865225791931
+        },
+        {
+          "text": "break.",
+          "startSeconds": 3.3600000000000003,
+          "endSeconds": 3.66,
+          "charStart": 48,
+          "charLength": 6,
+          "confidence": 0.976949155330658
+        },
+        {
+          "text": "He",
+          "startSeconds": 4.74,
+          "endSeconds": 4.88,
+          "charStart": 55,
+          "charLength": 2,
+          "confidence": 0.996632993221283
+        },
+        {
+          "text": "had",
+          "startSeconds": 4.88,
+          "endSeconds": 5.04,
+          "charStart": 58,
+          "charLength": 3,
+          "confidence": 0.9940500259399414
+        },
+        {
+          "text": "warned",
+          "startSeconds": 5.04,
+          "endSeconds": 5.48,
+          "charStart": 62,
+          "charLength": 6,
+          "confidence": 0.9997826218605042
+        },
+        {
+          "text": "of",
+          "startSeconds": 5.48,
+          "endSeconds": 5.74,
+          "charStart": 69,
+          "charLength": 2,
+          "confidence": 0.9919976592063904
+        },
+        {
+          "text": "no",
+          "startSeconds": 5.74,
+          "endSeconds": 6.0,
+          "charStart": 72,
+          "charLength": 2,
+          "confidence": 0.998115062713623
+        },
+        {
+          "text": "longer",
+          "startSeconds": 6.0,
+          "endSeconds": 6.34,
+          "charStart": 75,
+          "charLength": 6,
+          "confidence": 0.9939695596694946
+        },
+        {
+          "text": "knowing",
+          "startSeconds": 6.34,
+          "endSeconds": 6.8,
+          "charStart": 82,
+          "charLength": 7,
+          "confidence": 0.9958842396736145
+        },
+        {
+          "text": "where",
+          "startSeconds": 6.8,
+          "endSeconds": 7.359999999999999,
+          "charStart": 90,
+          "charLength": 5,
+          "confidence": 0.9918538331985474
+        },
+        {
+          "text": "to",
+          "startSeconds": 7.359999999999999,
+          "endSeconds": 7.58,
+          "charStart": 96,
+          "charLength": 2,
+          "confidence": 0.9996803998947144
+        },
+        {
+          "text": "look.",
+          "startSeconds": 7.58,
+          "endSeconds": 7.9,
+          "charStart": 99,
+          "charLength": 5,
+          "confidence": 0.9993537068367004
+        }
+      ],
+      "readyForAudioClock": true,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "2f5a5b68d1a35258daae642bb84b5d6b9fb21f00924a0f4c197cee6f15860d08",
+      "format": {
+        "container": "WAV",
+        "sampleRate": 48000,
+        "bitDepth": 24,
+        "channels": 1,
+        "sourceBitDepth": 16
+      },
+      "alignmentMethod": "Local small.en Whisper word timestamps (attention/DTW), CTranslate2 CPU, VAD disabled; no ONNX Runtime imported",
+      "frameResolutionSeconds": 0.02,
+      "minimumWordConfidence": 0.9034220576286316,
+      "verification": {
+        "canonicalSpokenTextVerified": true,
+        "finalSampleCount": 386880,
+        "peakDBFS": -7.38865578800309,
+        "noClipping": true,
+        "parentTranscript": "The warning meant that sufficiently complete memory loss would end the danger. Complete memory loss could also remove the evidence needed to discover that the danger remained. He had warned of more than a thread refusing to break. He had warned of no longer knowing where to look.",
+        "finalCropTranscript": "He had warned of more than a thread refusing to break. He had warned of no longer knowing where to look.",
+        "sourceCropFrames": [
+          646080,
+          1032960
+        ],
+        "analysisPaddingSeconds": 1,
+        "manualListeningReview": "PENDING",
+        "telemetryRuntimeUsed": false
+      }
+    }
+  ],
+  "visualKey": "Hexer_InterruptedDiagram",
+  "cinematic": {
+    "direction": "Open a continuation sheet below the existing warning. Hesitate before striking the new mistaken inference. The two original character lines in MEM_14 remain untouched and unplayed during this addition.",
+    "events": [
+      {
+        "step": 1,
+        "intent": "RETURN_TO_EXISTING_MEMORY",
+        "memoryId": "MEM_14",
+        "sceneId": "ASC_HEX_04",
+        "useExistingBookTurn": true,
+        "continuationAPI": "ChronicleJournal.PlanContinuation",
+        "maxVisibleTurns": 3,
+        "turnTiming": "ChronicleRhythm.TurnAnticipation and TurnSettle",
+        "baseTextReadOnly": true,
+        "keepBookOpen": true
+      },
+      {
+        "step": 2,
+        "intent": "RESERVE_NEW_WRITING_AREA",
+        "placement": "Fresh continuation leaf for major corrections; unused margin only if it fits for small additions.",
+        "font": "Reuse current Chronicle handwriting and stroke renderer; respect user-selected textScale without automatic shrinking.",
+        "existingBlocksReadOnly": true
+      },
+      {
+        "step": 3,
+        "intent": "OPTIONAL_MARGINAL_ART",
+        "visualKey": "Hexer_InterruptedDiagram",
+        "asset": "SourceAssets/ChronicleAscension/Art/Hexer_InterruptedDiagram.png",
+        "status": "GENERATED_AND_CHECKED",
+        "onlyNewOverlay": true,
+        "animation": "None required; static marginal study."
+      },
+      {
+        "step": 4,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "context",
+        "mode": "SILENT_HANDWRITING",
+        "text": "The scholar recovered a second sheet beneath the proposed memory erasure. It listed the observations needed to tell whether a connection had weakened. Several depended upon recollections the plan intended to remove. He had seen the contradiction, then remembered it afterward as a warning about incomplete execution.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 5,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "new_observation",
+        "mode": "NARRATED",
+        "text": "The warning meant that sufficiently complete memory loss would end the danger.",
+        "completeBeforeNextBlockingEvent": true,
+        "assetLineKey": "Hexer:04:N01",
+        "clock": "Final recording sample clock and measured word intervals only.",
+        "missingAudioPolicy": "Existing silent-writing fallback; do not invent word timings."
+      },
+      {
+        "step": 6,
+        "intent": "HESITATE",
+        "authoredPauseSeconds": 1.0,
+        "pauseInk": true,
+        "narrationMustFinish": true
+      },
+      {
+        "step": 7,
+        "intent": "RED_STRIKE_NEW_OBSERVATION",
+        "targetBlockKey": "new_observation",
+        "ownerContentKey": "Hexer:04",
+        "requestedExistingCue": "red_ink",
+        "cueMeaning": "Existing Debuff mapping; no new quill Foley is claimed.",
+        "preserveOldChronicleInk": true,
+        "requireScopedTargetValidation": true
+      },
+      {
+        "step": 8,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "replacement",
+        "mode": "NARRATED",
+        "text": "Complete memory loss could also remove the evidence needed to discover that the danger remained.",
+        "completeBeforeNextBlockingEvent": true,
+        "assetLineKey": "Hexer:04:N02",
+        "clock": "Final recording sample clock and measured word intervals only.",
+        "missingAudioPolicy": "Existing silent-writing fallback; do not invent word timings."
+      },
+      {
+        "step": 9,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "evidence",
+        "mode": "SILENT_HANDWRITING",
+        "text": "A blank measurement would not establish a broken connection if the person making it could no longer recognize what had been measured. The scholar's question at the sanctuary was larger than he later recalled. It concerned both the failure of the plan and their ability to know whether it had failed.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 10,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "account",
+        "mode": "SILENT_HANDWRITING",
+        "text": "The fourth companion's decision remains his own. Urgency did not become certainty merely because there was little time. The scholar had understood a possible route out of the danger; he had not established a safe way to verify its result. Losing the witness was itself one of the costs.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 11,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "closing",
+        "mode": "NARRATED",
+        "text": "He had warned of more than a thread refusing to break. He had warned of no longer knowing where to look.",
+        "completeBeforeNextBlockingEvent": true,
+        "assetLineKey": "Hexer:04:N03",
+        "clock": "Final recording sample clock and measured word intervals only.",
+        "missingAudioPolicy": "Existing silent-writing fallback; do not invent word timings."
+      },
+      {
+        "step": 12,
+        "intent": "COMPLETE_NEW_ADDITION",
+        "archivePermanent": true,
+        "idempotent": true,
+        "completionHold": "ChronicleRhythm.CompletionHold; no extra fixed three-second hold",
+        "revisitTiming": "ChronicleRhythm.RevisitScale",
+        "skipState": "All new blocks complete; the new observation is struck and its replacement remains. All base-memory content is unchanged.",
+        "replay": "Read immediately; full cinematic is opt-in.",
+        "runtimeSaveId": "ASC_HEX_04"
+      }
+    ]
+  },
+  "continuityGates": [
+    {
+      "requirement": "Existing expanded memory and its canonical correction/knowledge have already been viewed.",
+      "memoryId": "MEM_14"
+    }
+  ],
+  "spoilerPolicy": "Never identify the Narrator with the fourth companion or the Forgotten Observer before SCENE_CH10. Base discoveries remain first; additions are deferred if required knowledge is absent.",
+  "existingContentModified": false,
+  "newBeingDialogue": false,
+  "accessibility": {
+    "instantText": true,
+    "voiceMuteKeepsPageReadable": true,
+    "reducedMotionUsesStaticArt": true,
+    "reducedFlashingNoExtraGlow": true,
+    "skipResolvesCompletedNewState": true
+  }
+}

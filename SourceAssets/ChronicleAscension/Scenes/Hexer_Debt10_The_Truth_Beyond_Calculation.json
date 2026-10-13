@@ -1,0 +1,801 @@
+{
+  "schemaVersion": 1,
+  "contentKey": "Hexer:10",
+  "revelationId": "ASC_HEX_10",
+  "sceneId": "ASC_HEX_10",
+  "idBindingStatus": "BOUND_TO_EXISTING_ASCENSION_CATALOG",
+  "authoringComplete": true,
+  "contentReady": false,
+  "runtimeRegistrationStatus": "NOT_INTEGRATED_BY_THIS_CONTENT_TASK",
+  "hero": "Hexer",
+  "fateDebt": 10,
+  "kindOrdinal": 4,
+  "presentation": "FullCorrection",
+  "title": "The Truth Beyond Calculation",
+  "kind": "MAJOR",
+  "expandedMemoryId": "MEM_26",
+  "expandedChapterId": "CH_09",
+  "sourceCommit": "7211864e93fee914ef370912ae1ed8aafd66266b",
+  "journalBlocks": [
+    {
+      "blockKey": "context",
+      "text": "The old page with the familiar handwriting contained something besides a match: a proof left unfinished. Its last space was reserved for an account from outside the diagram. The hand that drew the paths had not filled it. The scholar had initially treated that gap as damage to be repaired.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "c04b58ae5c875cfad1eeb9000825b32b0d698b8910d59cc22a21466a772fc646"
+    },
+    {
+      "blockKey": "new_observation",
+      "text": "The matching handwriting would supply the answer missing from the calculations.",
+      "mode": "NARRATED",
+      "textSHA256": "08142d6c134661734d9f633a324aca9cca6bac5c788cfb3325f11ca68d52a38e",
+      "assetLineKey": "Hexer:10:N01"
+    },
+    {
+      "blockKey": "replacement",
+      "text": "The matching handwriting identifies a witness; it does not make that witness's account complete.",
+      "mode": "NARRATED",
+      "textSHA256": "816a0f5091d6f5e192a54309e67818aa39bfcad8af8fecc4fadb54971764e2fe",
+      "assetLineKey": "Hexer:10:N02"
+    },
+    {
+      "blockKey": "evidence",
+      "text": "The unfinished space belonged to the design. Another person's experience could still contradict the proposed result. Recovering the author might explain why the page had been written, but it could not make the omitted answer unnecessary. The scholar's earliest comparison had failed by allowing precisely such an answer to disappear.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "16a42b3a892fb6fffcf57338ec8b401d50f519dc276d820b068cdcbf4e2abd1b"
+    },
+    {
+      "blockKey": "account",
+      "text": "His recovered history ends with a requirement, not a solution to the anchor. Any attempt to change what remains must preserve a way for those affected to answer. Understanding the pattern gives him work to do. It gives him no ownership of the lives the pattern contains. The familiar hand remains an unanswered question for the Chronicle.",
+      "mode": "SILENT_HANDWRITING",
+      "textSHA256": "eb34105bce6e021bc1bbb37dbf5e48e58478f131545f666cd5eb289815d15c14"
+    },
+    {
+      "blockKey": "closing",
+      "text": "He could begin another calculation. This time, a person who disagreed with its conclusion would still have a place upon the page.",
+      "mode": "NARRATED",
+      "textSHA256": "cc926261d4ccce26e2c83d3c71c4843ea8f967744f1fbb324b9aff68a33b0b6b",
+      "assetLineKey": "Hexer:10:N03"
+    }
+  ],
+  "journalText": "The old page with the familiar handwriting contained something besides a match: a proof left unfinished. Its last space was reserved for an account from outside the diagram. The hand that drew the paths had not filled it. The scholar had initially treated that gap as damage to be repaired.\n\nThe matching handwriting would supply the answer missing from the calculations.\n\nThe matching handwriting identifies a witness; it does not make that witness's account complete.\n\nThe unfinished space belonged to the design. Another person's experience could still contradict the proposed result. Recovering the author might explain why the page had been written, but it could not make the omitted answer unnecessary. The scholar's earliest comparison had failed by allowing precisely such an answer to disappear.\n\nHis recovered history ends with a requirement, not a solution to the anchor. Any attempt to change what remains must preserve a way for those affected to answer. Understanding the pattern gives him work to do. It gives him no ownership of the lives the pattern contains. The familiar hand remains an unanswered question for the Chronicle.\n\nHe could begin another calculation. This time, a person who disagreed with its conclusion would still have a place upon the page.",
+  "wordCount": 204,
+  "newlyRecoveredInformation": "The ancient document deliberately required independent testimony; its missing answer was an ethical and evidential safeguard, not damage. Handwriting is evidence of a witness, not a guarantee of omniscience or consent.",
+  "newlyAuthoredDetails": [
+    "An intentionally unfilled testimony space in the old document. No identification of the Narrator or explanation of the Chronicle's full supernatural mechanism is added."
+  ],
+  "sourceEvidence": [
+    "MEM_26",
+    "MEM_08",
+    "MEM_02",
+    "SCENE_CH10"
+  ],
+  "relationships": {
+    "follows": [
+      "Hexer:01",
+      "Hexer:03",
+      "Hexer:06",
+      "Hexer:09"
+    ],
+    "convergesWith": [
+      "Vanguard:10",
+      "Reaper:10"
+    ],
+    "leadsToward": "SCENE_CH10"
+  },
+  "correction": {
+    "ownerContentKey": "Hexer:10",
+    "revelationId": "ASC_HEX_10",
+    "correctionId": "ASC_CORR_HEX_4",
+    "localCorrectionKey": "new_observation",
+    "targetScope": "THIS_NEW_ADDITION_ONLY",
+    "targetBlockKey": "new_observation",
+    "originalNewObservation": "The matching handwriting would supply the answer missing from the calculations.",
+    "correctedReplacement": "The matching handwriting identifies a witness; it does not make that witness's account complete.",
+    "replacementBlockKey": "replacement",
+    "originalChronicleTarget": null,
+    "sharedCorrectionIdsModified": [],
+    "preserveOriginal": true,
+    "inkStyle": "Existing restrained red correction style",
+    "acknowledgement": "Only the observation added by this package may be crossed out."
+  },
+  "narration": [
+    {
+      "assetLineKey": "Hexer:10:N01",
+      "lineId": "ASC_HEX_10__new_observation",
+      "sceneId": "ASC_HEX_10",
+      "revelationId": "ASC_HEX_10",
+      "runtimeCommandId": "new_observation",
+      "commandId": "new_observation",
+      "commandBinding": "Use the existing explicit WriteBlock ID in the authored scene; update binding if Claude assigns a different command ID.",
+      "contentKey": "Hexer:10",
+      "blockKey": "new_observation",
+      "speaker": "NARRATOR",
+      "text": "The matching handwriting would supply the answer missing from the calculations.",
+      "textSHA256": "08142d6c134661734d9f633a324aca9cca6bac5c788cfb3325f11ca68d52a38e",
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Hexer_Debt10_The_Truth_Beyond_Calculation_N01.wav",
+      "emotion": "QuietRecognitionWithoutIdentityReveal",
+      "status": "RECORDED_AUTOMATICALLY_VERIFIED",
+      "durationSeconds": 4.390479166666666,
+      "words": [
+        {
+          "text": "The",
+          "startSeconds": 0,
+          "endSeconds": 0.3799999999999999,
+          "charStart": 0,
+          "charLength": 3,
+          "confidence": 0.924024760723114
+        },
+        {
+          "text": "matching",
+          "startSeconds": 0.3799999999999999,
+          "endSeconds": 0.72,
+          "charStart": 4,
+          "charLength": 8,
+          "confidence": 0.9792335629463196
+        },
+        {
+          "text": "handwriting",
+          "startSeconds": 0.72,
+          "endSeconds": 1.2200000000000002,
+          "charStart": 13,
+          "charLength": 11,
+          "confidence": 0.9876447319984436
+        },
+        {
+          "text": "would",
+          "startSeconds": 1.2200000000000002,
+          "endSeconds": 1.62,
+          "charStart": 25,
+          "charLength": 5,
+          "confidence": 0.9902150630950928
+        },
+        {
+          "text": "supply",
+          "startSeconds": 1.62,
+          "endSeconds": 2.0,
+          "charStart": 31,
+          "charLength": 6,
+          "confidence": 0.9963666200637817
+        },
+        {
+          "text": "the",
+          "startSeconds": 2.0,
+          "endSeconds": 2.18,
+          "charStart": 38,
+          "charLength": 3,
+          "confidence": 0.9965158700942993
+        },
+        {
+          "text": "answer",
+          "startSeconds": 2.18,
+          "endSeconds": 2.54,
+          "charStart": 42,
+          "charLength": 6,
+          "confidence": 0.9969291090965271
+        },
+        {
+          "text": "missing",
+          "startSeconds": 2.54,
+          "endSeconds": 2.9,
+          "charStart": 49,
+          "charLength": 7,
+          "confidence": 0.9956021308898926
+        },
+        {
+          "text": "from",
+          "startSeconds": 2.9,
+          "endSeconds": 3.2199999999999998,
+          "charStart": 57,
+          "charLength": 4,
+          "confidence": 0.9945833086967468
+        },
+        {
+          "text": "the",
+          "startSeconds": 3.2199999999999998,
+          "endSeconds": 3.3600000000000003,
+          "charStart": 62,
+          "charLength": 3,
+          "confidence": 0.9968915581703186
+        },
+        {
+          "text": "calculations.",
+          "startSeconds": 3.3600000000000003,
+          "endSeconds": 3.9400000000000004,
+          "charStart": 66,
+          "charLength": 13,
+          "confidence": 0.9275705814361572
+        }
+      ],
+      "readyForAudioClock": true,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "b13be4a94e17263a7be1eb22d264bb689827e53240d8adf222d0d07bebe34578",
+      "format": {
+        "container": "WAV",
+        "sampleRate": 48000,
+        "bitDepth": 24,
+        "channels": 1,
+        "sourceBitDepth": 16
+      },
+      "alignmentMethod": "Local small.en Whisper word timestamps (attention/DTW), CTranslate2 CPU, VAD disabled; no ONNX Runtime imported",
+      "frameResolutionSeconds": 0.02,
+      "minimumWordConfidence": 0.924024760723114,
+      "verification": {
+        "canonicalSpokenTextVerified": true,
+        "finalSampleCount": 210743,
+        "peakDBFS": -6.418661997605256,
+        "noClipping": true,
+        "parentTranscript": "The matching handwriting would supply the answer missing from the calculations.",
+        "finalCropTranscript": "The matching handwriting would supply the answer missing from the calculations.",
+        "sourceCropFrames": [
+          0,
+          210743
+        ],
+        "analysisPaddingSeconds": 1,
+        "sourceTimingProjectionUsed": false,
+        "manualListeningReview": "PENDING",
+        "telemetryRuntimeUsed": false
+      }
+    },
+    {
+      "assetLineKey": "Hexer:10:N02",
+      "lineId": "ASC_HEX_10__replacement",
+      "sceneId": "ASC_HEX_10",
+      "revelationId": "ASC_HEX_10",
+      "runtimeCommandId": "replacement",
+      "commandId": "replacement",
+      "commandBinding": "Use the existing explicit WriteBlock ID in the authored scene; update binding if Claude assigns a different command ID.",
+      "contentKey": "Hexer:10",
+      "blockKey": "replacement",
+      "speaker": "NARRATOR",
+      "text": "The matching handwriting identifies a witness; it does not make that witness's account complete.",
+      "textSHA256": "816a0f5091d6f5e192a54309e67818aa39bfcad8af8fecc4fadb54971764e2fe",
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Hexer_Debt10_The_Truth_Beyond_Calculation_N02.wav",
+      "emotion": "QuietRecognitionWithoutIdentityReveal",
+      "status": "RECORDED_AUTOMATICALLY_VERIFIED",
+      "durationSeconds": 6.88,
+      "words": [
+        {
+          "text": "The",
+          "startSeconds": 0,
+          "endSeconds": 0.32000000000000006,
+          "charStart": 0,
+          "charLength": 3,
+          "confidence": 0.9526851177215576
+        },
+        {
+          "text": "matching",
+          "startSeconds": 0.32000000000000006,
+          "endSeconds": 0.6799999999999999,
+          "charStart": 4,
+          "charLength": 8,
+          "confidence": 0.9858431220054626
+        },
+        {
+          "text": "handwriting",
+          "startSeconds": 0.6799999999999999,
+          "endSeconds": 1.2200000000000002,
+          "charStart": 13,
+          "charLength": 11,
+          "confidence": 0.9926515221595764
+        },
+        {
+          "text": "identifies",
+          "startSeconds": 1.2200000000000002,
+          "endSeconds": 2.18,
+          "charStart": 25,
+          "charLength": 10,
+          "confidence": 0.9954892992973328
+        },
+        {
+          "text": "a",
+          "startSeconds": 2.18,
+          "endSeconds": 2.54,
+          "charStart": 36,
+          "charLength": 1,
+          "confidence": 0.9980556964874268
+        },
+        {
+          "text": "witness;",
+          "startSeconds": 2.54,
+          "endSeconds": 2.88,
+          "charStart": 38,
+          "charLength": 8,
+          "confidence": 0.9908972382545471
+        },
+        {
+          "text": "it",
+          "startSeconds": 3.8600000000000003,
+          "endSeconds": 4.06,
+          "charStart": 47,
+          "charLength": 2,
+          "confidence": 0.9939409494400024
+        },
+        {
+          "text": "does",
+          "startSeconds": 4.06,
+          "endSeconds": 4.18,
+          "charStart": 50,
+          "charLength": 4,
+          "confidence": 0.9978715181350708
+        },
+        {
+          "text": "not",
+          "startSeconds": 4.18,
+          "endSeconds": 4.38,
+          "charStart": 55,
+          "charLength": 3,
+          "confidence": 0.9995782971382141
+        },
+        {
+          "text": "make",
+          "startSeconds": 4.38,
+          "endSeconds": 4.66,
+          "charStart": 59,
+          "charLength": 4,
+          "confidence": 0.9991413354873657
+        },
+        {
+          "text": "that",
+          "startSeconds": 4.66,
+          "endSeconds": 4.92,
+          "charStart": 64,
+          "charLength": 4,
+          "confidence": 0.9878808259963989
+        },
+        {
+          "text": "witness's",
+          "startSeconds": 4.92,
+          "endSeconds": 5.46,
+          "charStart": 69,
+          "charLength": 9,
+          "confidence": 0.9217418134212494
+        },
+        {
+          "text": "account",
+          "startSeconds": 5.46,
+          "endSeconds": 5.9,
+          "charStart": 79,
+          "charLength": 7,
+          "confidence": 0.9988627433776855
+        },
+        {
+          "text": "complete.",
+          "startSeconds": 5.9,
+          "endSeconds": 6.7,
+          "charStart": 87,
+          "charLength": 9,
+          "confidence": 0.9880807399749756
+        }
+      ],
+      "readyForAudioClock": true,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "7275a2d2b40e214edb835881171874849972fe5e5cb2c41899c4c2309f832941",
+      "format": {
+        "container": "WAV",
+        "sampleRate": 48000,
+        "bitDepth": 24,
+        "channels": 1,
+        "sourceBitDepth": 16
+      },
+      "alignmentMethod": "Local small.en Whisper word timestamps (attention/DTW), CTranslate2 CPU, VAD disabled; no ONNX Runtime imported",
+      "frameResolutionSeconds": 0.02,
+      "minimumWordConfidence": 0.9217418134212494,
+      "verification": {
+        "canonicalSpokenTextVerified": true,
+        "finalSampleCount": 330240,
+        "peakDBFS": -5.816322562162457,
+        "noClipping": true,
+        "parentTranscript": "matching handwriting would supply the answer missing from the calculations. The matching handwriting identifies a witness. It does not make that witness's account complete. He could begin another calculation. This time a person who disagreed with its conclusion would still have a place upon the pay.",
+        "finalCropTranscript": "The matching handwriting identifies a witness. It does not make that witness's account complete.",
+        "sourceCropFrames": [
+          273600,
+          603840
+        ],
+        "analysisPaddingSeconds": 1,
+        "manualListeningReview": "PENDING",
+        "telemetryRuntimeUsed": false
+      }
+    },
+    {
+      "assetLineKey": "Hexer:10:N03",
+      "lineId": "ASC_HEX_10__closing",
+      "sceneId": "ASC_HEX_10",
+      "revelationId": "ASC_HEX_10",
+      "runtimeCommandId": "closing",
+      "commandId": "closing",
+      "commandBinding": "Use the existing explicit WriteBlock ID in the authored scene; update binding if Claude assigns a different command ID.",
+      "contentKey": "Hexer:10",
+      "blockKey": "closing",
+      "speaker": "NARRATOR",
+      "text": "He could begin another calculation. This time, a person who disagreed with its conclusion would still have a place upon the page.",
+      "textSHA256": "cc926261d4ccce26e2c83d3c71c4843ea8f967744f1fbb324b9aff68a33b0b6b",
+      "file": "SourceAssets/ChronicleAscension/Audio/Narrator/Hexer_Debt10_The_Truth_Beyond_Calculation_N03.wav",
+      "emotion": "QuietRecognitionWithoutIdentityReveal",
+      "status": "RECORDED_AUTOMATICALLY_VERIFIED",
+      "durationSeconds": 7.56,
+      "words": [
+        {
+          "text": "He",
+          "startSeconds": 0,
+          "endSeconds": 0.21999999999999997,
+          "charStart": 0,
+          "charLength": 2,
+          "confidence": 0.8799747228622437
+        },
+        {
+          "text": "could",
+          "startSeconds": 0.21999999999999997,
+          "endSeconds": 0.3799999999999999,
+          "charStart": 3,
+          "charLength": 5,
+          "confidence": 0.9968653321266174
+        },
+        {
+          "text": "begin",
+          "startSeconds": 0.3799999999999999,
+          "endSeconds": 0.6599999999999999,
+          "charStart": 9,
+          "charLength": 5,
+          "confidence": 0.9919501543045044
+        },
+        {
+          "text": "another",
+          "startSeconds": 0.6599999999999999,
+          "endSeconds": 0.94,
+          "charStart": 15,
+          "charLength": 7,
+          "confidence": 0.9979857206344604
+        },
+        {
+          "text": "calculation.",
+          "startSeconds": 0.94,
+          "endSeconds": 1.6800000000000002,
+          "charStart": 23,
+          "charLength": 12,
+          "confidence": 0.9984995126724243
+        },
+        {
+          "text": "This",
+          "startSeconds": 1.98,
+          "endSeconds": 2.06,
+          "charStart": 36,
+          "charLength": 4,
+          "confidence": 0.9917718768119812
+        },
+        {
+          "text": "time,",
+          "startSeconds": 2.06,
+          "endSeconds": 2.44,
+          "charStart": 41,
+          "charLength": 5,
+          "confidence": 0.9996501207351685
+        },
+        {
+          "text": "a",
+          "startSeconds": 2.88,
+          "endSeconds": 3.0199999999999996,
+          "charStart": 47,
+          "charLength": 1,
+          "confidence": 0.9952290058135986
+        },
+        {
+          "text": "person",
+          "startSeconds": 3.0199999999999996,
+          "endSeconds": 3.26,
+          "charStart": 49,
+          "charLength": 6,
+          "confidence": 0.9975109100341797
+        },
+        {
+          "text": "who",
+          "startSeconds": 3.26,
+          "endSeconds": 3.54,
+          "charStart": 56,
+          "charLength": 3,
+          "confidence": 0.9927339553833008
+        },
+        {
+          "text": "disagreed",
+          "startSeconds": 3.54,
+          "endSeconds": 4.06,
+          "charStart": 60,
+          "charLength": 9,
+          "confidence": 0.9966503977775574
+        },
+        {
+          "text": "with",
+          "startSeconds": 4.06,
+          "endSeconds": 4.4,
+          "charStart": 70,
+          "charLength": 4,
+          "confidence": 0.9979919195175171
+        },
+        {
+          "text": "its",
+          "startSeconds": 4.4,
+          "endSeconds": 4.58,
+          "charStart": 75,
+          "charLength": 3,
+          "confidence": 0.9692492485046387
+        },
+        {
+          "text": "conclusion",
+          "startSeconds": 4.58,
+          "endSeconds": 5.12,
+          "charStart": 79,
+          "charLength": 10,
+          "confidence": 0.9978684186935425
+        },
+        {
+          "text": "would",
+          "startSeconds": 5.54,
+          "endSeconds": 5.82,
+          "charStart": 90,
+          "charLength": 5,
+          "confidence": 0.9032036662101746
+        },
+        {
+          "text": "still",
+          "startSeconds": 5.82,
+          "endSeconds": 6.06,
+          "charStart": 96,
+          "charLength": 5,
+          "confidence": 0.9962090253829956
+        },
+        {
+          "text": "have",
+          "startSeconds": 6.06,
+          "endSeconds": 6.22,
+          "charStart": 102,
+          "charLength": 4,
+          "confidence": 0.9977043271064758
+        },
+        {
+          "text": "a",
+          "startSeconds": 6.22,
+          "endSeconds": 6.36,
+          "charStart": 107,
+          "charLength": 1,
+          "confidence": 0.9959408044815063
+        },
+        {
+          "text": "place",
+          "startSeconds": 6.36,
+          "endSeconds": 6.6,
+          "charStart": 109,
+          "charLength": 5,
+          "confidence": 0.999502420425415
+        },
+        {
+          "text": "upon",
+          "startSeconds": 6.6,
+          "endSeconds": 6.92,
+          "charStart": 115,
+          "charLength": 4,
+          "confidence": 0.9851699471473694
+        },
+        {
+          "text": "the",
+          "startSeconds": 6.92,
+          "endSeconds": 7.08,
+          "charStart": 120,
+          "charLength": 3,
+          "confidence": 0.9983678460121155
+        },
+        {
+          "text": "page.",
+          "startSeconds": 7.08,
+          "endSeconds": 7.42,
+          "charStart": 124,
+          "charLength": 5,
+          "confidence": 0.9981912970542908
+        }
+      ],
+      "readyForAudioClock": true,
+      "manualListeningReview": "PENDING",
+      "audioSHA256": "404e7c4bd0ad39025afbc0b25e718bfc66cffdd0ada8cd8c87190833a6c083d8",
+      "format": {
+        "container": "WAV",
+        "sampleRate": 48000,
+        "bitDepth": 24,
+        "channels": 1,
+        "sourceBitDepth": 16
+      },
+      "alignmentMethod": "Local small.en Whisper word timestamps (attention/DTW), CTranslate2 CPU, VAD disabled; no ONNX Runtime imported",
+      "frameResolutionSeconds": 0.02,
+      "minimumWordConfidence": 0.8799747228622437,
+      "verification": {
+        "canonicalSpokenTextVerified": true,
+        "finalSampleCount": 362880,
+        "peakDBFS": -7.002053010013094,
+        "noClipping": true,
+        "parentTranscript": "he could begin another calculation. This time, a person who disagreed with its conclusion would still have a place upon the page.",
+        "finalCropTranscript": "He could begin another calculation. This time, a person who disagreed with its conclusion would still have a place upon the page.",
+        "sourceCropFrames": [
+          0,
+          362880
+        ],
+        "analysisPaddingSeconds": 1,
+        "manualListeningReview": "PENDING",
+        "telemetryRuntimeUsed": false
+      }
+    }
+  ],
+  "visualKey": "Hexer_InterruptedDiagram",
+  "cinematic": {
+    "direction": "Return to the already-discovered handwriting page. Show the new blank testimony-space detail without reproducing old lettering. Stop before an author is named. Chapter X retains the first Narrator identity revelation.",
+    "events": [
+      {
+        "step": 1,
+        "intent": "RETURN_TO_EXISTING_MEMORY",
+        "memoryId": "MEM_26",
+        "sceneId": "ASC_HEX_10",
+        "useExistingBookTurn": true,
+        "continuationAPI": "ChronicleJournal.PlanContinuation",
+        "maxVisibleTurns": 3,
+        "turnTiming": "ChronicleRhythm.TurnAnticipation and TurnSettle",
+        "baseTextReadOnly": true,
+        "keepBookOpen": true
+      },
+      {
+        "step": 2,
+        "intent": "RESERVE_NEW_WRITING_AREA",
+        "placement": "Fresh continuation leaf for major corrections; unused margin only if it fits for small additions.",
+        "font": "Reuse current Chronicle handwriting and stroke renderer; respect user-selected textScale without automatic shrinking.",
+        "existingBlocksReadOnly": true
+      },
+      {
+        "step": 3,
+        "intent": "OPTIONAL_MARGINAL_ART",
+        "visualKey": "Hexer_InterruptedDiagram",
+        "asset": "SourceAssets/ChronicleAscension/Art/Hexer_InterruptedDiagram.png",
+        "status": "GENERATED_AND_CHECKED",
+        "onlyNewOverlay": true,
+        "animation": "None required; static marginal study."
+      },
+      {
+        "step": 4,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "context",
+        "mode": "SILENT_HANDWRITING",
+        "text": "The old page with the familiar handwriting contained something besides a match: a proof left unfinished. Its last space was reserved for an account from outside the diagram. The hand that drew the paths had not filled it. The scholar had initially treated that gap as damage to be repaired.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 5,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "new_observation",
+        "mode": "NARRATED",
+        "text": "The matching handwriting would supply the answer missing from the calculations.",
+        "completeBeforeNextBlockingEvent": true,
+        "assetLineKey": "Hexer:10:N01",
+        "clock": "Final recording sample clock and measured word intervals only.",
+        "missingAudioPolicy": "Existing silent-writing fallback; do not invent word timings."
+      },
+      {
+        "step": 6,
+        "intent": "HESITATE",
+        "authoredPauseSeconds": 1.0,
+        "pauseInk": true,
+        "narrationMustFinish": true
+      },
+      {
+        "step": 7,
+        "intent": "RED_STRIKE_NEW_OBSERVATION",
+        "targetBlockKey": "new_observation",
+        "ownerContentKey": "Hexer:10",
+        "requestedExistingCue": "red_ink",
+        "cueMeaning": "Existing Debuff mapping; no new quill Foley is claimed.",
+        "preserveOldChronicleInk": true,
+        "requireScopedTargetValidation": true
+      },
+      {
+        "step": 8,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "replacement",
+        "mode": "NARRATED",
+        "text": "The matching handwriting identifies a witness; it does not make that witness's account complete.",
+        "completeBeforeNextBlockingEvent": true,
+        "assetLineKey": "Hexer:10:N02",
+        "clock": "Final recording sample clock and measured word intervals only.",
+        "missingAudioPolicy": "Existing silent-writing fallback; do not invent word timings."
+      },
+      {
+        "step": 9,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "evidence",
+        "mode": "SILENT_HANDWRITING",
+        "text": "The unfinished space belonged to the design. Another person's experience could still contradict the proposed result. Recovering the author might explain why the page had been written, but it could not make the omitted answer unnecessary. The scholar's earliest comparison had failed by allowing precisely such an answer to disappear.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 10,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "account",
+        "mode": "SILENT_HANDWRITING",
+        "text": "His recovered history ends with a requirement, not a solution to the anchor. Any attempt to change what remains must preserve a way for those affected to answer. Understanding the pattern gives him work to do. It gives him no ownership of the lives the pattern contains. The familiar hand remains an unanswered question for the Chronicle.",
+        "completeBeforeNextBlockingEvent": true,
+        "writingPlan": {
+          "kind": "Authored silent-writing pacing, not audio timestamps",
+          "defaultCharactersPerSecondRange": [
+            28,
+            36
+          ],
+          "sentencePauseSeconds": 0.35,
+          "paragraphPauseSeconds": 0.7,
+          "emphasisPauseAfter": [],
+          "emphasisPauseSeconds": 0.9,
+          "usePlayerWritingPreference": true,
+          "sound": null,
+          "soundReason": "No installed quill-writing or book-idle loop; preserve current music and existing cues."
+        }
+      },
+      {
+        "step": 11,
+        "intent": "WRITE_NEW_BLOCK",
+        "blockKey": "closing",
+        "mode": "NARRATED",
+        "text": "He could begin another calculation. This time, a person who disagreed with its conclusion would still have a place upon the page.",
+        "completeBeforeNextBlockingEvent": true,
+        "assetLineKey": "Hexer:10:N03",
+        "clock": "Final recording sample clock and measured word intervals only.",
+        "missingAudioPolicy": "Existing silent-writing fallback; do not invent word timings."
+      },
+      {
+        "step": 12,
+        "intent": "COMPLETE_NEW_ADDITION",
+        "archivePermanent": true,
+        "idempotent": true,
+        "completionHold": "ChronicleRhythm.CompletionHold; no extra fixed three-second hold",
+        "revisitTiming": "ChronicleRhythm.RevisitScale",
+        "skipState": "All new blocks complete; the new observation is struck and its replacement remains. All base-memory content is unchanged.",
+        "replay": "Read immediately; full cinematic is opt-in.",
+        "runtimeSaveId": "ASC_HEX_10"
+      }
+    ]
+  },
+  "continuityGates": [
+    {
+      "requirement": "Existing expanded memory and its canonical correction/knowledge have already been viewed.",
+      "memoryId": "MEM_26"
+    }
+  ],
+  "spoilerPolicy": "Never identify the Narrator with the fourth companion or the Forgotten Observer before SCENE_CH10. Base discoveries remain first; additions are deferred if required knowledge is absent.",
+  "existingContentModified": false,
+  "newBeingDialogue": false,
+  "accessibility": {
+    "instantText": true,
+    "voiceMuteKeepsPageReadable": true,
+    "reducedMotionUsesStaticArt": true,
+    "reducedFlashingNoExtraGlow": true,
+    "skipResolvesCompletedNewState": true
+  }
+}
