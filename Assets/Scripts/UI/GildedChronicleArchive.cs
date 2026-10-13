@@ -21,6 +21,8 @@ namespace GildedFate.UI
         private float archiveClosingAt;
         private int archiveOutSpread, archiveOutReadingSpread;
         private string archiveOutReadingId = "";
+        // A chapter jump is a physical journey: one real sheet per spread crossed, quick through the middle, slowing at the end.
+        private ChronicleFlipPlan archiveFlipPlan; private int archiveFlipStep;
         private readonly Dictionary<string, ChronicleMemoryReading> archiveReadings = new();
         private readonly Dictionary<int, GUIStyle> archiveStyles = new();
         private readonly ChronicleSceneState archiveInkState = new();
@@ -57,6 +59,7 @@ namespace GildedFate.UI
         {
             if (archiveClosing) return;
             if (chronicleHost == null || chronicleActive) { CloseChronicleArchive(); return; }   // flat fallback: nothing to close
+            if (archiveFlipPlan != null) EndArchiveFlip();
             archiveClosing = true; archiveClosingAt = Time.unscaledTime; archiveFlipActive = archiveSyncBook = false;
             chronicleHost.Rig.Perform(ChronicleBookAction.Close, profile.chronicle.NarratorState); ChronicleBookSound(ChronicleBookAction.Close);
         }
@@ -88,6 +91,11 @@ namespace GildedFate.UI
                 if (Time.unscaledTime - archiveClosingAt >= chronicleHost.Rig.DurationOf(ChronicleBookAction.Close) + .3f) CloseChronicleArchive();
                 return;   // no page sync while the cover closes, or it would spring back open
             }
+            if (archiveFlipPlan != null)
+            {
+                if (!frame.busy) { if (archiveFlipStep < archiveFlipPlan.Turns) ArchiveFlipNext(); else EndArchiveFlip(); }
+                return;
+            }
             if (archiveFlipActive && frame.flipDirection == 0 && !frame.busy) archiveFlipActive = false;
             if (archiveSyncBook && !frame.busy) { archiveSyncBook = false; chronicleHost.Rig.SetPoseImmediate(ChronicleBookPose.Open, archive.Spread); }
         }
@@ -97,6 +105,7 @@ namespace GildedFate.UI
         {
             if (archive == null) { screen = ScreenMode.Menu; return true; }
             if (archiveClosing || !input.Any) return true;
+            if (archiveFlipPlan != null) { EndArchiveFlip(); return true; }   // any press during a long journey lands on the destination at once
             controllerNavigation = true;
             ChronicleArchiveResult result;
             if (input.back) result = archive.Back();
@@ -118,6 +127,11 @@ namespace GildedFate.UI
                     {
                         var reading = !string.IsNullOrEmpty(r.id);
                         archiveOutSpread = reading ? archive.Spread : r.fromSpread; archiveOutReadingId = reading ? r.id : ""; archiveOutReadingSpread = reading ? r.fromSpread : 0;
+                        if (!reading && Mathf.Abs(r.toSpread - r.fromSpread) > 1 && !profile.reduceMotion)
+                        {
+                            archiveFlipPlan = ChronicleJournal.PlanFlip(r.fromSpread, r.toSpread); archiveFlipStep = 0;
+                            archiveFlipActive = true; archiveSyncBook = false; ArchiveFlipNext(); break;
+                        }
                         var forward = r.toSpread > r.fromSpread; var action = forward ? ChronicleBookAction.TurnPageForward : ChronicleBookAction.TurnPageBack;
                         chronicleHost.Rig.Perform(action, profile.chronicle.NarratorState); ChronicleBookSound(action);
                         archiveFlipActive = true; archiveSyncBook = true;
@@ -150,6 +164,21 @@ namespace GildedFate.UI
             archive?.Restore(spread, readingId);
         }
 
+        private void ArchiveFlipNext()
+        {
+            if (archiveFlipPlan == null || chronicleHost == null) return;
+            var action = archiveFlipPlan.direction > 0 ? ChronicleBookAction.TurnPageForward : ChronicleBookAction.TurnPageBack;
+            SetChronicleTempo(archiveFlipPlan.tempos[archiveFlipStep++]);
+            chronicleHost.Rig.Perform(action, profile.chronicle.NarratorState); ChronicleBookSound(action);
+        }
+
+        // Ends a journey (finished or skipped): normal tempo, and the book set exactly on the destination with its stacks in place.
+        private void EndArchiveFlip()
+        {
+            archiveFlipPlan = null; archiveFlipActive = false; archiveSyncBook = false; SetChronicleTempo(1f);
+            if (chronicleHost != null && archive != null) chronicleHost.Rig.SetPoseImmediate(ChronicleBookPose.Open, archive.Spread);
+        }
+
         // ---------------- drawing ----------------
         private void DrawChronicleArchive(float w, float h)
         {
@@ -160,6 +189,7 @@ namespace GildedFate.UI
 
         private void DrawChronicleArchiveCore(float w, float h)
         {
+            if (archiveFlipPlan != null && Event.current.type == EventType.MouseDown) { EndArchiveFlip(); Event.current.Use(); }   // a click skips the journey
             DrawChronicleAtmosphere(w, h);
             var dest = new Rect((w - 1600f * Mathf.Min(w / 1600f, h / 900f)) * .5f, (h - 900f * Mathf.Min(w / 1600f, h / 900f)) * .5f, 1600f * Mathf.Min(w / 1600f, h / 900f), 900f * Mathf.Min(w / 1600f, h / 900f));
             Rect left, right; var alpha = 1f; var show = true;
@@ -195,6 +225,8 @@ namespace GildedFate.UI
         private void DrawArchivePages(Rect left, Rect right, float alpha)
         {
             var frame = chronicleHost != null ? chronicleHost.Rig.Frame : default;
+            // During a multi-page journey the pages in between are blank paper; the destination appears as its last sheet lands.
+            if (archiveFlipPlan != null && !(archiveFlipStep >= archiveFlipPlan.Turns && frame.flipRaw >= .5f)) return;
             var outgoing = chronicleHost != null && archiveFlipActive && frame.flipDirection != 0 && frame.flipRaw < .5f;
             var spread = outgoing ? archiveOutSpread : archive.Spread;
             var readId = outgoing ? archiveOutReadingId : archive.ReadingId; var readIndex = outgoing ? archiveOutReadingSpread : archive.ReadingSpread;

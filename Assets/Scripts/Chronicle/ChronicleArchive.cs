@@ -73,10 +73,11 @@ namespace GildedFate.Chronicle
         };
 
         /// <summary>Earned revelations with authored, registered pages in this chapter, in chain order.</summary>
+        /// <summary>Earned revelations written into this chapter that can be read or (still waiting to be presented) watched.</summary>
         public static List<ChronicleRevelationDef> ReadableRevelations(ChronicleProgress p, int chapter)
         {
             var list = new List<ChronicleRevelationDef>();
-            foreach (var d in ChronicleAscensionCatalog.All) if (d.chapter == chapter && CanRead(p, d.id)) list.Add(d);
+            foreach (var d in ChronicleAscensionCatalog.All) if (d.chapter == chapter && (CanRead(p, d.id) || CanWatch(p, d.id))) list.Add(d);
             return list;
         }
 
@@ -88,11 +89,17 @@ namespace GildedFate.Chronicle
             if (id == ChronicleCatalog.SecretSceneId) return p.secretCompleted;
             if (ChronicleCatalog.FindMemory(id) != null) return p.IsUnlocked(id);
             var d = ChronicleAscensionCatalog.Find(id);
-            return d != null && p.IsRevelationEarned(d.id) && ChronicleAscensionCatalog.IsPresentable(d);
+            // Its pages exist once it has been presented: reading never reveals a correction before the player has seen it written.
+            return d != null && p.IsRevelationEarned(d.id) && ChronicleAscensionCatalog.IsPresentable(d) && (p.IsRevelationPresented(d.id) || p.IsRevelationWatched(d.id));
         }
 
         /// <summary>Whether a scene can be watched again: anything readable, plus an unlocked (not yet completed) Chapter X.</summary>
-        public static bool CanWatch(ChronicleProgress p, string id) => CanRead(p, id) || (id == ChronicleCatalog.SecretSceneId && p.secretUnlocked);
+        public static bool CanWatch(ChronicleProgress p, string id)
+        {
+            if (CanRead(p, id) || (id == ChronicleCatalog.SecretSceneId && p.secretUnlocked)) return true;
+            var d = ChronicleAscensionCatalog.Find(id);   // an earned revelation still waiting to be presented can be watched once its base memories are
+            return d != null && p.IsRevelationEarned(d.id) && ChronicleAscensionCatalog.IsPresentable(d) && ChronicleAscensionCatalog.GatesMet(p, d);
+        }
 
         static void AddPreface(ChronicleChapterDef chapter, ChronicleProgress p, List<ChroniclePrefaceEntry> into)
         {
@@ -161,6 +168,10 @@ namespace GildedFate.Chronicle
                 budget.Place(side, height); b.side = side;
                 (side == ChroniclePageSide.Left ? spread.left : spread.right).Add(b);
             }
+            // The Ten Recollections written into this memory follow its original pages, in chain order, as permanent new writing.
+            if (memory != null)
+                foreach (var d in ChronicleAscensionCatalog.All)
+                    if (d.memoryId == memoryId && CanRead(p, d.id)) { var added = Reading(d.id, p, metrics); if (added != null) reading.spreads.AddRange(added.spreads); }
             return reading;
         }
     }
@@ -252,7 +263,9 @@ namespace GildedFate.Chronicle
             }
             if (Focus >= 0 && Focus < 3) return OpenReading(MemoryAt(Spread, Focus));
             var revelations = ChronicleArchive.ReadableRevelations(progress, Spread);
-            return Focus - 3 < revelations.Count ? OpenReading(revelations[Focus - 3].id) : Idle();
+            if (Focus - 3 >= revelations.Count) return Idle();
+            var id = revelations[Focus - 3].id;
+            return ChronicleArchive.CanRead(progress, id) ? OpenReading(id) : Replay(id);   // not yet presented: watch it first
         }
 
         public ChronicleArchiveResult Back()

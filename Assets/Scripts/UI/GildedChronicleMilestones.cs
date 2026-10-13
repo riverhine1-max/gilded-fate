@@ -17,6 +17,10 @@ namespace GildedFate.UI
         private int chronicleContinueSpread, chronicleNextStartSpread = -1;
         private float chronicleContinueNextTurn;
         private string chronicleMilestoneLastScene = "";
+        // Prompt 4: multi-page journeys (accelerating, real sheets), recollections returning to their chapter, the Chapter X reveal.
+        private ChronicleFlipPlan chronicleTravelPlan; private int chronicleTravelStep;
+        private ChronicleScene chronicleHeldScene;
+        private bool chronicleRevealSecret, chronicleSecretRevealed; private float chronicleRevealT;
         private bool chronicleMilestoneActive, chronicleMilestoneRunEnded, chronicleMilestoneVictory, chronicleMilestoneOpened;
         private ChronicleMilestonePhase chronicleMilestonePhase;
         private float chronicleMilestoneTime, chronicleMilestoneCloseDuration;
@@ -38,6 +42,10 @@ namespace GildedFate.UI
             if (runEnded && victory) foreach (var id in ChronicleAscension.ScenesToPresent(profile.chronicle, hero)) chronicleMilestoneScenes.Enqueue(ChronicleScripts.Get(id));
             chronicleContinuation = chronicleMilestoneScenes.Count > 0 && chronicleMilestoneScenes.Peek() != null ? ChronicleJournal.PlanContinuation(profile.chronicle, chronicleMilestoneScenes.Peek().id) : null;
             chronicleNextStartSpread = -1; chronicleMilestoneLastScene = "";
+            chronicleTravelPlan = chronicleContinuation != null ? ChronicleJournal.PlanFlip(chronicleContinuation.startSpread, chronicleContinuation.toSpread, profile.reduceMotion) : null; chronicleTravelStep = 0;
+            chronicleHeldScene = null; chronicleSecretRevealed = false; chronicleRevealT = 0f;
+            // This victory just opened Chapter X (its notice is still pending): the journal turns to the final chapter before closing.
+            chronicleRevealSecret = runEnded && victory && profile.chronicle.secretUnlocked && !profile.chronicle.secretCompleted && profile.chronicle.pendingNotices.Contains(ChronicleCatalog.SecretChapterId);
             chronicleMilestoneContinue = then;
             chronicleMilestoneRunEnded = runEnded; chronicleMilestoneVictory = victory;
             chronicleMilestoneOpened = false; chronicleMilestoneActive = true;
@@ -83,14 +91,19 @@ namespace GildedFate.UI
                         if (chronicleContinueSpread == plan.toSpread)
                         {
                             if (chronicleHost.Rig.Frame.busy) break;
-                            chronicleMilestoneOpened = true; chronicleNextStartSpread = plan.toSpread; chronicleContinuation = null;   // the scene continues on this open page
+                            SetChronicleTempo(1f);
+                            // The Chapter X reveal holds the final page open while its title is written in.
+                            if (chronicleHeldScene == null && chronicleSecretRevealed && chronicleRevealT < (profile.reduceMotion ? 1.2f : 2.4f)) { chronicleRevealT += dt; break; }
+                            chronicleMilestoneOpened = true; chronicleNextStartSpread = plan.toSpread; chronicleContinuation = null; chronicleTravelPlan = null;   // the scene continues on this open page
                             PlayNextChronicleMilestone(); break;
                         }
                         if (chronicleMilestoneTime < chronicleContinueNextTurn || chronicleHost.Rig.Frame.busy) break;
                         var action = plan.toSpread > chronicleContinueSpread ? ChronicleBookAction.TurnPageForward : ChronicleBookAction.TurnPageBack;
+                        var tempo = chronicleTravelPlan != null && chronicleTravelStep < chronicleTravelPlan.Turns ? chronicleTravelPlan.tempos[chronicleTravelStep] : 1f; chronicleTravelStep++;
+                        SetChronicleTempo(tempo);   // quick through the middle of a long journey, slowing at the destination
                         chronicleHost.Rig.Perform(action, profile.chronicle.NarratorState); ChronicleBookSound(action);
                         chronicleContinueSpread += action == ChronicleBookAction.TurnPageForward ? 1 : -1;
-                        chronicleContinueNextTurn = chronicleMilestoneTime + chronicleHost.Rig.DurationOf(action) * (profile.reduceMotion ? 1f : .8f);
+                        chronicleContinueNextTurn = chronicleMilestoneTime + chronicleHost.Rig.DurationOf(action) / tempo * (profile.reduceMotion ? 1f : .85f);
                         break;
                     }
                     case ChronicleMilestonePhase.Playing:
@@ -125,10 +138,18 @@ namespace GildedFate.UI
             // The scene that just ended is where the story now stands (run endings and the opening are not journal pages).
             if (!string.IsNullOrEmpty(chronicleMilestoneLastScene) && ChronicleJournal.RecordStoryReached(profile.chronicle, chronicleMilestoneLastScene)) ProfileService.Save(profile);
             chronicleMilestoneLastScene = "";
-            while (chronicleMilestoneScenes.Count > 0)
+            while (chronicleHeldScene != null || chronicleMilestoneScenes.Count > 0)
             {
-                var scene = chronicleMilestoneScenes.Dequeue();
+                var held = chronicleHeldScene != null;
+                var scene = held ? chronicleHeldScene : chronicleMilestoneScenes.Dequeue(); chronicleHeldScene = null;
                 if (scene == null) continue;
+                // A recollection first carries the open journal back (or forward) to its own chapter, through the pages in between.
+                var recollection = ChronicleAscensionCatalog.FindByScene(scene.id);
+                if (!held && recollection != null && recollection.chapter >= 1 && chronicleMilestoneOpened)
+                {
+                    var here = chronicleDirector?.Current != null ? chronicleDirector.Current.State.spreadIndex : chronicleContinueSpread;
+                    if (here != recollection.chapter) { BeginChronicleTravel(here, recollection.chapter, scene); return; }
+                }
                 var presentationOnly = scene.id == ChronicleMilestoneScenes.VictoryId || scene.id == ChronicleMilestoneScenes.DefeatId;
                 // The shared ending never unlocks Reaper's memory, facts, corrections or Chapter X.
                 // Each scene starts on the page the previous one finished on, so the book never jumps back to its first sheet.
@@ -138,10 +159,31 @@ namespace GildedFate.UI
                 chronicleMilestoneOpened = true;
                 SetChronicleMilestonePhase(ChronicleMilestonePhase.Playing); return;
             }
+            if (chronicleRevealSecret && !chronicleSecretRevealed && chronicleMilestoneOpened)
+            {
+                chronicleSecretRevealed = true; chronicleRevealT = 0f;
+                var here = chronicleDirector?.Current != null ? chronicleDirector.Current.State.spreadIndex : chronicleContinueSpread;
+                BeginChronicleTravel(here, ChronicleJournal.SecretSpread, null); return;
+            }
+            SetChronicleTempo(1f);
             chronicleMilestoneCloseDuration = chronicleHost.Rig.DurationOf(ChronicleBookAction.Close);
             chronicleHost.Rig.Perform(ChronicleBookAction.Close, profile.chronicle.NarratorState);
             ChronicleBookSound(ChronicleBookAction.Close);
             SetChronicleMilestonePhase(ChronicleMilestonePhase.Closing);
+        }
+
+        /// <summary>Carries the journal from one spread to another as a physical journey, then plays the held scene (or, with none,
+        /// holds the Chapter X reveal). Very long journeys begin a few sheets from the destination so they never drag.</summary>
+        private void BeginChronicleTravel(int from, int to, ChronicleScene scene)
+        {
+            var start = Math.Abs(to - from) > 8 ? (to > from ? to - 8 : to + 8) : from;
+            if (chronicleHost.Rig.Frame.pose != ChronicleBookPose.Open)
+            { chronicleHost.Rig.SetPoseImmediate(ChronicleBookPose.Closed, start); chronicleHost.Rig.Perform(ChronicleBookAction.Open, profile.chronicle.NarratorState); ChronicleBookSound(ChronicleBookAction.Open); }
+            else if (start != from) chronicleHost.Rig.SetPoseImmediate(ChronicleBookPose.Open, start);
+            chronicleContinuation = new ChronicleContinuationPlan { fromSpread = from, toSpread = to, startSpread = start };
+            chronicleTravelPlan = ChronicleJournal.PlanFlip(start, to, profile.reduceMotion); chronicleTravelStep = 0;
+            chronicleContinueSpread = start; chronicleHeldScene = scene; chronicleContinueNextTurn = .2f;
+            SetChronicleMilestonePhase(ChronicleMilestonePhase.Continuing);
         }
 
         private void FinishChronicleMilestone()
@@ -178,6 +220,14 @@ namespace GildedFate.UI
             var old = GUI.color; GUI.color = new Color(1, 1, 1, reveal);
             if (Event.current.type == EventType.Repaint) GUI.DrawTexture(dest, chronicleHost.Texture, ScaleMode.StretchToFill, true);
             if (chronicleMilestonePhase == ChronicleMilestonePhase.Closing && chronicleDirector?.Current != null) DrawChroniclePages(dest, chronicleDirector.Current.State);
+            // The final chapter becomes accessible: its existing contents title is written onto the newly reached page.
+            if (chronicleMilestonePhase == ChronicleMilestonePhase.Continuing && chronicleSecretRevealed && chronicleContinuation != null && chronicleContinueSpread == chronicleContinuation.toSpread
+                && chronicleHost.TryGetPageViewportRect(ChroniclePageSide.Right, out var revealView) && Event.current.type == EventType.Repaint)
+            {
+                var page = ChronicleGuiRect(dest, revealView); var u = page.width / 470f; var a = Mathf.SmoothStep(0f, 1f, chronicleRevealT / .9f) * reveal;
+                var y = ArchiveText(page, page.y + page.height * .3f, "X", Mathf.RoundToInt(40 * u), ArchiveGold, a, false, TextAnchor.UpperCenter, 8 * u);
+                ArchiveText(page, y, "The One Who Remembers", Mathf.RoundToInt(28 * u), ArchiveInk, a, false, TextAnchor.UpperCenter, 0);
+            }
             GUI.color = old;
             DrawChronicleThreads(w, h, .2f * reveal, chronicleMilestonePhase == ChronicleMilestonePhase.Closing);
             return true;

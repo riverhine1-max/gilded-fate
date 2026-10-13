@@ -37,6 +37,13 @@ namespace GildedFate.Chronicle
         public ChronicleRevelationPresentation presentation;
         /// <summary>Set only when the authored, approved scene is registered. Until then the revelation can be earned but is never presented.</summary>
         public bool contentReady;
+        /// <summary>The approved title written above the recollection (Prompt 3 content).</summary>
+        public string title = "";
+        /// <summary>Optional small static marginal study (Resources/Chronicle/Illustrations/Ascension/&lt;key&gt;). Empty = text only.</summary>
+        public string marginalArt = "";
+        /// <summary>Base memories that must have been watched first, so original discoveries always come first. A revelation whose
+        /// gates are not yet met stays earned and queued; it is presented once they are.</summary>
+        public string[] requiredViewed = new string[0];
 
         public bool IsMajor => kind == ChronicleRevelationKind.MajorCorrection;
         /// <summary>The Fate Debt X revelation completes the hero's personal True History (not Chapter X).</summary>
@@ -91,6 +98,14 @@ namespace GildedFate.Chronicle
                 byHero[h] = chain;
             }
             All = all.ToArray();
+            // The authored content: where each recollection is written and how it is presented. Ready once its scene is registered.
+            var index = new Dictionary<string, ChronicleRevelationDef>(); foreach (var d in All) index[d.id] = d;
+            ChronicleAscensionContent.Apply((id, title, chapter, memory, presentation, art, gates) =>
+            {
+                if (!index.TryGetValue(id, out var d)) return;
+                d.title = title; d.chapter = chapter; d.memoryId = memory; d.presentation = presentation; d.marginalArt = art ?? ""; d.requiredViewed = gates ?? new string[0];
+                d.contentReady = ChronicleScripts.Has(d.sceneId);
+            });
             foreach (var d in All)
             {
                 byId[d.id] = d;
@@ -108,6 +123,14 @@ namespace GildedFate.Chronicle
 
         /// <summary>A revelation may be shown only when its authored scene is approved and actually registered.</summary>
         public static bool IsPresentable(ChronicleRevelationDef def) => def != null && def.contentReady && !string.IsNullOrEmpty(def.sceneId) && ChronicleScripts.Has(def.sceneId);
+
+        /// <summary>The base memories this recollection builds on have been watched (original discoveries always come first).</summary>
+        public static bool GatesMet(ChronicleProgress p, ChronicleRevelationDef def)
+        {
+            if (def == null || p == null) return false;
+            foreach (var m in def.requiredViewed) if (!p.IsViewed(m)) return false;
+            return true;
+        }
 
         /// <summary>Structural checks, run by ChronicleValidator and the unit tests.</summary>
         public static void Validate(List<string> errors)
@@ -138,6 +161,9 @@ namespace GildedFate.Chronicle
                 if (originalIds.Contains(d.id) || originalIds.Contains(d.sceneId) || originalIds.Contains(d.correctionId)) errors.Add(d.id + " collides with an original Chronicle id");
                 if (!d.id.StartsWith(IdPrefix, StringComparison.Ordinal)) errors.Add(d.id + " must use the " + IdPrefix + " prefix");
                 if (d.chapter < 0 || d.chapter > ChronicleCatalog.ChapterCount) errors.Add(d.id + " references chapter " + d.chapter);
+                if (d.contentReady && (d.chapter < 1 || string.IsNullOrEmpty(d.memoryId) || string.IsNullOrEmpty(d.title))) errors.Add(d.id + " is ready but has no chapter, memory or title");
+                foreach (var g in d.requiredViewed) if (ChronicleCatalog.FindMemory(g) == null) errors.Add(d.id + " gates on unknown memory " + g);
+                if (d.IsMajor && d.contentReady && d.presentation != ChronicleRevelationPresentation.FullCorrection) errors.Add(d.id + " is a major correction but not presented as one");
                 if (!string.IsNullOrEmpty(d.memoryId))
                 {
                     var m = ChronicleCatalog.FindMemory(d.memoryId);

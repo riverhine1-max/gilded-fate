@@ -55,8 +55,38 @@ namespace GildedFate.Chronicle
         public bool Moves => Turns > 0;
     }
 
+    /// <summary>A physical journey through the book: one sheet per spread crossed, slow at the ends and quick in the middle.</summary>
+    public sealed class ChronicleFlipPlan
+    {
+        public int fromSpread, toSpread, direction;
+        public readonly List<float> tempos = new List<float>();   // per turn: 1 = the normal single-turn speed
+        public int Turns => tempos.Count;
+        public float Seconds(float turnSeconds) { var s = 0f; foreach (var t in tempos) s += turnSeconds / t; return s; }
+    }
+
     public static class ChronicleJournal
     {
+        public const float MaxFlipTempo = 4.5f;
+        /// <summary>Plans a multi-page journey between two spreads of the physical book (0 = contents, 1-9 chapters, 10 = Chapter X).
+        /// Every spread crossed is a real sheet, so the page stacks move with it; long journeys accelerate through the middle and
+        /// slow down before the destination. Reduced motion keeps every turn at the normal speed but caps the number shown.</summary>
+        public static ChronicleFlipPlan PlanFlip(int fromSpread, int toSpread, bool reduceMotion = false)
+        {
+            var plan = new ChronicleFlipPlan { fromSpread = fromSpread, toSpread = toSpread, direction = Math.Sign(toSpread - fromSpread) };
+            var n = Math.Abs(toSpread - fromSpread); if (n == 0) return plan;
+            for (var i = 0; i < n; i++)
+            {
+                if (n == 1) { plan.tempos.Add(1f); break; }
+                var x = (i + .5f) / n;                                   // 0..1 along the journey
+                var bell = (float)Math.Sin(Math.PI * x);                 // 0 at the ends, 1 in the middle
+                var peak = Math.Min(MaxFlipTempo, 1.6f + n * .35f);      // longer journeys reach a higher speed
+                var t = 1.25f + (peak - 1.25f) * bell;
+                if (i == n - 1) t = Math.Min(t, 1.35f);                   // the last sheet settles at nearly normal speed
+                plan.tempos.Add(reduceMotion ? 1f : t);
+            }
+            return plan;
+        }
+
         public const int ContentsSpread = 0, SecretSpread = 10, MaxVisibleTurns = 3;
         public static readonly float[] TextScales = { .85f, 1f, 1.15f, 1.3f };
 

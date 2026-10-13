@@ -8,7 +8,7 @@ namespace GildedFate.ChronicleBook
     /// <see cref="ChronicleBookAnimator"/> the temporary book uses, so story playback behaves identically; this class only
     /// also fires the model's Animator states at the right moments. A state name that does not exist is reported once, not thrown.
     /// </summary>
-    public sealed class ChronicleAnimatorBookRig : MonoBehaviour, IChronicleBookRig, IChroniclePageSurface
+    public sealed class ChronicleAnimatorBookRig : MonoBehaviour, IChronicleBookRig, IChroniclePageSurface, IChronicleBookTempo
     {
         ChronicleBookRigConfig config; Animator animator; ChronicleBookAnimator logic;
         Transform leftAnchor, rightAnchor;
@@ -21,6 +21,8 @@ namespace GildedFate.ChronicleBook
         public ChronicleBookAnimator Logic => logic;
         public ChronicleBookRigConfig Config => config;
         public ChronicleBookFrame Frame => logic.Frame;
+        /// <summary>Multi-page journeys: the logic and the existing turn clips play faster together (clips and rig are unchanged).</summary>
+        public float Tempo { get => logic.Tempo; set => logic.Tempo = value; }
         public float DurationOf(ChronicleBookAction action) => logic.DurationOf(action);
 
         /// <summary>Loads the finished book if one has been added. Returns null when there is no model yet, so the temporary book is used.</summary>
@@ -123,6 +125,7 @@ namespace GildedFate.ChronicleBook
                 // Hide before resetting this reusable leaf from the left stack to the right.
                 turning = false;
                 if (turningLeaf) turningLeaf.enabled = false;
+                if (animator) animator.speed = 1f;
                 Play(config.idleState);
             }
             if (animator) animator.Update(dt);
@@ -134,6 +137,7 @@ namespace GildedFate.ChronicleBook
             if (!animator || config == null) return;
             turning = action == ChronicleBookAction.TurnPageForward || action == ChronicleBookAction.TurnPageBack;
             if (turningLeaf) turningLeaf.enabled = turning;
+            animator.speed = turning ? logic.Tempo : 1f;   // the turn clip keeps pace with the logic's sheet
             switch (action)
             {
                 case ChronicleBookAction.Open: Play(config.openState); break;
@@ -152,6 +156,7 @@ namespace GildedFate.ChronicleBook
             turning = false;
             if (turningLeaf) turningLeaf.enabled = false;
             if (!animator || config == null) return;
+            animator.speed = 1f;
             SetSpread();
             // Jump to the last frame of the matching state: open at its end is the open pose, close at its end is the closed pose.
             var state = pose == ChronicleBookPose.Open ? config.openState : config.closeState;

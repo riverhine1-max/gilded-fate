@@ -405,7 +405,7 @@ namespace GildedFate.Chronicle.Tests
             var real = new ChronicleProgress(); var s = new ChronicleDevSession();
             for (var tier = 1; tier <= 10; tier++) s.SimulateAscensionVictory(ChronicleHero.Hexer, tier);
             Assert.AreEqual(10, s.sandbox.RevelationsEarned(ChronicleHero.Hexer)); Assert.AreEqual(0, real.ascension.earned.Count);
-            Assert.IsFalse(s.Play("ASC_HEX_01"), "no unwritten revelation can be played, even in the sandbox");
+            Assert.IsTrue(s.Play("ASC_HEX_01"), "authored recollections preview in the sandbox"); Assert.AreEqual(0, real.ascension.watched.Count);
             s.ResetSandbox(); Assert.AreEqual(0, s.sandbox.RevelationsEarned(ChronicleHero.Hexer));
         }
 
@@ -419,20 +419,27 @@ namespace GildedFate.Chronicle.Tests
         }
 
         // ---------------------------------------------------------------- 20. nothing unfinished is shown
-        [Test] public void NoUnwrittenRevelationCanBePresented()
+        // Prompt 4: all thirty are authored and registered. Presentation is still one at a time and waits for base memories.
+        [Test] public void EveryRevelationIsAuthoredAndPresentedOneAtATimeAfterItsBaseMemories()
         {
             foreach (var d in ChronicleAscensionCatalog.All)
             {
-                Assert.IsFalse(d.contentReady, d.id); Assert.IsFalse(ChronicleAscensionCatalog.IsPresentable(d), d.id);
-                Assert.IsFalse(ChronicleScripts.Has(d.sceneId), d.id + " must not register a placeholder scene");
-                Assert.IsNull(ChronicleScripts.Get(d.sceneId));
+                Assert.IsTrue(d.contentReady, d.id); Assert.IsTrue(ChronicleAscensionCatalog.IsPresentable(d), d.id);
+                Assert.IsTrue(d.chapter >= 1 && d.chapter <= 9, d.id); Assert.IsFalse(string.IsNullOrEmpty(d.memoryId), d.id); Assert.IsFalse(string.IsNullOrEmpty(d.title), d.id);
+                Assert.IsNotNull(ChronicleScripts.Get(d.sceneId), d.id);
             }
             var p = ChronicleAscensionTestKit.CompleteEveryTrueHistory(NormalWinsForEveryone());
             foreach (var h in Heroes)
             {
-                Assert.AreEqual(10, p.PendingRevelations(h).Count, "earned and waiting for authored content");
-                Assert.AreEqual(0, ChronicleAscension.ScenesToPresent(p, h).Count);
-                Assert.AreEqual(0, p.RevelationsWatched(h), "nothing claims to have been watched");
+                Assert.AreEqual(10, p.PendingRevelations(h).Count, "earned and queued");
+                Assert.AreEqual(0, ChronicleAscension.ScenesToPresent(p, h).Count, "base memories not watched yet: deferred, not lost");
+                Assert.AreEqual(0, p.RevelationsWatched(h));
+            }
+            foreach (var m in ChronicleCatalog.Memories) p.CommitMemoryViewed(m.id);
+            foreach (var h in Heroes)
+            {
+                var next = ChronicleAscension.ScenesToPresent(p, h);
+                Assert.AreEqual(1, next.Count, "exactly one revelation is presented at a time"); Assert.AreEqual(ChronicleAscensionCatalog.At(h, 1).sceneId, next[0]);
             }
             Assert.AreEqual(0, p.ascension.presented.Count);
         }
@@ -446,11 +453,11 @@ namespace GildedFate.Chronicle.Tests
             var v = ChronicleAscension.View(p);
             var van = v.heroes[0]; var hex = v.heroes[1]; var rea = v.heroes[2];
             Assert.AreEqual(10, van.earned); Assert.AreEqual(1, van.watched); Assert.AreEqual(9, van.pending); Assert.IsTrue(van.trueHistoryComplete); Assert.AreEqual(0, van.nextFateDebt); Assert.AreEqual("", van.nextId);
-            Assert.AreEqual(3, hex.earned); Assert.AreEqual(4, hex.nextFateDebt); Assert.AreEqual("ASC_HEX_04", hex.nextId); Assert.AreEqual(0, hex.nextChapter, "chapter placement is assigned by the content phase");
+            Assert.AreEqual(3, hex.earned); Assert.AreEqual(4, hex.nextFateDebt); Assert.AreEqual("ASC_HEX_04", hex.nextId); Assert.AreEqual(ChronicleAscensionCatalog.Find("ASC_HEX_04").chapter, hex.nextChapter, "the chapter that receives the next addition");
             Assert.AreEqual(1, hex.entries.Count(e => e.isNext)); Assert.IsTrue(hex.entries[3].isNext); Assert.IsTrue(hex.entries[2].earned && !hex.entries[3].earned);
             Assert.AreEqual(0, rea.earned); Assert.AreEqual(1, rea.nextFateDebt);
             Assert.IsFalse(v.allTrueHistoriesComplete); Assert.IsFalse(v.chapterXAvailable); Assert.AreEqual(13, v.totalEarned);
-            Assert.AreEqual(10, van.entries.Count); Assert.IsTrue(van.entries.All(e => !e.contentReady));
+            Assert.AreEqual(10, van.entries.Count); Assert.IsTrue(van.entries.All(e => e.contentReady));
         }
     }
 }

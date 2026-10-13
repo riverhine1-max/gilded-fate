@@ -82,7 +82,8 @@ namespace GildedFate.Chronicle
         {
             var scenes = new List<string>();
             if (p == null || (int)hero < 0 || (int)hero > 2) return scenes;
-            foreach (var d in p.PendingRevelations(hero)) if (ChronicleAscensionCatalog.IsPresentable(d)) scenes.Add(d.sceneId);
+            // Only the next one, and only once its base memories have been watched: exactly one new revelation per presentation.
+            foreach (var d in p.PendingRevelations(hero)) if (ChronicleAscensionCatalog.IsPresentable(d) && ChronicleAscensionCatalog.GatesMet(p, d)) { scenes.Add(d.sceneId); break; }
             return scenes;
         }
     }

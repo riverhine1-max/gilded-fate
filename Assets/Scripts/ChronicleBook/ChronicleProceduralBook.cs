@@ -16,7 +16,7 @@ namespace GildedFate.ChronicleBook
     /// component only applies the resulting frame to transforms. The finished Blender book replaces this class, not the animator.
     /// Page flips never touch the covers: they stay at their fully-open angle while a single sheet turns about the spine.
     /// </summary>
-    public sealed class ChronicleProceduralBook : MonoBehaviour, IChronicleBookRig, IChroniclePageSurface
+    public sealed class ChronicleProceduralBook : MonoBehaviour, IChronicleBookRig, IChroniclePageSurface, IChronicleBookTempo
     {
         public const float PageW = 3f, PageH = 4.2f, CoverT = .13f, StackTotal = .34f, SheetT = .014f, MinStack = .02f;
         const float CoverW = PageW + .12f, CoverH = PageH + .22f;
@@ -27,6 +27,7 @@ namespace GildedFate.ChronicleBook
         int layer;
 
         public ChronicleBookAnimator Logic => logic;
+        public float Tempo { get => logic.Tempo; set => logic.Tempo = value; }   // multi-page journeys turn sheets faster
         public ChronicleBookFrame Frame => logic.Frame;
         public float DurationOf(ChronicleBookAction action) => logic.DurationOf(action);
         public void Perform(ChronicleBookAction action, ChronicleNarratorState narrator) { logic.Perform(action, narrator); }

@@ -85,7 +85,8 @@ namespace GildedFate.Chronicle.Tests
                 Assert.IsTrue(plan.Backward); Assert.AreEqual(2, plan.toSpread); Assert.AreEqual(5, plan.startSpread);
             }
             finally { revelation.chapter = before; }
-            Assert.IsNull(ChronicleJournal.PlanContinuation(p, ChronicleAscensionCatalog.At(ChronicleHero.Hexer, 2).sceneId), "an unplaced revelation never moves the book");
+            Assert.IsNull(ChronicleJournal.PlanContinuation(p, ChronicleMilestoneScenes.VictoryId), "a scene that is not a journal page never moves the book");
+            Assert.IsTrue(ChronicleJournal.PlanContinuation(p, ChronicleAscensionCatalog.At(ChronicleHero.Hexer, 2).sceneId).Moves, "a recollection returns to its own chapter");
         }
 
         [Test] public void EndingsAndTheOpeningAreNotJournalPagesAndNeverMoveTheStory()

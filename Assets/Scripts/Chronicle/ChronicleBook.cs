@@ -36,6 +36,9 @@ namespace GildedFate.Chronicle
         ChronicleBookFrame Frame { get; }
     }
 
+    /// <summary>Optional: a rig that can turn sheets faster for multi-page journeys. 1 = normal; the sequencer never changes it.</summary>
+    public interface IChronicleBookTempo { float Tempo { get; set; } }
+
     public sealed class ChronicleBookTimings
     {
         public float open = 1.6f, close = 1.3f, turn = .9f, react = .6f, major = 1.1f;
@@ -59,8 +62,11 @@ namespace GildedFate.Chronicle
     /// Hard rule (tested): once the covers are open they stay at exactly 180 degrees for the entire duration of every page turn.
     /// The Unity rigs read <see cref="Frame"/> each frame and apply it to meshes or to an imported model's Animator.
     /// </summary>
-    public sealed class ChronicleBookAnimator : IChronicleBookRig
+    public sealed class ChronicleBookAnimator : IChronicleBookRig, IChronicleBookTempo
     {
+        float tempo = 1f;
+        /// <summary>Sheet-turn speed multiplier (1 = normal). Clamped to a safe range.</summary>
+        public float Tempo { get => tempo; set => tempo = Math.Max(.25f, Math.Min(6f, value)); }
         public const float MaxSpreads = 14f;   // how many spreads map to the whole page block moving from right to left
         public readonly ChronicleBookTimings timings;
         public bool reduceMotion;
@@ -125,7 +131,7 @@ namespace GildedFate.Chronicle
             clock += dt;
             if (phase == Phase.Opening) { phaseT += dt; if (phaseT >= timings.open) { phase = Phase.Open; phaseT = 0f; } }
             else if (phase == Phase.Closing) { phaseT += dt; if (phaseT >= timings.close) { phase = Phase.Closed; phaseT = 0f; } }
-            if (flipping) { flipT += dt; if (flipT >= timings.turn) { flipFrom = spread; flipping = false; flipT = 0f; flipDir = 0; } }
+            if (flipping) { flipT += dt * tempo; if (flipT >= timings.turn) { flipFrom = spread; flipping = false; flipT = 0f; flipDir = 0; } }
             glow = Math.Max(0f, glow - dt / 1.1f);
             if (shakeT > 0f) shakeT = Math.Max(0f, shakeT - dt);
         }

@@ -54,6 +54,18 @@ namespace GildedFate.UI
         }
 
         public bool ChronicleIsPlaying => chronicleActive;
+        /// <summary>Sheet-turn speed for multi-page journeys (1 = the normal turn). Rigs without tempo support simply turn normally.</summary>
+        private void SetChronicleTempo(float tempo) { if (chronicleHost != null && chronicleHost.Rig is IChronicleBookTempo t) t.Tempo = tempo; }
+        private readonly Dictionary<string, Texture2D> chronicleMarginalArt = new();
+        // A recollection's marginal study: small, static, on the facing page, never replacing any original illustration.
+        private void DrawChronicleMarginalArt(Rect page, string key, float alpha)
+        {
+            if (!chronicleMarginalArt.TryGetValue(key, out var tex)) { tex = Resources.Load<Texture2D>("Chronicle/Illustrations/Ascension/" + key); chronicleMarginalArt[key] = tex; }
+            if (!tex || Event.current.type != EventType.Repaint) return;
+            var w = page.width * .82f; var h = w * tex.height / Mathf.Max(1f, tex.width);
+            var r = new Rect(page.center.x - w * .5f, page.center.y - h * .5f, w, h);
+            var old = GUI.color; GUI.color = new Color(1f, 1f, 1f, alpha * .92f); GUI.DrawTexture(r, tex, ScaleMode.ScaleToFit, true); GUI.color = old;
+        }
 
         /// <summary>Plays a Chronicle scene on the 3D book as a full-screen overlay. preview = true saves nothing.
         /// Returns false if the book cannot be shown (a missing shader, say); the game then carries on without it.</summary>
@@ -266,6 +278,8 @@ namespace GildedFate.UI
 
             if (layout == ChronicleSpreadLayout.IllustrationLeftTextRight || layout == ChronicleSpreadLayout.IllustrationOnly) DrawChronicleIllustration(left, illustration, alpha);
             else if (layout == ChronicleSpreadLayout.TextLeftIllustrationRight) DrawChronicleIllustration(right, illustration, alpha);
+            var recollection = chronicleDirector?.Current != null ? ChronicleAscensionCatalog.FindByScene(chronicleDirector.Current.Scene.id) : null;
+            if (recollection != null && !string.IsNullOrEmpty(recollection.marginalArt) && layout == ChronicleSpreadLayout.IllustrationLeftTextRight && !illustration.visible) DrawChronicleMarginalArt(left, recollection.marginalArt, alpha);
             DrawChronicleText(left, blocks, ChroniclePageSide.Left, state, alpha);
             DrawChronicleText(right, blocks, ChroniclePageSide.Right, state, alpha);
             if (state.pageDarkness > 0f) { Fill(left, new Color(0, 0, 0, state.pageDarkness * .35f * alpha)); Fill(right, new Color(0, 0, 0, state.pageDarkness * .35f * alpha)); }

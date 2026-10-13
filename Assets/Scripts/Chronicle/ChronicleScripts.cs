@@ -19,6 +19,7 @@ namespace GildedFate.Chronicle
             factories[ChronicleCatalog.OpeningShortSceneId] = OpeningShort;
             factories[ChronicleCatalog.SecretSceneId] = Finale;
             RegisterActI(); RegisterActII(); RegisterActIII();
+            RegisterAscension();   // the Ten Recollections (Prompt 3 content); never replaces an original scene
         }
 
         static void Reg(int memoryNumber, Func<ChronicleScene> factory) { factories[ChronicleCatalog.MemoryKey(memoryNumber)] = factory; }
