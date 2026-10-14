@@ -20,6 +20,7 @@ public static class Program
         ImagesSheet(Path.Combine(outDir, "images.png"), fonts);
         MenuSheet(Path.Combine(outDir, "menu.png"), fonts, Path.Combine(art, "GildedVault_Menu.png"));
         ComponentSheet(Path.Combine(outDir, "components.png"), fonts, Path.Combine(art, "CombatArena_LowerVault.png"));
+        MapSheet(Path.Combine(outDir, "map.png"), fonts, Path.Combine(art, "RunMap_LowerVault.png"), Path.Combine(art, "Identity", "RoomEmblems.png"));
         Console.WriteLine("wrote previews to " + outDir);
         return 0;
     }
@@ -124,6 +125,94 @@ public static class Program
             var b1 = new ThemeRect(60, 720, 220, 54); ThemeWidgets.Button(c, b1, ButtonVisual.Idle); Label(c, "END TURN", b1, 20);
             var b2 = new ThemeRect(300, 720, 220, 54); ThemeWidgets.Button(c, b2, new ButtonVisual { enabled = true, hover = 1 }); Label(c, "CONFIRM", b2, 20);
             var b3 = new ThemeRect(540, 720, 220, 54); ThemeWidgets.Button(c, b3, new ButtonVisual { enabled = false }); Label(c, "LOCKED", b3, 20, ThemePalette.TextFaint);
+            c.Save(path);
+        }
+    }
+
+    static ThemeImage LoadImage(string id, string path)
+    {
+        using (var src = SkiaSharp.SKBitmap.Decode(path))
+        {
+            var info = new SkiaSharp.SKImageInfo(src.Width, src.Height, SkiaSharp.SKColorType.Rgba8888, SkiaSharp.SKAlphaType.Unpremul);
+            var img = new ThemeImage(id, info.Width, info.Height);
+            var h = System.Runtime.InteropServices.GCHandle.Alloc(img.rgba, System.Runtime.InteropServices.GCHandleType.Pinned);
+            try { using (var im = SkiaSharp.SKImage.FromBitmap(src)) im.ReadPixels(info, h.AddrOfPinnedObject(), info.RowBytes, 0, 0); } finally { h.Free(); }
+            return img;
+        }
+    }
+
+    /// <summary>The act map as the game draws it in the new look. The room emblems are the game's real art (Art/Identity/RoomEmblems); everything around them is theme.</summary>
+    static void MapSheet(string path, string fonts, string bg, string emblemPath, float time = 1.3f)
+    {
+        const int W = 1920, H = 1080;
+        var emblems = File.Exists(emblemPath) ? LoadImage("emblems", emblemPath) : null;
+        void Emblem(SkiaCanvas c, int kind, ThemeRect r, ThemeColor tint)
+        {
+            if (emblems == null) return;
+            c.ImageUV(emblems, r, new ThemeRect((kind % 4) * .25f, kind < 4 ? 0f : .5f, .25f, .5f), tint);
+        }
+        using (var c = new SkiaCanvas(W, H, fonts))
+        {
+            c.Clear(new ThemeColor(.003f, .004f, .007f, 1)); c.DrawBackgroundTinted(bg, 0, 58, W, H - 58, new ThemeColor(.62f, .68f, .78f, .62f));
+            c.Fill(new ThemeRect(0, 58, W, H - 58), new ThemeColor(.002f, .005f, .012f, .40f));
+            c.Image(ThemeAssets.Vignette, new ThemeRect(0, 58, W, H - 58), new ThemeColor(1, 1, 1, .85f)); c.Time = time;
+            var map = new ThemeRect(0, 58, 1550, H - 58);
+            ThemeMap.LightShafts(c, map, 1f); ThemeMap.Embers(c, new ThemeRect(0, 58, W, H - 58), 40, 0);
+            ThemeWidgets.HudStrip(c, new ThemeRect(0, 0, W, 58));
+            Label(c, "80/80", new ThemeRect(90, 10, 120, 38), 22, ThemePalette.Text, ThemeFont.Heading);
+            ThemeMap.Header(c, 775, 92, "CHOOSE YOUR NEXT ROOM · CLICK A GILDED NODE", true);
+
+            // x, y, kind (0..6), state
+            var N = new (float x, float y, int kind, NodeState st)[]
+            {
+                /*0*/ (265, 955, 0, NodeState.Cleared), (580, 955, 0, NodeState.Cleared), (885, 955, 0, NodeState.Cleared),
+                /*3*/ (265, 800, 0, NodeState.Locked), (580, 800, 0, NodeState.Current), (840, 800, 2, NodeState.Locked), (1165, 800, 0, NodeState.Locked), (1470, 800, 0, NodeState.Locked),
+                /*8*/ (290, 640, 2, NodeState.Locked), (550, 640, 0, NodeState.Available), (855, 640, 0, NodeState.Available), (1130, 640, 5, NodeState.Locked),
+                /*12*/ (850, 480, 0, NodeState.Locked), (1150, 480, 3, NodeState.Locked), (1440, 480, 0, NodeState.Locked),
+                /*15*/ (270, 320, 4, NodeState.Locked), (550, 320, 4, NodeState.Locked), (850, 320, 4, NodeState.Locked), (1130, 320, 0, NodeState.Locked),
+                /*19*/ (290, 160, 0, NodeState.Locked), (590, 160, 0, NodeState.Locked), (860, 160, 0, NodeState.Locked), (1130, 160, 1, NodeState.Locked), (1450, 160, 1, NodeState.Locked),
+            };
+            var hover = 10; // the pointer is over this room
+            var E = new (int a, int b)[]
+            {
+                (1, 4), (0, 3), (2, 5), (3, 8), (4, 9), (4, 10), (5, 10), (6, 11), (7, 11), (8, 15), (9, 16), (10, 12), (10, 13), (11, 13), (11, 14), (12, 17), (13, 18), (14, 18),
+                (15, 19), (16, 20), (17, 21), (18, 22), (18, 23),
+            };
+            foreach (var e in E)
+            {
+                var a = N[e.a]; var b = N[e.b];
+                var kind = a.st == NodeState.Cleared && b.st == NodeState.Current ? ThreadKind.Traveled : a.st == NodeState.Current && b.st == NodeState.Available ? ThreadKind.Available
+                    : (e.a == hover || e.b == hover) ? ThreadKind.Reachable : ThreadKind.Future;
+                ThemeMap.Thread(c, a.x, a.y, b.x, b.y, kind, 1f, 3);
+            }
+            for (var i = 0; i < N.Length; i++)
+            {
+                var n = N[i]; var size = n.st == NodeState.Current ? 84f : n.st == NodeState.Available ? (i == hover ? 84f : 78f) : 64f; var hv = i == hover ? 1f : 0f;
+                var tone = (NodeTone)n.kind;
+                ThemeMap.NodeUnder(c, n.x, n.y, size, tone, n.st, hv, i, 2);
+                Emblem(c, n.kind, new ThemeRect(n.x - size * .5f, n.y - size * .5f, size, size), n.st == NodeState.Cleared ? new ThemeColor(.44f, .42f, .37f, 1) : ThemeColor.White);
+                ThemeMap.NodeOver(c, n.x, n.y, size, tone, n.st, hv, i, 2);
+                var name = n.kind == 5 ? "REST SHRINE" : tone.ToString().ToUpperInvariant();
+                ThemeMap.RoomLabel(c, n.x, n.y + size * .5f + 18, name + (n.st == NodeState.Current ? " · HERE" : n.st == NodeState.Cleared ? " · CLEARED" : ""), n.st >= NodeState.Available);
+            }
+            // boss column
+            var crown = new ThemeRect(W - 207, 106, 126, 132);
+            ThemeMap.BossCrown(c, crown, 2); Emblem(c, 6, new ThemeRect(crown.x + 8, crown.y + 8, crown.w - 16, crown.h - 16), ThemeColor.White);
+            ThemeMap.LabelPlate(c, new ThemeRect(W - 268, 250, 252, 50));
+            Label(c, "ACT I · SUMMIT KEEPER", new ThemeRect(W - 268, 252, 252, 24), 13, ThemePalette.Gold);
+            Label(c, "THE DROWNED QUARTER", new ThemeRect(W - 268, 274, 252, 24), 14, new ThemeColor(.45f, .85f, .82f, 1));
+            // legend
+            var legend = new ThemeRect(W - 262, 330, 240, 376); ThemeWidgets.Panel(c, legend);
+            Label(c, "VAULT ROOMS", new ThemeRect(legend.x, legend.y + 12, legend.w, 34), 22, ThemePalette.GoldBright, ThemeFont.Heading);
+            var kinds = new[] { "COMBAT", "ELITE", "EVENT", "TREASURE", "MERCHANT", "SANCTUARY", "BOSS" };
+            for (var i = 0; i < kinds.Length; i++)
+            {
+                var row = new ThemeRect(legend.x + 11, legend.y + 49 + i * 44, legend.w - 22, 40); ThemeWidgets.Row(c, row, i == 3 ? 1f : 0f);
+                Emblem(c, i, new ThemeRect(row.x + 7, row.y + 2, 36, 36), ThemeColor.White);
+                var t = ThemeText.Of(ThemeFont.Label, 14, i == 3 ? ThemePalette.GoldBright : ThemePalette.Text, ThemeAnchor.MiddleLeft); t.shadowY = 1.5f; t.shadowAlpha = .8f;
+                ThemeDraw.Text(c, kinds[i], new ThemeRect(row.x + 53, row.y, row.w - 59, row.h), t);
+            }
+            ThemeMap.RoomLabel(c, 775, H - 26, "SCROLL TO EXPLORE · FOLLOW THE GILDED THREADS", false);
             c.Save(path);
         }
     }

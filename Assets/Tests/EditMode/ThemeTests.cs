@@ -22,6 +22,8 @@ namespace GildedFate.Chronicle.Tests
             public float MeasureText(string s, ThemeFont f, float size) => s.Length * size * .5f;
             public void PushClip(ThemeRect c) { pushes++; calls.Add("push"); }
             public void PopClip() { pops++; calls.Add("pop"); }
+            public readonly List<(float x0, float y0, float x1, float y1, float w, ThemeColor c)> lines = new List<(float, float, float, float, float, ThemeColor)>();
+            public void Line(float x0, float y0, float x1, float y1, float w, ThemeColor c) { lines.Add((x0, y0, x1, y1, w, c)); calls.Add("line"); }
         }
 
         static IEnumerable<ThemeImage> AllAssets() => new[]
@@ -29,7 +31,7 @@ namespace GildedFate.Chronicle.Tests
             ThemeAssets.FrameGold, ThemeAssets.FrameBronze, ThemeAssets.FrameSteel, ThemeAssets.FrameCrimson, ThemeAssets.FrameAzure, ThemeAssets.FrameViolet, ThemeAssets.FrameJade,
             ThemeAssets.RimBronze, ThemeAssets.RimGold, ThemeAssets.RimSteel, ThemeAssets.Shadow, ThemeAssets.Glow, ThemeAssets.GlowTight, ThemeAssets.Ring, ThemeAssets.Vignette,
             ThemeAssets.Grain, ThemeAssets.Sheen, ThemeAssets.DiamondGold, ThemeAssets.PanelGlass, ThemeAssets.ButtonGlass, ThemeAssets.ButtonGlassHot, ThemeAssets.ButtonGlassPressed,
-            ThemeAssets.TopSheen, ThemeAssets.RuleFade, ThemeAssets.BarGloss, ThemeAssets.BarTrough, ThemeAssets.PlateFade, ThemeAssets.HudGlass, ThemeAssets.RowGlass, ThemeAssets.ShadeDown,
+            ThemeAssets.TopSheen, ThemeAssets.RuleFade, ThemeAssets.BarGloss, ThemeAssets.BarTrough, ThemeAssets.PlateFade, ThemeAssets.HudGlass, ThemeAssets.RowGlass, ThemeAssets.ShadeDown, ThemeAssets.LineSoft, ThemeAssets.Medallion, ThemeAssets.Flare,
         };
 
         // ---------------------------------------------------------------- generated images
@@ -190,6 +192,118 @@ namespace GildedFate.Chronicle.Tests
             ThemeWidgets.HudStrip(rec, new ThemeRect(0, 0, 1920, 58), true); ThemeWidgets.Tooltip(rec, r, "WEAK", "Deals 25% less attack damage."); ThemeWidgets.Tooltip(rec, r, null, "No heading.");
             ThemeWidgets.Slider(rec, new ThemeRect(0, 0, 300, 20), 1.4f, true); ThemeWidgets.Divider(rec, 100, 50, 300); ThemeWidgets.Plate(rec, r); ThemeWidgets.Glow(rec, 0, 0, 40, ThemeColor.White);
             Assert.AreEqual(rec.pushes, rec.pops); Assert.IsTrue(rec.images > 20);
+        }
+
+
+        // ---------------------------------------------------------------- act map
+        [Test] public void ThreadPointsKeepTheirEndsFixedAndBendGentlyBetween()
+        {
+            ThemeMap.ThreadPoint(100, 400, 300, 100, 0f, out var x0, out var y0); ThemeMap.ThreadPoint(100, 400, 300, 100, 1f, out var x1, out var y1);
+            Assert.AreEqual(100.0, x0, .001); Assert.AreEqual(400.0, y0, .001); Assert.AreEqual(300.0, x1, .001); Assert.AreEqual(100.0, y1, .001);
+            ThemeMap.ThreadPoint(100, 400, 300, 100, .5f, out var xm, out var ym);
+            Assert.AreEqual(250.0, ym, .001); Assert.AreEqual(212.0, xm, .01, "200 units across bends 16, which is capped at 12, at the middle of the thread");
+            ThemeMap.ThreadPoint(100, 400, 100, 100, .5f, out var xs, out _); Assert.AreEqual(100.0, xs, .001, "a straight vertical thread does not bend");
+        }
+
+        [Test] public void EveryThreadKindDrawsAndAvailableThreadsAreBrighterThanFutureOnes()
+        {
+            double Alpha(ThreadKind k) { var r = new Recorder(); ThemeMap.Thread(r, 100, 500, 260, 380, k); Assert.IsTrue(r.lines.Count > 0, k.ToString()); return r.lines.Max(l => (double)l.c.a * l.w); }
+            Assert.Greater(Alpha(ThreadKind.Available), Alpha(ThreadKind.Future));
+            foreach (var k in Enum.GetValues(typeof(ThreadKind)).Cast<ThreadKind>())
+            {
+                var r = new Recorder(); ThemeMap.Thread(r, 0, 0, 0, 0, k, 1f, 3); Assert.IsFalse(r.lines.Any(l => float.IsNaN(l.x1) || float.IsNaN(l.y1)), k + " survives a zero-length edge");
+            }
+        }
+
+        [Test] public void ThreadProgressDrawsOnlyThatFractionAndNothingAtZero()
+        {
+            var none = new Recorder(); ThemeMap.Thread(none, 100, 500, 100, 100, ThreadKind.Traveled, 0f); Assert.AreEqual(0, none.lines.Count);
+            var half = new Recorder(); ThemeMap.Thread(half, 100, 500, 100, 100, ThreadKind.Traveled, .5f);
+            Assert.IsTrue(half.lines.Count > 0); Assert.IsTrue(half.lines.All(l => l.y1 >= 299.9f), "a half-drawn thread has not gone past its midpoint (y grows downward)");
+            var full = new Recorder(); ThemeMap.Thread(full, 100, 500, 100, 100, ThreadKind.Traveled, 1f); Assert.Greater(full.lines.Count, half.lines.Count);
+        }
+
+        [Test] public void MotesDriftOnlyOnAvailableThreadsAndOnlyWhenAsked()
+        {
+            var plain = new Recorder(); ThemeMap.Thread(plain, 100, 500, 300, 100, ThreadKind.Available, 1f, 0);
+            var moving = new Recorder(); ThemeMap.Thread(moving, 100, 500, 300, 100, ThreadKind.Available, 1f, 3);
+            Assert.Greater(moving.images, plain.images, "motes are glow images"); Assert.Greater(moving.fills, plain.fills);
+            var quiet = new Recorder(); ThemeMap.Thread(quiet, 100, 500, 300, 100, ThreadKind.Future, 1f, 3); Assert.AreEqual(0, quiet.images, "a future thread has no motes");
+        }
+
+        [Test] public void RoomLabelsSitOnAPlateAndLitOnesAreGold()
+        {
+            var lit = new Recorder(); ThemeMap.RoomLabel(lit, 300, 200, "COMBAT · HERE", true);
+            var dim = new Recorder(); ThemeMap.RoomLabel(dim, 300, 200, "COMBAT", false);
+            Assert.IsTrue(lit.calls.Contains("img:plate.fade")); Assert.IsTrue(lit.drawn.Any(d => d.text == "COMBAT · HERE" && d.color.r > .9f && d.color.b < .8f), "lit labels use the gold");
+            Assert.IsTrue(dim.drawn.Any(d => d.text == "COMBAT")); Assert.AreEqual(lit.pushes, lit.pops);
+        }
+
+        [Test] public void MedallionIsARoundSocketClearAtTheCornersAndOpaqueOnItsRim()
+        {
+            var m = ThemeAssets.Medallion; Assert.AreEqual(0, (int)m.rgba[3], "the corner is clear");
+            Assert.Greater(m.Get(m.width / 2, (int)(m.height * .06f)).a, .95f, "the rim is solid"); Assert.Greater(m.Get(m.width / 2, m.height / 2).a, .8f, "the glass is mostly opaque so the emblem stands out");
+            float Lum(ThemeColor c) => c.r * .3f + c.g * .59f + c.b * .11f;
+            Assert.Greater(Lum(m.Get((int)(m.width * .22f), (int)(m.height * .22f))), Lum(m.Get((int)(m.width * .78f), (int)(m.height * .78f))), "lit from the upper left");
+        }
+
+        [Test] public void FlareIsBrightestAtTheCentreAndFadesAlongTwoCrossedStreaks()
+        {
+            var f = ThemeAssets.Flare; var mid = f.width / 2;
+            Assert.Greater(f.Get(mid, mid).a, .9f); Assert.Less(f.Get((int)(f.width * .2f), (int)(f.height * .2f)).a, .05f, "the diagonals are dark");
+            Assert.Greater(f.Get((int)(f.width * .2f), mid).a, f.Get((int)(f.width * .2f), (int)(f.height * .3f)).a, "the streak runs along the axis");
+        }
+
+        [Test] public void EveryRoomToneHasADistinctColourCast()
+        {
+            var seen = new HashSet<string>();
+            foreach (var t in Enum.GetValues(typeof(NodeTone)).Cast<NodeTone>()) { var c = ThemeMap.ToneColor(t); Assert.AreEqual(1f, c.a); Assert.IsTrue(seen.Add(c.r + "," + c.g + "," + c.b), t.ToString()); }
+        }
+
+        [Test] public void RoomsDrawUnderAndOverTheirEmblemInEveryStateAndMotionLevel()
+        {
+            foreach (var st in Enum.GetValues(typeof(NodeState)).Cast<NodeState>())
+                foreach (var motion in new[] { 0, 1, 2 })
+                    foreach (var tone in Enum.GetValues(typeof(NodeTone)).Cast<NodeTone>())
+                    {
+                        var u = new Recorder(); ThemeMap.NodeUnder(u, 300, 300, 78, tone, st, .5f, 7, motion);
+                        Assert.IsTrue(u.calls.Contains("img:medallion"), st + "/" + tone + " sets the emblem in a medallion"); Assert.IsTrue(u.calls.Contains("img:glow.soft"));
+                        var o = new Recorder(); ThemeMap.NodeOver(o, 300, 300, 78, tone, st, .5f, 7, motion);
+                        Assert.IsFalse(o.lines.Any(l => float.IsNaN(l.x0) || float.IsNaN(l.x1) || float.IsNaN(l.y0) || float.IsNaN(l.y1)));
+                        Assert.AreEqual(u.pushes, u.pops); Assert.AreEqual(o.pushes, o.pops);
+                    }
+        }
+
+        [Test] public void LiveRoomsGlowBrighterAndReceiveARingWhileLockedOnesDoNot()
+        {
+            var locked = new Recorder(); ThemeMap.NodeOver(locked, 300, 300, 78, NodeTone.Combat, NodeState.Locked, 0f, 1, 2);
+            var open = new Recorder(); ThemeMap.NodeOver(open, 300, 300, 78, NodeTone.Combat, NodeState.Available, 0f, 1, 2);
+            var here = new Recorder(); ThemeMap.NodeOver(here, 300, 300, 78, NodeTone.Combat, NodeState.Current, 0f, 1, 2);
+            Assert.AreEqual(0, locked.images + locked.lines.Count, "a room you cannot reach yet adds nothing over its emblem until the pointer is on it");
+            Assert.Greater(open.lines.Count, 0, "turning ticks"); Assert.IsTrue(open.calls.Contains("img:ring.glow")); Assert.IsTrue(here.calls.Contains("img:ring.glow"));
+            var still = new Recorder(); ThemeMap.NodeOver(still, 300, 300, 78, NodeTone.Combat, NodeState.Available, 0f, 1, 0); Assert.Less(still.images, open.images, "no ripples when motion is off");
+        }
+
+        [Test] public void ReduceMotionFreezesEmbersAndFullMotionMovesThem()
+        {
+            var a = new Recorder { time = 0f }; var b = new Recorder { time = 0f }; var area = new ThemeRect(0, 0, 1500, 900);
+            ThemeMap.Embers(a, area, 30, 0); ThemeMap.Embers(b, area, 30, 0); Assert.AreEqual(a.calls.Count, b.calls.Count);
+            var later = new Recorder { time = 4f }; ThemeMap.Embers(later, area, 30, 0); Assert.AreEqual(a.calls.Count, later.calls.Count, "the same number of motes at any time");
+            Assert.AreEqual(30 * 2, a.images + a.fills, "each mote is a glow and a bright core");
+            var none = new Recorder(); ThemeMap.Embers(none, area, 0, 0); Assert.AreEqual(0, none.calls.Count);
+        }
+
+        [Test] public void LightShaftsStayClippedAndHeadersCarryTheirText()
+        {
+            var sh = new Recorder(); ThemeMap.LightShafts(sh, new ThemeRect(0, 58, 1500, 900), 1f); Assert.AreEqual(1, sh.pushes); Assert.AreEqual(1, sh.pops); Assert.AreEqual(4, sh.lines.Count);
+            var off = new Recorder(); ThemeMap.LightShafts(off, new ThemeRect(0, 58, 1500, 900), 0f); Assert.IsTrue(off.lines.All(l => l.c.a == 0f), "strength 0 draws nothing visible");
+            var hd = new Recorder(); ThemeMap.Header(hd, 700, 90, "CHOOSE YOUR NEXT ROOM", true); Assert.IsTrue(hd.drawn.Any(d => d.text == "CHOOSE YOUR NEXT ROOM")); Assert.AreEqual(2, hd.calls.Count(c => c == "img:rule.fade"));
+        }
+
+        [Test] public void TheSummitCrownDrawsAuraMedallionAndRingsWithoutRipplesWhenStill()
+        {
+            var full = new Recorder(); ThemeMap.BossCrown(full, new ThemeRect(1713, 106, 126, 132), 2); var still = new Recorder(); ThemeMap.BossCrown(still, new ThemeRect(1713, 106, 126, 132), 0);
+            Assert.IsTrue(full.calls.Contains("img:medallion")); Assert.Greater(full.images, still.images); Assert.AreEqual(full.pushes, full.pops);
         }
 
         [Test] public void EveryNamedPaletteColorIsOpaqueAndInRange()

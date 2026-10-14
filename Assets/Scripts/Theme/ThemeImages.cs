@@ -98,6 +98,51 @@ namespace GildedFate.Theme
             return img;
         }
 
+        /// <summary>A round bevelled-bronze socket holding dark glass, lit from the upper left. The map sets a room's emblem into it.</summary>
+        public static ThemeImage Medallion(string id, int size = 128)
+        {
+            var img = new ThemeImage(id, size, size);
+            var hi = ThemeColor.Hex(0xE9C46A); var lo = ThemeColor.Hex(0x5A3B10); var ink = ThemeColor.Hex(0x0A0603);
+            var glassLo = ThemeColor.Hex(0x0A1019); var glassHi = ThemeColor.Hex(0x1E2A3C);
+            for (var y = 0; y < size; y++) for (var x = 0; x < size; x++)
+            {
+                var dx = (x + .5f) / size * 2 - 1; var dy = (y + .5f) / size * 2 - 1; var r = (float)Math.Sqrt(dx * dx + dy * dy);
+                var edge = 1 - Smooth(.955f, 1f, r); if (edge <= 0) { img.Set(x, y, ThemeColor.Clear); continue; }
+                ThemeColor c;
+                if (r > .82f)
+                {
+                    var nx = dx / Math.Max(r, 1e-4f); var ny = dy / Math.Max(r, 1e-4f);
+                    var lit = Clamp01(.5f + .5f * (-nx - ny) * K);
+                    var band = (r - .82f) / (.955f - .82f); var ridge = 1 - Math.Abs(band * 2 - 1);
+                    c = ThemeColor.Lerp(lo, hi, Clamp01(lit * .75f + ridge * .35f));
+                    if (band > .85f) c = ThemeColor.Lerp(c, ink, (band - .85f) / .15f * .85f);
+                    if (band < .16f) c = ThemeColor.Lerp(ink, c, .35f + band / .16f * .65f);
+                }
+                else
+                {
+                    var lit = Clamp01(.5f + .5f * (-dx - dy) * K) * (1 - r);
+                    c = ThemeColor.Lerp(glassLo, glassHi, Clamp01(lit * 1.4f));
+                    var shade = 1 - .5f * Smooth(.55f, .82f, r); c = new ThemeColor(c.r * shade, c.g * shade, c.b * shade, .90f);
+                }
+                img.Set(x, y, new ThemeColor(c.r, c.g, c.b, c.a * edge));
+            }
+            return img;
+        }
+
+        /// <summary>A four-point glint: two thin crossed streaks over a soft core. For sparkles on cleared rooms and the heart of a spark.</summary>
+        public static ThemeImage Flare(string id, int size = 64)
+        {
+            var img = new ThemeImage(id, size, size);
+            for (var y = 0; y < size; y++) for (var x = 0; x < size; x++)
+            {
+                var dx = Math.Abs((x + .5f) / size * 2 - 1); var dy = Math.Abs((y + .5f) / size * 2 - 1); var r = (float)Math.Sqrt(dx * dx + dy * dy);
+                var h = (float)(Math.Pow(1 - dx, 2.2) * Math.Exp(-dy * 26)); var v = (float)(Math.Pow(1 - dy, 2.2) * Math.Exp(-dx * 26));
+                var core = (float)Math.Pow(1 - Clamp01(r), 3);
+                img.Set(x, y, new ThemeColor(1, 1, 1, Clamp01(Math.Max(h, v) + core * .9f)));
+            }
+            return img;
+        }
+
         /// <summary>A thin glowing ring (for selected map nodes, focus outlines, rarity halos).</summary>
         public static ThemeImage Ring(string id, int size = 128, float radius = .78f, float thickness = .07f, float softness = .08f)
         {
@@ -286,6 +331,8 @@ namespace GildedFate.Theme
         public static readonly ThemeImage Glow = ThemeImages.Glow("glow.soft");
         public static readonly ThemeImage GlowTight = ThemeImages.Glow("glow.tight", 128, 3.4f);
         public static readonly ThemeImage Ring = ThemeImages.Ring("ring.glow");
+        public static readonly ThemeImage Medallion = ThemeImages.Medallion("medallion");
+        public static readonly ThemeImage Flare = ThemeImages.Flare("flare");
         public static readonly ThemeImage Vignette = ThemeImages.Vignette("vignette");
         public static readonly ThemeImage Grain = ThemeImages.Grain("grain");
         public static readonly ThemeImage Sheen = ThemeImages.Sheen("sheen");
@@ -306,6 +353,9 @@ namespace GildedFate.Theme
         public static readonly ThemeImage RowGlass = ThemeImages.Gradient("glass.row", 32, S(0, C(0x101722, .96f)), S(1, C(0x070A10, .96f)));
         public static readonly ThemeImage ShadeDown = ThemeImages.Gradient("shade.down", 32, S(0, C(0x000000, .58f)), S(.4f, C(0x000000, .22f)), S(1, C(0x000000, 0f)));
         public static readonly ThemeImage PlateFade = ThemeImages.GradientH("plate.fade", 64, S(0, C(0x03050A, 0f)), S(.18f, C(0x03050A, .78f)), S(.82f, C(0x03050A, .78f)), S(1, C(0x03050A, 0f)));
-        public static readonly ThemeImage BarTrough = ThemeImages.Gradient("bar.trough", 32, S(0, C(0x000000, .86f)), S(.5f, C(0x04060A, .8f)), S(1, C(0x0B0F16, .8f)));
+        // The cross-section of a soft line: clear at both edges, a bright core in the middle. Stretched along the line by the canvas.
+        public static readonly ThemeImage LineSoft = ThemeImages.Gradient("line.soft", 32, S(0, ThemeColor.White.WithAlpha(0f)), S(.22f, ThemeColor.White.WithAlpha(.22f)), S(.38f, ThemeColor.White.WithAlpha(.86f)),
+            S(.5f, ThemeColor.White.WithAlpha(1f)), S(.62f, ThemeColor.White.WithAlpha(.86f)), S(.78f, ThemeColor.White.WithAlpha(.22f)), S(1, ThemeColor.White.WithAlpha(0f)));
+        public static readonly ThemeImage BarTrough =ThemeImages.Gradient("bar.trough", 32, S(0, C(0x000000, .86f)), S(.5f, C(0x04060A, .8f)), S(1, C(0x0B0F16, .8f)));
     }
 }

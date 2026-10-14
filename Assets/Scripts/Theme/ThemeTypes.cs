@@ -58,5 +58,7 @@ namespace GildedFate.Theme
         float MeasureText(string text, ThemeFont font, float size);
         void PushClip(ThemeRect clip);
         void PopClip();
+        /// <summary>A straight line with soft, smooth edges. width is the full width including the soft fringe, so a crisp 2px line asks for about 3.</summary>
+        void Line(float x0, float y0, float x1, float y1, float width, ThemeColor color);
     }
 }

@@ -18,17 +18,20 @@ namespace GildedFate.UI
             Fill(new Rect(0,0,w,h),new Color(.003f,.004f,.007f,1));
             if(mapBackground)
             {
-                var old=GUI.color;GUI.color=new Color(.62f,.68f,.78f,.42f);GUI.DrawTexture(new Rect(0,58,w,h-58),mapBackground,ScaleMode.ScaleAndCrop);GUI.color=old;
+                if(UiTheme.NewLook)ThemeMapBackdrop(mapBackground,w,h);
+                else{var old=GUI.color;GUI.color=new Color(.62f,.68f,.78f,.42f);GUI.DrawTexture(new Rect(0,58,w,h-58),mapBackground,ScaleMode.ScaleAndCrop);GUI.color=old;}
             }
-            Fill(new Rect(0,58,w,h-58),new Color(.002f,.005f,.012f,.58f));
-            for(var i=0;i<7;i++)
+            Fill(new Rect(0,58,w,h-58),new Color(.002f,.005f,.012f,UiTheme.NewLook?.40f:.58f));
+            if(UiTheme.NewLook){ThemeMapAtmosphere(new Rect(0,58,w,h-58));ThemeMapAmbience(new Rect(0,58,w,h-58),mapScroll);}
+            for(var i=0;i<7&&!UiTheme.NewLook;i++)
             {
                 var x=w*(.08f+i*.145f);var drift=profile.reduceMotion?0:Mathf.Sin(shimmer*.18f+i)*18;
                 DrawLine(new Vector2(x+drift,72),new Vector2(x-drift*.4f,h),i%2==0?new Color(1f,.68f,.22f,.065f):new Color(.18f,.56f,1f,.055f),2+i%3);
             }
             DrawPersistentRunBar(w,inspectOnly&&screen==ScreenMode.Combat);
             var viewport=MapViewport(w,h);var maxScroll=Mathf.Max(0,MapContentHeight-viewport.height);FocusMapToCurrentFloor(w,h);var pointer=PointerPosition;var mapReady=Time.unscaledTime>=mapInputReadyAt;
-            GUI.Label(new Rect(viewport.x,80,viewport.width,24),mapReady?"CHOOSE YOUR NEXT ROOM · CLICK A GILDED NODE":"RETURNING TO THE ACT MAP…",new GUIStyle(footerStyle){fontSize=12,fontStyle=FontStyle.Bold,normal={textColor=Gold}});
+            if(UiTheme.NewLook)ThemeMapHeader(viewport.center.x,92,mapReady?"CHOOSE YOUR NEXT ROOM · CLICK A GILDED NODE":"RETURNING TO THE ACT MAP…",mapReady);
+            else GUI.Label(new Rect(viewport.x,80,viewport.width,24),mapReady?"CHOOSE YOUR NEXT ROOM · CLICK A GILDED NODE":"RETURNING TO THE ACT MAP…",new GUIStyle(footerStyle){fontSize=12,fontStyle=FontStyle.Bold,normal={textColor=Gold}});
             if(MapScrollZone(w,h).Contains(pointer)&&Event.current.type==EventType.ScrollWheel&&!mapPauseOpen){if(mapWheelFrame!=Time.frameCount){mapScroll=Mathf.Clamp(mapScroll+Event.current.delta.y*34,0,maxScroll);mapFocusFloor=run.floor;mapWheelFrame=Time.frameCount;}Event.current.Use();}
             var local=pointer-viewport.position+new Vector2(0,mapScroll);
             var hovered=viewport.Contains(pointer)&&!mapPauseOpen?run.nodes.FirstOrDefault(n=>Vector2.Distance(MapPosition(n,viewport.width),local)<46):null;
@@ -46,17 +49,18 @@ namespace GildedFate.UI
                 var current=node==CurrentMapLocation;var p=MapPosition(node,viewport.width)-new Vector2(0,mapScroll);var active=node.floor==run.floor&&node.available;var hot=node==hovered;var size=node.kind==NodeKind.Boss?108:current?84:hot?84:active?78:64;
                 if(p.y<-size||p.y>viewport.height+size)continue;var r=new Rect(p.x-size*.5f,p.y-size*.5f,size,size);var old=GUI.color;
                 GUI.color=current?Color.white:node.complete?new Color(.44f,.42f,.37f):active||hot?Color.white:new Color(.78f,.77f,.71f);
-                MapPolishNodeUnder(node,r,active,hot,current);
-                DrawMapNodeIcon((int)node.kind,r);GUI.color=old;MapPolishNodeOver(node,r,current);
-                if(current)DrawCurrentMapMarker(r);
+                if(UiTheme.NewLook)ThemeNodeUnder(node,r,active,hot,current);else MapPolishNodeUnder(node,r,active,hot,current);
+                DrawMapNodeIcon((int)node.kind,r);GUI.color=old; // the room emblem is the game's own art in both looks
+                if(UiTheme.NewLook)ThemeNodeOver(node,r,active,hot,current);else{MapPolishNodeOver(node,r,current);if(current)DrawCurrentMapMarker(r);}
                 var roomLabel=node.kind==NodeKind.Sanctuary?"REST SHRINE":node.kind.ToString().ToUpperInvariant();
-                GUI.Label(new Rect(p.x-95,p.y+size*.5f+7,190,22),roomLabel+(current?" · HERE":node.complete?" · CLEARED":""),new GUIStyle(footerStyle){fontSize=12,normal={textColor=current||active?Gold:new Color(.78f,.77f,.70f)}});
+                if(UiTheme.NewLook)ThemeMapLabel(p.x,p.y+size*.5f+18,roomLabel+(current?" · HERE":node.complete?" · CLEARED":""),current||active);
+                else GUI.Label(new Rect(p.x-95,p.y+size*.5f+7,190,22),roomLabel+(current?" · HERE":node.complete?" · CLEARED":""),new GUIStyle(footerStyle){fontSize=12,normal={textColor=current||active?Gold:new Color(.78f,.77f,.70f)}});
                 if(!inspectOnly&&mapReady&&active&&!mapPauseOpen&&pendingMapNode==null&&GUI.Button(r,"",GUIStyle.none))clicked=node;
             }
             GUI.EndGroup();MapPolishFog(viewport);
             var boss=run.nodes.FirstOrDefault(n=>n.kind==NodeKind.Boss);if(boss!=null)
             {
-                var crown=new Rect(w-207,106,126,132);MapPolishBossAura(crown);DrawBossMapPortrait(crown,boss);
+                var crown=new Rect(w-207,106,126,132);if(UiTheme.NewLook){ThemeBossCrown(crown);ThemeLabelPlate(new Rect(w-268,250,252,50));}else MapPolishBossAura(crown);DrawBossMapPortrait(crown,boss);
                 GUI.Label(new Rect(w-258,244,232,42),"ACT "+RomanAct(run.act)+" · SUMMIT KEEPER",new GUIStyle(footerStyle){fontSize=12,normal={textColor=Gold}});
                 // This act's theme (rolled at the start of the run).
                 GUI.Label(new Rect(w-268,272,252,22),ActThemes.Name(run.CurrentTheme),new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=13,fontStyle=FontStyle.Bold,normal={textColor=run.CurrentTheme==ActThemes.AshenWilds?new Color(1f,.55f,.28f):run.CurrentTheme==ActThemes.DrownedQuarter?new Color(.45f,.85f,.82f):run.CurrentTheme==ActThemes.CrimsonFoundry?new Color(1f,.38f,.22f):run.CurrentTheme==ActThemes.Hollowwood?new Color(.55f,.88f,.4f):run.CurrentTheme==ActThemes.ShatteredObservatory?new Color(.72f,.66f,1f):run.CurrentTheme==ActThemes.GildedRuins?new Color(1f,.84f,.4f):run.CurrentTheme==ActThemes.BlackCathedral?new Color(.86f,.74f,1f):run.CurrentTheme==ActThemes.FracturedRealm?new Color(.78f,.6f,1f):run.CurrentTheme==ActThemes.GildedThrone?new Color(1f,.84f,.35f):new Color(.84f,.8f,.7f)}});
@@ -66,7 +70,8 @@ namespace GildedFate.UI
             }
             DrawMapLegend(w,h);
             var rail=new Rect(viewport.xMax-5,viewport.y+8,2,viewport.height-16);Fill(rail,new Color(.5f,.36f,.2f,.4f));var thumb=rail.height*viewport.height/MapContentHeight;Fill(new Rect(rail.x,rail.y+(rail.height-thumb)*mapScroll/Mathf.Max(1,maxScroll),2,thumb),Gold);
-            GUI.Label(new Rect(viewport.x,viewport.yMax-25,viewport.width,22),"SCROLL TO EXPLORE · FOLLOW THE GILDED THREADS",new GUIStyle(footerStyle){fontSize=12,normal={textColor=new Color(.74f,.67f,.52f)}});
+            if(UiTheme.NewLook)ThemeMapLabel(viewport.center.x,viewport.yMax-14,"SCROLL TO EXPLORE · FOLLOW THE GILDED THREADS",false);
+            else GUI.Label(new Rect(viewport.x,viewport.yMax-25,viewport.width,22),"SCROLL TO EXPLORE · FOLLOW THE GILDED THREADS",new GUIStyle(footerStyle){fontSize=12,normal={textColor=new Color(.74f,.67f,.52f)}});
             if(hovered!=null&&!mapPauseOpen){var at=viewport.position+MapPosition(hovered,viewport.width)-new Vector2(0,mapScroll);SetRunHudTooltip(new Rect(at.x-35,at.y-35,70,70),hovered.kind==NodeKind.Sanctuary?"REST SHRINE":hovered.kind.ToString().ToUpperInvariant(),NodeDescription(hovered.kind));}
             if(!inspectOnly){if(clicked!=null)BeginMapTravel(clicked);DrawMapTravelTransition(w,h,viewport);if(mapPauseOpen)DrawMapPauseMenu(w,h);}
         }

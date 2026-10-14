@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using GildedFate.Map;
 using GildedFate.Theme;
 using UnityEngine;
 
@@ -89,6 +90,18 @@ namespace GildedFate.UI
 
         public float MeasureText(string text, ThemeFont font, float size) { measure.text = text; return Style(font, size, ThemeAnchor.MiddleLeft, false).CalcSize(measure).x; }
 
+        public void Line(float x0, float y0, float x1, float y1, float width, ThemeColor color)
+        {
+            var a = new Vector2(x0 - origin.x, y0 - origin.y); var b = new Vector2(x1 - origin.x, y1 - origin.y); var length = Vector2.Distance(a, b);
+            if (length < .01f || width <= 0f) return;
+            // Composed in canvas space after the existing UI scale, like the original DrawLine, so it sits right at every resolution.
+            var matrix = GUI.matrix; var angle = Mathf.Atan2(b.y - a.y, b.x - a.x) * Mathf.Rad2Deg;
+            GUI.matrix = matrix * Matrix4x4.TRS(new Vector3(a.x, a.y, 0), Quaternion.Euler(0, 0, angle), Vector3.one);
+            var old = GUI.color; GUI.color = Mul(old, C(color));
+            GUI.DrawTexture(new Rect(0, -width * .5f, length, width), Tex(ThemeAssets.LineSoft), ScaleMode.StretchToFill, true);
+            GUI.color = old; GUI.matrix = matrix;
+        }
+
         public void PushClip(ThemeRect clip) { var r = R(clip); GUI.BeginGroup(r); origins.Push(origin); origin = new Vector2(clip.x, clip.y); }
         public void PopClip() { GUI.EndGroup(); origin = origins.Pop(); }
     }
@@ -145,6 +158,77 @@ namespace GildedFate.UI
         private void ThemePlaque(Rect r, float opacity = .985f) { if (Event.current.type == EventType.Repaint) ThemeWidgets.Plaque(ThemeCanvas(), TR(r), opacity); }
         private void ThemeHudStrip(float w) { if (Event.current.type == EventType.Repaint) ThemeWidgets.HudStrip(ThemeCanvas(), new ThemeRect(0, 0, w, 58), profile != null && profile.highContrastUi); }
         private void ThemeRow(Rect r, bool hot) { if (Event.current.type == EventType.Repaint) ThemeWidgets.Row(ThemeCanvas(), TR(r), hot ? 1f : 0f); }
+        // ---- act map ----
+        /// <summary>One route thread, clipped to the map's viewport. Same inputs as the original DrawFateThread (a and b in canvas space).</summary>
+        private void ThemeThread(Vector2 a, Vector2 b, Rect clip, bool braided, bool available, bool hot, float progress)
+        {
+            if (Event.current.type != EventType.Repaint) return;
+            var kind = braided ? ThreadKind.Traveled : available ? ThreadKind.Available : hot ? ThreadKind.Reachable : ThreadKind.Future;
+            var canvas = ThemeCanvas();
+            canvas.PushClip(new ThemeRect(clip.x + 3, clip.y + 3, clip.width - 6, clip.height - 6));
+            ThemeMap.Thread(canvas, a.x, a.y, b.x, b.y, kind, progress, MapPolishMotion ? (MapPolishLowVfx ? 1 : 3) : 0);
+            canvas.PopClip();
+        }
+        /// <summary>0 = Reduce Motion (everything holds still), 1 = reduced effects (fewer particles and rays), 2 = full.</summary>
+        private int ThemeMotion => profile != null && profile.reduceMotion ? 0 : profile != null && profile.reducedVfx ? 1 : 2;
+        private struct ThemeHoverAnim { public float value; public int frame; }
+        private readonly Dictionary<int, ThemeHoverAnim> themeNodeHover = new();
+
+        /// <summary>How far the pointer has lit a room, 0..1. Eases in and out; snaps when Reduce Motion is on.</summary>
+        private float ThemeNodeHover(MapNode node, bool hot)
+        {
+            var key = node.floor * 16 + node.lane; themeNodeHover.TryGetValue(key, out var a);
+            if (a.frame != Time.frameCount)
+            {
+                a.value = profile != null && profile.reduceMotion ? (hot ? 1f : 0f) : Mathf.MoveTowards(a.value, hot ? 1f : 0f, Mathf.Min(Time.unscaledDeltaTime, .05f) * 8f);
+                a.frame = Time.frameCount; themeNodeHover[key] = a;
+            }
+            return a.value;
+        }
+        private static NodeState ThemeNodeState(MapNode node, bool active, bool current) => current ? NodeState.Current : active ? NodeState.Available : node.complete ? NodeState.Cleared : NodeState.Locked;
+
+        /// <summary>Behind a room's emblem: shadow, the room's colour, the medallion. The emblem is the game's own art, drawn by the caller after this.</summary>
+        private void ThemeNodeUnder(MapNode node, Rect r, bool active, bool hot, bool current)
+        {
+            if (Event.current.type != EventType.Repaint) return;
+            var keep = GUI.color; GUI.color = Color.white;   // the emblem is tinted for cleared rooms; the light around it is not
+            ThemeMap.NodeUnder(ThemeCanvas(), r.center.x, r.center.y, r.width, (NodeTone)(int)node.kind, ThemeNodeState(node, active, current), ThemeNodeHover(node, hot), node.floor * 7 + node.lane, ThemeMotion);
+            GUI.color = keep;
+        }
+        /// <summary>Over a room's emblem: ring, turning ticks, ripples, the beacon of the current room, the glint on cleared ones.</summary>
+        private void ThemeNodeOver(MapNode node, Rect r, bool active, bool hot, bool current)
+        {
+            if (Event.current.type != EventType.Repaint) return;
+            var keep = GUI.color; GUI.color = Color.white;
+            ThemeMap.NodeOver(ThemeCanvas(), r.center.x, r.center.y, r.width, (NodeTone)(int)node.kind, ThemeNodeState(node, active, current), ThemeNodeHover(node, hot), node.floor * 7 + node.lane, ThemeMotion);
+            GUI.color = keep;
+        }
+        /// <summary>Light shafts and drifting embers over the map's backdrop.</summary>
+        private void ThemeMapAmbience(Rect area, float scroll)
+        {
+            if (Event.current.type != EventType.Repaint) return;
+            var canvas = ThemeCanvas();
+            ThemeMap.LightShafts(canvas, TR(area), ThemeMotion == 0 ? .8f : 1f);
+            ThemeMap.Embers(canvas, TR(area), ThemeMotion == 2 ? 36 : ThemeMotion == 1 ? 14 : 20, scroll);
+        }
+        private void ThemeMapHeader(float cx, float cy, string text, bool ready) { if (Event.current.type == EventType.Repaint) ThemeMap.Header(ThemeCanvas(), cx, cy, text, ready); }
+        private void ThemeBossCrown(Rect crown) { if (Event.current.type == EventType.Repaint) ThemeMap.BossCrown(ThemeCanvas(), TR(crown), ThemeMotion); }
+        private void ThemeLabelPlate(Rect r) { if (Event.current.type == EventType.Repaint) ThemeMap.LabelPlate(ThemeCanvas(), TR(r)); }
+        /// <summary>The backdrop drifts slightly against the scroll, so the vault has depth. Drawn only in the new look.</summary>
+        private void ThemeMapBackdrop(Texture2D art, float w, float h)
+        {
+            if (Event.current.type != EventType.Repaint || !art) return;
+            var scrollable = Mathf.Max(1f, MapContentHeight - MapViewport(w, h).height); var shift = (profile != null && profile.reduceMotion ? 0f : Mathf.Clamp01(mapScroll / scrollable)) * 36f;
+            var old = GUI.color; GUI.color = new Color(.62f, .68f, .78f, .62f);
+            GUI.BeginGroup(new Rect(0, 58, w, h - 58));
+            GUI.DrawTexture(new Rect(0, -18 - shift, w, h - 58 + 72), art, ScaleMode.ScaleAndCrop);
+            GUI.EndGroup(); GUI.color = old;
+        }
+
+        private void ThemeMapLabel(float cx, float cy, string text, bool lit) { if (Event.current.type == EventType.Repaint) ThemeMap.RoomLabel(ThemeCanvas(), cx, cy, text, lit); }
+        /// <summary>A soft dark vignette over the map's backdrop, so the middle glows and the edges recede.</summary>
+        private void ThemeMapAtmosphere(Rect area) { if (Event.current.type == EventType.Repaint) ThemeCanvas().Image(ThemeAssets.Vignette, TR(area), new ThemeColor(1, 1, 1, .85f)); }
+
         private void ThemeSlider(Rect track, float fraction, bool hot) { if (Event.current.type == EventType.Repaint) ThemeWidgets.Slider(ThemeCanvas(), TR(track), fraction, hot); }
     }
 }

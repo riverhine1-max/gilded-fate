@@ -759,14 +759,14 @@ namespace GildedFate.UI
         }
         private void DrawMapLegend(float w,float h)
         {
-            var pointer=PointerPosition;var legend=new Rect(w-262,294,240,376);Fill(legend,new Color(.006f,.012f,.021f,.90f));Outline(legend,new Color(.52f,.43f,.28f,.72f),1);
+            var pointer=PointerPosition;var legend=new Rect(w-262,294,240,376);if(UiTheme.NewLook)ThemePanel(legend);else{Fill(legend,new Color(.006f,.012f,.021f,.90f));Outline(legend,new Color(.52f,.43f,.28f,.72f),1);}
             GUI.Label(new Rect(legend.x+16,legend.y+15,legend.width-32,28),"VAULT ROOMS",new GUIStyle(titleStyle){fontSize=20,normal={textColor=new Color(.96f,.89f,.7f)}});
             var discovered=run.nodes.Select(n=>n.kind).ToHashSet();
             NodeKind? hoveredKind=null;Rect hoveredRect=default;
             for(var i=0;i<7;i++)
             {
                 var kind=(NodeKind)i;var known=discovered.Contains(kind);var row=new Rect(legend.x+11,legend.y+49+i*44,legend.width-22,40);var over=known&&row.Contains(pointer);var shown=over?new Rect(row.x-3,row.y-2,row.width+6,row.height+4):row;
-                if(over)Fill(shown,new Color(.18f,.12f,.035f,.72f));
+                if(UiTheme.NewLook)ThemeRow(shown,over);else if(over)Fill(shown,new Color(.18f,.12f,.035f,.72f));
                 if(known)DrawMapNodeIcon(i,new Rect(shown.x+7,shown.y+2,36,36));
                 else{Fill(new Rect(shown.x+11,shown.y+7,28,28),new Color(.018f,.023f,.032f,.92f));GUI.Label(new Rect(shown.x+11,shown.y+7,28,28),"?",new GUIStyle(titleStyle){fontSize=17,normal={textColor=new Color(.48f,.48f,.47f)}});}
                 GUI.Label(new Rect(shown.x+53,shown.y,shown.width-59,shown.height),known?kind.ToString().ToUpperInvariant():"UNREAD FATE",new GUIStyle(footerStyle){fontSize=12,alignment=TextAnchor.MiddleLeft,normal={textColor=known?new Color(.94f,.91f,.81f):new Color(.48f,.48f,.46f)}});

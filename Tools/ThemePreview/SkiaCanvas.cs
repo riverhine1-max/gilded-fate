@@ -35,6 +35,18 @@ public sealed class SkiaCanvas : IThemeCanvas, IDisposable
         }
     }
 
+    public void DrawBackgroundTinted(string pngPath, float x, float y, float w, float h, ThemeColor tint)
+    {
+        using (var bg = SKBitmap.Decode(pngPath))
+        {
+            if (bg == null) return;
+            // ScaleAndCrop: fill the rectangle, cropping the overflow evenly.
+            var k = Math.Max(w / bg.Width, h / bg.Height); var sw = w / k; var sh = h / k;
+            var src = new SKRect((bg.Width - sw) / 2, (bg.Height - sh) / 2, (bg.Width + sw) / 2, (bg.Height + sh) / 2);
+            using (var p = new SKPaint { FilterQuality = SKFilterQuality.High, ColorFilter = SKColorFilter.CreateBlendMode(C(tint), SKBlendMode.Modulate) }) g.DrawBitmap(bg, src, new SKRect(x, y, x + w, y + h), p);
+        }
+    }
+
     SKBitmap Get(ThemeImage img)
     {
         if (images.TryGetValue(img.id, out var bmp)) return bmp;
@@ -98,6 +110,17 @@ public sealed class SkiaCanvas : IThemeCanvas, IDisposable
                 var baseline = top + lh * i + lh * .5f - (m.Ascent + m.Descent) * .5f;
                 g.DrawText(lines[i], x, baseline, p);
             }
+        }
+    }
+
+    public void Line(float x0, float y0, float x1, float y1, float width, ThemeColor color)
+    {
+        var dx = x1 - x0; var dy = y1 - y0; var len = (float)Math.Sqrt(dx * dx + dy * dy); if (len < .01f) return;
+        var bmp = Get(ThemeAssets.LineSoft);
+        using (var p = new SKPaint { FilterQuality = SKFilterQuality.High, ColorFilter = SKColorFilter.CreateBlendMode(C(color), SKBlendMode.Modulate) })
+        {
+            g.Save(); g.Translate(x0, y0); g.RotateDegrees((float)(Math.Atan2(dy, dx) * 180 / Math.PI));
+            g.DrawBitmap(bmp, new SKRect(0, 0, bmp.Width, bmp.Height), new SKRect(0, -width * .5f, len, width * .5f), p); g.Restore();
         }
     }
 
