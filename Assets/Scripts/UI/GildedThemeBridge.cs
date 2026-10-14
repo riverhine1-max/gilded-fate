@@ -21,11 +21,16 @@ namespace GildedFate.UI
             var trace = e?.StackTrace; if (string.IsNullOrEmpty(trace)) return false;
             return trace.Contains("GildedFate.Theme.") || trace.Contains("UnityThemeCanvas") || trace.Contains("GildedMainMenu.Theme");
         }
+        static bool? commandLineClassic;
+        /// <summary>True when the game was launched with -gfClassicUi. That always wins over the setting, so the screenshot tool can photograph the original look.</summary>
+        public static bool CommandLineClassic => commandLineClassic ??= Array.IndexOf(Environment.GetCommandLineArgs(), "-gfClassicUi") >= 0;
         public static bool NewLook
         {
-            get { if (state < 0) state = Array.IndexOf(Environment.GetCommandLineArgs(), "-gfClassicUi") >= 0 ? 0 : 1; return state == 1; }
+            get { if (state < 0) state = CommandLineClassic ? 0 : 1; return state == 1; }
             set { state = value ? 1 : 0; }
         }
+        /// <summary>Applies the player's Settings choice (Graphics > Classic UI look). Called when the profile loads and when the setting changes.</summary>
+        public static void ApplyProfile(bool classicUi) => NewLook = !classicUi && !CommandLineClassic;
     }
 
     /// <summary>Draws the engine-free theme through Unity's GUI. Textures are made once from the theme's generated images; text styles are cached.</summary>

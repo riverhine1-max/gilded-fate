@@ -5,7 +5,9 @@ The game's screens are drawn with Unity's immediate-mode GUI (IMGUI) inside the 
 ## The switch
 
 * `UiTheme.NewLook` (in `Assets/Scripts/UI/GildedThemeBridge.cs`) is **on by default**.
-* Launch the game with `-gfClassicUi` to draw the original look. The screenshot tool uses this to photograph before and after.
+* Players can switch it off in **Settings > Graphics > Classic UI look** (saved in the profile as `classicUi`, default off; older profiles load the default). It is presentation only.
+* Launch the game with `-gfClassicUi` to draw the original look regardless of the setting. The screenshot tool uses this to photograph before and after.
+* Safety net: if the new look's own drawing throws, `OnGUI` logs one error ("The new UI look hit an error …"), switches the new look off for the rest of the session and draws the original look from the next frame. The screenshot tour reports any shot where that happened (`new-look-fell-back.txt`).
 * Every use of the new look in an existing screen is `if (UiTheme.NewLook) …new… else …original…`. Nothing from the original drawing code was removed.
 * The Chronicle book, writing, timing and recordings are not part of the theme. The **event** and **Fateweave** screens keep their own authored panels (`ThemeKeepsClassicScreen`); only shared chrome (top bar, tooltips, buttons) is themed there.
 

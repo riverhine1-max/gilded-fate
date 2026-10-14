@@ -103,7 +103,7 @@ namespace GildedFate.UI
             white.SetPixel(0, 0, Color.white);
             white.Apply();
             for (var i = 0; i < 90; i++) motes.Add(NewParticle(true));
-            profile = ProfileService.Load();GildedFate.Saving.ChronicleHooks.BindLogging();if(GildedFate.Saving.ChronicleHooks.Prepare(profile))ProfileService.Save(profile);BindMetaUnlocks();GildedFate.Saving.GildedSteam.Init();SyncAchievementsToSteam();
+            profile = ProfileService.Load();UiTheme.ApplyProfile(profile.classicUi);GildedFate.Saving.ChronicleHooks.BindLogging();if(GildedFate.Saving.ChronicleHooks.Prepare(profile))ProfileService.Save(profile);BindMetaUnlocks();GildedFate.Saving.GildedSteam.Init();SyncAchievementsToSteam();
             observedGold=run.gold;ResetGoldAudio();
             captureMode=!string.IsNullOrEmpty(CommandValue("-gfCapture"));
             bodyFont=Resources.Load<Font>("Fonts/SourceSans3-Regular");

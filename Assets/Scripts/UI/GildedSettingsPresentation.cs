@@ -61,7 +61,8 @@ namespace GildedFate.UI
                     ToggleRow("VERTICAL SYNC","Synchronize drawing to your display to reduce tearing.",()=>profile.vSync,v=>profile.vSync=v),
                     Cycle("FRAME RATE LIMIT","Maximum frame rate when vertical sync is disabled.",()=>profile.fpsLimit,v=>profile.fpsLimit=v,new[]{60,120,144,240},new[]{"60 FPS","120 FPS","144 FPS","240 FPS"}),
                     Cycle("TEXTURE QUALITY","Lower settings use less graphics memory.",()=>profile.textureQuality,v=>profile.textureQuality=v,new[]{0,1,2},new[]{"HIGH","MEDIUM","LOW"}),
-                    Cycle("ANTI-ALIASING","Smooth the edges of rendered shapes.",()=>profile.antiAliasing,v=>profile.antiAliasing=v,new[]{0,2,4,8},new[]{"OFF","2×","4×","8×"})},
+                    Cycle("ANTI-ALIASING","Smooth the edges of rendered shapes.",()=>profile.antiAliasing,v=>profile.antiAliasing=v,new[]{0,2,4,8},new[]{"OFF","2×","4×","8×"}),
+                    ToggleRow("CLASSIC UI LOOK","Draw menus, the map and the combat HUD in the original style instead of the new look. Presentation only.",()=>profile.classicUi,v=>{profile.classicUi=v;UiTheme.ApplyProfile(v);})},
                 new[]{
                     Range("MASTER VOLUME","Overall volume. At 0%, all audio is muted.",()=>profile.master,v=>profile.master=v),
                     Range("MUSIC","Background music volume.",()=>profile.music,v=>profile.music=v),
