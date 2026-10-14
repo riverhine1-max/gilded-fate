@@ -1268,7 +1268,7 @@ namespace GildedFate.UI
 
         private void DrawRelicTile(Rect r,RelicDef relic,int index,bool showDescription=false)
         {
-            var accent=RarityAccent(relic.rarity);Fill(r,new Color(.03f,.034f,.047f,.98f));Outline(r,accent,relic.rarity is Rarity.Rare or Rarity.Boss?3:1);var icon=Mathf.Min(r.width-16,r.height*(showDescription?.44f:.58f));var art=new Rect(r.center.x-icon*.5f,r.y+8,icon,icon);DrawRelicArt(art,index);
+            var accent=RarityAccent(relic.rarity);if(UiTheme.NewLook)ThemeRelicFrame(r,accent,relic.rarity);else{Fill(r,new Color(.03f,.034f,.047f,.98f));Outline(r,accent,relic.rarity is Rarity.Rare or Rarity.Boss?3:1);}var icon=Mathf.Min(r.width-16,r.height*(showDescription?.44f:.58f));var art=new Rect(r.center.x-icon*.5f,r.y+8,icon,icon);DrawRelicArt(art,index);
             var name=new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=14,wordWrap=true,normal={textColor=new Color(.97f,.93f,.81f)}};GUI.Label(new Rect(r.x+6,art.yMax+4,r.width-12,32),relic.name,name);
             if(showDescription){var body=new GUIStyle(footerStyle){fontSize=15,wordWrap=true,normal={textColor=new Color(.94f,.91f,.84f)}};GUI.Label(new Rect(r.x+15,art.yMax+39,r.width-30,r.yMax-art.yMax-47),relic.Description,body);}
             else{var rarity=new GUIStyle(footerStyle){fontSize=12,normal={textColor=Color.Lerp(accent,Color.white,.5f)}};GUI.Label(new Rect(r.x+4,r.yMax-20,r.width-8,16),relic.rarity.ToString().ToUpperInvariant(),rarity);}

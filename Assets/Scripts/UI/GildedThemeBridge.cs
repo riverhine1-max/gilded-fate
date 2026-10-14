@@ -179,6 +179,19 @@ namespace GildedFate.UI
             GUI.color = keep;
         }
 
+        // ---- relic tiles ----
+        /// <summary>A relic tile: dark glass in a bronze rim, with the rarity colour cut into the rim from Uncommon up and a soft glow behind Rare, Boss and Special ones.</summary>
+        private void ThemeRelicFrame(Rect r, Color accent, Rarity rarity)
+        {
+            if (Event.current.type != EventType.Repaint) return;
+            var keep = GUI.color; GUI.color = Color.white; var canvas = ThemeCanvas();
+            var strong = rarity is Rarity.Rare or Rarity.Boss or Rarity.Special;
+            if (strong) canvas.Image(ThemeAssets.Glow, new ThemeRect(r.x - r.width * .15f, r.y - r.height * .1f, r.width * 1.3f, r.height * 1.2f), new ThemeColor(accent.r, accent.g, accent.b, .16f));
+            ThemeWidgets.Plaque(canvas, TR(r), 1f, FrameKind.Bronze);
+            if (rarity != Rarity.Common && rarity != Rarity.Basic) ThemeWidgets.Outline(canvas, TR(r), new ThemeColor(accent.r, accent.g, accent.b, .95f), strong ? 3 : 2);
+            GUI.color = keep;
+        }
+
         // ---- fate shard sockets ----
         /// <summary>A bevelled diamond socket for one Fate Shard slot. tint shades the metal toward the shard's accent when it is active or fractured.</summary>
         private void ThemeShardSocket(Rect r, Color tint, bool filled, float pulse)
