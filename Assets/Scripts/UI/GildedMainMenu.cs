@@ -133,7 +133,7 @@ namespace GildedFate.UI
             hudEmblemAtlas=Resources.Load<Texture2D>("Art/HudEmblemAtlas_8");relicIconAtlas=Resources.Load<Texture2D>("Art/RelicIconAtlas_36");fateShardIconAtlas=Resources.Load<Texture2D>("Art/FateShardIconAtlas_30");
             collectionBackground=Resources.Load<Texture2D>("Art/CollectionArchive");rewardBackground=Resources.Load<Texture2D>("Art/RewardReliquary");
             logoTexture=Resources.Load<Texture2D>("Art/GildedFate_Logo");
-            GameAudio.Initialize();GameAudio.SetVolumes(profile.master,profile.music,profile.effects,profile.ui);ResetGoldAudio();
+            GameAudio.Initialize();GameAudio.SetSoundSet(profile.soundSet);GameAudio.SetVolumes(profile.master,profile.music,profile.effects,profile.ui);ResetGoldAudio();
             // The illustrated boss presentation is the visual language for every
             // encounter. Keep the authored 3D assets dormant so combat always uses
             // the large portrait composition and never mixes rendering styles.

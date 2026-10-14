@@ -25,6 +25,7 @@ namespace GildedFate.UI
         private void UpdateAudioPresentation()
         {
             if(profile==null)return;
+            GameAudio.SetSoundSet(profile.soundSet);
             GameAudio.SetVolumes(profile.master,profile.music,profile.effects,profile.ui);
             var context=AudioContextScreen()==ScreenMode.Combat;
             if(wasCombatAudio&&!context)GameAudio.ClearCombat();wasCombatAudio=context;

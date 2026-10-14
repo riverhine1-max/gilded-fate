@@ -17,7 +17,7 @@ namespace GildedFate.UI
 
         private const float BootIntroSettleStart=8.0f,BootIntroDuration=8.5f,BootIntroReducedDuration=1.2f,BootIntroSkipGrace=.3f;
         private static readonly Color BootVanguard=new Color(1,.36f,.2f),BootHexer=new Color(.72f,.36f,1),BootReaper=new Color(.22f,.95f,.85f);
-        private static readonly float[] BootCueTimes={1.2f,3.4f,4.0f,5.0f,7.1f,7.25f};
+        private static readonly float[] BootCueTimes={1.2f,3.4f,4.0f,4.2f,5.0f,7.1f,7.25f};
 
         private float BootIntroLength=>profile!=null&&profile.reduceMotion?BootIntroReducedDuration:BootIntroDuration;
         private static float BootEase(float from,float to,float t)=>Mathf.SmoothStep(0,1,Mathf.InverseLerp(from,to,t));
@@ -66,12 +66,15 @@ namespace GildedFate.UI
         {
             switch(index)
             {
-                case 0:Sfx(SoundCue.EventWhisper,intensity:.7f);break;
-                case 1:Sfx(SoundCue.Resonance,intensity:.9f);break;
-                case 2:Sfx(SoundCue.Fateweave,intensity:.75f);break;
-                case 3:Sfx(SoundCue.BossPhase,intensity:.7f);break;
-                case 4:Sfx(SoundCue.HitHeavy,intensity:.75f);break;
-                case 5:Sfx(SoundCue.EventReveal,intensity:.6f);break;
+                // The rebuilt opening: the room awakens, the vault door grinds open, light floods out, three streaks race in, they collide,
+                // the crown lands, gold shimmers. With the ORIGINAL sound set these fall back to the sounds the intro used before (see SoundCatalog.OriginalFallback).
+                case 0:Sfx(SoundCue.IntroAwaken,intensity:GameAudio.NewSet?.9f:.7f);break;
+                case 1:Sfx(SoundCue.IntroDoor,intensity:GameAudio.NewSet?.9f:.9f);break;
+                case 2:Sfx(SoundCue.IntroFlash,intensity:GameAudio.NewSet?.85f:.75f);break;
+                case 3:Sfx(SoundCue.IntroStreaks,intensity:.85f);break;
+                case 4:Sfx(SoundCue.IntroClash,intensity:GameAudio.NewSet?1f:.7f);break;
+                case 5:Sfx(SoundCue.IntroCrown,intensity:GameAudio.NewSet?1f:.75f);break;
+                case 6:Sfx(SoundCue.IntroShimmer,intensity:GameAudio.NewSet?.8f:.6f);break;
             }
         }
 

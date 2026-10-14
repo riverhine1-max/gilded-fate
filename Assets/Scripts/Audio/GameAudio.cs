@@ -17,6 +17,10 @@ namespace GildedFate.Audio
         private float effects=.85f,ui=.8f,mixSafety=1;
         private bool combatPaused;
         private int generation;
+        // 0 = the rebuilt effects (Audio/SFX_Forged), 1 = the original set (Audio/SFX). Chosen in Settings > Audio; music and narration are separate and unaffected.
+        private static int soundSet;
+        private int loadedSet=-1;
+        public static bool NewSet=>soundSet==0;
         public static int PlayedCount {get;private set;}
         public static int MissingClips {get;private set;}
         public static int LastVariation {get;private set;}=-1;
@@ -39,17 +43,30 @@ namespace GildedFate.Audio
                 var source=gameObject.AddComponent<AudioSource>();source.playOnAwake=false;source.spatialBlend=0;source.dopplerLevel=0;
                 voices.Add(new Voice{source=source});
             }
+            LoadBanks();
+        }
+        private void LoadBanks()
+        {
+            loadedSet=soundSet;MissingClips=0;
             foreach(SoundCue cue in Enum.GetValues(typeof(SoundCue)))
             {
-                var clips=new AudioClip[SoundCatalog.Variations];
+                var clips=new AudioClip[SoundCatalog.Variations];var original=SoundCatalog.OriginalFallback(cue);
                 for(var i=0;i<clips.Length;i++)
                 {
-                    clips[i]=Resources.Load<AudioClip>("Audio/SFX/"+cue+"_"+(i+1));
-                    if(!clips[i]){MissingClips++;Debug.LogError("[Gilded Fate Audio] Missing cue "+cue+" take "+(i+1));}
+                    if(soundSet==0)clips[i]=Resources.Load<AudioClip>("Audio/SFX_Forged/"+cue+"_"+(i+1));
+                    if(!clips[i]&&original.HasValue)clips[i]=Resources.Load<AudioClip>("Audio/SFX/"+original.Value+"_"+(i+1));
+                    if(!clips[i]){if(soundSet==0||original.HasValue){MissingClips++;Debug.LogError("[Gilded Fate Audio] Missing cue "+cue+" take "+(i+1));}}
                     else clips[i].LoadAudioData(); // Decode before the first hit, never on its impact frame.
                 }
                 banks[cue]=new Bank{clips=clips};
             }
+        }
+        /// <summary>Switches between the rebuilt (0) and original (1) effects. Cheap when nothing changed; reloads the clips when it did.</summary>
+        public static void SetSoundSet(int set)
+        {
+            set=set==1?1:0;Initialize();
+            if(soundSet==set&&instance.loadedSet==set)return;
+            soundSet=set;instance.LoadBanks();
         }
         public static void SetVolumes(float master,float music,float effects,float ui)
         {

@@ -65,6 +65,7 @@ namespace GildedFate.UI
         // No dedicated defeat cue exists, so a defeat is the soft dissipate whoosh plus a short shatter.
         private void PlayEnemyDeathSound(float pan)
         {
+            if(GameAudio.NewSet){Sfx(SoundCue.EnemyDeath,pan,1f,true);return;} // one designed death sound; the original set keeps its two-cue version below
             Sfx(SoundCue.CardExhaust,pan,1f,true);
             Sfx(SoundCue.BlockBreak,pan,.6f,true,.06f);
         }

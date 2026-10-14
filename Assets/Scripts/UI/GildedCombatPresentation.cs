@@ -436,7 +436,7 @@ namespace GildedFate.UI
             travel=Mathf.Max(travel,HeroVideoSecondsToPose());
             MoveCard(card,view.position,impact,travel,view.scale,power?.85f:.91f,view.angle,0,play:true);
             playerActionKind=card.effect;playerAction=1;
-            Sfx(combat.RequiresEnemyTarget(card)?AttackSound(card):SoundCue.CardPickup,combatSound:true,delay:combat.RequiresEnemyTarget(card)?travel:0);
+            Sfx(combat.RequiresEnemyTarget(card)?AttackSound(card):SoundCue.CardPlay,combatSound:true,delay:combat.RequiresEnemyTarget(card)?travel:0);
             yield return new WaitForSecondsRealtime(travel);
             while(combatPauseOpen)yield return null;
             FinalVfxNoteCardPlay(card,gilded);
@@ -608,6 +608,7 @@ namespace GildedFate.UI
                     {
                         number=new CombatNumber{text=GameplayTerms.Display(text),origin=new Vector2(fact.playerSide?CombatWidth*.27f:GroupCombat?GroupPortrait(fact.enemyIndex).center.x:EnemyVisualCenterX,235+(lane%4)*35),color=color,start=health?float.PositiveInfinity:now+delay};
                         combatNumbers.Add(number);
+                        if(damage&&!fact.playerSide&&fact.amount>=50)Sfx(SoundCue.CritHit,.25f,1f,true,delay); // the gold crit numbers (50+) get a big hit of their own; silent in the original set
                         numberDelay=Mathf.Max(numberDelay,delay+(health?hitGap:.11f));
                     }
                     else finish=Mathf.Max(finish,hitTime+.26f);

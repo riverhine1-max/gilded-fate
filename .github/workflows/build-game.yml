@@ -117,6 +117,13 @@ jobs:
             library-${{ matrix.name }}-${{ hashFiles('Packages/packages-lock.json', 'ProjectSettings/ProjectVersion.txt') }}-
             library-${{ matrix.name }}-
 
+      # The rebuilt sound effects are generated from code (deterministic, about 20 seconds). Only their Unity .meta files live in the repository.
+      - name: Forge the sound effects
+        run: |
+          python3 -m pip install --quiet numpy scipy
+          python3 Tools/SoundForge/forge.py
+          ls Assets/Resources/Audio/SFX_Forged/*.wav | wc -l
+
       - name: Prepare trailer-capture build
         if: matrix.name == 'linux-trailer' || matrix.name == 'linux-captures'
         run: bash ci/trailer/prepare.sh

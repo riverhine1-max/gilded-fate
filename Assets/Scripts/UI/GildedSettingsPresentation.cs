@@ -64,6 +64,7 @@ namespace GildedFate.UI
                     Cycle("ANTI-ALIASING","Smooth the edges of rendered shapes.",()=>profile.antiAliasing,v=>profile.antiAliasing=v,new[]{0,2,4,8},new[]{"OFF","2×","4×","8×"}),
                     ToggleRow("CLASSIC UI LOOK","Draw menus, the map and the combat HUD in the original style instead of the new look. Presentation only.",()=>profile.classicUi,v=>{profile.classicUi=v;UiTheme.ApplyProfile(v);})},
                 new[]{
+                    Cycle("SOUND DESIGN","NEW is the rebuilt effects set. ORIGINAL is the previous one. Music and narration are not affected.",()=>profile.soundSet,v=>profile.soundSet=v,new[]{0,1},new[]{"NEW","ORIGINAL"}),
                     Range("MASTER VOLUME","Overall volume. At 0%, all audio is muted.",()=>profile.master,v=>profile.master=v),
                     Range("MUSIC","Background music volume.",()=>profile.music,v=>profile.music=v),
                     Range("NARRATION","Chronicle voices. At 0%, narration is muted and all story text remains readable.",()=>ChronicleDialogueAudio.VoiceVolume,v=>ChronicleDialogueAudio.VoiceVolume=v),

@@ -7,7 +7,9 @@ namespace GildedFate.Audio
         AttackSteel, AttackArcane, AttackReaper, EnemyAttack, HitSteel, HitArcane, HitReaper, HitHeavy, PlayerHurt,
         GainBlock, BlockHit, BlockBreak, Heal, Power, Burn, Debuff, Resonance, Energy,
         GoldCollect, GoldSpend, RewardReveal, RewardCard, RewardRelic, RewardShard, Binding, Fateweave, Upgrade,
-        RemoveCard, Victory, Defeat, BossIntro, BossPhase, MapStep, EventReveal, EventClock, EventWhisper, EventThread, EndTurn, TurnStart
+        RemoveCard, Victory, Defeat, BossIntro, BossPhase, MapStep, EventReveal, EventClock, EventWhisper, EventThread, EndTurn, TurnStart,
+        // Added with the rebuilt sound set (Audio/SFX_Forged). The original set has no clips for these; see SoundCatalog.OriginalFallback.
+        IntroAwaken, IntroDoor, IntroFlash, IntroStreaks, IntroClash, IntroCrown, IntroShimmer, EnemyDeath, CardPlay, CritHit
     }
     public readonly struct SoundSpec
     {
@@ -20,6 +22,24 @@ namespace GildedFate.Audio
     public static class SoundCatalog
     {
         public const int Variations=3;
+        /// <summary>
+        /// The original effects set's equivalent of a cue: the cue itself when the original set has it, the sound the game used before for the cues added with the
+        /// rebuilt set, or null when the original game made no sound there (so choosing ORIGINAL in Settings keeps the game exactly as it was).
+        /// </summary>
+        public static SoundCue? OriginalFallback(SoundCue cue)=>cue switch
+        {
+            SoundCue.IntroAwaken=>SoundCue.EventWhisper,
+            SoundCue.IntroDoor=>SoundCue.Resonance,
+            SoundCue.IntroFlash=>SoundCue.Fateweave,
+            SoundCue.IntroStreaks=>null,
+            SoundCue.IntroClash=>SoundCue.BossPhase,
+            SoundCue.IntroCrown=>SoundCue.HitHeavy,
+            SoundCue.IntroShimmer=>SoundCue.EventReveal,
+            SoundCue.EnemyDeath=>null,
+            SoundCue.CardPlay=>SoundCue.CardPickup,
+            SoundCue.CritHit=>null,
+            _=>cue
+        };
         public static SoundSpec Get(SoundCue cue)=>cue switch
         {
             SoundCue.UiHover=>new(.065f,.14f,1,1,.008f,true),
@@ -41,6 +61,11 @@ namespace GildedFate.Audio
             SoundCue.Resonance=>new(.18f,.12f,4,2,.018f),
             SoundCue.Energy or SoundCue.Debuff or SoundCue.Burn=>new(.22f,.055f,4,3,.02f),
             SoundCue.EventWhisper or SoundCue.EventClock or SoundCue.EventThread=>new(.25f,.3f,3,1,.015f),
+            SoundCue.IntroAwaken or SoundCue.IntroDoor or SoundCue.IntroFlash or SoundCue.IntroStreaks or SoundCue.IntroShimmer=>new(.45f,.1f,7,1,0),
+            SoundCue.IntroClash or SoundCue.IntroCrown=>new(.55f,.1f,8,1,0),
+            SoundCue.EnemyDeath=>new(.5f,.2f,8,1,.02f),
+            SoundCue.CardPlay=>new(.17f,.065f,2,3,.035f),
+            SoundCue.CritHit=>new(.55f,.1f,8,1,.015f),
             _=>new(.30f,.075f,5,3,.02f)
         };
     }

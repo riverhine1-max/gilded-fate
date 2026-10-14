@@ -80,3 +80,18 @@ jobs:
           bash Tools/UnityTypeCheck/check.sh | tee typecheck.log
           GILDED_CHRONICLE_QA=1 bash Tools/UnityTypeCheck/check.sh | tee typecheck-qa.log
           { echo "### Game scripts compile"; echo '```'; tail -n 3 typecheck.log; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+
+  # The sound effects are rendered from code (Tools/SoundForge). This checks, in about a minute, that every SoundCue in the game has a design,
+  # that all clips render, and that none clip, click or run on silently.
+  sound-forge:
+    name: Sound forge (no Unity)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python3 -m pip install --quiet numpy scipy
+      - name: Every cue has a design and renders clean
+        run: python3 Tools/SoundForge/check.py
