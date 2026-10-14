@@ -31,7 +31,7 @@ namespace GildedFate.Chronicle.Tests
             ThemeAssets.FrameGold, ThemeAssets.FrameBronze, ThemeAssets.FrameSteel, ThemeAssets.FrameCrimson, ThemeAssets.FrameAzure, ThemeAssets.FrameViolet, ThemeAssets.FrameJade,
             ThemeAssets.RimBronze, ThemeAssets.RimGold, ThemeAssets.RimSteel, ThemeAssets.Shadow, ThemeAssets.Glow, ThemeAssets.GlowTight, ThemeAssets.Ring, ThemeAssets.Vignette,
             ThemeAssets.Grain, ThemeAssets.Sheen, ThemeAssets.DiamondGold, ThemeAssets.PanelGlass, ThemeAssets.ButtonGlass, ThemeAssets.ButtonGlassHot, ThemeAssets.ButtonGlassPressed,
-            ThemeAssets.TopSheen, ThemeAssets.RuleFade, ThemeAssets.BarGloss, ThemeAssets.BarTrough, ThemeAssets.PlateFade, ThemeAssets.HudGlass, ThemeAssets.RowGlass, ThemeAssets.ShadeDown, ThemeAssets.LineSoft, ThemeAssets.Medallion, ThemeAssets.Flare,
+            ThemeAssets.TopSheen, ThemeAssets.RuleFade, ThemeAssets.BarGloss, ThemeAssets.BarTrough, ThemeAssets.PlateFade, ThemeAssets.HudGlass, ThemeAssets.RowGlass, ThemeAssets.ShadeDown, ThemeAssets.LineSoft, ThemeAssets.Medallion, ThemeAssets.Flare, ThemeAssets.RimNeutral, ThemeAssets.HexPlate,
         };
 
         // ---------------------------------------------------------------- generated images
@@ -304,6 +304,46 @@ namespace GildedFate.Chronicle.Tests
         {
             var full = new Recorder(); ThemeMap.BossCrown(full, new ThemeRect(1713, 106, 126, 132), 2); var still = new Recorder(); ThemeMap.BossCrown(still, new ThemeRect(1713, 106, 126, 132), 0);
             Assert.IsTrue(full.calls.Contains("img:medallion")); Assert.Greater(full.images, still.images); Assert.AreEqual(full.pushes, full.pops);
+        }
+
+        // ---------------------------------------------------------------- combat pieces
+        [Test] public void HexPlateIsAPointedHexagonClearAtTheCornersAndLitFromTheUpperLeft()
+        {
+            var h = ThemeAssets.HexPlate; Assert.AreEqual(0, (int)h.Get(1, 1).a * 255 / 255, "the top-left corner is cut away");
+            Assert.Less(h.Get(2, 2).a, .05f); Assert.Less(h.Get(h.width - 3, 2).a, .05f); Assert.Less(h.Get(2, h.height - 3).a, .05f);
+            Assert.Greater(h.Get(h.width / 2, 3).a, .9f, "the top edge is solid"); Assert.Greater(h.Get(3, h.height / 2).a, .9f, "the left point reaches the middle of the left side");
+            float Lum(ThemeColor c) => c.r * .3f + c.g * .59f + c.b * .11f;
+            Assert.Greater(Lum(h.Get(h.width / 2, 4)), Lum(h.Get(h.width / 2, h.height - 5)), "the top bevel is lit and the bottom one is in shade");
+        }
+
+        [Test] public void NeutralRimTintsToAnyColourWithoutBeingTintedItself()
+        {
+            var r = ThemeAssets.RimNeutral; var c = r.Get(r.width / 2, 3);
+            Assert.IsTrue(Math.Abs(c.r - c.g) < .02f && Math.Abs(c.g - c.b) < .02f, "the rim itself is grey, so a tint gives the screen's colour");
+        }
+
+        [Test] public void EndTurnPlateBreathesWhenIdleDimsWhenDisabledAndOmitsTheLeftStudForPadGlyphs()
+        {
+            var r = new ThemeRect(0, 0, 340, 76);
+            var ready = new Recorder(); ThemeWidgets.EndTurnPlate(ready, r, true, 0f, 0f); var idle = new Recorder(); ThemeWidgets.EndTurnPlate(idle, r, true, 0f, 1f); var off = new Recorder(); ThemeWidgets.EndTurnPlate(off, r, false, 1f, 1f);
+            Assert.IsTrue(ready.calls.Contains("img:plate.hex")); Assert.AreEqual(ready.pushes, ready.pops);
+            Assert.Greater(idle.images, 0); Assert.Less(off.images, ready.images, "a dimmed plate draws no hot glow");
+            var noStud = new Recorder(); ThemeWidgets.EndTurnPlate(noStud, r, true, 0f, 0f, false); Assert.AreEqual(ready.calls.Count(c => c == "img:diamond.gold") - 1, noStud.calls.Count(c => c == "img:diamond.gold"));
+        }
+
+        [Test] public void BarsGetTenthMarksAndAnOrangeLostSliceAndOnlyOnWideBars()
+        {
+            var wide = new Recorder(); ThemeWidgets.Bar(wide, new ThemeRect(0, 0, 300, 22), BarKind.Health, 1f); var narrow = new Recorder(); ThemeWidgets.Bar(narrow, new ThemeRect(0, 0, 90, 22), BarKind.Health, 1f);
+            Assert.Greater(wide.fills, narrow.fills, "tick marks only on a bar wide enough to show a scale");
+            var hurt = new Recorder(); ThemeWidgets.Bar(hurt, new ThemeRect(0, 0, 300, 22), BarKind.Health, .4f, .7f); Assert.AreEqual(wide.fills > 0 ? 1 : 0, 1);
+            Assert.AreEqual(hurt.pushes, hurt.pops);
+        }
+
+        [Test] public void BlockBadgeAndOutlineDrawTheirImages()
+        {
+            var b = new Recorder(); ThemeWidgets.BlockBadge(b, new ThemeRect(0, 0, 46, 46), .5f); Assert.IsTrue(b.calls.Contains("img:medallion")); Assert.IsTrue(b.calls.Contains("img:ring.glow"));
+            var o = new Recorder(); ThemeWidgets.Outline(o, new ThemeRect(0, 0, 200, 100), new ThemeColor(.9f, .6f, .2f, 1f), 2); Assert.IsTrue(o.calls.Any(c => c.Contains("rim.neutral")));
+            var tiny = new Recorder(); ThemeWidgets.Outline(tiny, new ThemeRect(0, 0, 9, 9), ThemeColor.White, 6); Assert.AreEqual(tiny.pushes, tiny.pops);
         }
 
         [Test] public void EveryNamedPaletteColorIsOpaqueAndInRange()

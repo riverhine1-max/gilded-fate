@@ -158,6 +158,34 @@ namespace GildedFate.UI
         private void ThemePlaque(Rect r, float opacity = .985f) { if (Event.current.type == EventType.Repaint) ThemeWidgets.Plaque(ThemeCanvas(), TR(r), opacity); }
         private void ThemeHudStrip(float w) { if (Event.current.type == EventType.Repaint) ThemeWidgets.HudStrip(ThemeCanvas(), new ThemeRect(0, 0, w, 58), profile != null && profile.highContrastUi); }
         private void ThemeRow(Rect r, bool hot) { if (Event.current.type == EventType.Repaint) ThemeWidgets.Row(ThemeCanvas(), TR(r), hot ? 1f : 0f); }
+        // ---- combat ----
+        /// <summary>A bevelled rim in the colour of the flat outline it replaces. The flat outline ignored the caller's GUI.color, so this does too.</summary>
+        private void ThemeOutline(Rect r, Color color, int width)
+        {
+            if (Event.current.type != EventType.Repaint) return;
+            var keep = GUI.color; GUI.color = Color.white;
+            ThemeWidgets.Outline(ThemeCanvas(), TR(r), new ThemeColor(color.r, color.g, color.b, color.a), width);
+            GUI.color = keep;
+        }
+        /// <summary>A glossy health (or, while guarded, Block-blue) bar with the orange slice just lost. Same inputs as FillBeveledHealthBar.</summary>
+        private void ThemeHealthBar(Rect r, float ratio, float trail, bool guarded)
+        {
+            if (Event.current.type != EventType.Repaint) return;
+            var keep = GUI.color; GUI.color = Color.white;
+            ThemeWidgets.Bar(ThemeCanvas(), TR(r), guarded ? BarKind.Block : BarKind.Health, ratio, trail > ratio ? trail : 0f, !guarded && ratio > 0f && ratio < .25f && !(profile != null && profile.reduceFlashing));
+            GUI.color = keep;
+        }
+        private void ThemeBlockBadge(Rect r, float pulse)
+        {
+            if (Event.current.type != EventType.Repaint) return;
+            var keep = GUI.color; GUI.color = Color.white; ThemeWidgets.BlockBadge(ThemeCanvas(), TR(r), pulse); GUI.color = keep;
+        }
+        private void ThemeEndTurnPlate(Rect shown, bool enabled, float hover, float breathe)
+        {
+            if (Event.current.type != EventType.Repaint) return;
+            var keep = GUI.color; GUI.color = Color.white; ThemeWidgets.EndTurnPlate(ThemeCanvas(), TR(shown), enabled, hover, breathe, !ShowPadGlyphs); GUI.color = keep;
+        }
+
         // ---- act map ----
         /// <summary>One route thread, clipped to the map's viewport. Same inputs as the original DrawFateThread (a and b in canvas space).</summary>
         private void ThemeThread(Vector2 a, Vector2 b, Rect clip, bool braided, bool available, bool hot, float progress)

@@ -125,6 +125,17 @@ public static class Program
             var b1 = new ThemeRect(60, 720, 220, 54); ThemeWidgets.Button(c, b1, ButtonVisual.Idle); Label(c, "END TURN", b1, 20);
             var b2 = new ThemeRect(300, 720, 220, 54); ThemeWidgets.Button(c, b2, new ButtonVisual { enabled = true, hover = 1 }); Label(c, "CONFIRM", b2, 20);
             var b3 = new ThemeRect(540, 720, 220, 54); ThemeWidgets.Button(c, b3, new ButtonVisual { enabled = false }); Label(c, "LOCKED", b3, 20, ThemePalette.TextFaint);
+            // combat pieces
+            var ex = 820f; var ey = 690f; Label(c, "END TURN: ready / hover / nothing left to play / enemy turn", new ThemeRect(ex, ey - 28, 760, 22), 14, ThemePalette.TextDim);
+            var plates = new (bool en, float hv, float br, string t)[] { (true, 0f, 0f, "END TURN"), (true, 1f, 0f, "END TURN"), (true, 0f, .8f, "END TURN"), (false, 0f, 0f, "ENEMY TURN") };
+            for (var i = 0; i < 4; i++) { var pr = new ThemeRect(ex + (i % 2) * 380, ey + (i / 2) * 96, 340, 76); ThemeWidgets.EndTurnPlate(c, pr, plates[i].en, plates[i].hv, plates[i].br); Label(c, plates[i].t, pr, 24, plates[i].en ? ThemePalette.GoldBright : ThemePalette.TextFaint); }
+            var bb = new ThemeRect(1480, 40, 46, 46); ThemeWidgets.BlockBadge(c, bb, .6f); Label(c, "11", bb, 18, ThemeColor.White);
+            // outlines in several colours around flat panels
+            var oc = new[] { new ThemeColor(.9f, .62f, .24f, 1), new ThemeColor(.28f, .56f, .95f, 1), new ThemeColor(.78f, .3f, .35f, 1), new ThemeColor(.5f, .85f, .55f, .9f), ThemeColor.White };
+            for (var i = 0; i < oc.Length; i++)
+            {
+                var orr = new ThemeRect(60 + i * 140, 800, 124, 70); c.Fill(orr, new ThemeColor(.009f, .014f, .024f, .96f)); ThemeWidgets.Outline(c, orr, oc[i], i == 4 ? 3 : i % 2 == 0 ? 2 : 1);
+            }
             c.Save(path);
         }
     }

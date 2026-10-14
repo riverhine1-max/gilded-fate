@@ -984,14 +984,19 @@ namespace GildedFate.UI
 
         private void DrawSimpleShieldIcon(Rect r,int amount,float pulse)
         {
+            if(UiTheme.NewLook)ThemeBlockBadge(r,Mathf.Clamp01(pulse));
+            else
+            {
             var c=r.center;var top=new Vector2(c.x,r.y+4);var left=new Vector2(r.x+7,r.y+11);var right=new Vector2(r.xMax-7,r.y+11);var lowLeft=new Vector2(r.x+12,r.yMax-12);var lowRight=new Vector2(r.xMax-12,r.yMax-12);var bottom=new Vector2(c.x,r.yMax-3);
             Fill(new Rect(r.x+10,r.y+10,r.width-20,r.height-20),new Color(.015f,.09f,.16f,.94f));var edge=new Color(.36f,.78f,1f,.96f);var glow=new Color(.56f,.9f,1f,.55f+pulse*.35f);
             DrawLine(top,left,edge,3);DrawLine(left,lowLeft,edge,3);DrawLine(lowLeft,bottom,edge,3);DrawLine(bottom,lowRight,edge,3);DrawLine(lowRight,right,edge,3);DrawLine(right,top,edge,3);
+            }
             GUI.Label(r,amount.ToString(),new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=17,fontStyle=FontStyle.Bold,alignment=TextAnchor.MiddleCenter,normal={textColor=Color.white}});
         }
 
         private void FillBeveledHealthBar(Rect r,float healthRatio,float trailRatio,Color healthColor,Color edgeColor)
         {
+            if(UiTheme.NewLook){ThemeHealthBar(r,healthRatio,trailRatio,healthColor.b>healthColor.r);return;}
             var rows=Mathf.Max(1,Mathf.CeilToInt(r.height));var bevel=Mathf.Clamp(Mathf.RoundToInt(r.height*.28f),3,6);var black=new Color(.004f,.005f,.007f,.99f);var orange=new Color(1f,.48f,.09f,.99f);
             for(var row=0;row<rows;row++)
             {

@@ -123,16 +123,56 @@ namespace GildedFate.Theme
             fill = Clamp01(fill); ghost = Clamp01(ghost);
             c.Image(ThemeAssets.BarTrough, r.Inflate(-1), ThemeColor.White);
             var inner = r.Inflate(-2.5f);
-            if (ghost > fill + .003f) c.Fill(new ThemeRect(inner.x, inner.y, inner.w * ghost, inner.h), new ThemeColor(1f, .93f, .86f, .5f));
+            if (ghost > fill + .003f) c.Fill(new ThemeRect(inner.x, inner.y, inner.w * ghost, inner.h), new ThemeColor(1f, .52f, .14f, .94f));   // the slice just lost, in the orange the game already uses for it
             if (fill > 0)
             {
                 var f = new ThemeRect(inner.x, inner.y, inner.w * fill, inner.h);
                 c.Image(BarFillImage(kind), f, ThemeColor.White);
                 if (low) c.Fill(f, ThemePalette.CrimsonBright.WithAlpha(.10f + .12f * (float)(.5 + .5 * Math.Sin(c.Time * 5))));
                 c.Image(ThemeAssets.BarGloss, f, ThemeColor.White);
+                // Faint marks every tenth give the bar a scale; a slow band of light passes over the fill (it holds still when the clock does).
+                if (inner.w > 120) for (var i = 1; i < 10; i++) { var tx = inner.x + inner.w * i / 10f; if (tx < f.xMax - 2) c.Fill(new ThemeRect(tx, inner.y + 2, 1, inner.h - 4), Black(.20f)); }
+                if (f.w > 40) { var bw = Math.Max(30f, f.w * .22f); var sx = f.x - bw + (f.w + bw * 2) * Frac(c.Time * .24f + (int)kind * .17f); c.PushClip(f); c.Image(ThemeAssets.Sheen, new ThemeRect(sx, f.y, bw, f.h), White(.20f)); c.PopClip(); }
                 var gr = inner.h * 1.5f; c.Image(ThemeAssets.GlowTight, new ThemeRect(f.xMax - gr, inner.cy - gr, gr * 2, gr * 2), BarLight(kind).WithAlpha(.38f));
             }
             ThemeDraw.Slice9(c, ThemeAssets.RimBronze, r, 6, ThemeColor.White);
+        }
+
+        // ---------------------------------------------------------------- combat
+        /// <summary>
+        /// The End Turn plate: a bevelled gold hexagon over dark glass. It lights on hover, breathes a warm glow when there is nothing left to play
+        /// (breathe, 0..1), and dims when it is not your turn. The caller supplies the lift and dip as a moved rectangle, and draws the text.
+        /// </summary>
+        public static void EndTurnPlate(IThemeCanvas c, ThemeRect r, bool enabled, float hover, float breathe, bool leftStud = true)
+        {
+            hover = enabled ? Clamp01(hover) : 0; breathe = enabled ? Clamp01(breathe) : 0;
+            var glow = enabled ? .12f + .16f * hover + .34f * breathe : 0f;
+            if (glow > 0) c.Image(ThemeAssets.Glow, new ThemeRect(r.x - 40, r.y - r.h * .95f, r.w + 80, r.h * 2.9f), ThemePalette.Ember.WithAlpha(glow));
+            c.Image(ThemeAssets.Glow, new ThemeRect(r.x - 8, r.y + r.h * .12f, r.w + 16, r.h * 1.1f), Black(.60f));
+            c.Image(ThemeAssets.HexPlate, r, enabled ? ThemeColor.Lerp(ThemeColor.White, new ThemeColor(1f, .93f, .78f, 1f), hover) : new ThemeColor(.46f, .46f, .50f, 1f));
+            var inner = new ThemeRect(r.x + r.w * .075f, r.y + 10, r.w * .85f, r.h - 20);
+            if (enabled) c.Image(ThemeAssets.ButtonGlassHot, inner, White(.50f * hover + .62f * breathe + .16f));
+            c.Image(ThemeAssets.TopSheen, new ThemeRect(inner.x, inner.y, inner.w, inner.h * .5f), White(enabled ? .55f : .2f));
+            if (hover > .01f) { var bw = r.w * .2f; var x = inner.x - bw + (inner.w + bw * 2) * Frac(c.Time * .55f); c.PushClip(inner); c.Image(ThemeAssets.Sheen, new ThemeRect(x, inner.y, bw, inner.h), White(.18f * hover)); c.PopClip(); }
+            var stud = enabled ? ThemeColor.White : new ThemeColor(.55f, .55f, .58f, .8f);
+            if (leftStud) c.Image(ThemeAssets.DiamondGold, new ThemeRect(r.x + r.w * .045f - 6, r.cy - 6, 12, 12), stud);
+            c.Image(ThemeAssets.DiamondGold, new ThemeRect(r.xMax - r.w * .045f - 6, r.cy - 6, 12, 12), stud);
+        }
+
+        /// <summary>The Block badge beside a health bar: an azure-lit medallion. The caller draws the number over it.</summary>
+        public static void BlockBadge(IThemeCanvas c, ThemeRect r, float pulse)
+        {
+            pulse = Clamp01(pulse);
+            Glow(c, r.cx, r.cy, r.w * .95f, ThemePalette.AzureBright.WithAlpha(.28f + .22f * pulse));
+            c.Image(ThemeAssets.Medallion, r, new ThemeColor(.62f, .84f, 1f, 1f));
+            var d = r.w * 1.14f; c.Image(ThemeAssets.Ring, new ThemeRect(r.cx - d * .5f, r.cy - d * .5f, d, d), ThemePalette.AzureBright.WithAlpha(.55f + .35f * pulse));
+        }
+
+        /// <summary>A bevelled rim in a given colour, drawn inside the rectangle. Replaces a flat outline around a panel: the same colour, but cut like metal.</summary>
+        public static void Outline(IThemeCanvas c, ThemeRect r, ThemeColor color, float width)
+        {
+            var slice = Math.Max(4f, Math.Min(9f, 3f + width * 1.5f));
+            ThemeDraw.Slice9(c, ThemeAssets.RimNeutral, r, slice, color);
         }
 
         // ---------------------------------------------------------------- headings

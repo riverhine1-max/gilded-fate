@@ -33,6 +33,8 @@ namespace GildedFate.Theme
         public static readonly FramePalette Crimson = Make(0xFF8A70, 0x6B1710, 0x240806, 0xFFB09C, 0xD0503C);
         public static readonly FramePalette Azure = Make(0x8FC4FF, 0x1C4A86, 0x08162B, 0xBFE0FF, 0x4F8FDB);
         public static readonly FramePalette Violet = Make(0xC3A2FF, 0x442386, 0x150B2B, 0xDCC8FF, 0x8A5CE0);
+        /// <summary>Grey metal with no hue of its own, for rims the game tints with a screen's own accent colour.</summary>
+        public static readonly FramePalette Neutral = Make(0xFFFFFF, 0x5C5C5C, 0x2A2A2A, 0xFFFFFF, 0xBDBDBD);
         public static readonly FramePalette Jade = Make(0x7BE8C4, 0x136B52, 0x06231B, 0xB2F5DE, 0x34B58F);
     }
 
@@ -294,6 +296,38 @@ namespace GildedFate.Theme
             return img;
         }
 
+        /// <summary>
+        /// A bevelled metal plate in the shape of a convex polygon (corner points in pixels), with a dark glass body, lit from the upper left:
+        /// a dark outline, a lit bevel, a groove, then glass. Used for buttons whose shape is not a rectangle.
+        /// </summary>
+        public static ThemeImage PlateShape(string id, int width, int height, float[] xs, float[] ys, FramePalette p, float bevel = 7f)
+        {
+            var img = new ThemeImage(id, width, height); var n = xs.Length;
+            var inx = new float[n]; var iny = new float[n];
+            for (var i = 0; i < n; i++)
+            {
+                var j = (i + 1) % n; var ex = xs[j] - xs[i]; var ey = ys[j] - ys[i]; var len = (float)Math.Sqrt(ex * ex + ey * ey);
+                inx[i] = -ey / len; iny[i] = ex / len;                       // a normal; made to point inside below
+            }
+            var cx = 0f; var cy = 0f; for (var i = 0; i < n; i++) { cx += xs[i] / n; cy += ys[i] / n; }
+            for (var i = 0; i < n; i++) if ((cx - xs[i]) * inx[i] + (cy - ys[i]) * iny[i] < 0) { inx[i] = -inx[i]; iny[i] = -iny[i]; }
+            var glassTop = ThemeColor.Hex(0x1A2231); var glassBottom = ThemeColor.Hex(0x080B12); var ink = ThemeColor.Hex(0x0A0603);
+            for (var py = 0; py < height; py++) for (var px = 0; px < width; px++)
+            {
+                float x = px + .5f, y = py + .5f; var d = float.MaxValue; var best = 0;
+                for (var i = 0; i < n; i++) { var di = (x - xs[i]) * inx[i] + (y - ys[i]) * iny[i]; if (di < d) { d = di; best = i; } }
+                var edge = Clamp01(d + .5f); if (edge <= 0) continue;
+                var lit = Clamp01(.5f + .5f * (inx[best] * K + iny[best] * K));   // an edge whose inward normal points down-right faces the upper-left light
+                ThemeColor c;
+                if (d < 1.4f) c = ink;
+                else if (d < 1.4f + bevel) { var t = (d - 1.4f) / bevel; c = ThemeColor.Lerp(p.metalLo, p.metalHi, Clamp01(lit * .85f + (1 - Math.Abs(t * 2 - 1)) * .3f)); }
+                else if (d < 1.4f + bevel + 1.6f) c = ThemeColor.Lerp(p.groove, ink, .5f);
+                else { var gv = Clamp01(y / height); c = ThemeColor.Lerp(glassTop, glassBottom, gv); var inner = Smooth(1.4f + bevel + 1.6f, 1.4f + bevel + 9f, d); c = ThemeColor.Lerp(ThemeColor.Lerp(c, ThemeColor.Black, .35f), c, inner); }
+                img.Set(px, py, new ThemeColor(c.r, c.g, c.b, .98f * edge));
+            }
+            return img;
+        }
+
         /// <summary>A slim 9-slice rim (outline, two-pixel bevel, inner shadow) for bars, plates and small controls, where a full frame would be too heavy.</summary>
         public static ThemeImage Rim9(string id, FramePalette p, int size = 16, int slice = 6)
         {
@@ -340,6 +374,9 @@ namespace GildedFate.Theme
         public static readonly ThemeImage RimBronze = ThemeImages.Rim9("rim.bronze", FramePalette.Bronze);
         public static readonly ThemeImage RimGold = ThemeImages.Rim9("rim.gold", FramePalette.Gold);
         public static readonly ThemeImage RimSteel = ThemeImages.Rim9("rim.steel", FramePalette.Steel);
+        public static readonly ThemeImage RimNeutral = ThemeImages.Rim9("rim.neutral", FramePalette.Neutral);
+        /// <summary>The End Turn plate: a long bevelled hexagon with pointed ends and a dark glass body.</summary>
+        public static readonly ThemeImage HexPlate = ThemeImages.PlateShape("plate.hex", 512, 128, new[] { 28f, 484f, 512f, 484f, 28f, 0f }, new[] { 0f, 0f, 64f, 128f, 128f, 64f }, FramePalette.Gold);
 
         // Glass: the obsidian a panel is cut from. Slightly lifted at the top, deep at the bottom.
         public static readonly ThemeImage PanelGlass = ThemeImages.Gradient("glass.panel", 64, S(0, C(0x121A27, .96f)), S(.45f, C(0x090D15, .965f)), S(1, C(0x04060B, .975f)));
