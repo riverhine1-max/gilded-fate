@@ -118,6 +118,9 @@ jobs:
             library-${{ matrix.name }}-
 
       # The rebuilt sound effects are generated from code (deterministic, about 20 seconds). Only their Unity .meta files live in the repository.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
       - name: Forge the sound effects
         run: |
           python3 -m pip install --quiet numpy scipy
