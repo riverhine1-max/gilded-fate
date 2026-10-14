@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using GildedFate.Core;
 using GildedFate.Map;
 using GildedFate.Theme;
 using UnityEngine;
@@ -158,6 +159,53 @@ namespace GildedFate.UI
         private void ThemePlaque(Rect r, float opacity = .985f) { if (Event.current.type == EventType.Repaint) ThemeWidgets.Plaque(ThemeCanvas(), TR(r), opacity); }
         private void ThemeHudStrip(float w) { if (Event.current.type == EventType.Repaint) ThemeWidgets.HudStrip(ThemeCanvas(), new ThemeRect(0, 0, w, 58), profile != null && profile.highContrastUi); }
         private void ThemeRow(Rect r, bool hot) { if (Event.current.type == EventType.Repaint) ThemeWidgets.Row(ThemeCanvas(), TR(r), hot ? 1f : 0f); }
+        // ---- choice panels (sanctuary and similar) ----
+        /// <summary>A choice panel: a bevelled bronze frame over dark glass that warms to gold, with a soft halo, when the pointer or focus is on it.</summary>
+        private void ThemeChoicePanel(Rect r, bool hot)
+        {
+            if (Event.current.type != EventType.Repaint) return;
+            var keep = GUI.color; GUI.color = Color.white; var canvas = ThemeCanvas();
+            if (hot) canvas.Image(ThemeAssets.Glow, new ThemeRect(r.x - r.width * .12f, r.y - r.height * .18f, r.width * 1.24f, r.height * 1.36f), ThemePalette.Ember.WithAlpha(.20f));
+            ThemeWidgets.Panel(canvas, TR(r), hot ? FrameKind.Gold : FrameKind.Bronze);
+            if (hot) canvas.Image(ThemeAssets.ButtonGlassHot, new ThemeRect(r.x + 10, r.y + 10, r.width - 20, r.height - 20), new ThemeColor(1, 1, 1, .55f));
+            canvas.Image(ThemeAssets.RuleFade, new ThemeRect(r.x + 28, r.y + 11, r.width - 56, 2), ThemePalette.GoldBright.WithAlpha(hot ? .85f : .45f));
+            GUI.color = keep;
+        }
+
+        // ---- shops ----
+        /// <summary>One of the broker's threads, from his hand to an item: faint until the item is under the pointer, then a bright thread with a spark running along it.</summary>
+        private void ThemeShopThread(Vector2 source, Vector2 target, bool hot)
+        {
+            if (Event.current.type != EventType.Repaint) return;
+            var keep = GUI.color; GUI.color = Color.white; var canvas = ThemeCanvas();
+            if (hot) ThemeMap.Thread(canvas, source.x, source.y, target.x, target.y, ThreadKind.Available, 1f, MapPolishMotion ? 2 : 0);
+            else canvas.Line(source.x, source.y, target.x, target.y, 3f, new ThemeColor(.9f, .65f, .28f, .17f));
+            GUI.color = keep;
+        }
+        /// <summary>A medallion under a shop item that has no frame of its own (a relic, a shard, a service), lit gold when the pointer is on it.</summary>
+        private void ThemeShopSocket(Rect r, bool hot, bool dim)
+        {
+            if (Event.current.type != EventType.Repaint) return;
+            var keep = GUI.color; GUI.color = Color.white; var canvas = ThemeCanvas();
+            var d = Mathf.Min(r.width, r.height) * (hot ? 1.12f : 1.04f);
+            ThemeWidgets.Glow(canvas, r.center.x, r.center.y, d * .72f, ThemePalette.Ember.WithAlpha(hot ? .34f : .13f));
+            canvas.Image(ThemeAssets.Medallion, new ThemeRect(r.center.x - d * .5f, r.center.y - d * .5f, d, d), dim ? new ThemeColor(.6f, .6f, .62f, 1f) : ThemeColor.White);
+            if (hot) { var ring = d * 1.16f; canvas.Image(ThemeAssets.Ring, new ThemeRect(r.center.x - ring * .5f, r.center.y - ring * .5f, ring, ring), ThemePalette.GoldBright.WithAlpha(.8f)); }
+            GUI.color = keep;
+        }
+        private void ThemePricePlate(Rect r) { if (Event.current.type == EventType.Repaint) ThemeWidgets.Plate(ThemeCanvas(), TR(new Rect(r.x - 10, r.y - 1, r.width + 20, r.height + 2)), .9f); }
+
+        // ---- character select ----
+        /// <summary>The hero's details panel: a bevelled frame in the hero's own metal (gold, violet or jade) with a lit rule across the top in their accent colour.</summary>
+        private void ThemeHeroPanel(Rect r, HeroId hero, Color accent)
+        {
+            if (Event.current.type != EventType.Repaint) return;
+            var keep = GUI.color; GUI.color = Color.white; var canvas = ThemeCanvas();
+            ThemeWidgets.Panel(canvas, TR(r), hero == HeroId.Hexer ? FrameKind.Violet : hero == HeroId.Reaper ? FrameKind.Jade : FrameKind.Gold);
+            canvas.Image(ThemeAssets.RuleFade, new ThemeRect(r.x + 34, r.y + 7, r.width - 68, 2), new ThemeColor(accent.r, accent.g, accent.b, .95f));
+            GUI.color = keep;
+        }
+
         // ---- combat ----
         /// <summary>A bevelled rim in the colour of the flat outline it replaces. The flat outline ignored the caller's GUI.color, so this does too.</summary>
         private void ThemeOutline(Rect r, Color color, int width)

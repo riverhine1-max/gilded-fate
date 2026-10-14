@@ -28,6 +28,7 @@ namespace GildedFate.UI
             var affordable=run.gold>=price;var hot=item.Contains(PointerPosition)&&!MerchantBusy;
             var rejection=rejectedShopItem==key?Mathf.Clamp01((rejectedShopUntil-Time.unscaledTime)/.45f):0;
             var r=new Rect(item.center.x-47+Mathf.Sin(rejection*32)*rejection*4,item.yMax+12,94,28);
+            if(UiTheme.NewLook)ThemePricePlate(r);
             if(sold){GUI.Label(r,"SOLD",new GUIStyle(footerStyle){fontSize=13,normal={textColor=new Color(.65f,.60f,.48f)}});return;}
             DrawGoldIcon(new Rect(r.x,r.y+3,23,23));
             GUI.Label(new Rect(r.x+26,r.y,r.width-26,r.height),price.ToString(),new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=hot?18:16,fontStyle=FontStyle.Bold,alignment=TextAnchor.MiddleLeft,normal={textColor=rejection>0?new Color(1,.43f,.34f):affordable?new Color(1,.85f,.49f):new Color(.62f,.56f,.43f)}});
@@ -58,6 +59,7 @@ namespace GildedFate.UI
         private void ShopThread(Rect item,bool hot)
         {
             var source=new Vector2(CombatWidth*.57f,CombatHeight-55);var target=new Vector2(item.center.x,item.yMax);
+            if(UiTheme.NewLook){ThemeShopThread(source,target,hot);return;}
             DrawLine(source,target,new Color(.88f,.62f,.24f,hot?.58f:.11f),hot?1.6f:.7f);
             if(hot&&!profile.reduceMotion){var t=Mathf.Repeat(shimmer*.7f,1);var head=Vector2.Lerp(source,target,t);DrawLine(head,Vector2.Lerp(source,target,Mathf.Min(1,t+.05f)),new Color(1,.88f,.54f,.9f),2);}
         }
@@ -85,20 +87,23 @@ namespace GildedFate.UI
             for(var i=0;i<2;i++)
             {
                 var relic=GameContent.Relics.First(r=>r.id==run.merchantRelicIds[i]);var key="relic:"+relic.id;var r=ShopRelicRect(i);var sold=run.merchantSold.Contains(key)||run.relics.Contains(relic.id);var hot=!MerchantBusy&&ScreenChoiceHot(r,7+i);ShopThread(r,hot);
+                if(UiTheme.NewLook&&!sold)ThemeShopSocket(r,hot,run.gold<120);
                 if(!sold){var shown=hot?new Rect(r.x-5,r.y-9,r.width+10,r.height+10):r;var old=GUI.color;if(run.gold<120)GUI.color=new Color(.73f,.73f,.73f,1);DrawRelicArt(shown,Array.IndexOf(GameContent.Relics,relic));GUI.color=old;if(hot)SetRunHudTooltip(WithPriceBand(r),relic.name,relic.Description);if(!MerchantBusy&&GUI.Button(r,"",GUIStyle.none))BuyShopRelic(i);}ShopPrice(r,120,key,sold);
             }
             if(!string.IsNullOrEmpty(run.merchantShardId))
             {
                 var shard=WorldContent.FateShards.First(s=>s.id==run.merchantShardId);var r=ShopShardRect;var key="shard:"+shard.id;var sold=run.merchantSold.Contains(key);var hot=!MerchantBusy&&ScreenChoiceHot(r,9);ShopThread(r,hot);
-                var center=r.center;foreach(var sign in new[]{-1,1}){DrawLine(new Vector2(center.x-68,center.y),new Vector2(center.x,center.y+sign*74),Gold,1);DrawLine(new Vector2(center.x+68,center.y),new Vector2(center.x,center.y+sign*74),Gold,1);}
+                if(UiTheme.NewLook&&!sold)ThemeShopSocket(r,hot,run.gold<45);
+                var center=r.center;if(!UiTheme.NewLook)foreach(var sign in new[]{-1,1}){DrawLine(new Vector2(center.x-68,center.y),new Vector2(center.x,center.y+sign*74),Gold,1);DrawLine(new Vector2(center.x+68,center.y),new Vector2(center.x,center.y+sign*74),Gold,1);}
                 if(!sold){var old=GUI.color;if(run.gold<45)GUI.color=new Color(.73f,.73f,.73f,1);DrawFateShardArt(hot?new Rect(r.x-4,r.y-8,r.width+8,r.height+8):r,shard);GUI.color=old;if(hot)SetRunHudTooltip(WithPriceBand(r),shard.name,"STABLE\n"+shard.stableText+"\n\nFRACTURED\n"+shard.fracturedText);if(!MerchantBusy&&GUI.Button(r,"",GUIStyle.none))BuyShopShard();}ShopPrice(r,45,key,sold);
             }
             var device=ShopRemovalRect;var deviceHot=!MerchantBusy&&ScreenChoiceHot(device,10);ShopThread(device,deviceHot);
+            if(UiTheme.NewLook)ThemeShopSocket(new Rect(device.x+10,device.y,device.width-20,device.height-14),deviceHot,false);
             DrawRemovalServiceIcon(device);
             GUI.Label(new Rect(device.x-30,device.yMax-22,device.width+60,24),"SEVER A THREAD",new GUIStyle(footerStyle){fontSize=15,fontStyle=FontStyle.Bold,normal={textColor=Gold}});ShopPrice(device,run.MerchantRemovalCost,"remove",false);
             if(deviceHot)SetRunHudTooltip(WithPriceBand(device),"SEVER A THREAD","Permanently remove one chosen card. Each removal raises the next price by 25 Gold.\n\nCurrent price: "+run.MerchantRemovalCost+" Gold.");if(!MerchantBusy&&GUI.Button(device,"",GUIStyle.none))OpenMerchantRemoval();
             var heal=new Rect(w-133,h*.66f+14,66,76);var healTint=GUI.color;if(merchantHealed||run.hp>=run.maxHp)GUI.color=new Color(.45f,.45f,.45f,1);DrawAtlasIcon(hudEmblemAtlas,1,4,2,FittedServiceIcon(heal,60));GUI.color=healTint;
-            ShopPrice(heal,35,"heal",merchantHealed);if(!merchantHealed&&run.hp>=run.maxHp)GUI.Label(new Rect(heal.x-24,heal.y-20,114,20),"FULL HEALTH",new GUIStyle(footerStyle){fontSize=12});
+            if(UiTheme.NewLook)ThemeShopSocket(heal,heal.Contains(pointer),merchantHealed||run.hp>=run.maxHp);ShopPrice(heal,35,"heal",merchantHealed);if(!merchantHealed&&run.hp>=run.maxHp)GUI.Label(new Rect(heal.x-24,heal.y-20,114,20),"FULL HEALTH",new GUIStyle(footerStyle){fontSize=12});
             if(controllerNavigation?screenControllerIndex==11:heal.Contains(pointer)){Outline(new Rect(heal.x-4,heal.y-4,heal.width+8,heal.height+8),Gold,2);SetRunHudTooltip(WithPriceBand(heal),"RESTORE 18 HP","Recover up to 18 HP for 35 Gold. Once per visit."+(run.hp>=run.maxHp?"\n\nAlready at full health — no purchase needed.":""));}
             if(!MerchantBusy&&GUI.Button(heal,"",GUIStyle.none))BuyShopHeal();
             GUI.Label(new Rect(178,h-68,w-430,30),"CLICK AN ITEM TO BUY · RIGHT CLICK / I / R3 TO INSPECT CARDS",new GUIStyle(footerStyle){fontSize=12,normal={textColor=new Color(.84f,.78f,.66f)}});
