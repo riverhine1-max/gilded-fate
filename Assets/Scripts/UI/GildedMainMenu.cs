@@ -1547,7 +1547,7 @@ namespace GildedFate.UI
         {
             runHudTooltipTitle=runHudTooltipDetail=null;
             var pointer=PointerPosition;var hp=combatMode&&combat!=null?displayedPlayerHp:run.hp;var maxHp=combatMode&&combat!=null?combat.player.maxHp:run.maxHp;
-            if(UiTheme.NewLook)ThemeHudStrip(w);
+            if(UiTheme.NewLook){ThemeHudStrip(w);ThemeHudWell(new Rect(56,13,122,30));ThemeHudWell(new Rect(224,13,70,30));} // dark wells under the health and gold figures
             else{Fill(new Rect(0,0,w,58),profile.highContrastUi?new Color(.002f,.004f,.007f,.99f):new Color(.003f,.006f,.011f,.95f));
             Fill(new Rect(0,57,w,2),new Color(.78f,.60f,.28f,.72f));}
 
@@ -1573,7 +1573,7 @@ namespace GildedFate.UI
             if(floorRect.Contains(pointer))SetRunHudTooltip(floorRect,$"FLOOR {RunFloorNumber} OF {RunFloorTotal}",$"Act {RomanAct(run.act)}, room {run.floor+1}. Follow a golden path toward the boss.");
             // A clear act badge next to the floor counter.
             var actRect=new Rect(floorRect.xMax+8,7,78,43);
-            Fill(actRect,new Color(.10f,.07f,.03f,.85f));Outline(actRect,new Color(.86f,.66f,.30f,.9f),1);
+            if(UiTheme.NewLook)ThemePlaque(actRect,.95f);else{Fill(actRect,new Color(.10f,.07f,.03f,.85f));Outline(actRect,new Color(.86f,.66f,.30f,.9f),1);}
             GUI.Label(new Rect(actRect.x,actRect.y,actRect.width,16),"ACT",new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=11,fontStyle=FontStyle.Bold,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(.86f,.74f,.52f)}});
             GUI.Label(new Rect(actRect.x,actRect.y+14,actRect.width,28),$"{RomanAct(run.act)}<size=11> / III</size>",new GUIStyle(titleStyle){font=headingFont?headingFont:labelFont,fontSize=22,richText=true,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(1f,.82f,.42f)}});
             if(actRect.Contains(pointer))SetRunHudTooltip(actRect,$"ACT {RomanAct(run.act)} OF III",$"Defeat the act's boss to advance. The final boss waits on floor {RunFloorTotal}.");

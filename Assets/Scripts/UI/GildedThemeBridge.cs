@@ -157,6 +157,7 @@ namespace GildedFate.UI
 
         private void ThemePanel(Rect panel) { if (Event.current.type == EventType.Repaint) ThemeWidgets.Panel(ThemeCanvas(), TR(panel)); }
         private void ThemePlaque(Rect r, float opacity = .985f) { if (Event.current.type == EventType.Repaint) ThemeWidgets.Plaque(ThemeCanvas(), TR(r), opacity); }
+        private void ThemeHudWell(Rect r) { if (Event.current.type == EventType.Repaint) ThemeWidgets.Well(ThemeCanvas(), TR(r), .9f); }
         private void ThemeHudStrip(float w) { if (Event.current.type == EventType.Repaint) ThemeWidgets.HudStrip(ThemeCanvas(), new ThemeRect(0, 0, w, 58), profile != null && profile.highContrastUi); }
         private void ThemeRow(Rect r, bool hot) { if (Event.current.type == EventType.Repaint) ThemeWidgets.Row(ThemeCanvas(), TR(r), hot ? 1f : 0f); }
         // ---- choice panels (sanctuary and similar) ----

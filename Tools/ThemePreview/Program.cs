@@ -194,7 +194,10 @@ public static class Program
             var map = new ThemeRect(0, 58, 1550, H - 58);
             ThemeMap.LightShafts(c, map, 1f); ThemeMap.Embers(c, new ThemeRect(0, 58, W, H - 58), 40, 0);
             ThemeWidgets.HudStrip(c, new ThemeRect(0, 0, W, 58));
-            Label(c, "80/80", new ThemeRect(90, 10, 120, 38), 22, ThemePalette.Text, ThemeFont.Heading);
+            const float k = 1.3333f; // the game draws its 1440-wide canvas at 1920
+            ThemeWidgets.Well(c, new ThemeRect(56 * k, 13 * k, 122 * k, 30 * k), .9f); ThemeWidgets.Well(c, new ThemeRect(224 * k, 13 * k, 70 * k, 30 * k), .9f);
+            Label(c, "80/80", new ThemeRect(60 * k, 8 * k, 118 * k, 40 * k), 25, new ThemeColor(1f, .91f, .86f, 1)); Label(c, "75", new ThemeRect(228 * k, 8 * k, 66 * k, 40 * k), 24, new ThemeColor(1f, .85f, .52f, 1));
+            var act = new ThemeRect(616 * k, 7 * k, 78 * k, 43 * k); ThemeWidgets.Plaque(c, act, .95f); Label(c, "ACT", new ThemeRect(act.x, act.y, act.w, 20 * k), 14, new ThemeColor(.86f, .74f, .52f, 1)); Label(c, "I / III", new ThemeRect(act.x, act.y + 14 * k, act.w, 28 * k), 28, new ThemeColor(1f, .82f, .42f, 1), ThemeFont.Heading);
             ThemeMap.Header(c, 775, 92, "CHOOSE YOUR NEXT ROOM · CLICK A GILDED NODE", true);
 
             // x, y, kind (0..6), state
