@@ -1857,7 +1857,7 @@ namespace GildedFate.UI
 
         private void Outline(Rect r, Color color, int width)
         {
-            if (UiTheme.NewLook && width >= 2 && r.width >= 64 && r.height >= 40) { ThemeOutline(r, color, width); return; }   // strong outlines on big panels become a bevelled rim; hairlines and small boxes keep the crisp line
+            if (UiTheme.NewLook && !ThemeKeepsClassicScreen && width >= 2 && r.width >= 64 && r.height >= 40) { ThemeOutline(r, color, width); return; }   // strong outlines on big panels become a bevelled rim; hairlines and small boxes keep the crisp line
             Fill(new Rect(r.x, r.y, r.width, width), color);
             Fill(new Rect(r.x, r.yMax - width, r.width, width), color);
             Fill(new Rect(r.x, r.y, width, r.height), color);

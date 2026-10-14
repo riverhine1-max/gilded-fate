@@ -206,6 +206,9 @@ namespace GildedFate.UI
             GUI.color = keep;
         }
 
+        /// <summary>The event and Fateweave screens keep their own authored look. Shared chrome (the top bar, tooltips, buttons) is themed everywhere; their panels are left alone.</summary>
+        private bool ThemeKeepsClassicScreen => screen is ScreenMode.Event or ScreenMode.EventSelection or ScreenMode.EventResult or ScreenMode.Fateweave or ScreenMode.FateweaveCard;
+
         // ---- combat ----
         /// <summary>A bevelled rim in the colour of the flat outline it replaces. The flat outline ignored the caller's GUI.color, so this does too.</summary>
         private void ThemeOutline(Rect r, Color color, int width)
