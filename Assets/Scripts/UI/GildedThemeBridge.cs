@@ -15,6 +15,12 @@ namespace GildedFate.UI
     public static class UiTheme
     {
         static int state = -1;
+        /// <summary>True when an exception was thrown by the theme's own drawing (as opposed to a bug elsewhere), judged by its stack trace.</summary>
+        public static bool IsFromTheme(Exception e)
+        {
+            var trace = e?.StackTrace; if (string.IsNullOrEmpty(trace)) return false;
+            return trace.Contains("GildedFate.Theme.") || trace.Contains("UnityThemeCanvas") || trace.Contains("GildedMainMenu.Theme");
+        }
         public static bool NewLook
         {
             get { if (state < 0) state = Array.IndexOf(Environment.GetCommandLineArgs(), "-gfClassicUi") >= 0 ? 0 : 1; return state == 1; }
@@ -297,8 +303,8 @@ namespace GildedFate.UI
             var kind = braided ? ThreadKind.Traveled : available ? ThreadKind.Available : hot ? ThreadKind.Reachable : ThreadKind.Future;
             var canvas = ThemeCanvas();
             canvas.PushClip(new ThemeRect(clip.x + 3, clip.y + 3, clip.width - 6, clip.height - 6));
-            ThemeMap.Thread(canvas, a.x, a.y, b.x, b.y, kind, progress, MapPolishMotion ? (MapPolishLowVfx ? 1 : 3) : 0);
-            canvas.PopClip();
+            try { ThemeMap.Thread(canvas, a.x, a.y, b.x, b.y, kind, progress, MapPolishMotion ? (MapPolishLowVfx ? 1 : 3) : 0); }
+            finally { canvas.PopClip(); }
         }
         /// <summary>0 = Reduce Motion (everything holds still), 1 = reduced effects (fewer particles and rays), 2 = full.</summary>
         private int ThemeMotion => profile != null && profile.reduceMotion ? 0 : profile != null && profile.reducedVfx ? 1 : 2;

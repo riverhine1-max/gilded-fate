@@ -470,9 +470,18 @@ namespace GildedFate.UI
 
         private void OnGUI()
         {
-            DrawMainGUI();
-            DrawFlowOverlays();
-            DrawMetaOverlay(); // brightness + achievement toasts, always on top
+            if(!UiTheme.NewLook){DrawMainGUI();DrawFlowOverlays();DrawMetaOverlay();return;}
+            try
+            {
+                DrawMainGUI();
+                DrawFlowOverlays();
+                DrawMetaOverlay(); // brightness + achievement toasts, always on top
+            }
+            catch(System.Exception e) when(UiTheme.IsFromTheme(e))
+            {
+                // The new look must never take a screen down: if its own drawing throws, say so once and draw the original look from the next frame on.
+                UiTheme.NewLook=false;Debug.LogError("The new UI look hit an error and was switched off for this session; the original look is drawing instead.\n"+e);
+            }
         }
         private void DrawMainGUI()
         {

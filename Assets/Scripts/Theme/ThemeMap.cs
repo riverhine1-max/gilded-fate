@@ -210,13 +210,16 @@ namespace GildedFate.Theme
         public static void LightShafts(IThemeCanvas c, ThemeRect area, float strength)
         {
             c.PushClip(area);
-            for (var k = 0; k < 4; k++)
+            try
             {
-                var sway = (float)Math.Sin(c.Time * .11f + k * 1.9f) * 70f; var x0 = area.x + area.w * (.12f + k * .26f) + sway; var width = 150f + 60f * (k % 2);
-                var a = .045f + .02f * (float)Math.Sin(c.Time * .23f + k * 2.3f);
-                c.Line(x0, area.y - 40, x0 - area.h * .42f, area.yMax + 40, width, ThemeColor.Lerp(ThemePalette.GoldBright, new ThemeColor(.6f, .75f, 1f, 1f), (k % 2) * .6f).WithAlpha(Math.Max(0, a) * strength));
+                for (var k = 0; k < 4; k++)
+                {
+                    var sway = (float)Math.Sin(c.Time * .11f + k * 1.9f) * 70f; var x0 = area.x + area.w * (.12f + k * .26f) + sway; var width = 150f + 60f * (k % 2);
+                    var a = .045f + .02f * (float)Math.Sin(c.Time * .23f + k * 2.3f);
+                    c.Line(x0, area.y - 40, x0 - area.h * .42f, area.yMax + 40, width, ThemeColor.Lerp(ThemePalette.GoldBright, new ThemeColor(.6f, .75f, 1f, 1f), (k % 2) * .6f).WithAlpha(Math.Max(0, a) * strength));
+                }
             }
-            c.PopClip();
+            finally { c.PopClip(); }
         }
 
         /// <summary>The heading above the map: gold text on a plate with a fading gold rule either side. ready makes it breathe.</summary>

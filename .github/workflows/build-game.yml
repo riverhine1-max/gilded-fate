@@ -230,6 +230,10 @@ jobs:
           mkdir -p captures
           bash ci/capture-screens.sh Builds/Linux captures/new 1920x1080 1280x720 || echo "::warning::some new-look screenshots are missing"
           CAPTURE_EXTRA_ARGS="-gfClassicUi" bash ci/capture-screens.sh Builds/Linux captures/classic 1920x1080 || echo "::warning::some classic-look screenshots are missing"
+          # The new look switches itself off for the session if its own drawing throws, so that shot would silently show the original look. Say so.
+          if grep -rl "The new UI look hit an error" captures/new/*/logs 2>/dev/null | head -50 > captures/new-look-fell-back.txt && [ -s captures/new-look-fell-back.txt ]; then
+            echo "::warning::the new look threw and fell back to the original look on $(wc -l < captures/new-look-fell-back.txt) screenshot(s); see new-look-fell-back.txt on the ui-captures branch"
+          else rm -f captures/new-look-fell-back.txt; fi
 
       - name: Publish screenshots
         if: matrix.name == 'linux-captures' && always()
