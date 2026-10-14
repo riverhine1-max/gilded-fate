@@ -73,18 +73,36 @@ namespace GildedFate.UI
         }
 
         // ---------------- helpers ----------------
+        // Styles are cached by their look, so drawing the panel creates no new style objects after the first frame.
+        private readonly Dictionary<(int size, int fontStyle, int anchor, bool wrap, bool rich, uint color), GUIStyle> qaStyles = new();
+        private Font qaStyleFont;
+
+        private GUIStyle QaStyle(int size, FontStyle fontStyle, TextAnchor anchor, bool wrap, bool rich, Color color)
+        {
+            var font = labelFont ? labelFont : bodyFont;
+            if (!ReferenceEquals(font, qaStyleFont)) { qaStyles.Clear(); qaStyleFont = font; }
+            var c = (Color32)color; var packed = ((uint)c.r << 24) | ((uint)c.g << 16) | ((uint)c.b << 8) | c.a;
+            var key = (size, (int)fontStyle, (int)anchor, wrap, rich, packed);
+            if (!qaStyles.TryGetValue(key, out var style))
+            {
+                style = new GUIStyle(footerStyle) { font = font, fontSize = size, fontStyle = fontStyle, alignment = anchor, wordWrap = wrap, richText = rich };
+                style.normal.textColor = color; qaStyles[key] = style;
+            }
+            return style;
+        }
+
         private bool QaButton(Rect r, string text, bool on = false, int size = 11, bool enabled = true, Color? tint = null)
         {
             var hot = enabled && r.Contains(PointerPosition - qaOrigin);
             var fill = !enabled ? new Color(.02f, .02f, .025f, .8f) : on ? new Color(.22f, .15f, .06f, .97f) : hot ? new Color(.09f, .07f, .04f, .97f) : new Color(.02f, .024f, .032f, .95f);
             Fill(r, fill); Outline(r, !enabled ? new Color(.18f, .18f, .19f) : on ? Gold : tint ?? (hot ? new Color(.8f, .65f, .35f) : new Color(.3f, .3f, .31f)), 1);
-            var style = new GUIStyle(footerStyle) { font = labelFont ? labelFont : bodyFont, fontSize = size, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter, wordWrap = true, normal = { textColor = !enabled ? new Color(.4f, .4f, .4f) : on ? new Color(1f, .92f, .7f) : new Color(.86f, .84f, .78f) } };
+            var style = QaStyle(size, FontStyle.Bold, TextAnchor.MiddleCenter, true, false, !enabled ? new Color(.4f, .4f, .4f) : on ? new Color(1f, .92f, .7f) : new Color(.86f, .84f, .78f));
             if (!enabled) { GUI.Label(r, text, style); return false; }
             return GUI.Button(r, text, style);
         }
 
         private void QaText(Rect r, string text, int size = 11, Color? color = null, TextAnchor anchor = TextAnchor.UpperLeft, bool bold = false) =>
-            GUI.Label(r, text, new GUIStyle(footerStyle) { font = labelFont ? labelFont : bodyFont, fontSize = size, fontStyle = bold ? FontStyle.Bold : FontStyle.Normal, richText = true, wordWrap = true, alignment = anchor, normal = { textColor = color ?? new Color(.88f, .85f, .78f) } });
+            GUI.Label(r, text, QaStyle(size, bold ? FontStyle.Bold : FontStyle.Normal, anchor, true, true, color ?? new Color(.88f, .85f, .78f)));
 
         private void QaSay(string text) { qaStatus = text; Debug.Log("[Chronicle QA] " + text); }
 

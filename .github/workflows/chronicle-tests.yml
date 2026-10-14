@@ -1,0 +1,63 @@
+# Fast checks that need no Unity and no license: the Chronicle test suite (the same one the Unity EditMode tests use),
+# the static Chronicle QA configuration check and a read-only audit of the authored Ascension content.
+# Runs on every pull request and every push to main, in about two minutes, so a broken change shows up
+# long before the 40-80 minute Unity builds.
+#
+# It does not replace Unity: it cannot prove the UI, book, audio, video or a packaged build works.
+#
+# To make a red check block merging: Settings > Rules > Rulesets > New branch ruleset > target the default branch >
+# "Require status checks to pass" > add "Chronicle tests" > "Require a pull request before merging".
+name: Chronicle tests
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: chronicle-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+  DOTNET_NOLOGO: '1'
+
+jobs:
+  chronicle-tests:
+    name: Chronicle tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      # No Git LFS on purpose: the harness compiles C# only and never opens art or audio.
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Chronicle QA configuration (compile guards, build wiring)
+        run: bash ci/verify-qa-config.sh
+
+      # Source scenes <-> generated script <-> dialogue index <-> recordings <-> art. Read-only; never edits content.
+      # Media that this no-LFS checkout holds only as pointers is skipped and reported, not failed.
+      - name: Chronicle content audit (text, recordings, timings, art)
+        run: |
+          set -o pipefail
+          python3 ci/audit-chronicle-content.py | tee audit.log
+          { echo "### Chronicle content audit"; echo '```'; tail -n 1 audit.log; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Chronicle harness (all EditMode tests, no Unity)
+        run: |
+          set -o pipefail
+          dotnet run --project Tools/ChronicleHarness 2>&1 | tee harness.log
+          {
+            echo "### Chronicle harness"
+            echo '```'
+            tail -n 1 harness.log
+            echo '```'
+            if grep -q '^FAIL' harness.log; then echo; echo "Failing tests:"; echo '```'; grep -A1 '^FAIL' harness.log | head -40; echo '```'; fi
+          } >> "$GITHUB_STEP_SUMMARY"
