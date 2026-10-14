@@ -1180,7 +1180,8 @@ namespace GildedFate.UI
             {
                 var t=Time.unscaledTime-number.start;if(t<0)continue;var alpha=Mathf.Clamp01((1.1f-t)*2.5f);var p=number.origin-new Vector2(0,profile.reduceMotion?0:t*44);
                 if(DrawCritCombatNumber(number,t,alpha))continue; // ≥50 gold crit numbers (GildedCardVfx.cs)
-                var baseSize=number.text.Length>9?23:31;var style=new GUIStyle(titleStyle){font=labelFont,fontSize=profile.largeDamageNumbers?baseSize+8:baseSize,normal={textColor=new Color(number.color.r,number.color.g,number.color.b,alpha)}};
+                var baseSize=number.text.Length>9?23:31;if(UiTheme.NewLook){ThemeCombatNumber(p,number.text,number.color,alpha,t,profile.largeDamageNumbers?baseSize+8:baseSize);continue;}
+                var style=new GUIStyle(titleStyle){font=labelFont,fontSize=profile.largeDamageNumbers?baseSize+8:baseSize,normal={textColor=new Color(number.color.r,number.color.g,number.color.b,alpha)}};
                 ShadowLabel(new Rect(p.x-170,p.y-30,340,54),number.text,style);
             }
         }

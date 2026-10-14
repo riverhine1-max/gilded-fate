@@ -235,6 +235,24 @@ namespace GildedFate.UI
             GUI.color = keep;
         }
 
+        // ---- combat numbers ----
+        /// <summary>
+        /// A floating damage, healing or Block number: it pops in a little large and settles, has a dark outline so it reads over any art, and a light-to-deep gradient.
+        /// t is its age in seconds; alpha its fade. Reduce Motion skips the pop.
+        /// </summary>
+        private void ThemeCombatNumber(Vector2 p, string text, Color color, float alpha, float t, int size)
+        {
+            if (Event.current.type != EventType.Repaint) return;
+            var keep = GUI.color; GUI.color = Color.white; var canvas = ThemeCanvas();
+            var pop = profile != null && profile.reduceMotion ? 1f : Mathf.Lerp(1.5f, 1f, Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t / .16f)));
+            var top = new ThemeColor(Mathf.Lerp(color.r, 1f, .35f), Mathf.Lerp(color.g, 1f, .35f), Mathf.Lerp(color.b, 1f, .35f), alpha);
+            var style = ThemeText.Of(ThemeFont.Label, size * pop, top, ThemeAnchor.MiddleCenter);
+            style.gradient = true; style.bottomColor = new ThemeColor(color.r * .78f, color.g * .78f, color.b * .78f, alpha);
+            style.outline = 2f; style.outlineColor = new ThemeColor(.02f, .01f, .01f, .88f * alpha); style.shadowY = 3f; style.shadowAlpha = .55f * alpha;
+            ThemeDraw.Text(canvas, text, new ThemeRect(p.x - 170, p.y - 30, 340, 54), style);
+            GUI.color = keep;
+        }
+
         // ---- combat ----
         /// <summary>A bevelled rim in the colour of the flat outline it replaces. The flat outline ignored the caller's GUI.color, so this does too.</summary>
         private void ThemeOutline(Rect r, Color color, int width)

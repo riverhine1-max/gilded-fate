@@ -20,6 +20,7 @@ public static class Program
         ImagesSheet(Path.Combine(outDir, "images.png"), fonts);
         MenuSheet(Path.Combine(outDir, "menu.png"), fonts, Path.Combine(art, "GildedVault_Menu.png"));
         ComponentSheet(Path.Combine(outDir, "components.png"), fonts, Path.Combine(art, "CombatArena_LowerVault.png"));
+        NumbersSheet(Path.Combine(outDir, "numbers.png"), fonts, Path.Combine(art, "CombatArena_LowerVault.png"));
         MapSheet(Path.Combine(outDir, "map.png"), fonts, Path.Combine(art, "RunMap_LowerVault.png"), Path.Combine(art, "Identity", "RoomEmblems.png"));
         Console.WriteLine("wrote previews to " + outDir);
         return 0;
@@ -135,6 +136,29 @@ public static class Program
             for (var i = 0; i < oc.Length; i++)
             {
                 var orr = new ThemeRect(60 + i * 140, 800, 124, 70); c.Fill(orr, new ThemeColor(.009f, .014f, .024f, .96f)); ThemeWidgets.Outline(c, orr, oc[i], i == 4 ? 3 : i % 2 == 0 ? 2 : 1);
+            }
+            c.Save(path);
+        }
+    }
+
+    /// <summary>Floating combat numbers as the game draws them: pop-in (large, then settling), outline, gradient.</summary>
+    static void NumbersSheet(string path, string fonts, string bg)
+    {
+        using (var c = new SkiaCanvas(900, 260, fonts))
+        {
+            c.Clear(ThemeColor.Black); c.DrawBackground(bg);
+            var items = new (string text, ThemeColor col, float size, float pop)[]
+            {
+                ("12", new ThemeColor(1f, .42f, .30f, 1), 31, 1f), ("27", new ThemeColor(1f, .42f, .30f, 1), 31, 1.5f), ("+8 Block", new ThemeColor(.45f, .78f, 1f, 1), 31, 1f),
+                ("+6", new ThemeColor(.5f, 1f, .62f, 1), 31, 1f), ("Weak", new ThemeColor(.85f, .6f, 1f, 1), 23, 1f),
+            };
+            for (var i = 0; i < items.Length; i++)
+            {
+                var it = items[i]; var col = it.col;
+                var top = new ThemeColor(col.r + (1 - col.r) * .35f, col.g + (1 - col.g) * .35f, col.b + (1 - col.b) * .35f, 1);
+                var st = ThemeText.Of(ThemeFont.Label, it.size * it.pop, top, ThemeAnchor.MiddleCenter);
+                st.gradient = true; st.bottomColor = new ThemeColor(col.r * .78f, col.g * .78f, col.b * .78f, 1); st.outline = 2; st.outlineColor = new ThemeColor(.02f, .01f, .01f, .88f); st.shadowY = 3; st.shadowAlpha = .55f;
+                ThemeDraw.Text(c, it.text, new ThemeRect(20 + i * 175, 90, 170, 80), st);
             }
             c.Save(path);
         }
