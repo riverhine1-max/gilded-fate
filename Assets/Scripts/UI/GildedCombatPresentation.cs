@@ -672,7 +672,9 @@ namespace GildedFate.UI
             DrawTargetGuide();
             Fill(new Rect(0,h-138,w,138),new Color(.005f,.009f,.017f,.18f));
             var hint=Time.unscaledTime<hintUntil?inputHint:combatBusy?"":controllerNavigation?(menuUsesGamepad?"STICK / D-PAD · A PLAY · B BACK · R3 INSPECT · X TOP BAR · UP / LB ENEMIES · Y END TURN":"ARROWS SELECT CARD · UP ENEMIES · ENTER PLAY · BACKSPACE CANCEL"):"DRAG A CARD TO PLAY · RIGHT-CLICK TO CANCEL";
-            GUI.Label(new Rect(w*.5f-330,h-292,660,26),hint,new GUIStyle(footerStyle){fontSize=14,normal={textColor=new Color(.88f,.83f,.7f)}});
+            var hintStyle=new GUIStyle(footerStyle){fontSize=14,normal={textColor=new Color(.88f,.83f,.7f)}};
+            if(UiTheme.NewLook&&!string.IsNullOrEmpty(hint))ThemeTextPlate(w*.5f,h-279,hintStyle.CalcSize(new GUIContent(hint)).x+96,28); // the hint stays readable over the arena art
+            GUI.Label(new Rect(w*.5f-330,h-292,660,26),hint,hintStyle);
             DrawGildControl();DrawCombatHand();DrawCombatMotions();DrawRetaliateReturns();DrawCombatControls();DrawCombatNativeHitTargets();DrawCombatNumbers();DrawCardKeywordHelp(w,h);DrawCombatEffectTooltip(w,h);DrawPersistentRunTooltip(w,h);
             if(!profile.reduceFlashing&&gildedFlash>0)Fill(new Rect(0,0,w,h),new Color(1,.7f,.25f,gildedFlash*.12f));
             if(Time.unscaledTime<turnBannerUntil)
@@ -887,6 +889,7 @@ namespace GildedFate.UI
             DrawEnergyMeter(EnergyMeterRect);
             var end=EndTurnRect;var enabled=CanAcceptCombatInput&&pileOpen<0;
             if(DrawEndTurnButton(end,enabled))QueueEndTurn(); // GildedEndTurnButton.cs
+            if(UiTheme.NewLook)ThemeTextPlate(end.center.x,end.y-15,end.width*.92f,24);
             GUI.Label(new Rect(end.x,end.y-26,end.width,22),"HAND  "+combat.hand.Count+(ShowPadGlyphs?"":"     ·     SPACE"),footerStyle);
         }
         private void DrawEnergyMeter(Rect r)

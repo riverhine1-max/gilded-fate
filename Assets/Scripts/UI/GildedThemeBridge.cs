@@ -254,6 +254,13 @@ namespace GildedFate.UI
             GUI.color = keep;
         }
 
+        /// <summary>A soft dark plate centred on a point, behind small text that sits over busy art.</summary>
+        private void ThemeTextPlate(float cx, float cy, float width, float height)
+        {
+            if (Event.current.type != EventType.Repaint) return;
+            var keep = GUI.color; GUI.color = Color.white; ThemeWidgets.Plate(ThemeCanvas(), new ThemeRect(cx - width * .5f, cy - height * .5f, width, height), .85f); GUI.color = keep;
+        }
+
         // ---- combat ----
         /// <summary>A bevelled rim in the colour of the flat outline it replaces. The flat outline ignored the caller's GUI.color, so this does too.</summary>
         private void ThemeOutline(Rect r, Color color, int width)
