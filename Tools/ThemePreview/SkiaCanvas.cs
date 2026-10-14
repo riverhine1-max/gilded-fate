@@ -25,6 +25,15 @@ public sealed class SkiaCanvas : IThemeCanvas, IDisposable
     static SKRect R(ThemeRect r) => new SKRect(r.x, r.y, r.xMax, r.yMax);
 
     public void Clear(ThemeColor c) => g.Clear(C(c));
+    /// <summary>Draws everything after this at k times its size, like the game's canvas fitted to the screen (1.3333 for 1440 units on a 1920 pixel screen).</summary>
+    public void SetScale(float k) { g.ResetMatrix(); g.Scale(k, k); }
+    /// <summary>Adds a region of another picture onto the same place on this one (light adds to what is there, black adds nothing), in pixels. Used to bring icons and text from a screenshot over a freshly drawn background.</summary>
+    public void AddPixels(string pngPath, int x, int y, int w, int h)
+    {
+        using (var src = SKBitmap.Decode(pngPath))
+        using (var p = new SKPaint { BlendMode = SKBlendMode.Plus })
+        { g.Save(); g.ResetMatrix(); g.DrawBitmap(src, new SKRect(x, y, x + w, y + h), new SKRect(x, y, x + w, y + h), p); g.Restore(); }
+    }
     public void DrawBackground(string pngPath, float darken = 0f)
     {
         using (var bg = SKBitmap.Decode(pngPath))

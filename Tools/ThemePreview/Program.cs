@@ -20,6 +20,7 @@ public static class Program
         ImagesSheet(Path.Combine(outDir, "images.png"), fonts);
         MenuSheet(Path.Combine(outDir, "menu.png"), fonts, Path.Combine(art, "GildedVault_Menu.png"));
         ComponentSheet(Path.Combine(outDir, "components.png"), fonts, Path.Combine(art, "CombatArena_LowerVault.png"));
+        if (args.Length > 1 && File.Exists(args[1])) CombatMock(Path.Combine(outDir, "combat-mock.png"), fonts, args[1]);
         NumbersSheet(Path.Combine(outDir, "numbers.png"), fonts, Path.Combine(art, "CombatArena_LowerVault.png"));
         MapSheet(Path.Combine(outDir, "map.png"), fonts, Path.Combine(art, "RunMap_LowerVault.png"), Path.Combine(art, "Identity", "RoomEmblems.png"));
         Console.WriteLine("wrote previews to " + outDir);
@@ -137,6 +138,36 @@ public static class Program
             {
                 var orr = new ThemeRect(60 + i * 140, 800, 124, 70); c.Fill(orr, new ThemeColor(.009f, .014f, .024f, .96f)); ThemeWidgets.Outline(c, orr, oc[i], i == 4 ? 3 : i % 2 == 0 ? 2 : 1);
             }
+            c.Save(path);
+        }
+    }
+
+    /// <summary>
+    /// A composite, not a capture: a real screenshot of the original combat screen with the new combat HUD pieces drawn over the old ones at their real positions
+    /// (top bar, health bars, Block badge, End Turn plate, hint plates). Cards, portraits, the energy orb and everything else are the old screen's pixels.
+    /// </summary>
+    static void CombatMock(string path, string fonts, string classicPng)
+    {
+        const int W = 1920, H = 1080; const float k = 1.3333f;
+        using (var c = new SkiaCanvas(W, H, fonts))
+        {
+            c.Clear(ThemeColor.Black); c.DrawBackground(classicPng); c.Time = 1.1f; c.SetScale(k);
+            const float cw = 1440, ch = 810;
+            // top bar: new glass strip, wells and act plaque, then the old strip's icons and text added back over it
+            ThemeWidgets.HudStrip(c, new ThemeRect(0, 0, cw, 58)); ThemeWidgets.Well(c, new ThemeRect(56, 13, 122, 30), .9f); ThemeWidgets.Well(c, new ThemeRect(224, 13, 70, 30), .9f);
+            ThemeWidgets.Plaque(c, new ThemeRect(500, 7, 78, 43), .95f);
+            c.AddPixels(classicPng, 0, 0, W, 76);
+            // health bars
+            var pb = new ThemeRect(223.8f, 458, 186, 22); ThemeWidgets.Bar(c, pb, BarKind.Block, 1f); Label(c, "80/80", pb, 13, ThemeColor.White);
+            var eb = new ThemeRect(913, 446.5f, 174, 22); ThemeWidgets.Bar(c, eb, BarKind.Health, 1f); Label(c, "80/80", eb, 13, ThemeColor.White);
+            var bb = new ThemeRect(pb.x - 38, pb.cy - 23, 46, 46); ThemeWidgets.BlockBadge(c, bb, .5f); Label(c, "11", bb, 17, ThemeColor.White);
+            // hint plates
+            ThemeWidgets.Plate(c, new ThemeRect(cw * .5f - 270, ch - 279 - 14, 540, 28), .85f); Label(c, "DRAG A CARD TO PLAY · RIGHT-CLICK TO CANCEL", new ThemeRect(cw * .5f - 330, ch - 292, 660, 26), 14, new ThemeColor(.88f, .83f, .7f, 1));
+            var end = new ThemeRect(1241, 552, 182, 54);
+            ThemeWidgets.Plate(c, new ThemeRect(end.cx - end.w * .46f, end.y - 27, end.w * .92f, 24), .85f); Label(c, "HAND  5     ·     SPACE", new ThemeRect(end.x, end.y - 26, end.w, 22), 13, new ThemeColor(.8f, .77f, .7f, 1));
+            ThemeWidgets.EndTurnPlate(c, end, true, 0f, 0f);
+            Label(c, "END TURN", new ThemeRect(end.x, end.y + 5, end.w, end.h * .56f), 20, new ThemeColor(1f, .87f, .6f, 1));
+            Label(c, "INCOMING 15", new ThemeRect(end.x, end.y + end.h * .56f, end.w, end.h * .34f), 11, new ThemeColor(1f, .55f, .45f, 1));
             c.Save(path);
         }
     }
