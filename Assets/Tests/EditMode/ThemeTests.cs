@@ -31,7 +31,7 @@ namespace GildedFate.Chronicle.Tests
             ThemeAssets.FrameGold, ThemeAssets.FrameBronze, ThemeAssets.FrameSteel, ThemeAssets.FrameCrimson, ThemeAssets.FrameAzure, ThemeAssets.FrameViolet, ThemeAssets.FrameJade,
             ThemeAssets.RimBronze, ThemeAssets.RimGold, ThemeAssets.RimSteel, ThemeAssets.Shadow, ThemeAssets.Glow, ThemeAssets.GlowTight, ThemeAssets.Ring, ThemeAssets.Vignette,
             ThemeAssets.Grain, ThemeAssets.Sheen, ThemeAssets.DiamondGold, ThemeAssets.PanelGlass, ThemeAssets.ButtonGlass, ThemeAssets.ButtonGlassHot, ThemeAssets.ButtonGlassPressed,
-            ThemeAssets.TopSheen, ThemeAssets.RuleFade, ThemeAssets.BarGloss, ThemeAssets.BarTrough, ThemeAssets.PlateFade, ThemeAssets.HudGlass, ThemeAssets.RowGlass, ThemeAssets.ShadeDown, ThemeAssets.LineSoft, ThemeAssets.Medallion, ThemeAssets.Flare, ThemeAssets.RimNeutral, ThemeAssets.HexPlate,
+            ThemeAssets.TopSheen, ThemeAssets.RuleFade, ThemeAssets.BarGloss, ThemeAssets.BarTrough, ThemeAssets.PlateFade, ThemeAssets.HudGlass, ThemeAssets.RowGlass, ThemeAssets.ShadeDown, ThemeAssets.LineSoft, ThemeAssets.Medallion, ThemeAssets.Flare, ThemeAssets.RimNeutral, ThemeAssets.HexPlate, ThemeAssets.DiamondPlate,
         };
 
         // ---------------------------------------------------------------- generated images

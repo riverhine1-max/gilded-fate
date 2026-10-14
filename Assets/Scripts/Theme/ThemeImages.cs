@@ -375,6 +375,8 @@ namespace GildedFate.Theme
         public static readonly ThemeImage RimGold = ThemeImages.Rim9("rim.gold", FramePalette.Gold);
         public static readonly ThemeImage RimSteel = ThemeImages.Rim9("rim.steel", FramePalette.Steel);
         public static readonly ThemeImage RimNeutral = ThemeImages.Rim9("rim.neutral", FramePalette.Neutral);
+        /// <summary>A bevelled diamond socket over dark glass, for the Fate Shard slots.</summary>
+        public static readonly ThemeImage DiamondPlate = ThemeImages.PlateShape("plate.diamond", 128, 128, new[] { 64f, 128f, 64f, 0f }, new[] { 0f, 64f, 128f, 64f }, FramePalette.Gold, 6f);
         /// <summary>The End Turn plate: a long bevelled hexagon with pointed ends and a dark glass body.</summary>
         public static readonly ThemeImage HexPlate = ThemeImages.PlateShape("plate.hex", 512, 128, new[] { 28f, 484f, 512f, 484f, 28f, 0f }, new[] { 0f, 0f, 64f, 128f, 128f, 64f }, FramePalette.Gold);
 

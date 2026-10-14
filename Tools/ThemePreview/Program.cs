@@ -32,7 +32,7 @@ public static class Program
             ("frame.gold", ThemeAssets.FrameGold), ("frame.bronze", ThemeAssets.FrameBronze), ("frame.crimson", ThemeAssets.FrameCrimson), ("frame.azure", ThemeAssets.FrameAzure),
             ("frame.violet", ThemeAssets.FrameViolet), ("frame.jade", ThemeAssets.FrameJade), ("frame.steel", ThemeAssets.FrameSteel), ("shadow.soft", ThemeAssets.Shadow),
             ("glow.soft", ThemeAssets.Glow), ("glow.tight", ThemeAssets.GlowTight), ("ring.glow", ThemeAssets.Ring), ("vignette", ThemeAssets.Vignette),
-            ("grain", ThemeAssets.Grain), ("diamond.gold", ThemeAssets.DiamondGold),
+            ("grain", ThemeAssets.Grain), ("diamond.gold", ThemeAssets.DiamondGold), ("plate.diamond", ThemeAssets.DiamondPlate), ("medallion", ThemeAssets.Medallion), ("flare", ThemeAssets.Flare), ("plate.hex", ThemeAssets.HexPlate),
         };
         const int cell = 256, cols = 4; var rows = (items.Length + cols - 1) / cols;
         using (var c = new SkiaCanvas(cols * cell, rows * (cell + 28), fonts))

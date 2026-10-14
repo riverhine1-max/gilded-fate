@@ -172,6 +172,18 @@ namespace GildedFate.UI
             GUI.color = keep;
         }
 
+        // ---- fate shard sockets ----
+        /// <summary>A bevelled diamond socket for one Fate Shard slot. tint shades the metal toward the shard's accent when it is active or fractured.</summary>
+        private void ThemeShardSocket(Rect r, Color tint, bool filled, float pulse)
+        {
+            if (Event.current.type != EventType.Repaint) return;
+            var keep = GUI.color; GUI.color = Color.white; var canvas = ThemeCanvas();
+            var d = new ThemeRect(r.x - 2, r.y - 5, r.width + 4, r.height + 10);
+            if (filled) ThemeWidgets.Glow(canvas, r.center.x, r.center.y, r.width * .9f, new ThemeColor(tint.r, tint.g, tint.b, .16f + .2f * pulse));
+            canvas.Image(ThemeAssets.DiamondPlate, d, new ThemeColor(tint.r, tint.g, tint.b, 1f));
+            GUI.color = keep;
+        }
+
         // ---- shops ----
         /// <summary>One of the broker's threads, from his hand to an item: faint until the item is under the pointer, then a bright thread with a spark running along it.</summary>
         private void ThemeShopThread(Vector2 source, Vector2 target, bool hot)
@@ -208,6 +220,20 @@ namespace GildedFate.UI
 
         /// <summary>The event and Fateweave screens keep their own authored look. Shared chrome (the top bar, tooltips, buttons) is themed everywhere; their panels are left alone.</summary>
         private bool ThemeKeepsClassicScreen => screen is ScreenMode.Event or ScreenMode.EventSelection or ScreenMode.EventResult or ScreenMode.Fateweave or ScreenMode.FateweaveCard;
+
+        /// <summary>
+        /// Light shafts and a few drifting embers over a screen's backdrop, so reward, treasure, shop, sanctuary, binding and run-result screens are not still pictures.
+        /// Only on those screens: never on the Chronicle, the event and Fateweave screens, or the collection and records pages.
+        /// </summary>
+        private void ThemeBackdropLife(float w, float h)
+        {
+            if (Event.current.type != EventType.Repaint) return;
+            if (!(screen is ScreenMode.Reward or ScreenMode.RelicReward or ScreenMode.Treasure or ScreenMode.Merchant or ScreenMode.Sanctuary or ScreenMode.BindingSelect or ScreenMode.RunResult)) return;
+            var keep = GUI.color; GUI.color = Color.white; var canvas = ThemeCanvas(); var area = new ThemeRect(0, 58, w, h - 58);
+            if (ThemeMotion > 0) ThemeMap.LightShafts(canvas, area, .8f);
+            ThemeMap.Embers(canvas, area, ThemeMotion == 2 ? 24 : ThemeMotion == 1 ? 8 : 12, 0f);
+            GUI.color = keep;
+        }
 
         // ---- combat ----
         /// <summary>A bevelled rim in the colour of the flat outline it replaces. The flat outline ignored the caller's GUI.color, so this does too.</summary>
