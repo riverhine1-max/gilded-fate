@@ -89,7 +89,7 @@ namespace GildedFate.UI
         }
         private void DrawModalPanel(float w,float h,Rect panel)
         {
-            Fill(new Rect(0,0,w,h),new Color(0,0,0,.62f));Fill(panel,new Color(.012f,.014f,.02f,.98f));Outline(panel,new Color(.86f,.66f,.3f),2);Fill(new Rect(panel.x,panel.y,panel.width,3),new Color(1f,.8f,.4f));
+            Fill(new Rect(0,0,w,h),new Color(0,0,0,.62f));if(UiTheme.NewLook){ThemePanel(panel);return;}Fill(panel,new Color(.012f,.014f,.02f,.98f));Outline(panel,new Color(.86f,.66f,.3f),2);Fill(new Rect(panel.x,panel.y,panel.width,3),new Color(1f,.8f,.4f));
         }
         private void DrawQuitConfirm(float w,float h)
         {

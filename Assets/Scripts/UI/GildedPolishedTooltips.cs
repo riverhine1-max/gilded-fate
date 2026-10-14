@@ -65,8 +65,9 @@ namespace GildedFate.UI
                     if(candidate.x>=16&&candidate.xMax<=CombatWidth-16&&candidate.y>=68&&candidate.yMax<=CombatHeight-16&&!candidate.Overlaps(anchor)){r=candidate;break;}
             }
             lastTooltipBounds=r;
-            Fill(r,new Color(.009f,.013f,.021f,.985f));
-            DrawLine(new Vector2(r.x,r.y),new Vector2(r.x,r.yMax),new Color(.83f,.67f,.36f),3);
+            if(UiTheme.NewLook)ThemePlaque(r);
+            else{Fill(r,new Color(.009f,.013f,.021f,.985f));
+            DrawLine(new Vector2(r.x,r.y),new Vector2(r.x,r.yMax),new Color(.83f,.67f,.36f),3);}
             if(hasTitle)
             {
                 DrawLine(new Vector2(r.x+12,r.y+headingHeight+21),new Vector2(r.xMax-12,r.y+headingHeight+21),new Color(.52f,.44f,.31f,.55f),1);

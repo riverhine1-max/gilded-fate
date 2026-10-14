@@ -611,6 +611,7 @@ namespace GildedFate.UI
         // disabled: dimmed and inert (no hover light). selected: a steady lit frame for the active tab or choice.
         private void DrawButtonFrame(Rect rect, bool hover, bool disabled, bool selected=false)
         {
+            if(UiTheme.NewLook){ThemeButton(rect,hover,disabled,selected);return;}
             var lit=!disabled&&(hover||selected);
             if(!disabled&&hover&&GUI.enabled&&Event.current.type==EventType.Repaint)ButtonHoverFeedback(rect);
             // Pressed: the mouse button is down over a hovered button. The frame sinks to a deeper bronze.
@@ -1290,7 +1291,7 @@ namespace GildedFate.UI
 
         private void DrawTabs(float x,float y,float width,string[] names,int selected,System.Action<int> choose)
         {
-            for(int i=0;i<names.Length;i++){var r=new Rect(x+i*width,y,width-8,34);var active=i==selected;Fill(r,active?new Color(.2f,.16f,.08f,.96f):new Color(.018f,.024f,.034f,.94f));Outline(r,active?new Color(.96f,.84f,.57f):new Color(.53f,.49f,.38f),active?2:1);var style=new GUIStyle(footerStyle){fontSize=14,font=active&&labelFont?labelFont:bodyFont,normal={textColor=active?new Color(1f,.96f,.82f):new Color(.87f,.86f,.8f)}};GUI.Label(r,names[i],style);if(GUI.Button(r,"",GUIStyle.none)&&i!=selected){Sfx(SoundCue.UiHover);choose(i);}}
+            for(int i=0;i<names.Length;i++){var r=new Rect(x+i*width,y,width-8,34);var active=i==selected;if(UiTheme.NewLook)ThemeButton(r,r.Contains(PointerPosition),false,active);else{Fill(r,active?new Color(.2f,.16f,.08f,.96f):new Color(.018f,.024f,.034f,.94f));Outline(r,active?new Color(.96f,.84f,.57f):new Color(.53f,.49f,.38f),active?2:1);}var style=new GUIStyle(footerStyle){fontSize=14,font=active&&labelFont?labelFont:bodyFont,normal={textColor=active?new Color(1f,.96f,.82f):new Color(.87f,.86f,.8f)}};GUI.Label(r,names[i],style);if(GUI.Button(r,"",GUIStyle.none)&&i!=selected){Sfx(SoundCue.UiHover);choose(i);}}
         }
 
         private static readonly int[] KnightAttackArt={0,2,4,8,10,15,17,18,22,24};
@@ -1542,8 +1543,9 @@ namespace GildedFate.UI
         {
             runHudTooltipTitle=runHudTooltipDetail=null;
             var pointer=PointerPosition;var hp=combatMode&&combat!=null?displayedPlayerHp:run.hp;var maxHp=combatMode&&combat!=null?combat.player.maxHp:run.maxHp;
-            Fill(new Rect(0,0,w,58),profile.highContrastUi?new Color(.002f,.004f,.007f,.99f):new Color(.003f,.006f,.011f,.95f));
-            Fill(new Rect(0,57,w,2),new Color(.78f,.60f,.28f,.72f));
+            if(UiTheme.NewLook)ThemeHudStrip(w);
+            else{Fill(new Rect(0,0,w,58),profile.highContrastUi?new Color(.002f,.004f,.007f,.99f):new Color(.003f,.006f,.011f,.95f));
+            Fill(new Rect(0,57,w,2),new Color(.78f,.60f,.28f,.72f));}
 
             var health=new Rect(18,8,162,40);
             if(hudEmblemAtlas)DrawAtlasIcon(hudEmblemAtlas,1,4,2,new Rect(health.x+5,health.y+2,38,38));else GUI.Label(new Rect(health.x+8,health.y,34,health.height),"♥",new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=25,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(1f,.32f,.31f)}});
@@ -1796,7 +1798,7 @@ namespace GildedFate.UI
         private void HealthBar(Rect r,int hp,int max,string label){Fill(new Rect(r.x-3,r.y-3,r.width+6,r.height+6),new Color(0,0,0,.7f));Fill(r,new Color(.075f,.018f,.025f));var fill=new Rect(r.x+2,r.y+2,(r.width-4)*Mathf.Clamp01(hp/(float)max),r.height-4);Fill(fill,new Color(.68f,.08f,.105f));Fill(new Rect(fill.x,fill.y,fill.width,Mathf.Max(2,fill.height*.18f)),new Color(1f,.38f,.28f,.58f));Outline(r,new Color(.86f,.62f,.24f),2);var s=new GUIStyle(footerStyle){fontSize=Mathf.Clamp(Mathf.RoundToInt(r.height*.45f),12,15),fontStyle=FontStyle.Bold,normal={textColor=Color.white}};GUI.Label(r,$"{label}   {Mathf.Max(0,hp)}/{max}",s);}
         private static bool IsRunScreen(ScreenMode mode)=>mode is ScreenMode.Map or ScreenMode.Combat or ScreenMode.Reward or ScreenMode.Merchant or ScreenMode.Sanctuary or ScreenMode.Event or ScreenMode.EventSelection or ScreenMode.EventResult or ScreenMode.Treasure or ScreenMode.RelicReward or ScreenMode.CardUpgrade or ScreenMode.CardRemove or ScreenMode.BindingSelect or ScreenMode.BindingCard or ScreenMode.Fateweave or ScreenMode.FateweaveCard;
         private bool ShowsPersistentRunHud=>!string.IsNullOrEmpty(run.runId)&&!run.closed&&(IsRunScreen(screen)||screen==ScreenMode.Collection&&viewingRunDeck||screen==ScreenMode.Settings&&(IsRunScreen(settingsReturnScreen)||settingsReturnScreen==ScreenMode.Collection&&viewingRunDeck));
-        private void Heading(float w,string title,string sub){var top=ShowsPersistentRunHud?68f:30f;titleStyle.fontSize=38;titleStyle.normal.textColor=new Color(.98f,.92f,.76f);ShadowLabel(new Rect(w*.16f,top,w*.68f,59),title,titleStyle);var lineW=Mathf.Min(440f,w*.38f);Fill(new Rect(w*.5f-lineW*.5f,top+61,lineW,1),new Color(.76f,.65f,.43f,.65f));Fill(new Rect(w*.5f-3,top+58,6,7),new Color(.97f,.88f,.64f,.85f));subtitleStyle.fontSize=17;subtitleStyle.normal.textColor=new Color(.91f,.87f,.77f);GUI.Label(new Rect(w*.16f,top+67,w*.68f,28),sub,subtitleStyle);}
+        private void Heading(float w,string title,string sub){if(UiTheme.NewLook){ThemeHeading(w,title,sub);return;}var top=ShowsPersistentRunHud?68f:30f;titleStyle.fontSize=38;titleStyle.normal.textColor=new Color(.98f,.92f,.76f);ShadowLabel(new Rect(w*.16f,top,w*.68f,59),title,titleStyle);var lineW=Mathf.Min(440f,w*.38f);Fill(new Rect(w*.5f-lineW*.5f,top+61,lineW,1),new Color(.76f,.65f,.43f,.65f));Fill(new Rect(w*.5f-3,top+58,6,7),new Color(.97f,.88f,.64f,.85f));subtitleStyle.fontSize=17;subtitleStyle.normal.textColor=new Color(.91f,.87f,.77f);GUI.Label(new Rect(w*.16f,top+67,w*.68f,28),sub,subtitleStyle);}
         private void BackButton(float w,float h){var r=new Rect(34,h-76,148,46);DrawButtonFrame(r,r.Contains(PointerPosition),false);if(GUI.Button(r,"BACK",buttonStyle)){Sfx(SoundCue.UiBack);if(screen==ScreenMode.Settings){ProfileService.Save(profile);screen=settingsReturnScreen;return;}if(screen==ScreenMode.Collection){ReturnFromCollection();return;}screen=screen==ScreenMode.Statistics?ScreenMode.Credits:ScreenMode.Menu;}}
         private void CopyRun(RunModel source)
         {
