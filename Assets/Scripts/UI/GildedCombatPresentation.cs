@@ -672,7 +672,9 @@ namespace GildedFate.UI
             DrawTargetGuide();
             Fill(new Rect(0,h-138,w,138),new Color(.005f,.009f,.017f,.18f));
             var hint=Time.unscaledTime<hintUntil?inputHint:combatBusy?"":controllerNavigation?(menuUsesGamepad?"STICK / D-PAD · A PLAY · B BACK · R3 INSPECT · X TOP BAR · UP / LB ENEMIES · Y END TURN":"ARROWS SELECT CARD · UP ENEMIES · ENTER PLAY · BACKSPACE CANCEL"):"DRAG A CARD TO PLAY · RIGHT-CLICK TO CANCEL";
-            GUI.Label(new Rect(w*.5f-330,h-292,660,26),hint,new GUIStyle(footerStyle){fontSize=14,normal={textColor=new Color(.88f,.83f,.7f)}});
+            var hintStyle=new GUIStyle(footerStyle){fontSize=14,normal={textColor=new Color(.88f,.83f,.7f)}};
+            if(UiTheme.NewLook&&!string.IsNullOrEmpty(hint))ThemeTextPlate(w*.5f,h-279,hintStyle.CalcSize(new GUIContent(hint)).x+96,28); // the hint stays readable over the arena art
+            GUI.Label(new Rect(w*.5f-330,h-292,660,26),hint,hintStyle);
             DrawGildControl();DrawCombatHand();DrawCombatMotions();DrawRetaliateReturns();DrawCombatControls();DrawCombatNativeHitTargets();DrawCombatNumbers();DrawCardKeywordHelp(w,h);DrawCombatEffectTooltip(w,h);DrawPersistentRunTooltip(w,h);
             if(!profile.reduceFlashing&&gildedFlash>0)Fill(new Rect(0,0,w,h),new Color(1,.7f,.25f,gildedFlash*.12f));
             if(Time.unscaledTime<turnBannerUntil)
@@ -887,6 +889,7 @@ namespace GildedFate.UI
             DrawEnergyMeter(EnergyMeterRect);
             var end=EndTurnRect;var enabled=CanAcceptCombatInput&&pileOpen<0;
             if(DrawEndTurnButton(end,enabled))QueueEndTurn(); // GildedEndTurnButton.cs
+            if(UiTheme.NewLook)ThemeTextPlate(end.center.x,end.y-15,end.width*.92f,24);
             GUI.Label(new Rect(end.x,end.y-26,end.width,22),"HAND  "+combat.hand.Count+(ShowPadGlyphs?"":"     ·     SPACE"),footerStyle);
         }
         private void DrawEnergyMeter(Rect r)
@@ -984,14 +987,19 @@ namespace GildedFate.UI
 
         private void DrawSimpleShieldIcon(Rect r,int amount,float pulse)
         {
+            if(UiTheme.NewLook)ThemeBlockBadge(r,Mathf.Clamp01(pulse));
+            else
+            {
             var c=r.center;var top=new Vector2(c.x,r.y+4);var left=new Vector2(r.x+7,r.y+11);var right=new Vector2(r.xMax-7,r.y+11);var lowLeft=new Vector2(r.x+12,r.yMax-12);var lowRight=new Vector2(r.xMax-12,r.yMax-12);var bottom=new Vector2(c.x,r.yMax-3);
             Fill(new Rect(r.x+10,r.y+10,r.width-20,r.height-20),new Color(.015f,.09f,.16f,.94f));var edge=new Color(.36f,.78f,1f,.96f);var glow=new Color(.56f,.9f,1f,.55f+pulse*.35f);
             DrawLine(top,left,edge,3);DrawLine(left,lowLeft,edge,3);DrawLine(lowLeft,bottom,edge,3);DrawLine(bottom,lowRight,edge,3);DrawLine(lowRight,right,edge,3);DrawLine(right,top,edge,3);
+            }
             GUI.Label(r,amount.ToString(),new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=17,fontStyle=FontStyle.Bold,alignment=TextAnchor.MiddleCenter,normal={textColor=Color.white}});
         }
 
         private void FillBeveledHealthBar(Rect r,float healthRatio,float trailRatio,Color healthColor,Color edgeColor)
         {
+            if(UiTheme.NewLook){ThemeHealthBar(r,healthRatio,trailRatio,healthColor.b>healthColor.r);return;}
             var rows=Mathf.Max(1,Mathf.CeilToInt(r.height));var bevel=Mathf.Clamp(Mathf.RoundToInt(r.height*.28f),3,6);var black=new Color(.004f,.005f,.007f,.99f);var orange=new Color(1f,.48f,.09f,.99f);
             for(var row=0;row<rows;row++)
             {
@@ -1175,7 +1183,8 @@ namespace GildedFate.UI
             {
                 var t=Time.unscaledTime-number.start;if(t<0)continue;var alpha=Mathf.Clamp01((1.1f-t)*2.5f);var p=number.origin-new Vector2(0,profile.reduceMotion?0:t*44);
                 if(DrawCritCombatNumber(number,t,alpha))continue; // ≥50 gold crit numbers (GildedCardVfx.cs)
-                var baseSize=number.text.Length>9?23:31;var style=new GUIStyle(titleStyle){font=labelFont,fontSize=profile.largeDamageNumbers?baseSize+8:baseSize,normal={textColor=new Color(number.color.r,number.color.g,number.color.b,alpha)}};
+                var baseSize=number.text.Length>9?23:31;if(UiTheme.NewLook){ThemeCombatNumber(p,number.text,number.color,alpha,t,profile.largeDamageNumbers?baseSize+8:baseSize);continue;}
+                var style=new GUIStyle(titleStyle){font=labelFont,fontSize=profile.largeDamageNumbers?baseSize+8:baseSize,normal={textColor=new Color(number.color.r,number.color.g,number.color.b,alpha)}};
                 ShadowLabel(new Rect(p.x-170,p.y-30,340,54),number.text,style);
             }
         }

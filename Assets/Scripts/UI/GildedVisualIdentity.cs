@@ -74,6 +74,7 @@ namespace GildedFate.UI
         private void DrawFateThread(Vector2 a,Vector2 b,Rect clip,bool braided,bool available,bool hot,float progress=1)
         {
             if(Mathf.Max(a.y,b.y)<clip.yMin||Mathf.Min(a.y,b.y)>clip.yMax)return;
+            if(UiTheme.NewLook){ThemeThread(a,b,clip,braided,available,hot,progress);return;}
             var color=braided?new Color(.77f,.60f,.29f,.80f):available?new Color(.98f,.80f,.43f,.86f):hot?new Color(.77f,.69f,.52f,.68f):new Color(.50f,.46f,.37f,.48f);
             var strands=braided?3:1;var steps=braided?60:10;
             var perpendicular=new Vector2(-(b-a).y,(b-a).x).normalized;

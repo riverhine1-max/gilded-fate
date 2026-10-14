@@ -48,7 +48,8 @@ namespace GildedFate.UI
                 var accent=fracture?new Color(1f,.58f,.24f):new Color(.72f,.85f,1f);
                 if(active)accent=Color.Lerp(accent,Gold,.6f);var edge=Color.Lerp(gold,accent,active?.65f:.12f);
                 var c=r.center;var points=new[]{new Vector2(c.x,r.y-5),new Vector2(r.xMax+2,c.y),new Vector2(c.x,r.yMax+5),new Vector2(r.x-2,c.y)};
-                for(var side=0;side<4;side++){DrawLine(points[side],points[(side+1)%4],new Color(.025f,.028f,.045f,.98f),7);DrawLine(points[side],points[(side+1)%4],edge,1.4f+pulse);}
+                if(UiTheme.NewLook)ThemeShardSocket(r,Color.Lerp(Color.white,accent,active?.55f:fracture?.4f:.12f),def!=null,pulse);
+                else for(var side=0;side<4;side++){DrawLine(points[side],points[(side+1)%4],new Color(.025f,.028f,.045f,.98f),7);DrawLine(points[side],points[(side+1)%4],edge,1.4f+pulse);}
                 if(ReliquaryLayout)DrawShardChargeRing(r,owned,active,dim);else DrawLine(new Vector2(3,c.y),new Vector2(r.x+12,c.y),gold,2);
                 var old=GUI.color;GUI.color=dim?new Color(.48f,.48f,.55f,.64f):Color.white;
                 if(def!=null)

@@ -59,6 +59,7 @@ namespace GildedFate.UI
         // edge is a far, unreached route: it is drawn here as a faint strand instead.
         private bool MapPolishThread(Vector2 a,Vector2 b,Rect clip,bool completed,bool current,bool hot,MapNode from,MapNode target)
         {
+            if(UiTheme.NewLook)return true; // the new thread (ThemeMap.Thread) draws its own glow and drifting motes
             if(Mathf.Max(a.y,b.y)<clip.yMin||Mathf.Min(a.y,b.y)>clip.yMax)return !(target.floor>run.floor+1&&!completed&&!hot);
             EnsureMapPolishTextures();
             if(current)

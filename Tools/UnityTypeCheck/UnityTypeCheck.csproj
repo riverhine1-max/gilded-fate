@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    Compiles every game script (Assets/Scripts) against Unity's reference assemblies, without Unity, to catch compile errors in minutes.
+    Unity's own compile in CI stays the source of truth: this uses the community UnityEngine.Modules 2021.3 reference package and small
+    stand-ins for the Input System, so a few Unity 6 APIs are reported missing. check.sh filters those known gaps; anything else it prints is real.
+  -->
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <NoWarn>CS0168;CS0219;CS0414;CS0649;CS0169;CS0067;CS0162;CS0618;CS8632;CS0108;CS0114;CS0105</NoWarn>
+    <DefineConstants>UNITY_2021_3_OR_NEWER;UNITY_5_3_OR_NEWER</DefineConstants>
+    <RootDir>$(MSBuildThisFileDirectory)../..</RootDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="UnityEngine.Modules" Version="2021.3.33" />
+    <Compile Include="InputStubs.cs" />
+    <Compile Include="$(RootDir)/Assets/Scripts/**/*.cs" Exclude="$(RootDir)/Assets/Scripts/**/Editor/**" />
+  </ItemGroup>
+</Project>

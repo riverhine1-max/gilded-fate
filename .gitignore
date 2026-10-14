@@ -37,3 +37,7 @@ gilded_fate_profile.json*
 *.unitypackage
 .DS_Store
 Thumbs.db
+
+# Dev tools: build output
+Tools/**/bin/
+Tools/**/obj/

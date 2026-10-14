@@ -45,7 +45,8 @@ namespace GildedFate.UI
             var shown=r;
             if(motion){var grow=(hover?3:0)-press*3;shown=new Rect(r.x-grow,r.y-grow*.5f-(hover?2:0)+press*2,r.width+grow*2,r.height+grow);}
             var old=GUI.color;
-            if(CardVfxRepaint)
+            if(CardVfxRepaint&&UiTheme.NewLook)ThemeEndTurnPlate(shown,enabled,hover?1f:0f,breathe);
+            if(CardVfxRepaint&&!UiTheme.NewLook)
             {
                 EnsureCardVfxTextures();
                 // Soft glow: always faint, strong and breathing when there is nothing left to play.

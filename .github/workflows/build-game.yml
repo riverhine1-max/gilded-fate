@@ -3,6 +3,9 @@
 #   webgl         -> playable in the browser on GitHub Pages
 #   linux-trailer -> Linux player with the trailer-capture harness, pushed to the
 #                    "trailer-player" branch for recording trailer footage
+#   linux-captures -> a Linux player used only to photograph the game: it runs the screenshot tour (ci/capture-screens.sh) in the new and
+#                    classic looks on a virtual display and publishes the images to the "ui-captures" branch (and as a run artifact).
+#                    Dispatch-only; never part of "all". It exists so UI work can be checked on real screens, not guessed.
 #   windows-qa    -> GildedFate-Windows-QA.zip: the game plus the developer-only Chronicle QA panel, with its own
 #                    save folder and Steam off. Only ever built by choosing "windows-qa" when you run this workflow
 #                    by hand; it is never part of "all" or of a push build, and it is published on its own
@@ -22,7 +25,7 @@ on:
         description: Which builds to make
         type: choice
         default: all
-        options: [all, windows, webgl, linux-trailer, windows+webgl, windows-qa]
+        options: [all, windows, webgl, linux-trailer, windows+webgl, windows-qa, linux-captures]
   push:
     branches: [main]
     paths:
@@ -70,6 +73,7 @@ jobs:
           items=()
           case "$targets" in all|windows|windows+webgl) items+=('{"name":"windows","image":"windows-mono","target":"StandaloneWindows64","method":"GildedFate.Editor.GildedFateCiBuild.BuildWindows","output":"Builds/Windows/GildedFate.exe"}');; esac
           case "$targets" in windows-qa) items+=('{"name":"windows-qa","image":"windows-mono","target":"StandaloneWindows64","method":"GildedFate.Editor.GildedFateCiBuild.BuildWindowsQA","output":"Builds/WindowsQA/GildedFateQA.exe"}');; esac
+          case "$targets" in linux-captures) items+=('{"name":"linux-captures","image":"linux-il2cpp","target":"StandaloneLinux64","method":"GildedFate.Editor.GildedFateCiBuild.BuildLinux","output":"Builds/Linux/GildedFate.x86_64"}');; esac
           case "$targets" in all|webgl|windows+webgl) items+=('{"name":"webgl","image":"webgl","target":"WebGL","method":"GildedFate.Editor.GildedFateCiBuild.BuildWebGL","output":"Builds/WebGL"}');; esac
           case "$targets" in all|linux-trailer) items+=('{"name":"linux-trailer","image":"linux-il2cpp","target":"StandaloneLinux64","method":"GildedFate.Editor.GildedFateCiBuild.BuildLinux","output":"Builds/Linux/GildedFate.x86_64"}');; esac
           json=$(IFS=,; echo "{\"include\":[${items[*]}]}")
@@ -114,7 +118,7 @@ jobs:
             library-${{ matrix.name }}-
 
       - name: Prepare trailer-capture build
-        if: matrix.name == 'linux-trailer'
+        if: matrix.name == 'linux-trailer' || matrix.name == 'linux-captures'
         run: bash ci/trailer/prepare.sh
 
       - name: Build with Unity ${{ env.UNITY_VERSION }}
@@ -216,6 +220,41 @@ jobs:
         if: matrix.name == 'webgl'
         with:
           path: Builds/WebGL
+
+      # ---------- Linux captures: photograph the real game, new look and classic look ----------
+      - name: Screenshot tour
+        if: matrix.name == 'linux-captures'
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq xvfb libgl1-mesa-dri libglx-mesa0 imagemagick >/dev/null
+          chmod +x Builds/Linux/GildedFate.x86_64
+          mkdir -p captures
+          bash ci/capture-screens.sh Builds/Linux captures/new 1920x1080 1280x720 || echo "::warning::some new-look screenshots are missing"
+          CAPTURE_EXTRA_ARGS="-gfClassicUi" bash ci/capture-screens.sh Builds/Linux captures/classic 1920x1080 || echo "::warning::some classic-look screenshots are missing"
+          # The new look switches itself off for the session if its own drawing throws, so that shot would silently show the original look. Say so.
+          if grep -rl "The new UI look hit an error" captures/new/*/logs 2>/dev/null | head -50 > captures/new-look-fell-back.txt && [ -s captures/new-look-fell-back.txt ]; then
+            echo "::warning::the new look threw and fell back to the original look on $(wc -l < captures/new-look-fell-back.txt) screenshot(s); see new-look-fell-back.txt on the ui-captures branch"
+          else rm -f captures/new-look-fell-back.txt; fi
+
+      - name: Publish screenshots
+        if: matrix.name == 'linux-captures' && always()
+        run: |
+          cd captures
+          # Small JPEGs, and an orphan branch that is replaced each run, so the repository never accumulates screenshot history.
+          find . -name '*.png' | while read -r f; do convert "$f" -quality 88 "${f%.png}.jpg" && rm -f "$f"; done
+          find . -type d -name logs | while read -r d; do mkdir -p "${d%/logs}/logs-failed"; grep -l "FAIL\|Exception" "$d"/*.log 2>/dev/null | head -20 | xargs -r -I{} cp {} "${d%/logs}/logs-failed/" ; rm -rf "$d"; done
+          printf 'UI screenshot tour built from %s\n  new/<size>/<screen>.jpg   the new look\n  classic/1920x1080/<screen>.jpg   the original look\n' "$GITHUB_SHA" > README.txt
+          du -sh .
+          git init -q -b ui-captures
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add . && git commit -qm "UI screenshot tour from ${GITHUB_SHA::7}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" ui-captures
+      - uses: actions/upload-artifact@v4
+        if: matrix.name == 'linux-captures' && always()
+        with:
+          name: ui-captures
+          path: captures
+          retention-days: 14
 
       # ---------- Linux trailer player: split into <95 MB parts on a side branch ----------
       - name: Publish trailer player

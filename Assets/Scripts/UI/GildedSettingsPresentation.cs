@@ -61,7 +61,8 @@ namespace GildedFate.UI
                     ToggleRow("VERTICAL SYNC","Synchronize drawing to your display to reduce tearing.",()=>profile.vSync,v=>profile.vSync=v),
                     Cycle("FRAME RATE LIMIT","Maximum frame rate when vertical sync is disabled.",()=>profile.fpsLimit,v=>profile.fpsLimit=v,new[]{60,120,144,240},new[]{"60 FPS","120 FPS","144 FPS","240 FPS"}),
                     Cycle("TEXTURE QUALITY","Lower settings use less graphics memory.",()=>profile.textureQuality,v=>profile.textureQuality=v,new[]{0,1,2},new[]{"HIGH","MEDIUM","LOW"}),
-                    Cycle("ANTI-ALIASING","Smooth the edges of rendered shapes.",()=>profile.antiAliasing,v=>profile.antiAliasing=v,new[]{0,2,4,8},new[]{"OFF","2×","4×","8×"})},
+                    Cycle("ANTI-ALIASING","Smooth the edges of rendered shapes.",()=>profile.antiAliasing,v=>profile.antiAliasing=v,new[]{0,2,4,8},new[]{"OFF","2×","4×","8×"}),
+                    ToggleRow("CLASSIC UI LOOK","Draw menus, the map and the combat HUD in the original style instead of the new look. Presentation only.",()=>profile.classicUi,v=>{profile.classicUi=v;UiTheme.ApplyProfile(v);})},
                 new[]{
                     Range("MASTER VOLUME","Overall volume. At 0%, all audio is muted.",()=>profile.master,v=>profile.master=v),
                     Range("MUSIC","Background music volume.",()=>profile.music,v=>profile.music=v),
@@ -179,8 +180,9 @@ namespace GildedFate.UI
             for(var i=0;i<rows.Length;i++)
             {
                 var row=rows[i];var r=SettingsRowRect(w,i,twoColumns);var hot=controllerNavigation?settingsFocusIndex==i:r.Contains(PointerPosition);if(!controllerNavigation&&!captureMode&&Event.current.type==EventType.Repaint&&GUI.enabled){if(hot&&settingsHoverRow!=i){settingsHoverRow=i;Sfx(SoundCue.UiHover);}else if(!hot&&settingsHoverRow==i)settingsHoverRow=-1;}
-                Fill(r,hot?new Color(.085f,.066f,.035f,.97f):new Color(.014f,.022f,.031f,.95f));Outline(r,hot?Gold:new Color(.28f,.30f,.31f),hot?2:1);
-                if(hot)Fill(new Rect(r.x,r.y+8,3,r.height-16),Gold);
+                if(UiTheme.NewLook)ThemeRow(r,hot);
+                else{Fill(r,hot?new Color(.085f,.066f,.035f,.97f):new Color(.014f,.022f,.031f,.95f));Outline(r,hot?Gold:new Color(.28f,.30f,.31f),hot?2:1);
+                if(hot)Fill(new Rect(r.x,r.y+8,3,r.height-16),Gold);}
                 var style=new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=15,fontStyle=FontStyle.Bold,alignment=TextAnchor.MiddleLeft,normal={textColor=new Color(.94f,.91f,.83f)}};
                 var labelWidth=row.slider?(twoColumns?196:250):r.width-190;
                 GUI.Label(new Rect(r.x+18,r.y+10,labelWidth,38),row.name,style);
@@ -189,10 +191,11 @@ namespace GildedFate.UI
                 if(row.slider)
                 {
                     var trackX=r.x+(twoColumns?210:292);var track=new Rect(trackX,r.center.y-16,r.xMax-110-trackX,32);var fraction=Mathf.InverseLerp(row.minimum,row.maximum,row.get());
-                    Fill(new Rect(track.x+9,r.center.y-2,track.width-18,4),new Color(.24f,.26f,.28f));
-                    Fill(new Rect(track.x+9,r.center.y-2,(track.width-18)*fraction,4),new Color(.80f,.62f,.30f));
+                    if(UiTheme.NewLook)ThemeSlider(new Rect(track.x+9,track.y,track.width-18,track.height),fraction,hot);
+                    else{Fill(new Rect(track.x+9,r.center.y-2,track.width-18,4),new Color(.24f,.26f,.28f));
+                    Fill(new Rect(track.x+9,r.center.y-2,(track.width-18)*fraction,4),new Color(.80f,.62f,.30f));}
                     if(row.minimum<1&&row.maximum>1){var mark=track.x+9+(track.width-18)*Mathf.InverseLerp(row.minimum,row.maximum,1);Fill(new Rect(mark-1,r.center.y-6,2,12),new Color(.55f,.52f,.45f));}
-                    var knob=new Rect(track.x+(track.width-18)*fraction+3,r.center.y-8,12,16);Fill(knob,new Color(.96f,.83f,.57f));Outline(knob,new Color(.32f,.22f,.09f),1);
+                    if(!UiTheme.NewLook){var knob=new Rect(track.x+(track.width-18)*fraction+3,r.center.y-8,12,16);Fill(knob,new Color(.96f,.83f,.57f));Outline(knob,new Color(.32f,.22f,.09f),1);}
                     var value=GUI.HorizontalSlider(track,row.get(),row.minimum,row.maximum,GUIStyle.none,new GUIStyle(GUIStyle.none){fixedWidth=18,fixedHeight=32});
                     if(!Mathf.Approximately(value,row.get())){row.set(Mathf.Round(value/row.step)*row.step);ApplySettings();AudioListener.volume=profile.master;PreviewSettingSound(row);}
                 }

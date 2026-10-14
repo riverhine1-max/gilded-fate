@@ -61,3 +61,22 @@ jobs:
             echo '```'
             if grep -q '^FAIL' harness.log; then echo; echo "Failing tests:"; echo '```'; grep -A1 '^FAIL' harness.log | head -40; echo '```'; fi
           } >> "$GITHUB_STEP_SUMMARY"
+
+  # Compiles every game script against Unity's reference assemblies (the UnityEngine.Modules 2021.3 community package plus small Input System
+  # stand-ins), so a compile error in any script, UI included, shows up in about two minutes instead of after a 40-80 minute Unity build.
+  # Unity's own compile stays the source of truth: Tools/UnityTypeCheck/check.sh filters the few Unity 6 APIs the older reference lacks.
+  game-scripts-compile:
+    name: Game scripts compile (no Unity)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Type-check all game scripts, with and without the Chronicle QA code
+        run: |
+          set -o pipefail
+          bash Tools/UnityTypeCheck/check.sh | tee typecheck.log
+          GILDED_CHRONICLE_QA=1 bash Tools/UnityTypeCheck/check.sh | tee typecheck-qa.log
+          { echo "### Game scripts compile"; echo '```'; tail -n 3 typecheck.log; echo '```'; } >> "$GITHUB_STEP_SUMMARY"

@@ -103,7 +103,7 @@ namespace GildedFate.UI
             white.SetPixel(0, 0, Color.white);
             white.Apply();
             for (var i = 0; i < 90; i++) motes.Add(NewParticle(true));
-            profile = ProfileService.Load();GildedFate.Saving.ChronicleHooks.BindLogging();if(GildedFate.Saving.ChronicleHooks.Prepare(profile))ProfileService.Save(profile);BindMetaUnlocks();GildedFate.Saving.GildedSteam.Init();SyncAchievementsToSteam();
+            profile = ProfileService.Load();UiTheme.ApplyProfile(profile.classicUi);GildedFate.Saving.ChronicleHooks.BindLogging();if(GildedFate.Saving.ChronicleHooks.Prepare(profile))ProfileService.Save(profile);BindMetaUnlocks();GildedFate.Saving.GildedSteam.Init();SyncAchievementsToSteam();
             observedGold=run.gold;ResetGoldAudio();
             captureMode=!string.IsNullOrEmpty(CommandValue("-gfCapture"));
             bodyFont=Resources.Load<Font>("Fonts/SourceSans3-Regular");
@@ -470,9 +470,18 @@ namespace GildedFate.UI
 
         private void OnGUI()
         {
-            DrawMainGUI();
-            DrawFlowOverlays();
-            DrawMetaOverlay(); // brightness + achievement toasts, always on top
+            if(!UiTheme.NewLook){DrawMainGUI();DrawFlowOverlays();DrawMetaOverlay();return;}
+            try
+            {
+                DrawMainGUI();
+                DrawFlowOverlays();
+                DrawMetaOverlay(); // brightness + achievement toasts, always on top
+            }
+            catch(System.Exception e) when(UiTheme.IsFromTheme(e))
+            {
+                // The new look must never take a screen down: if its own drawing throws, say so once and draw the original look from the next frame on.
+                UiTheme.NewLook=false;Debug.LogError("The new UI look hit an error and was switched off for this session; the original look is drawing instead.\n"+e);
+            }
         }
         private void DrawMainGUI()
         {
@@ -611,6 +620,7 @@ namespace GildedFate.UI
         // disabled: dimmed and inert (no hover light). selected: a steady lit frame for the active tab or choice.
         private void DrawButtonFrame(Rect rect, bool hover, bool disabled, bool selected=false)
         {
+            if(UiTheme.NewLook){ThemeButton(rect,hover,disabled,selected);return;}
             var lit=!disabled&&(hover||selected);
             if(!disabled&&hover&&GUI.enabled&&Event.current.type==EventType.Repaint)ButtonHoverFeedback(rect);
             // Pressed: the mouse button is down over a hovered button. The frame sinks to a deeper bronze.
@@ -656,7 +666,8 @@ namespace GildedFate.UI
             Fill(new Rect(0,0,w,h),new Color(.004f,.007f,.014f,.34f));
             var accent=HeroAccent(selectedHero);
             Heading(w,selectingNewRun?"CHOOSE YOUR FATE":"CHARACTER ARCHIVE",selectingNewRun?"SELECT A HERO · THEN CONFIRM THE ASCENT":"ONE HERO · ONE COMPLETE DECKBUILDING PATH");
-            var stage=new Rect(64,116,790,h-196);Fill(stage,new Color(.008f,.012f,.021f,.62f));Outline(stage,new Color(accent.r,accent.g,accent.b,.7f),2);
+            // New look: the stage and the details panel start below the subtitle (the old stage top cut through it) and share a top edge.
+            var stage=UiTheme.NewLook?new Rect(64,138,790,h-218):new Rect(64,116,790,h-196);Fill(stage,new Color(.008f,.012f,.021f,.62f));Outline(stage,new Color(accent.r,accent.g,accent.b,.7f),2);
             DrawSelectedHeroArtwork(new Rect(stage.x+4,stage.y+4,stage.width-8,stage.height-8),selectedHero);
             DrawHeroSelectPedestal(stage);
             Fill(new Rect(stage.x,stage.yMax-132,stage.width,132),new Color(.006f,.009f,.016f,.88f));
@@ -665,7 +676,8 @@ namespace GildedFate.UI
             GUI.Label(new Rect(stage.x+28,stage.yMax-119,stage.width-56,43),heroName,new GUIStyle(titleStyle){fontSize=34,alignment=TextAnchor.MiddleLeft,normal={textColor=new Color(.99f,.92f,.75f)}});
             GUI.Label(new Rect(stage.x+30,stage.yMax-72,stage.width-60,30),heroRole,new GUIStyle(subtitleStyle){fontSize=14,alignment=TextAnchor.MiddleLeft,normal={textColor=accent}});
 
-            var panel=new Rect(w-500,150,430,h-250);Fill(panel,new Color(.009f,.014f,.024f,.96f));Outline(panel,accent,2);Fill(new Rect(panel.x,panel.y,panel.width,4),accent);
+            var panel=UiTheme.NewLook?new Rect(w-500,138,430,h-218):new Rect(w-500,150,430,h-250);
+            if(UiTheme.NewLook)ThemeHeroPanel(panel,selectedHero,accent);else{Fill(panel,new Color(.009f,.014f,.024f,.96f));Outline(panel,accent,2);Fill(new Rect(panel.x,panel.y,panel.width,4),accent);}
             var hp=selectedHero==HeroId.Vanguard?"80 MAX HP":selectedHero==HeroId.Hexer?"68 MAX HP":"72 MAX HP";
             var lore=selectedHero==HeroId.Vanguard?"A broken crown. An unbroken oath.\n\nBuild an iron defense, turn Block into pressure, and answer every blow with royal steel.":selectedHero==HeroId.Hexer?"A porcelain mask hiding a forbidden name.\n\nWeave Marks, Burn, and ritual Powers into a precise chain of lethal hexes.":"A keeper of the names the Vault tried to bury.\n\nHarvest temporary Souls, cycle the Exhaust pile, and finish the fallen with a spectral scythe.";
             GUI.Label(new Rect(panel.x+30,panel.y+28,panel.width-60,42),heroName,new GUIStyle(titleStyle){fontSize=29,alignment=TextAnchor.MiddleLeft,normal={textColor=new Color(.98f,.91f,.75f)}});
@@ -680,10 +692,12 @@ namespace GildedFate.UI
             var confirm=new Rect(panel.x+28,panel.yMax-68,panel.width-56,46);DrawButtonFrame(confirm,confirm.Contains(PointerPosition),false);
             if(GUI.Button(confirm,selectingNewRun?"CONFIRM HERO · BEGIN ASCENT":"OPEN HERO CARD ARCHIVE",buttonStyle))ConfirmSelectedHero();
 
-            var selectorY=h-104;var selectorTitle=new GUIStyle(footerStyle){fontSize=12,normal={textColor=new Color(.9f,.84f,.7f)}};GUI.Label(new Rect(w*.5f-145,selectorY-25,290,20),"CHOOSE YOUR HERO",selectorTitle);
-            DrawHeroSelector(new Rect(w*.5f-145,selectorY,82,70),HeroId.Vanguard);
-            DrawHeroSelector(new Rect(w*.5f-41,selectorY,82,70),HeroId.Hexer);
-            DrawHeroSelector(new Rect(w*.5f+63,selectorY,82,70),HeroId.Reaper);
+            // New look: the three hero tiles sit inside the stage's lower band, at its right, instead of straddling its edge.
+            var selectorY=UiTheme.NewLook?stage.yMax-100:h-104;var selectorX=UiTheme.NewLook?stage.xMax-24-274:w*.5f-145;var selectorGap=UiTheme.NewLook?96f:104f;
+            var selectorTitle=new GUIStyle(footerStyle){fontSize=12,normal={textColor=new Color(.9f,.84f,.7f)}};GUI.Label(new Rect(selectorX,selectorY-25,UiTheme.NewLook?274:290,20),"CHOOSE YOUR HERO",selectorTitle);
+            DrawHeroSelector(new Rect(selectorX,selectorY,82,70),HeroId.Vanguard);
+            DrawHeroSelector(new Rect(selectorX+selectorGap,selectorY,82,70),HeroId.Hexer);
+            DrawHeroSelector(new Rect(selectorX+selectorGap*2,selectorY,82,70),HeroId.Reaper);
             BackButton(w,h);
         }
 
@@ -758,14 +772,14 @@ namespace GildedFate.UI
         }
         private void DrawMapLegend(float w,float h)
         {
-            var pointer=PointerPosition;var legend=new Rect(w-262,294,240,376);Fill(legend,new Color(.006f,.012f,.021f,.90f));Outline(legend,new Color(.52f,.43f,.28f,.72f),1);
+            var pointer=PointerPosition;var legend=new Rect(w-262,294,240,376);if(UiTheme.NewLook)ThemePanel(legend);else{Fill(legend,new Color(.006f,.012f,.021f,.90f));Outline(legend,new Color(.52f,.43f,.28f,.72f),1);}
             GUI.Label(new Rect(legend.x+16,legend.y+15,legend.width-32,28),"VAULT ROOMS",new GUIStyle(titleStyle){fontSize=20,normal={textColor=new Color(.96f,.89f,.7f)}});
             var discovered=run.nodes.Select(n=>n.kind).ToHashSet();
             NodeKind? hoveredKind=null;Rect hoveredRect=default;
             for(var i=0;i<7;i++)
             {
                 var kind=(NodeKind)i;var known=discovered.Contains(kind);var row=new Rect(legend.x+11,legend.y+49+i*44,legend.width-22,40);var over=known&&row.Contains(pointer);var shown=over?new Rect(row.x-3,row.y-2,row.width+6,row.height+4):row;
-                if(over)Fill(shown,new Color(.18f,.12f,.035f,.72f));
+                if(UiTheme.NewLook)ThemeRow(shown,over);else if(over)Fill(shown,new Color(.18f,.12f,.035f,.72f));
                 if(known)DrawMapNodeIcon(i,new Rect(shown.x+7,shown.y+2,36,36));
                 else{Fill(new Rect(shown.x+11,shown.y+7,28,28),new Color(.018f,.023f,.032f,.92f));GUI.Label(new Rect(shown.x+11,shown.y+7,28,28),"?",new GUIStyle(titleStyle){fontSize=17,normal={textColor=new Color(.48f,.48f,.47f)}});}
                 GUI.Label(new Rect(shown.x+53,shown.y,shown.width-59,shown.height),known?kind.ToString().ToUpperInvariant():"UNREAD FATE",new GUIStyle(footerStyle){fontSize=12,alignment=TextAnchor.MiddleLeft,normal={textColor=known?new Color(.94f,.91f,.81f):new Color(.48f,.48f,.46f)}});
@@ -1128,7 +1142,7 @@ namespace GildedFate.UI
 
         private void DrawCollectionRail(float h)
         {
-            var panel=new Rect(20,135,142,h-230);Fill(panel,new Color(.006f,.011f,.018f,.94f));Outline(panel,new Color(.47f,.39f,.25f,.82f),1);
+            var panel=new Rect(20,135,142,h-230);if(UiTheme.NewLook)ThemePanel(panel);else{Fill(panel,new Color(.006f,.011f,.018f,.94f));Outline(panel,new Color(.47f,.39f,.25f,.82f),1);}
             GUI.Label(new Rect(panel.x+10,panel.y+17,panel.width-20,22),"ARCHIVE",new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=12,fontStyle=FontStyle.Bold,normal={textColor=new Color(.83f,.69f,.39f)}});
             var names=new[]{"CARDS","RELICS"};
             for(var i=0;i<2;i++)
@@ -1254,7 +1268,7 @@ namespace GildedFate.UI
 
         private void DrawRelicTile(Rect r,RelicDef relic,int index,bool showDescription=false)
         {
-            var accent=RarityAccent(relic.rarity);Fill(r,new Color(.03f,.034f,.047f,.98f));Outline(r,accent,relic.rarity is Rarity.Rare or Rarity.Boss?3:1);var icon=Mathf.Min(r.width-16,r.height*(showDescription?.44f:.58f));var art=new Rect(r.center.x-icon*.5f,r.y+8,icon,icon);DrawRelicArt(art,index);
+            var accent=RarityAccent(relic.rarity);if(UiTheme.NewLook)ThemeRelicFrame(r,accent,relic.rarity);else{Fill(r,new Color(.03f,.034f,.047f,.98f));Outline(r,accent,relic.rarity is Rarity.Rare or Rarity.Boss?3:1);}var icon=Mathf.Min(r.width-16,r.height*(showDescription?.44f:.58f));var art=new Rect(r.center.x-icon*.5f,r.y+8,icon,icon);DrawRelicArt(art,index);
             var name=new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=14,wordWrap=true,normal={textColor=new Color(.97f,.93f,.81f)}};GUI.Label(new Rect(r.x+6,art.yMax+4,r.width-12,32),relic.name,name);
             if(showDescription){var body=new GUIStyle(footerStyle){fontSize=15,wordWrap=true,normal={textColor=new Color(.94f,.91f,.84f)}};GUI.Label(new Rect(r.x+15,art.yMax+39,r.width-30,r.yMax-art.yMax-47),relic.Description,body);}
             else{var rarity=new GUIStyle(footerStyle){fontSize=12,normal={textColor=Color.Lerp(accent,Color.white,.5f)}};GUI.Label(new Rect(r.x+4,r.yMax-20,r.width-8,16),relic.rarity.ToString().ToUpperInvariant(),rarity);}
@@ -1290,7 +1304,7 @@ namespace GildedFate.UI
 
         private void DrawTabs(float x,float y,float width,string[] names,int selected,System.Action<int> choose)
         {
-            for(int i=0;i<names.Length;i++){var r=new Rect(x+i*width,y,width-8,34);var active=i==selected;Fill(r,active?new Color(.2f,.16f,.08f,.96f):new Color(.018f,.024f,.034f,.94f));Outline(r,active?new Color(.96f,.84f,.57f):new Color(.53f,.49f,.38f),active?2:1);var style=new GUIStyle(footerStyle){fontSize=14,font=active&&labelFont?labelFont:bodyFont,normal={textColor=active?new Color(1f,.96f,.82f):new Color(.87f,.86f,.8f)}};GUI.Label(r,names[i],style);if(GUI.Button(r,"",GUIStyle.none)&&i!=selected){Sfx(SoundCue.UiHover);choose(i);}}
+            for(int i=0;i<names.Length;i++){var r=new Rect(x+i*width,y,width-8,34);var active=i==selected;if(UiTheme.NewLook)ThemeButton(r,r.Contains(PointerPosition),false,active);else{Fill(r,active?new Color(.2f,.16f,.08f,.96f):new Color(.018f,.024f,.034f,.94f));Outline(r,active?new Color(.96f,.84f,.57f):new Color(.53f,.49f,.38f),active?2:1);}var style=new GUIStyle(footerStyle){fontSize=14,font=active&&labelFont?labelFont:bodyFont,normal={textColor=active?new Color(1f,.96f,.82f):new Color(.87f,.86f,.8f)}};GUI.Label(r,names[i],style);if(GUI.Button(r,"",GUIStyle.none)&&i!=selected){Sfx(SoundCue.UiHover);choose(i);}}
         }
 
         private static readonly int[] KnightAttackArt={0,2,4,8,10,15,17,18,22,24};
@@ -1542,8 +1556,9 @@ namespace GildedFate.UI
         {
             runHudTooltipTitle=runHudTooltipDetail=null;
             var pointer=PointerPosition;var hp=combatMode&&combat!=null?displayedPlayerHp:run.hp;var maxHp=combatMode&&combat!=null?combat.player.maxHp:run.maxHp;
-            Fill(new Rect(0,0,w,58),profile.highContrastUi?new Color(.002f,.004f,.007f,.99f):new Color(.003f,.006f,.011f,.95f));
-            Fill(new Rect(0,57,w,2),new Color(.78f,.60f,.28f,.72f));
+            if(UiTheme.NewLook){ThemeHudStrip(w);ThemeHudWell(new Rect(56,13,122,30));ThemeHudWell(new Rect(224,13,70,30));} // dark wells under the health and gold figures
+            else{Fill(new Rect(0,0,w,58),profile.highContrastUi?new Color(.002f,.004f,.007f,.99f):new Color(.003f,.006f,.011f,.95f));
+            Fill(new Rect(0,57,w,2),new Color(.78f,.60f,.28f,.72f));}
 
             var health=new Rect(18,8,162,40);
             if(hudEmblemAtlas)DrawAtlasIcon(hudEmblemAtlas,1,4,2,new Rect(health.x+5,health.y+2,38,38));else GUI.Label(new Rect(health.x+8,health.y,34,health.height),"♥",new GUIStyle(titleStyle){font=labelFont?labelFont:bodyFont,fontSize=25,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(1f,.32f,.31f)}});
@@ -1567,7 +1582,7 @@ namespace GildedFate.UI
             if(floorRect.Contains(pointer))SetRunHudTooltip(floorRect,$"FLOOR {RunFloorNumber} OF {RunFloorTotal}",$"Act {RomanAct(run.act)}, room {run.floor+1}. Follow a golden path toward the boss.");
             // A clear act badge next to the floor counter.
             var actRect=new Rect(floorRect.xMax+8,7,78,43);
-            Fill(actRect,new Color(.10f,.07f,.03f,.85f));Outline(actRect,new Color(.86f,.66f,.30f,.9f),1);
+            if(UiTheme.NewLook)ThemePlaque(actRect,.95f);else{Fill(actRect,new Color(.10f,.07f,.03f,.85f));Outline(actRect,new Color(.86f,.66f,.30f,.9f),1);}
             GUI.Label(new Rect(actRect.x,actRect.y,actRect.width,16),"ACT",new GUIStyle(footerStyle){font=labelFont?labelFont:bodyFont,fontSize=11,fontStyle=FontStyle.Bold,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(.86f,.74f,.52f)}});
             GUI.Label(new Rect(actRect.x,actRect.y+14,actRect.width,28),$"{RomanAct(run.act)}<size=11> / III</size>",new GUIStyle(titleStyle){font=headingFont?headingFont:labelFont,fontSize=22,richText=true,alignment=TextAnchor.MiddleCenter,normal={textColor=new Color(1f,.82f,.42f)}});
             if(actRect.Contains(pointer))SetRunHudTooltip(actRect,$"ACT {RomanAct(run.act)} OF III",$"Defeat the act's boss to advance. The final boss waits on floor {RunFloorTotal}.");
@@ -1790,13 +1805,13 @@ namespace GildedFate.UI
             var sizeChanged=profile.resolutionWidth>0&&(Screen.width!=width||Screen.height!=height);
             if(Screen.fullScreenMode!=mode||sizeChanged||mode!=FullScreenMode.Windowed&&profile.resolutionWidth<=0&&(Screen.width!=width||Screen.height!=height))Screen.SetResolution(width,height,mode);
         }
-        private void Choice(Rect r,string name,string text,System.Action action,int controllerIndex=-1,string unavailable=null){if(unavailable!=null)text=unavailable;var over=ScreenChoiceHot(r,controllerIndex)&&unavailable==null;if(over)Fill(new Rect(r.x-7,r.y-7,r.width+14,r.height+14),new Color(1f,.56f,.12f,.11f));Fill(r,over?new Color(.085f,.06f,.025f,.98f):new Color(.018f,.026f,.04f,.98f));Outline(r,over?new Color(1f,.84f,.55f):new Color(.73f,.61f,.39f),over?3:2);Outline(new Rect(r.x+7,r.y+7,r.width-14,r.height-14),new Color(.26f,.2f,.11f,.8f),1);Fill(new Rect(r.x+18,r.y+7,r.width-36,2),new Color(.9f,.78f,.53f,.5f));var n=new GUIStyle(titleStyle){fontSize=24,wordWrap=true,normal={textColor=new Color(.98f,.93f,.78f)}};GUI.Label(new Rect(r.x+16,r.y+18,r.width-32,58),name,n);var b=new GUIStyle(footerStyle){fontSize=17,wordWrap=true,normal={textColor=new Color(.94f,.91f,.84f)}};GUI.Label(new Rect(r.x+22,r.y+82,r.width-44,r.height-98),text,b);if(unavailable!=null)Fill(r,new Color(0,0,0,.5f));if(GUI.Button(r,"",GUIStyle.none)){if(unavailable!=null)Sfx(SoundCue.UiDenied);else{Sfx(SoundCue.UiConfirm);action();}}}
+        private void Choice(Rect r,string name,string text,System.Action action,int controllerIndex=-1,string unavailable=null){if(unavailable!=null)text=unavailable;var over=ScreenChoiceHot(r,controllerIndex)&&unavailable==null;if(UiTheme.NewLook)ThemeChoicePanel(r,over);else{if(over)Fill(new Rect(r.x-7,r.y-7,r.width+14,r.height+14),new Color(1f,.56f,.12f,.11f));Fill(r,over?new Color(.085f,.06f,.025f,.98f):new Color(.018f,.026f,.04f,.98f));Outline(r,over?new Color(1f,.84f,.55f):new Color(.73f,.61f,.39f),over?3:2);Outline(new Rect(r.x+7,r.y+7,r.width-14,r.height-14),new Color(.26f,.2f,.11f,.8f),1);Fill(new Rect(r.x+18,r.y+7,r.width-36,2),new Color(.9f,.78f,.53f,.5f));}var n=new GUIStyle(titleStyle){fontSize=24,wordWrap=true,normal={textColor=new Color(.98f,.93f,.78f)}};GUI.Label(new Rect(r.x+16,r.y+18,r.width-32,58),name,n);var b=new GUIStyle(footerStyle){fontSize=17,wordWrap=true,normal={textColor=new Color(.94f,.91f,.84f)}};GUI.Label(new Rect(r.x+22,r.y+82,r.width-44,r.height-98),text,b);if(unavailable!=null)Fill(r,new Color(0,0,0,.5f));if(GUI.Button(r,"",GUIStyle.none)){if(unavailable!=null)Sfx(SoundCue.UiDenied);else{Sfx(SoundCue.UiConfirm);action();}}}
 
         private void Advance(){if(currentNode!=null&&RewardRules.CompletesRun(currentNode.kind,run.act)){run.ClearFinalEncounterRewards();CompleteRun();return;}if(ShardDiscoveryOpen)return;if(run.pendingBonusCardRewards>0){run.pendingBonusCardRewards--;run.NextBonusCardReward();rewardRevealTime=profile.reduceMotion?0:1.15f;run.stage=RunStage.CardReward;SaveService.Save(run);screen=ScreenMode.Reward;return;}if(currentNode?.kind==NodeKind.Boss){run.RollEncounterRewards(NodeKind.Boss);run.encounterRewards.cardClaimed=true;if(!run.encounterRewards.bossRelicClaimed&&run.BossRelicOffers().Length>0){run.stage=RunStage.RelicReward;screen=ScreenMode.RelicReward;screenControllerIndex=0;SaveService.Save(run);return;}if(run.perfectedSelectionPending)return;EnterFateweave();return;}if(currentNode!=null)run.AdvanceFrom(currentNode);SaveService.Save(run);mapFocusFloor=-1;screen=run.floor>=run.ActFloorCount?ScreenMode.Menu:ScreenMode.Map;}
-        private void HealthBar(Rect r,int hp,int max,string label){Fill(new Rect(r.x-3,r.y-3,r.width+6,r.height+6),new Color(0,0,0,.7f));Fill(r,new Color(.075f,.018f,.025f));var fill=new Rect(r.x+2,r.y+2,(r.width-4)*Mathf.Clamp01(hp/(float)max),r.height-4);Fill(fill,new Color(.68f,.08f,.105f));Fill(new Rect(fill.x,fill.y,fill.width,Mathf.Max(2,fill.height*.18f)),new Color(1f,.38f,.28f,.58f));Outline(r,new Color(.86f,.62f,.24f),2);var s=new GUIStyle(footerStyle){fontSize=Mathf.Clamp(Mathf.RoundToInt(r.height*.45f),12,15),fontStyle=FontStyle.Bold,normal={textColor=Color.white}};GUI.Label(r,$"{label}   {Mathf.Max(0,hp)}/{max}",s);}
+        private void HealthBar(Rect r,int hp,int max,string label){if(UiTheme.NewLook)ThemeHealthBar(r,Mathf.Clamp01(hp/(float)Mathf.Max(1,max)),0f,false);else{Fill(new Rect(r.x-3,r.y-3,r.width+6,r.height+6),new Color(0,0,0,.7f));Fill(r,new Color(.075f,.018f,.025f));var fill=new Rect(r.x+2,r.y+2,(r.width-4)*Mathf.Clamp01(hp/(float)max),r.height-4);Fill(fill,new Color(.68f,.08f,.105f));Fill(new Rect(fill.x,fill.y,fill.width,Mathf.Max(2,fill.height*.18f)),new Color(1f,.38f,.28f,.58f));Outline(r,new Color(.86f,.62f,.24f),2);}var s=new GUIStyle(footerStyle){fontSize=Mathf.Clamp(Mathf.RoundToInt(r.height*.45f),12,15),fontStyle=FontStyle.Bold,normal={textColor=Color.white}};GUI.Label(r,$"{label}   {Mathf.Max(0,hp)}/{max}",s);}
         private static bool IsRunScreen(ScreenMode mode)=>mode is ScreenMode.Map or ScreenMode.Combat or ScreenMode.Reward or ScreenMode.Merchant or ScreenMode.Sanctuary or ScreenMode.Event or ScreenMode.EventSelection or ScreenMode.EventResult or ScreenMode.Treasure or ScreenMode.RelicReward or ScreenMode.CardUpgrade or ScreenMode.CardRemove or ScreenMode.BindingSelect or ScreenMode.BindingCard or ScreenMode.Fateweave or ScreenMode.FateweaveCard;
         private bool ShowsPersistentRunHud=>!string.IsNullOrEmpty(run.runId)&&!run.closed&&(IsRunScreen(screen)||screen==ScreenMode.Collection&&viewingRunDeck||screen==ScreenMode.Settings&&(IsRunScreen(settingsReturnScreen)||settingsReturnScreen==ScreenMode.Collection&&viewingRunDeck));
-        private void Heading(float w,string title,string sub){var top=ShowsPersistentRunHud?68f:30f;titleStyle.fontSize=38;titleStyle.normal.textColor=new Color(.98f,.92f,.76f);ShadowLabel(new Rect(w*.16f,top,w*.68f,59),title,titleStyle);var lineW=Mathf.Min(440f,w*.38f);Fill(new Rect(w*.5f-lineW*.5f,top+61,lineW,1),new Color(.76f,.65f,.43f,.65f));Fill(new Rect(w*.5f-3,top+58,6,7),new Color(.97f,.88f,.64f,.85f));subtitleStyle.fontSize=17;subtitleStyle.normal.textColor=new Color(.91f,.87f,.77f);GUI.Label(new Rect(w*.16f,top+67,w*.68f,28),sub,subtitleStyle);}
+        private void Heading(float w,string title,string sub){if(UiTheme.NewLook){ThemeHeading(w,title,sub);return;}var top=ShowsPersistentRunHud?68f:30f;titleStyle.fontSize=38;titleStyle.normal.textColor=new Color(.98f,.92f,.76f);ShadowLabel(new Rect(w*.16f,top,w*.68f,59),title,titleStyle);var lineW=Mathf.Min(440f,w*.38f);Fill(new Rect(w*.5f-lineW*.5f,top+61,lineW,1),new Color(.76f,.65f,.43f,.65f));Fill(new Rect(w*.5f-3,top+58,6,7),new Color(.97f,.88f,.64f,.85f));subtitleStyle.fontSize=17;subtitleStyle.normal.textColor=new Color(.91f,.87f,.77f);GUI.Label(new Rect(w*.16f,top+67,w*.68f,28),sub,subtitleStyle);}
         private void BackButton(float w,float h){var r=new Rect(34,h-76,148,46);DrawButtonFrame(r,r.Contains(PointerPosition),false);if(GUI.Button(r,"BACK",buttonStyle)){Sfx(SoundCue.UiBack);if(screen==ScreenMode.Settings){ProfileService.Save(profile);screen=settingsReturnScreen;return;}if(screen==ScreenMode.Collection){ReturnFromCollection();return;}screen=screen==ScreenMode.Statistics?ScreenMode.Credits:ScreenMode.Menu;}}
         private void CopyRun(RunModel source)
         {
@@ -1851,14 +1866,15 @@ namespace GildedFate.UI
 
         private void Outline(Rect r, Color color, int width)
         {
+            if (UiTheme.NewLook && !ThemeKeepsClassicScreen && width >= 2 && r.width >= 64 && r.height >= 40) { ThemeOutline(r, color, width); return; }   // strong outlines on big panels become a bevelled rim; hairlines and small boxes keep the crisp line
             Fill(new Rect(r.x, r.y, r.width, width), color);
             Fill(new Rect(r.x, r.yMax - width, r.width, width), color);
             Fill(new Rect(r.x, r.y, width, r.height), color);
             Fill(new Rect(r.xMax - width, r.y, width, r.height), color);
         }
         private static void DrawAtlasIcon(Texture2D atlas,int index,int columns,int rows,Rect destination){if(!atlas||index<0)return;var col=index%columns;var row=index/columns;var uv=new Rect(col/(float)columns,1f-(row+1)/(float)rows,1f/columns,1f/rows);GUI.DrawTextureWithTexCoords(destination,atlas,uv,true);}
-        private void DrawFullBackdrop(Texture2D texture,float w,float h,float veil){if(texture)GUI.DrawTexture(new Rect(0,0,w,h),texture,ScaleMode.ScaleAndCrop);Fill(new Rect(0,0,w,h),new Color(.004f,.007f,.014f,veil));}
-        private void DrawLocationBackdrop(float w,float h,int index){DrawAtlasIcon(locationAtlas,index,2,2,new Rect(0,0,w,h));Fill(new Rect(0,0,w,h),new Color(.005f,.008f,.015f,.24f));}
+        private void DrawFullBackdrop(Texture2D texture,float w,float h,float veil){if(texture)GUI.DrawTexture(new Rect(0,0,w,h),texture,ScaleMode.ScaleAndCrop);Fill(new Rect(0,0,w,h),new Color(.004f,.007f,.014f,veil));if(UiTheme.NewLook)ThemeBackdropLife(w,h);}
+        private void DrawLocationBackdrop(float w,float h,int index){DrawAtlasIcon(locationAtlas,index,2,2,new Rect(0,0,w,h));Fill(new Rect(0,0,w,h),new Color(.005f,.008f,.015f,.24f));if(UiTheme.NewLook)ThemeBackdropLife(w,h);}
 private void DrawTransition(float w,float h){if(ShowsPersistentRunHud){if(ShowsNormalShardShrine)DrawShardShrine(w,h);if(ShowsNormalShardShrine||acquisitionActive)DrawShardFlights();}if(ShardDiscoveryOpen){GUI.enabled=!acquisitionActive;DrawShardDiscovery(w,h);}if(ShardAttuneOpen)DrawShardAttune(w,h);for(var i=0;i<6;i++){var a=.075f*(1f-i/6f);var edge=12f+i*16f;Fill(new Rect(i*16,0,16,h),new Color(0,0,0,a));Fill(new Rect(w-edge,0,16,h),new Color(0,0,0,a));Fill(new Rect(0,i*12,w,12),new Color(0,0,0,a*.7f));Fill(new Rect(0,h-(i+1)*12,w,12),new Color(0,0,0,a));}Outline(new Rect(1,1,w-2,h-2),new Color(.62f,.41f,.14f,.22f),2);if(transitionAlpha>0)Fill(new Rect(0,0,w,h),new Color(.005f,.008f,.015f,transitionAlpha));DrawGoldenThreadWipe(w,h);if(ShowsPersistentRunHud)DrawPersistentRunTooltip(w,h);DrawScreenCardKeywordHelp(w,h);DrawAcquisitionPresentation(w,h);DrawGoldCollectFlight();DrawRewardGoldBurst();DrawSeveredThread(w,h);DrawCombatHudFocus(w,h);DrawMenuHudNavigation(w,h);DrawScreenNavigationHint(w,h);if(inspectedCard!=null)DrawCardInspection(w,h,inspectedCard);if(inspectedRelic!=null&&!ShardDiscoveryOpen&&!acquisitionActive)DrawRelicInspection(w,h,inspectedRelic);DrawFinalPolishProbe(w,h);}
         private MusicMood MoodForScreen(){var page=AudioContextScreen();if(page==ScreenMode.Combat)return currentEnemy!=null&&currentEnemy.boss?MusicMood.Boss:MusicMood.Combat;if(page==ScreenMode.Map)return MusicMood.Map;if(page==ScreenMode.Sanctuary||page is ScreenMode.BindingSelect or ScreenMode.BindingCard)return MusicMood.Sanctuary;if(page==ScreenMode.Merchant)return MusicMood.Merchant;if(page is ScreenMode.Event or ScreenMode.EventSelection or ScreenMode.EventResult||page==ScreenMode.Treasure)return MusicMood.Event;if(page is ScreenMode.Reward or ScreenMode.RelicReward or ScreenMode.Fateweave or ScreenMode.FateweaveCard||page==ScreenMode.RunResult&&runResultVictory)return MusicMood.Victory;return MusicMood.Menu;}
 
