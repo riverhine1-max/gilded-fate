@@ -17,7 +17,7 @@ MANAGED=$(find "$DIR" -type d -name Managed | head -1)
 echo "Inspecting $MANAGED"
 
 # Type names that exist only when GILDED_CHRONICLE_QA was defined (or in the editor).
-MARKERS=(ChronicleQaSession ChronicleQaMode ChronicleQaEntry DrawChronicleQa OpenChronicleQa)
+MARKERS=(ChronicleQaSession ChronicleQaMode ChronicleQaEntry DrawChronicleQa OpenChronicleQa ChronicleQaPerfStats ChronicleQaPerfMonitor)
 DLLS=$(find "$MANAGED" -maxdepth 1 \( -name 'Assembly-CSharp.dll' -o -name 'GildedFate.*.dll' \))
 [ -n "$DLLS" ] || { fail "found no game assemblies in $MANAGED."; exit 1; }
 

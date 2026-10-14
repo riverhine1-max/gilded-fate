@@ -38,7 +38,7 @@ if grep -q "QA" <<<"$win_step"; then fail "the normal Windows publish step menti
 
 # 4. Every QA source file is compiled out of a normal build.
 GUARD='#if UNITY_EDITOR || GILDED_CHRONICLE_QA'
-for f in Assets/Scripts/Chronicle/ChronicleQa.cs Assets/Scripts/Saving/ChronicleQaMode.cs Assets/Scripts/UI/GildedChronicleQa.cs; do
+for f in Assets/Scripts/Chronicle/ChronicleQa.cs Assets/Scripts/Chronicle/ChronicleQaPerf.cs Assets/Scripts/Saving/ChronicleQaMode.cs Assets/Scripts/UI/GildedChronicleQa.cs Assets/Scripts/UI/GildedChronicleQaPerf.cs; do
   [ -f "$f" ] || { fail "$f is missing."; continue; }
   first=$(grep -v '^\s*$' "$f" | head -1 | tr -d '\r\357\273\277'); last=$(grep -v '^\s*$' "$f" | tail -1 | tr -d '\r')
   case "$first" in "#if UNITY_EDITOR || GILDED_CHRONICLE_QA"*) ;; *) fail "$f must open with a '$GUARD' guard (found: $first)";; esac
@@ -46,7 +46,7 @@ for f in Assets/Scripts/Chronicle/ChronicleQa.cs Assets/Scripts/Saving/Chronicle
 done
 
 # 5. Every use of QA code elsewhere in the game sits inside such a guard.
-leaks=$(for f in $(grep -rl "ChronicleQa" Assets/Scripts --include=*.cs | grep -v -e Chronicle/ChronicleQa.cs -e Saving/ChronicleQaMode.cs -e UI/GildedChronicleQa.cs); do
+leaks=$(for f in $(grep -rl "ChronicleQa" Assets/Scripts --include=*.cs | grep -v -e Chronicle/ChronicleQa.cs -e Chronicle/ChronicleQaPerf.cs -e Saving/ChronicleQaMode.cs -e UI/GildedChronicleQa.cs -e UI/GildedChronicleQaPerf.cs); do
   awk -v file="$f" '
     function inqa(  i) { for (i = 1; i <= depth; i++) if (q[i]) return 1; return 0 }
     /^[[:space:]]*#if/    { depth++; q[depth] = ($0 ~ /GILDED_CHRONICLE_QA/); next }

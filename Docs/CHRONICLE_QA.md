@@ -36,6 +36,14 @@ Main menu → **CHRONICLE QA** (bottom right), or press **F10**.
 * **Chapter X reveal:** *Open Chapter X (30 genuine victories)* then Opening · Chapter X → play it in Record mode, or open the Archive and begin it from there.
 * **Real wins:** *Open Fate Debt I–X for real runs*, then start a normal run from Character Select. It is a real run in the isolated QA profile.
 
+## Performance readout
+
+Press **F11** on any screen of the QA build to show a frame-time and garbage readout; press **F12** to drop a numbered marker when something stutters. Rows are written every second to `...\ChronicleQA\perf\*.csv`, with a summary when you quit. Send those files back with a note of which marker was which. See `Docs/PERFORMANCE_AUDIT.md`.
+
+## Human review checklist
+
+`Docs/CHRONICLE_QA_CHECKLIST.md` lists every recollection and narrated line to listen to and watch. The machine audit (`python3 ci/audit-chronicle-content.py`, also run on every pull request) already confirms the text, recordings, timings and art agree with each other; the checklist is only what a person has to judge.
+
 ## Isolation and production safety
 
 * **Own save folder.** In the QA build every save (profile and run) goes to `…\AppData\LocalLow\Gilded Fate\Gilded Fate QA\ChronicleQA`. The QA build also has its own product name, so its PlayerPrefs are separate from the real game's. The real profile is never read or written.
